@@ -12,3 +12,20 @@
 ## Useful
 
 - `http://localhost:3000/api/auth/providers` gives links of all providers we have
+
+## SQL
+
+- Drop database
+
+```
+select current_database();
+select * from pg_stat_activity where datname='bw';
+select pg_terminate_backend(3198);
+SELECT datname FROM pg_database;
+drop database bw;
+```
+
+## Deployments
+
+- package.json has `vercel-build` task setup to build TS artifacts & deploy schema to database
+- Vercel will use `vercel-build` when doing build for deployment
