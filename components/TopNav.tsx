@@ -23,6 +23,8 @@ const TopNav: React.FC = () => {
       <HStack px={5} h={"50px"}>
         <HStack spacing={5} alignItems={"center"}>
           <Image
+            position={'relative'}
+            top={'-1px'}
             width={"150"}
             height={"22"}
             alt={"BrandWeaver.ai Logo"}

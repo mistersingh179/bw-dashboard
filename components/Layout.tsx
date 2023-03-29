@@ -10,7 +10,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const router = useRouter();
   return (
     <>
-      {router.pathname != "/" && <TopNav />}
+      {<TopNav />}
       <Container maxW={"container.xl"}>{children}</Container>
     </>
   );
