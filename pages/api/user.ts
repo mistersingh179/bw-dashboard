@@ -4,20 +4,14 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 import prisma from "@/lib/prisma";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+const handler: NextApiHandler = async (req, res) => {
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
     res.status(403).send("sorry access denied");
   }
-  const user = await prisma.user.findFirst({
-    select: {
-      email: true,
-      accounts: true,
-    },
-  });
-  console.log(user);
+
+  const user = await prisma.user.findFirst();
   res.status(200).json({ user });
-}
+};
+
+export default handler;
