@@ -7,6 +7,7 @@
 - `npx prisma migrate dev` to run the migrations & build client
 - `npx ts-node sample.ts` Prints users in Database
 - `npx ts-node --transpile-only` the `--transpile-only` makes it so that it doesn't complain on TS issues
+- for production / non dev usage we do `npm run build` & then use `npm start` to serve it 
 
 ## Useful
 
