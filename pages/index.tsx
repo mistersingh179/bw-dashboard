@@ -15,15 +15,19 @@ import {
   HStack,
   Button,
   Avatar,
+  Show,
 } from "@chakra-ui/react";
-
 
 const Home: React.FC = () => {
   const { data: session } = useSession();
   return (
     <VStack justifyContent={"center"} h={"100vh"} spacing={5}>
       <Heading size={"xl"}>BrandWeaver.ai</Heading>
-      <Text>AI Places Products Into Every Piece of Publisher Content</Text>
+      <Text>
+        AI Places Products Into Every Piece of{" "}
+        <Show above={"sm"}>Publisher</Show>
+        Content
+      </Text>
       <HStack>
         {!session && (
           <Button

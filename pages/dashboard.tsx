@@ -30,12 +30,12 @@ const data = [
   { name: "03/01/23", auctions: 400, impressions: 300, revenue: 20 },
   { name: "03/02/23", auctions: 500, impressions: 400, revenue: 22 },
   { name: "03/03/23", auctions: 600, impressions: 500, revenue: 260 },
-  { name: "03/04/23", auctions: 300, impressions: 200, revenue: 280 },
-  { name: "03/05/23", auctions: 500, impressions: 400, revenue: 32 },
+  { name: "03/04/23", auctions: 300, impressions: 200, revenue: 50 },
+  { name: "03/05/23", auctions: 500, impressions: 400, revenue: 92 },
   { name: "03/06/23", auctions: 700, impressions: 400, revenue: 42 },
   { name: "03/07/23", auctions: 660, impressions: 400, revenue: 30 },
   { name: "03/08/23", auctions: 200, impressions: 100, revenue: 5 },
-  { name: "03/09/23", auctions: 600, impressions: 600, revenue: 260 },
+  { name: "03/09/23", auctions: 600, impressions: 550, revenue: 260 },
   { name: "03/10/23", auctions: 700, impressions: 500, revenue: 42 },
 ];
 

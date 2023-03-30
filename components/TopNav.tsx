@@ -7,6 +7,7 @@ import {
   Text,
   Button,
   Avatar,
+  Show,
 } from "@chakra-ui/react";
 import { Link, Image } from "@chakra-ui/next-js";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -23,31 +24,33 @@ const TopNav: React.FC = () => {
       <HStack px={5} h={"50px"}>
         <HStack spacing={5} alignItems={"center"}>
           <Image
-            position={'relative'}
-            top={'-1px'}
+            position={"relative"}
+            top={"-1px"}
             width={"150"}
             height={"22"}
             alt={"BrandWeaver.ai Logo"}
             src={"/BrandWeaver-Blue-Logo-small.png"}
           />
-          <Link
-            href={"/dashboard"}
-            fontWeight={currentRoute === "/dashboard" ? "bold" : "normal"}
-          >
-            Dashboard
-          </Link>
-          <Link
-            href={"/reporting"}
-            fontWeight={currentRoute === "/reporting" ? "bold" : "normal"}
-          >
-            Reporting
-          </Link>
-          <Link
-            href={"/settings"}
-            fontWeight={currentRoute === "/settings" ? "bold" : "normal"}
-          >
-            Settings
-          </Link>
+          <Show above={"sm"}>
+            <Link
+              href={"/dashboard"}
+              fontWeight={currentRoute === "/dashboard" ? "bold" : "normal"}
+            >
+              Dashboard
+            </Link>
+            <Link
+              href={"/reporting"}
+              fontWeight={currentRoute === "/reporting" ? "bold" : "normal"}
+            >
+              Reporting
+            </Link>
+            <Link
+              href={"/settings"}
+              fontWeight={currentRoute === "/settings" ? "bold" : "normal"}
+            >
+              Settings
+            </Link>
+          </Show>
         </HStack>
         <Spacer />
         <HStack spacing={5}>
@@ -56,12 +59,14 @@ const TopNav: React.FC = () => {
               Sign In
             </Button>
           )}
-          {session?.user?.name && (
-            <Text>Logged in as {session.user.name} </Text>
-          )}
-          {session?.user?.image && (
-            <Avatar size={"sm"} src={session.user.image} />
-          )}
+          <Show above={"lg"}>
+            {session?.user?.name && (
+              <Text>Logged in as {session.user.name} </Text>
+            )}
+            {session?.user?.image && (
+              <Avatar size={"sm"} src={session.user.image} />
+            )}
+          </Show>
 
           {session && (
             <Button

@@ -29,3 +29,7 @@ drop database bw;
 
 - package.json has `vercel-build` task setup to build TS artifacts & deploy schema to database
 - Vercel will use `vercel-build` when doing build for deployment
+
+## DNS
+
+- `dscacheutil -q host -a name app.brandweaver.ai` checks what ip comes back
