@@ -3,9 +3,11 @@ import { useSession } from "next-auth/react";
 import {Text, Box, Heading, VStack, Code, Stack, Button} from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
 
+const BW_SCRIPT_BASE_URL = process.env.NEXT_PUBLIC_BW_SCRIPT_BASE_URL;
+
 const scriptTag = (userId: string) => {
   return `<!-- BrandWeaver tag (bw.js) -->
-<script defer src="https://assets.brandweaver.ai/bw.js?id=${userId}"></script>`
+<script defer src="${BW_SCRIPT_BASE_URL}/bw.js?id=${userId}"></script>`
 }
 
 const Settings: FCWithAuth = () => {
