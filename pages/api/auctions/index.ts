@@ -2,12 +2,9 @@ import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 import Cors from "cors";
 import runMiddleware from "@/lib/runMiddleware";
+import prisma from "@/lib/prisma";
 
 const cors = Cors(); // Initializing the cors middleware
-
-// export const config = {
-//   runtime: 'edge',
-// }
 
 type AuctionResponseData = {
   message: string;
@@ -30,6 +27,9 @@ const handleAuctionPost = (
   req: NextApiRequest,
   res: NextApiResponse<AuctionResponseData>
 ) => {
+  console.log("in handleAuctionPost");
+  console.log("req.query: ", req.query);
+  console.log("req.body: ", req.body);
   res.status(201).json({ message: "creating an auction" });
 };
 
@@ -41,3 +41,7 @@ const handleAuctionDelete = (
 };
 
 export default auctions;
+
+// export const config = {
+//   runtime: 'edge',
+// }
