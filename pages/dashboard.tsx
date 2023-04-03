@@ -96,7 +96,7 @@ const Dashboard: FCWithAuth = () => {
           <Skeleton isLoaded={!isLoading}>
             <StatNumber w={"auto"}>
               {error && <Text color={'tomato'}>Unavailable</Text>}
-              {data.auctionsCount}
+              {data?.auctionsCount}
             </StatNumber>
           </Skeleton>
           <StatHelpText>
