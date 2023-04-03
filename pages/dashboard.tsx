@@ -1,10 +1,11 @@
 import React from "react";
-import { useSession } from "next-auth/react";
+import useSWR from "swr";
 import {
   Box,
   Center,
   Heading,
   HStack,
+  Skeleton,
   Stat,
   StatArrow,
   StatGroup,
@@ -12,7 +13,6 @@ import {
   StatLabel,
   StatNumber,
   Text,
-  VStack,
 } from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
 import {
@@ -22,7 +22,8 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  ResponsiveContainer, Legend, Label,
+  ResponsiveContainer,
+  Legend,
 } from "recharts";
 import _ from "lodash";
 
@@ -40,7 +41,7 @@ const data = [
 ];
 
 const renderLineChart = (
-  <ResponsiveContainer width={'100%'} height={400}>
+  <ResponsiveContainer width={"100%"} height={400}>
     <LineChart
       width={600}
       height={300}
@@ -53,13 +54,29 @@ const renderLineChart = (
       <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
       <XAxis dataKey="name" />
       <YAxis />
-      <Tooltip  />
-      <Legend verticalAlign="bottom" height={36} formatter={(val) => _.capitalize(val)}/>
+      <Tooltip />
+      <Legend
+        verticalAlign="bottom"
+        height={36}
+        formatter={(val) => _.capitalize(val)}
+      />
     </LineChart>
   </ResponsiveContainer>
 );
 
+const dashboardFetcher = async (key: string) => {
+  const res = await fetch("/api/dashboard", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await res.json();
+  return data;
+};
+
 const Dashboard: FCWithAuth = () => {
+  const { data, error, isLoading } = useSWR("/api/dashboard", dashboardFetcher);
   return (
     <Box>
       <Heading mt={5}>Dashboard</Heading>
@@ -74,30 +91,35 @@ const Dashboard: FCWithAuth = () => {
         borderRadius={"lg"}
         p={5}
       >
-        <Stat>
+        <Stat w={"fit-content"}>
           <StatLabel>Auctions</StatLabel>
-          <StatNumber>2,345,670</StatNumber>
+          <Skeleton isLoaded={!isLoading}>
+            <StatNumber w={"auto"}>
+              {error && <Text color={'tomato'}>Unavailable</Text>}
+              {data.auctionsCount}
+            </StatNumber>
+          </Skeleton>
           <StatHelpText>
             <StatArrow type="increase" />
-            23.36%
+            0.00%
           </StatHelpText>
         </Stat>
 
         <Stat>
           <StatLabel>Impressions</StatLabel>
-          <StatNumber>1,876,536</StatNumber>
+          <StatNumber>0</StatNumber>
           <StatHelpText>
-            <StatArrow type="decrease" />
-            9.05%
+            <StatArrow type="increase" />
+            0.00%
           </StatHelpText>
         </Stat>
 
         <Stat>
           <StatLabel>Revenue</StatLabel>
-          <StatNumber>$4,890</StatNumber>
+          <StatNumber>$0.00</StatNumber>
           <StatHelpText>
             <StatArrow type="increase" />
-            3.12%
+            0.00%
           </StatHelpText>
         </Stat>
       </StatGroup>
