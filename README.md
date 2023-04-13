@@ -25,6 +25,17 @@ SELECT datname FROM pg_database;
 drop database bw;
 ```
 
+## DB prisma & serverless neon setup
+- `DATABASE_URL` is the pool url to connect to db
+- `DIRECT_URL` is direct to db & used by migration command
+- `SHADOW_DATABASE_URL` is a seperate db used by migrate command to first deploy there, compare with primary & then wipe out the shadow db
+- using `connect_timeout` on the db connection string to specify how long prisma should wait before db is considered down
+- by putting 0 it means never time out
+- it takes time to come up in neon as the compute server is suspended on inactivity
+- `pool_timeout` is the same for pooled connections
+- `pgbouncer` so that it used to manage connections
+- `prisma migrate` does not work with `pool` connections. so need to use direct db url.
+
 ## Deployments
 
 - package.json has `vercel-build` task setup to build TS artifacts & deploy schema to database

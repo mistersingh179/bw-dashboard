@@ -10,3 +10,11 @@ services:
       - POSTGRES_PASSWORD=wonderland
       - POSTGRES_USER=alice
       - POSTGRES_DB=bw
+  db-shadow:
+    image: postgres:15.1-alpine3.17
+    ports:
+      - 54321:5432
+    environment:
+      - POSTGRES_PASSWORD=wonderland
+      - POSTGRES_USER=alice
+      - POSTGRES_DB=bw_shadow

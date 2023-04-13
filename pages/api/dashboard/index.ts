@@ -7,6 +7,12 @@ type DashboardResponseData = {
   auctionsCount: Number;
 };
 
+const sleep = async (ms: number) =>{
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, ms);
+  })
+}
+
 const handler: NextApiHandler<DashboardResponseData> = async (req, res) => {
   if (req.method !== "GET") {
     res.status(405).setHeader("Allow", "GET").end();
