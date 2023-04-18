@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "db": "docker compose up",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -12,6 +13,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.0.18",
     "@chakra-ui/next-js": "^2.1.1",
     "@chakra-ui/react": "^2.5.4",
     "@emotion/react": "^11.10.6",
@@ -22,6 +24,7 @@
     "@types/react": "18.0.29",
     "@types/react-dom": "18.0.11",
     "cors": "^2.8.5",
+    "date-fns": "^2.29.3",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
     "framer-motion": "^10.9.1",

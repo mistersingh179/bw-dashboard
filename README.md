@@ -44,3 +44,24 @@ drop database bw;
 ## DNS
 
 - `dscacheutil -q host -a name app.brandweaver.ai` checks what ip comes back
+
+## Postman
+- to call authenticated API add cookie `next-auth.session-token` to the request
+- value can be taken from the browser
+- add it as a header with key `cookie` & value of `next-auth.session-token=12345`
+
+## Pending / TODO
+- refactor api to log path, body, params, query etc.
+- refactor api to extract common user id stuff up
+- refactor UI pages to have better pattern with folder and edit/show/new/index pages
+- refactor db call to hace chained prisma queries
+- add types for input to campaign
+- refactor so when api fails, it returns error rather than hanging. e.g. create campaign fails
+- refactor api to handle unsupported methods
+- refactor types to a common place
+- move delay in ajax calls out to common place
+- think and refactor if should dates be kept as dates over string, and if dates can be over datetime in db
+
+## extension todo
+- multi select drop down list of advertiser.
+- Brands Ranked by Relevance

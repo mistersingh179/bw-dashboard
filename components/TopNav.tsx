@@ -39,6 +39,12 @@ const TopNav: React.FC = () => {
               Dashboard
             </Link>
             <Link
+              href={"/campaigns"}
+              fontWeight={currentRoute === "/campaigns" ? "bold" : "normal"}
+            >
+              Campaigns
+            </Link>
+            <Link
               href={"/reporting"}
               fontWeight={currentRoute === "/reporting" ? "bold" : "normal"}
             >
