@@ -7,6 +7,9 @@ import { Campaign } from "@prisma/client";
 import { sleep } from "@/pages/api/dashboard";
 import { QueryParams } from "@/types/QueryParams";
 import { formatISO, parseISO } from "date-fns";
+import withMiddleware from "@/middlewares/my-middleware";
+import { Middleware } from "next-api-middleware";
+import allowedMethodMiddlewareFactory from "@/middlewares/allowedMethodMiddlewareFactory";
 
 const campaign: NextApiHandler = async (req, res) => {
   if (req.method === "GET") {
@@ -15,10 +18,16 @@ const campaign: NextApiHandler = async (req, res) => {
     await handleUpdateCampaign(req, res);
   } else if (req.method === "DELETE") {
     await handleDeleteCampaign(req, res);
-  } else {
-    res.status(200).json({ message: "thanks" });
   }
 };
+
+const allowedMethodMiddleware: Middleware = allowedMethodMiddlewareFactory([
+  "GET",
+  "PUT",
+  "DELETE",
+]);
+
+export default withMiddleware(allowedMethodMiddleware)(campaign);
 
 const handleUpdateCampaign = async (
   req: NextApiRequest,
@@ -106,5 +115,3 @@ const handleDeleteCampaign = async (
 
   res.status(204).end();
 };
-
-export default campaign;

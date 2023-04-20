@@ -5,6 +5,9 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Campaign, PrismaClient } from "@prisma/client";
 import { formatISO, parseISO } from "date-fns";
 import { sleep } from "@/pages/api/dashboard";
+import { Middleware } from "next-api-middleware";
+import allowedMethodMiddlewareFactory from "@/middlewares/allowedMethodMiddlewareFactory";
+import withMiddleware from "@/middlewares/my-middleware";
 
 type AuctionResponseData = {
   message: string;
@@ -12,13 +15,21 @@ type AuctionResponseData = {
 
 const campaigns: NextApiHandler = async (req, res) => {
   if (req.method === "GET") {
-    handleListCampaigns(req, res);
+    await handleListCampaigns(req, res);
   } else if (req.method === "POST") {
-    handleCreateCampaign(req, res);
+    await handleCreateCampaign(req, res);
   } else {
     res.status(200).json({ message: "thanks" });
   }
 };
+
+const allowedMethodMiddleware: Middleware = allowedMethodMiddlewareFactory([
+  "GET",
+]);
+
+export default withMiddleware(
+  allowedMethodMiddleware
+)(campaigns);
 
 const handleCreateCampaign = async (
   req: NextApiRequest,
@@ -54,7 +65,7 @@ const handleListCampaigns = async (
     res.status(401).end();
     return;
   }
-  await sleep(1000);
+  // await sleep(1000);
   console.log("session: ", session);
   const user = await prisma.user.findFirstOrThrow({
     where: { id: session.user.id },
@@ -68,4 +79,3 @@ const handleListCampaigns = async (
   console.log("campaigns: ", campaigns);
   res.status(200).json(campaigns);
 };
-export default campaigns;

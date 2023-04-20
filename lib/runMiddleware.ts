@@ -2,10 +2,13 @@
 // And to throw an error when an error happens in a middleware
 import { NextApiRequest, NextApiResponse } from "next";
 
+// Not using runMiddleware as we are using npm packager next-api-middleware
+
 const runMiddleware = async (
   req: NextApiRequest,
   res: NextApiResponse,
-  middlewareFn: Function
+  middlewareFn: Function,
+  opts?: Object
 ) => {
   return new Promise((resolve, reject) => {
     middlewareFn(req, res, (result: any) => {
@@ -14,7 +17,7 @@ const runMiddleware = async (
       }
 
       return resolve(result);
-    });
+    }, opts);
   });
 };
 

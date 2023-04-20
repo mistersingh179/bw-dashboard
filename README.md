@@ -51,7 +51,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending / TODO
-- refactor api to log path, body, params, query etc.
 - refactor api to extract common user id stuff up
 - refactor UI pages to have better pattern with folder and edit/show/new/index pages
 - refactor db call to hace chained prisma queries
@@ -61,6 +60,7 @@ drop database bw;
 - refactor types to a common place
 - move delay in ajax calls out to common place
 - think and refactor if should dates be kept as dates over string, and if dates can be over datetime in db
+- redirect / toast after create or edit
 
 ## extension todo
 - multi select drop down list of advertiser.
