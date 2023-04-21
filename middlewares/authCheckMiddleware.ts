@@ -2,9 +2,6 @@ import { Middleware } from "next-api-middleware";
 import exp from "constants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import foo from "@/types/foo";
-
-const a: foo = { name: "hi" };
 
 const authCheckMiddleware: Middleware = async (req, res, next) => {
   const session = await getServerSession(req, res, authOptions);

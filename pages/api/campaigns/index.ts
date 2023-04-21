@@ -36,9 +36,14 @@ const handleCreateCampaign = async (
   const startWithTime = formatISO(parseISO(start));
   const endWithTime = formatISO(parseISO(end));
   await sleep(0);
+
   const campaign = await prisma.campaign.create({
     data: {
-      userId: req.authenticatedUserId || "",
+      user: {
+        connect: {
+          id: req.authenticatedUserId
+        }
+      },
       start: startWithTime,
       end: endWithTime,
       name,
@@ -52,11 +57,13 @@ const handleListCampaigns = async (
   res: NextApiResponse<Campaign[]>
 ) => {
   await sleep(0);
-  const campaigns = await prisma.campaign.findMany({
-    where: {
-      user: { id: req.authenticatedUserId || "" },
-    },
-  });
+  const campaigns = await prisma.user
+    .findFirstOrThrow({
+      where: {
+        id: req.authenticatedUserId || "" ,
+      },
+    })
+    .campaigns();
   console.log("campaigns: ", campaigns);
   res.status(200).json(campaigns);
 };

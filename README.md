@@ -51,8 +51,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending / TODO
-- refactor UI pages to have better pattern with folder and edit/show/new/index pages
-- refactor db call to hace chained prisma queries
 - add types for input to campaign
 - refactor so when api fails, it returns error rather than hanging. e.g. create campaign fails
 - refactor api to handle unsupported methods

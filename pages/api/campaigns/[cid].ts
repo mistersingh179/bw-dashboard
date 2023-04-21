@@ -43,7 +43,9 @@ const handleUpdateCampaign = async (
   const campaign = await prisma.campaign.update({
     where: {
       id: cid,
-      userId: req.authenticatedUserId || "",
+      user: {
+        id: req.authenticatedUserId,
+      },
     },
     data: {
       name,
@@ -61,7 +63,6 @@ const handleShowCampaign = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-
   const query = req.query as QueryParams;
   const cid = query.cid;
 
@@ -81,7 +82,6 @@ const handleDeleteCampaign = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-
   sleep(0);
 
   const query = req.query as QueryParams;
