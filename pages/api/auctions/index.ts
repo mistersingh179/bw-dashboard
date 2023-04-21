@@ -12,18 +12,10 @@ type AuctionResponseData = {
 };
 
 const auctions: NextApiHandler<AuctionResponseData> = async (req, res) => {
-
-  if (req.method === "GET") {
-    await handleListAuctions(req, res);
-  } else if (req.method === "POST") {
-    await handleCreateAuction(req, res);
-  } else {
-    res.status(200).json({ message: "thanks" });
-  }
+  await handleCreateAuction(req, res);
 };
 
 const allowedMethodMiddleware: Middleware = allowedMethodMiddlewareFactory([
-  "GET",
   "POST",
 ]);
 
@@ -48,25 +40,6 @@ const handleCreateAuction = async (
   });
 
   res.status(201).json({ message: "creating an auction" });
-};
-
-const handleListAuctions = async (
-  req: NextApiRequest,
-  res: NextApiResponse
-) => {
-  const session = await getServerSession(req, res, authOptions);
-  if (!session) {
-    res.status(403).send("sorry access denied");
-    return;
-  }
-  console.log("session: ", session);
-  // const user = await prisma.user.findFirstOrThrow({where: {}});
-  // const auctions = prisma.auction.findMany({
-  //   where: {
-  //     user: { id: user.id },
-  //   },
-  // });
-  res.status(200).json({ message: "thanks" });
 };
 
 // export const config = {

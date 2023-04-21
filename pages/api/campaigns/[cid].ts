@@ -27,21 +27,14 @@ const allowedMethodMiddleware: Middleware = allowedMethodMiddlewareFactory([
   "DELETE",
 ]);
 
-export default withMiddleware(allowedMethodMiddleware)(campaign);
+export default withMiddleware(allowedMethodMiddleware, "auth")(campaign);
 
 const handleUpdateCampaign = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  const session = await getServerSession(req, res, authOptions);
-  if (!session) {
-    res.status(401).end();
-    return;
-  }
-
   const query = req.query as QueryParams;
   const cid = query.cid;
-  console.log("in edit campaign with: ", cid, session.user.id);
 
   const { name, start, end } = req.body;
   const startWithTime = formatISO(parseISO(start));
@@ -50,7 +43,7 @@ const handleUpdateCampaign = async (
   const campaign = await prisma.campaign.update({
     where: {
       id: cid,
-      userId: session.user.id,
+      userId: req.authenticatedUserId || "",
     },
     data: {
       name,
@@ -68,20 +61,14 @@ const handleShowCampaign = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  const session = await getServerSession(req, res, authOptions);
-  if (!session) {
-    res.status(401).end();
-    return;
-  }
 
   const query = req.query as QueryParams;
   const cid = query.cid;
-  console.log("in show campaign with: ", cid, session.user.id);
 
   const campaign = await prisma.campaign.findFirstOrThrow({
     where: {
       id: cid,
-      userId: session.user.id,
+      userId: req.authenticatedUserId || "",
     },
   });
 
@@ -94,22 +81,16 @@ const handleDeleteCampaign = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  const session = await getServerSession(req, res, authOptions);
-  if (!session) {
-    res.status(401).end();
-    return;
-  }
 
-  sleep(2000);
+  sleep(0);
 
   const query = req.query as QueryParams;
   const cid = query.cid;
-  console.log("in delete campaign with: ", cid, session.user.id);
 
   await prisma.campaign.delete({
     where: {
       id: cid,
-      userId: session.user.id,
+      userId: req.authenticatedUserId || "",
     },
   });
 

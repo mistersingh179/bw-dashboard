@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Middleware } from "next-api-middleware";
 
 const customHeadersMiddleware: Middleware = async (req, res, next) => {
+  console.log("in Custom Headers middleware")
   res.setHeader("x-powered-by", "brandweaver.ai");
   await next();
 };

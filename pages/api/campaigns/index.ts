@@ -18,36 +18,27 @@ const campaigns: NextApiHandler = async (req, res) => {
     await handleListCampaigns(req, res);
   } else if (req.method === "POST") {
     await handleCreateCampaign(req, res);
-  } else {
-    res.status(200).json({ message: "thanks" });
   }
 };
 
 const allowedMethodMiddleware: Middleware = allowedMethodMiddlewareFactory([
   "GET",
+  "POST",
 ]);
 
-export default withMiddleware(
-  allowedMethodMiddleware
-)(campaigns);
+export default withMiddleware(allowedMethodMiddleware, "auth")(campaigns);
 
 const handleCreateCampaign = async (
   req: NextApiRequest,
   res: NextApiResponse<Campaign>
 ) => {
-  const session = await getServerSession(req, res, authOptions);
-  if (!session) {
-    res.status(401).end();
-    return;
-  }
-  console.log(req.body);
   const { name, start, end } = req.body;
   const startWithTime = formatISO(parseISO(start));
   const endWithTime = formatISO(parseISO(end));
   await sleep(0);
   const campaign = await prisma.campaign.create({
     data: {
-      userId: session.user.id,
+      userId: req.authenticatedUserId || "",
       start: startWithTime,
       end: endWithTime,
       name,
@@ -60,20 +51,10 @@ const handleListCampaigns = async (
   req: NextApiRequest,
   res: NextApiResponse<Campaign[]>
 ) => {
-  const session = await getServerSession(req, res, authOptions);
-  if (!session) {
-    res.status(401).end();
-    return;
-  }
-  // await sleep(1000);
-  console.log("session: ", session);
-  const user = await prisma.user.findFirstOrThrow({
-    where: { id: session.user.id },
-  });
-  console.log("user: ", user);
+  await sleep(0);
   const campaigns = await prisma.campaign.findMany({
     where: {
-      user: { id: session.user.id },
+      user: { id: req.authenticatedUserId || "" },
     },
   });
   console.log("campaigns: ", campaigns);

@@ -18,16 +18,10 @@ export const sleep = async (ms: number) =>{
 
 const dashboard: NextApiHandler<DashboardResponseData> = async (req, res) => {
 
-  const session = await getServerSession(req, res, authOptions);
-  if(!session?.user){
-    res.status(403).end();
-    return;
-  }
-
   const auctionsCount = await prisma.auction.aggregate({
     _count: true,
     where: {
-      userId: session.user.id
+      userId: req.authenticatedUserId || ""
     },
   })
 
@@ -41,5 +35,5 @@ const allowedMethodMiddleware: Middleware = allowedMethodMiddlewareFactory([
 ]);
 
 export default withMiddleware(
-  allowedMethodMiddleware
+  allowedMethodMiddleware, "auth"
 )(dashboard);
