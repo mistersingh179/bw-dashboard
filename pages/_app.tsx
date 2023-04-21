@@ -1,12 +1,13 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import {SessionProvider, signIn, useSession} from "next-auth/react";
+import { SessionProvider, signIn, useSession } from "next-auth/react";
 import React, { PropsWithChildren, ReactNode } from "react";
 import { JSXElement } from "@typescript-eslint/types/dist/generated/ast-spec";
 import { ChakraProvider } from "@chakra-ui/react";
 import Head from "next/head";
 import Layout from "@/components/Layout";
 import AuthLoading from "@/components/AuthLoading";
+import { Analytics } from "@vercel/analytics/react";
 
 type ComponentWithAuth = React.ComponentType<any> & {
   auth?: boolean;
@@ -38,6 +39,7 @@ const App = ({
           <link rel="icon" href="/favicon.ico" />
         </Head>
       </SessionProvider>
+      <Analytics />
     </ChakraProvider>
   );
 };
@@ -51,8 +53,8 @@ const Auth = ({ children }: AuthProps): JSX.Element => {
   const { status } = useSession({
     required: true,
     onUnauthenticated() {
-      signIn("google")
-    }
+      signIn("google");
+    },
   });
 
   if (status === "loading") {
