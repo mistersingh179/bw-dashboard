@@ -7,7 +7,7 @@ import { Campaign } from "@prisma/client";
 import { sleep } from "@/pages/api/dashboard";
 import { QueryParams } from "@/types/QueryParams";
 import { formatISO, parseISO } from "date-fns";
-import withMiddleware from "@/middlewares/my-middleware";
+import withMiddleware from "@/middlewares/withMiddleware";
 import { Middleware } from "next-api-middleware";
 import allowedMethodMiddlewareFactory from "@/middlewares/allowedMethodMiddlewareFactory";
 

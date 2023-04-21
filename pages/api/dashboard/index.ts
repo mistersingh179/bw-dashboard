@@ -2,7 +2,7 @@ import { NextApiHandler } from "next";
 import prisma from "@/lib/prisma";
 import {getServerSession, User} from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import withMiddleware from "@/middlewares/my-middleware";
+import withMiddleware from "@/middlewares/withMiddleware";
 import {Middleware} from "next-api-middleware";
 import allowedMethodMiddlewareFactory from "@/middlewares/allowedMethodMiddlewareFactory";
 

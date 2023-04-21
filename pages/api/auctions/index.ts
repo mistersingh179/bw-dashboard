@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Middleware, use } from "next-api-middleware";
 import allowedMethodMiddlewareFactory from "@/middlewares/allowedMethodMiddlewareFactory";
-import withMiddleware from "@/middlewares/my-middleware";
+import withMiddleware from "@/middlewares/withMiddleware";
 
 type AuctionResponseData = {
   message: string;
@@ -19,7 +19,11 @@ const allowedMethodMiddleware: Middleware = allowedMethodMiddlewareFactory([
   "POST",
 ]);
 
-export default withMiddleware("cors", allowedMethodMiddleware)(auctions);
+export default withMiddleware(
+  "cors",
+  allowedMethodMiddleware,
+  "onlyApproved"
+)(auctions);
 
 const handleCreateAuction = async (
   req: NextApiRequest,

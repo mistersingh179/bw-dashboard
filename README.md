@@ -50,7 +50,7 @@ drop database bw;
 - value can be taken from the browser
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
-## Pending / TODO
+## Pending things
 - add types for input to campaign
 - refactor so when api fails, it returns error rather than hanging. e.g. create campaign fails
 - refactor api to handle unsupported methods
@@ -59,6 +59,10 @@ drop database bw;
 - think and refactor if should dates be kept as dates over string, and if dates can be over datetime in db
 - redirect / toast after create or edit
 - add middleware for sleep
+
+## Pending Feature's
+- deploy prisma client
+
 
 ## extension todo
 - multi select drop down list of advertiser.
