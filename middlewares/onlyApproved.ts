@@ -16,7 +16,7 @@ const onlyApproved: Middleware = async (req, res, next) => {
     next();
   }catch(err){
     console.log('error when trying to find this user. silently failing');
-    res.send(204);
+    res.status(204).end();
   }
 };
 
