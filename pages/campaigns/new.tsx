@@ -1,31 +1,24 @@
-import React, {useRef} from "react";
-import {Box, Heading, ToastId, useToast} from "@chakra-ui/react";
+import React, { useRef } from "react";
+import { Box, Heading, ToastId, useToast } from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
 import { Link } from "@chakra-ui/next-js";
 import { useSWRConfig } from "swr";
 import CampaignForm from "@/components/CampaignForm";
 import { CampaignType } from "@/types/campaign-types";
+import useTxToast from "@/hooks/useTxToast";
 
 const NewCampaign: FCWithAuth = () => {
   const { mutate } = useSWRConfig();
-  const toast = useToast();
-  const toastIdRef = useRef<ToastId>();
+  const { success, failure } = useTxToast();
 
   const submitHandler = async (campaign: CampaignType) => {
     const { start, end, name } = campaign;
     try {
-      console.log('toastIdRef.current: ', toastIdRef.current)
       await mutate("/api/campaigns", createCampaign.bind(this, campaign), {
         optimisticData: (currentData: CampaignType[]) => {
           currentData = currentData ?? [];
           console.log("optimistic Data function called with: ", currentData);
-          toastIdRef.current = toast({
-            title: "Campaign",
-            description: "Created successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          });
+          success("Campaign", "Created successfully");
           return [
             ...currentData,
             { id: Date(), start, end, name, optimisticValue: true },
@@ -35,17 +28,7 @@ const NewCampaign: FCWithAuth = () => {
       });
     } catch (err) {
       console.log("campaign creation mutation failed: ", err);
-      if (toastIdRef.current) {
-        console.log('closing');
-        toast.close(toastIdRef.current)
-      }
-      toast({
-        title: "Campaign",
-        description: "Rolling back as campaign creation failed!",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      failure("Campaign", "Rolling back as campaign creation failed!");
     }
   };
 

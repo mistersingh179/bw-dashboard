@@ -1,0 +1,32 @@
+import { ToastId, useToast } from "@chakra-ui/react";
+import { useRef } from "react";
+
+const useTxToast = () => {
+  const toast = useToast();
+  const toastIdRef = useRef<ToastId>();
+  const success = (title: string, description: string) => {
+    toastIdRef.current = toast({
+      title,
+      description,
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+  const failure = (title: string, description: string) => {
+    if (toastIdRef.current) {
+      toast.close(toastIdRef.current);
+    }
+    toast({
+      title,
+      description,
+      status: "error",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  return { success, failure };
+};
+
+export default useTxToast;

@@ -1,19 +1,16 @@
-import React, {useRef} from "react";
+import React, { useRef } from "react";
 import { useRouter } from "next/router";
 
-import {
-  Box,
-  Heading,
-  Spinner, ToastId, useToast,
-} from "@chakra-ui/react";
+import { Box, Heading, Spinner, ToastId, useToast } from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
 import { Link, Image } from "@chakra-ui/next-js";
-import useSWR, {mutate, useSWRConfig} from "swr";
+import useSWR, { mutate, useSWRConfig } from "swr";
 import { QueryParams } from "@/types/QueryParams";
 import fetcher from "@/helpers/fetcher";
-import {formatISO, parseISO} from "date-fns";
+import { formatISO, parseISO } from "date-fns";
 import CampaignForm from "@/components/CampaignForm";
-import {CampaignType} from "@/types/campaign-types";
+import { CampaignType } from "@/types/campaign-types";
+import useTxToast from "@/hooks/useTxToast";
 
 const now = new Date();
 
@@ -29,50 +26,30 @@ const LoadingBox = () => {
   );
 };
 
-const CampaignBox = (props: {campaign: CampaignType}) => {
-  const toast = useToast();
-  const toastIdRef = useRef<ToastId>();
-  const {campaign} = props;
-  console.log("in campaignBox with: ", campaign)
+const CampaignBox = (props: { campaign: CampaignType }) => {
+  const { success, failure } = useTxToast();
+  const { campaign } = props;
+  console.log("in campaignBox with: ", campaign);
 
   const submitHandler = async (campaign: CampaignType) => {
-    const {start, end, name, id} = campaign;
+    const { start, end, name, id } = campaign;
     console.log("in submit of edit: ", campaign);
 
-    try{
+    try {
       await mutate(`/api/campaigns`, editCampaign.bind(this, campaign), {
         optimisticData: (currentData: CampaignType[]) => {
-          console.log("optimistic Data funcion called with: ", currentData)
-          const updatedData = currentData.filter(x => x.id != id);
-          toastIdRef.current = toast({
-            title: "Campaign",
-            description: "Edited successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          });
-          return [
-            ...updatedData,
-            {...campaign, optimisticValue: true}
-          ]
+          console.log("optimistic Data funcion called with: ", currentData);
+          const updatedData = currentData.filter((x) => x.id != id);
+          success("Campaign", "Edited successfullty");
+          return [...updatedData, { ...campaign, optimisticValue: true }];
         },
-        populateCache: false
+        populateCache: false,
       });
-    }catch(err){
+    } catch (err) {
       console.log("the campaign edit mutation failed");
-      if (toastIdRef.current) {
-        console.log('closing');
-        toast.close(toastIdRef.current)
-      }
-      toast({
-        title: "Campaign",
-        description: "Rolling back as campaign edit failed!",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      failure("Campaign", "Rolling back as campaign edit failed!");
     }
-  }
+  };
 
   const editCampaign = async (campaign: CampaignType) => {
     console.log("in edit with: ", campaign);
@@ -83,20 +60,20 @@ const CampaignBox = (props: {campaign: CampaignType}) => {
         "Content-Type": "application/json",
       },
     });
-    if(res.status>=400){
+    if (res.status >= 400) {
       throw new Error("unable to edit campaign");
     }
     const data = await res.json();
     console.log("got updated campaign: ", data);
     return data;
-  }
+  };
 
-  campaign.start = formatISO(parseISO(campaign.start) , { representation: "date" });
-  campaign.end = formatISO(parseISO(campaign.end) , { representation: "date" });
+  campaign.start = formatISO(parseISO(campaign.start), {
+    representation: "date",
+  });
+  campaign.end = formatISO(parseISO(campaign.end), { representation: "date" });
 
-  return (
-    <CampaignForm campaign={campaign} submitHandler={submitHandler} />
-  );
+  return <CampaignForm campaign={campaign} submitHandler={submitHandler} />;
 };
 
 const EditCampaign: FCWithAuth = () => {
@@ -104,10 +81,11 @@ const EditCampaign: FCWithAuth = () => {
 
   const { cid } = router.query as QueryParams;
 
-  const { data: campaign, error, isLoading } = useSWR<CampaignType>(
-    `/api/campaigns/${cid}`,
-    fetcher
-  );
+  const {
+    data: campaign,
+    error,
+    isLoading,
+  } = useSWR<CampaignType>(`/api/campaigns/${cid}`, fetcher);
 
   return (
     <Box>
@@ -116,7 +94,9 @@ const EditCampaign: FCWithAuth = () => {
       {error && <ErrorBox />}
       {campaign && <CampaignBox campaign={campaign} />}
       <Box mt={5}>
-        <Link href={'/campaigns'} colorScheme={'green'}>Go to All Campaigns</Link>
+        <Link href={"/campaigns"} colorScheme={"green"}>
+          Go to All Campaigns
+        </Link>
       </Box>
     </Box>
   );

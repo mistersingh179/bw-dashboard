@@ -52,8 +52,7 @@ drop database bw;
 
 ## Pending backlog
 
-- refactor loading, disabled, enabled & toast after create or edit
-- refactor toast calls to reusable code
+- 
 - login error: `Try signing in with a different account`
 - refactor on edit, we need to refetch show as well
 
