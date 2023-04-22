@@ -2,7 +2,7 @@ import { Middleware } from "next-api-middleware";
 import prisma from "@/lib/prisma";
 import exp from "constants";
 
-const onlyApproved: Middleware = async (req, res, next) => {
+const onlyFounders: Middleware = async (req, res, next) => {
   console.log("in Only Founder Middleware with: ", req.authenticatedUserId);
   try{
     await prisma.user.findFirstOrThrow({
@@ -20,4 +20,4 @@ const onlyApproved: Middleware = async (req, res, next) => {
   }
 };
 
-export default onlyApproved
+export default onlyFounders

@@ -59,7 +59,8 @@ drop database bw;
 - think and refactor if should dates be kept as dates over string, and if dates can be over datetime in db
 - redirect / toast after create or edit
 - add middleware for sleep
-
+- login error: `Try signing in with a different account`
+- 
 ## Pending Feature's
 - deploy prisma client
 

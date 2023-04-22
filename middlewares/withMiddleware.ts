@@ -5,7 +5,7 @@ import corsMiddleware from "@/middlewares/corsMiddleware";
 import captureErrors from "@/middlewares/caputreErrorMiddleware";
 import authCheckMiddleware from "@/middlewares/authCheckMiddleware";
 import requestIdMiddleware from "@/middlewares/requestIdMiddleware";
-import onlyApproved from "@/middlewares/onlyApproved";
+import onlyFounders from "@/middlewares/onlyFounders";
 
 const defaults: string[] = ["reqId", "logging", "headers", "errors"];
 
@@ -16,7 +16,7 @@ const middleware: LabeledMiddleware = {
   errors: captureErrors,
   auth: authCheckMiddleware,
   reqId: requestIdMiddleware,
-  onlyApproved: onlyApproved,
+  onlyFounders: onlyFounders,
 };
 
 const withMiddleware = label(middleware, defaults);
