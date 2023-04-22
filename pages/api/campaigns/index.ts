@@ -36,6 +36,8 @@ const handleCreateCampaign = async (
   const startWithTime = formatISO(parseISO(start));
   const endWithTime = formatISO(parseISO(end));
   await sleep(0);
+  // throw new Error("i aint working");
+  // return;
 
   const campaign = await prisma.campaign.create({
     data: {

@@ -60,7 +60,6 @@ const Campaigns: FCWithAuth = () => {
     "/api/campaigns",
     fetcher
   );
-  console.log(isLoading, data);
   const deleteCampaign = async (cid: string) => {
     const res = await fetch(`/api/campaigns/${cid}`, {
       method: "DELETE",

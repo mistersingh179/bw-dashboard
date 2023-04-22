@@ -1,27 +1,52 @@
-import React from "react";
-import { Box, Heading } from "@chakra-ui/react";
+import React, {useRef} from "react";
+import {Box, Heading, ToastId, useToast} from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
-import { Link, Image } from "@chakra-ui/next-js";
+import { Link } from "@chakra-ui/next-js";
 import { useSWRConfig } from "swr";
 import CampaignForm from "@/components/CampaignForm";
 import { CampaignType } from "@/types/campaign-types";
 
 const NewCampaign: FCWithAuth = () => {
   const { mutate } = useSWRConfig();
+  const toast = useToast();
+  const toastIdRef = useRef<ToastId>();
 
   const submitHandler = async (campaign: CampaignType) => {
     const { start, end, name } = campaign;
-
-    await mutate("/api/campaigns", createCampaign.bind(this, campaign), {
-      optimisticData: (currentData: CampaignType[]) => {
-        console.log("optimistic Data function called with: ", currentData);
-        return [
-          ...currentData,
-          { id: Date(), start, end, name, optimisticValue: true },
-        ];
-      },
-      populateCache: false,
-    });
+    try {
+      console.log('toastIdRef.current: ', toastIdRef.current)
+      await mutate("/api/campaigns", createCampaign.bind(this, campaign), {
+        optimisticData: (currentData: CampaignType[]) => {
+          currentData = currentData ?? [];
+          console.log("optimistic Data function called with: ", currentData);
+          toastIdRef.current = toast({
+            title: "Campaign",
+            description: "Created successfully",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+          return [
+            ...currentData,
+            { id: Date(), start, end, name, optimisticValue: true },
+          ];
+        },
+        populateCache: false,
+      });
+    } catch (err) {
+      console.log("campaign creation mutation failed: ", err);
+      if (toastIdRef.current) {
+        console.log('closing');
+        toast.close(toastIdRef.current)
+      }
+      toast({
+        title: "Campaign",
+        description: "Rolling back as campaign creation failed!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   const createCampaign = async (campaign: CampaignType) => {
@@ -32,7 +57,7 @@ const NewCampaign: FCWithAuth = () => {
       end,
       name,
     };
-    console.log(payload);
+    console.log("create payload: ", payload);
     const res = await fetch("/api/campaigns", {
       method: "POST",
       body: JSON.stringify(payload),
@@ -40,9 +65,14 @@ const NewCampaign: FCWithAuth = () => {
         "Content-Type": "application/json",
       },
     });
-    const data = await res.json();
-    console.log("got new campaign: ", data);
-    return data;
+    console.log("res result: ", res.status);
+    if (res.status >= 400) {
+      throw new Error("failed to fetch");
+    } else {
+      const data = await res.json();
+      console.log("got new campaign: ", data);
+      return data;
+    }
   };
 
   return (

@@ -1,10 +1,10 @@
-import React from "react";
+import React, {useRef} from "react";
 import { useRouter } from "next/router";
 
 import {
   Box,
   Heading,
-  Spinner,
+  Spinner, ToastId, useToast,
 } from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
 import { Link, Image } from "@chakra-ui/next-js";
@@ -30,6 +30,8 @@ const LoadingBox = () => {
 };
 
 const CampaignBox = (props: {campaign: CampaignType}) => {
+  const toast = useToast();
+  const toastIdRef = useRef<ToastId>();
   const {campaign} = props;
   console.log("in campaignBox with: ", campaign)
 
@@ -37,17 +39,39 @@ const CampaignBox = (props: {campaign: CampaignType}) => {
     const {start, end, name, id} = campaign;
     console.log("in submit of edit: ", campaign);
 
-    await mutate(`/api/campaigns`, editCampaign.bind(this, campaign), {
-      optimisticData: (currentData: CampaignType[]) => {
-        console.log("optimistic Data funcion called with: ", currentData)
-        const updatedData = currentData.filter(x => x.id != id);
-        return [
-          ...updatedData,
-          {...campaign, optimisticValue: true}
-        ]
-      },
-      populateCache: false
-    });
+    try{
+      await mutate(`/api/campaigns`, editCampaign.bind(this, campaign), {
+        optimisticData: (currentData: CampaignType[]) => {
+          console.log("optimistic Data funcion called with: ", currentData)
+          const updatedData = currentData.filter(x => x.id != id);
+          toastIdRef.current = toast({
+            title: "Campaign",
+            description: "Edited successfully",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+          return [
+            ...updatedData,
+            {...campaign, optimisticValue: true}
+          ]
+        },
+        populateCache: false
+      });
+    }catch(err){
+      console.log("the campaign edit mutation failed");
+      if (toastIdRef.current) {
+        console.log('closing');
+        toast.close(toastIdRef.current)
+      }
+      toast({
+        title: "Campaign",
+        description: "Rolling back as campaign edit failed!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   }
 
   const editCampaign = async (campaign: CampaignType) => {
@@ -59,6 +83,9 @@ const CampaignBox = (props: {campaign: CampaignType}) => {
         "Content-Type": "application/json",
       },
     });
+    if(res.status>=400){
+      throw new Error("unable to edit campaign");
+    }
     const data = await res.json();
     console.log("got updated campaign: ", data);
     return data;
@@ -74,6 +101,7 @@ const CampaignBox = (props: {campaign: CampaignType}) => {
 
 const EditCampaign: FCWithAuth = () => {
   const router = useRouter();
+
   const { cid } = router.query as QueryParams;
 
   const { data: campaign, error, isLoading } = useSWR<CampaignType>(

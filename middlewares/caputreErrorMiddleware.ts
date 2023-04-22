@@ -6,10 +6,8 @@ const captureErrors: Middleware = async (req, res, next) => {
   try {
     await next();
   } catch (err) {
-    res.status(500);
-    console.log((err as Error)?.message)
-    res.json({ error: err});
+    res.status(500).json({ message: (err as Error)?.message });
   }
 };
 
-export default captureErrors
+export default captureErrors;

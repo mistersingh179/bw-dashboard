@@ -40,6 +40,9 @@ const handleUpdateCampaign = async (
   const startWithTime = formatISO(parseISO(start));
   const endWithTime = formatISO(parseISO(end));
 
+  // await sleep(500);
+  // throw new Error("s")
+
   const campaign = await prisma.campaign.update({
     where: {
       id: cid,
