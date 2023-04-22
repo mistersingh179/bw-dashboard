@@ -49,6 +49,7 @@ const CampaignBox = (props: { campaign: CampaignType }) => {
       console.log("the campaign edit mutation failed");
       failure("Campaign", "Rolling back as campaign edit failed!");
     }
+    await mutate(`/api/campaigns/${id}`, campaign)
   };
 
   const editCampaign = async (campaign: CampaignType) => {

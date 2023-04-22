@@ -52,10 +52,6 @@ drop database bw;
 
 ## Pending backlog
 
-- 
-- login error: `Try signing in with a different account`
-- refactor on edit, we need to refetch show as well
-
 ## Pending nice to do
 - make edit & create use separate forms rather than sharing one
 - maintain cache of show, edit, create, separate from index, they 
