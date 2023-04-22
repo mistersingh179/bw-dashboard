@@ -1,6 +1,5 @@
 import {NextApiHandler, NextApiRequest, NextApiResponse} from "next";
 import prisma from "@/lib/prisma";
-import {sleep} from "@/pages/api/dashboard";
 import {QueryParams} from "@/types/QueryParams";
 import {formatISO, parseISO} from "date-fns";
 import withMiddleware from "@/middlewares/withMiddleware";
@@ -28,7 +27,6 @@ const handleUpdateCampaign = async (
   const startWithTime = formatISO(parseISO(start));
   const endWithTime = formatISO(parseISO(end));
 
-  // await sleep(500);
   // throw new Error("s")
 
   const campaign = await prisma.campaign.update({
@@ -73,7 +71,6 @@ const handleDeleteCampaign = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  sleep(0);
 
   const query = req.query as QueryParams;
   const cid = query.cid;

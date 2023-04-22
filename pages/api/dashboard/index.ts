@@ -7,12 +7,6 @@ type DashboardResponseData = {
   auctionsCount: Number;
 };
 
-export const sleep = async (ms: number) =>{
-  return new Promise((resolve, reject) => {
-    setTimeout(resolve, ms);
-  })
-}
-
 const dashboard: NextApiHandler<DashboardResponseData> = async (req, res) => {
 
   const auctionsCount = await prisma.auction.aggregate({

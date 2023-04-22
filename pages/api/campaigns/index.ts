@@ -1,8 +1,7 @@
-import {NextApiHandler, NextApiRequest, NextApiResponse} from "next";
+import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
-import {Campaign} from "@prisma/client";
-import {formatISO, parseISO} from "date-fns";
-import {sleep} from "@/pages/api/dashboard";
+import { Campaign } from "@prisma/client";
+import { formatISO, parseISO } from "date-fns";
 import withMiddleware from "@/middlewares/withMiddleware";
 
 type AuctionResponseData = {
@@ -26,7 +25,6 @@ const handleCreateCampaign = async (
   const { name, start, end } = req.body;
   const startWithTime = formatISO(parseISO(start));
   const endWithTime = formatISO(parseISO(end));
-  await sleep(0);
   // throw new Error("i aint working");
   // return;
 
@@ -34,8 +32,8 @@ const handleCreateCampaign = async (
     data: {
       user: {
         connect: {
-          id: req.authenticatedUserId
-        }
+          id: req.authenticatedUserId,
+        },
       },
       start: startWithTime,
       end: endWithTime,
@@ -49,7 +47,6 @@ const handleListCampaigns = async (
   req: NextApiRequest,
   res: NextApiResponse<Campaign[]>
 ) => {
-  await sleep(0);
   const campaigns = await prisma.user
     .findFirstOrThrow({
       where: {

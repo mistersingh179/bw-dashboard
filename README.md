@@ -52,12 +52,9 @@ drop database bw;
 
 ## Pending backlog
 
-- move delay in ajax calls out to common place
-- think and refactor if should dates be kept as dates over string, and if dates can be over datetime in db
-- loading, disabled, enabled & toast after create or edit
-- add middleware for sleep
-- login error: `Try signing in with a different account`
+- refactor loading, disabled, enabled & toast after create or edit
 - refactor toast calls to reusable code
+- login error: `Try signing in with a different account`
 - refactor on edit, we need to refetch show as well
 
 ## Pending nice to do
