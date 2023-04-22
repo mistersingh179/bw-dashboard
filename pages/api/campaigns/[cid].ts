@@ -1,15 +1,9 @@
-import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
-import campaigns from "@/pages/api/campaigns/index";
+import {NextApiHandler, NextApiRequest, NextApiResponse} from "next";
 import prisma from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { Campaign } from "@prisma/client";
-import { sleep } from "@/pages/api/dashboard";
-import { QueryParams } from "@/types/QueryParams";
-import { formatISO, parseISO } from "date-fns";
+import {sleep} from "@/pages/api/dashboard";
+import {QueryParams} from "@/types/QueryParams";
+import {formatISO, parseISO} from "date-fns";
 import withMiddleware from "@/middlewares/withMiddleware";
-import { Middleware } from "next-api-middleware";
-import allowedMethodMiddlewareFactory from "@/middlewares/allowedMethodMiddlewareFactory";
 
 const campaign: NextApiHandler = async (req, res) => {
   if (req.method === "GET") {
@@ -21,13 +15,7 @@ const campaign: NextApiHandler = async (req, res) => {
   }
 };
 
-const allowedMethodMiddleware: Middleware = allowedMethodMiddlewareFactory([
-  "GET",
-  "PUT",
-  "DELETE",
-]);
-
-export default withMiddleware(allowedMethodMiddleware, "auth")(campaign);
+export default withMiddleware('getPutDeleteOnly', "auth")(campaign);
 
 const handleUpdateCampaign = async (
   req: NextApiRequest,

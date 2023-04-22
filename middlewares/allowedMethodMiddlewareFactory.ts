@@ -1,8 +1,13 @@
-import { Middleware } from "next-api-middleware";
+import {Middleware} from "next-api-middleware";
 
 const allowedMethodMiddlewareFactory = (methodNames: string[]): Middleware => {
   return async (req, res, next) => {
-    console.log("in Allowed Method middleware with: ", req.method , " and we allow: ", methodNames);
+    console.log(
+      "in Allowed Method middleware with: ",
+      req.method,
+      " and we allow: ",
+      methodNames
+    );
     if (req.method && methodNames.includes(req.method)) {
       await next();
     } else {
@@ -11,5 +16,24 @@ const allowedMethodMiddlewareFactory = (methodNames: string[]): Middleware => {
     }
   };
 };
+
+export const getPostOnlyMethodMiddleware = allowedMethodMiddlewareFactory([
+  "GET",
+  "POST",
+]);
+
+export const getPutDeleteOnlyMethodMiddleware = allowedMethodMiddlewareFactory([
+  "GET",
+  "PUT",
+  "POST",
+]);
+
+export const getOnlyMethodMiddleware = allowedMethodMiddlewareFactory([
+  "GET",
+]);
+
+export const postOnlyMethodMiddleware = allowedMethodMiddlewareFactory([
+  "POST",
+]);
 
 export default allowedMethodMiddlewareFactory;

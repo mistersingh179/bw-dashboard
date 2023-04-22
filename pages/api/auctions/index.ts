@@ -1,10 +1,5 @@
-import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
-import { NextRequest } from "next/server";
+import {NextApiHandler, NextApiRequest, NextApiResponse} from "next";
 import prisma from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { Middleware, use } from "next-api-middleware";
-import allowedMethodMiddlewareFactory from "@/middlewares/allowedMethodMiddlewareFactory";
 import withMiddleware from "@/middlewares/withMiddleware";
 
 type AuctionResponseData = {
@@ -15,11 +10,7 @@ const auctions: NextApiHandler<AuctionResponseData> = async (req, res) => {
   await handleCreateAuction(req, res);
 };
 
-const allowedMethodMiddleware: Middleware = allowedMethodMiddlewareFactory([
-  "POST",
-]);
-
-export default withMiddleware("cors", allowedMethodMiddleware)(auctions);
+export default withMiddleware("cors", "postOnly")(auctions);
 
 const handleCreateAuction = async (
   req: NextApiRequest,

@@ -1,10 +1,7 @@
-import { NextApiHandler } from "next";
+import {NextApiHandler} from "next";
 import prisma from "@/lib/prisma";
-import {getServerSession, User} from "next-auth";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import withMiddleware from "@/middlewares/withMiddleware";
-import {Middleware} from "next-api-middleware";
-import allowedMethodMiddlewareFactory from "@/middlewares/allowedMethodMiddlewareFactory";
+
 
 type DashboardResponseData = {
   auctionsCount: Number;
@@ -30,10 +27,6 @@ const dashboard: NextApiHandler<DashboardResponseData> = async (req, res) => {
   res.status(200).json({ auctionsCount: auctionsCount._count });
 };
 
-const allowedMethodMiddleware: Middleware = allowedMethodMiddlewareFactory([
-  "GET",
-]);
-
 export default withMiddleware(
-  allowedMethodMiddleware, "auth"
+  "getOnly", "auth"
 )(dashboard);

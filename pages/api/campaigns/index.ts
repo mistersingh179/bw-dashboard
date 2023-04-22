@@ -1,12 +1,8 @@
-import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
+import {NextApiHandler, NextApiRequest, NextApiResponse} from "next";
 import prisma from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { Campaign, PrismaClient } from "@prisma/client";
-import { formatISO, parseISO } from "date-fns";
-import { sleep } from "@/pages/api/dashboard";
-import { Middleware } from "next-api-middleware";
-import allowedMethodMiddlewareFactory from "@/middlewares/allowedMethodMiddlewareFactory";
+import {Campaign} from "@prisma/client";
+import {formatISO, parseISO} from "date-fns";
+import {sleep} from "@/pages/api/dashboard";
 import withMiddleware from "@/middlewares/withMiddleware";
 
 type AuctionResponseData = {
@@ -21,12 +17,7 @@ const campaigns: NextApiHandler = async (req, res) => {
   }
 };
 
-const allowedMethodMiddleware: Middleware = allowedMethodMiddlewareFactory([
-  "GET",
-  "POST",
-]);
-
-export default withMiddleware(allowedMethodMiddleware, "auth")(campaigns);
+export default withMiddleware("getPostOnly", "auth")(campaigns);
 
 const handleCreateCampaign = async (
   req: NextApiRequest,

@@ -51,8 +51,7 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
-- refactor so when api fails, it returns error rather than hanging. e.g. create campaign fails
-- refactor api to handle unsupported methods
+
 - refactor types to a common place
 - move delay in ajax calls out to common place
 - think and refactor if should dates be kept as dates over string, and if dates can be over datetime in db
@@ -61,10 +60,11 @@ drop database bw;
 - login error: `Try signing in with a different account`
 - refactor toast calls to reusable code
 - refactor on edit, we need to refetch show as well
-- 
+
 ## Pending nice to do
 - make edit & create use separate forms rather than sharing one
 - maintain cache of show, edit, create, separate from index, they 
+- make index for to manage all middleware exports
 
 ## Pending Feature's
 - deploy prisma client
