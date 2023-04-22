@@ -1,12 +1,17 @@
-import {Button, FormControl, FormHelperText, FormLabel, Input, VStack,} from "@chakra-ui/react";
-import React, {useState} from "react";
-import {addDays, formatISO} from "date-fns";
-import {CampaignType} from "@/types/campaign-types";
+import {
+  Button,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Input,
+  VStack,
+} from "@chakra-ui/react";
+import React, { useState } from "react";
+import { addDays, formatISO } from "date-fns";
+import { CampaignType } from "@/types/campaign-types";
+import { InputElementChangeEvent } from "@/types/eventTypes";
 
 const now = new Date();
-
-type InputEvent = React.ChangeEvent<HTMLInputElement>;
-type ButtonEvent = React.MouseEvent<HTMLButtonElement>;
 
 type CampaignFormProps = {
   submitHandler: (input: CampaignType) => void;
@@ -32,7 +37,7 @@ const CampaignForm = (props: CampaignFormProps) => {
     submitHandler(inputs);
   };
 
-  const setInput = (inputName: string, evt: InputEvent) => {
+  const setInput = (inputName: string, evt: InputElementChangeEvent) => {
     console.log(inputName, evt.target.value);
     setInputs((oldInputs) => ({
       ...oldInputs,

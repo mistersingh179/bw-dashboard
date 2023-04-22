@@ -52,7 +52,6 @@ drop database bw;
 
 ## Pending backlog
 
-- refactor types to a common place
 - move delay in ajax calls out to common place
 - think and refactor if should dates be kept as dates over string, and if dates can be over datetime in db
 - loading, disabled, enabled & toast after create or edit
@@ -68,7 +67,6 @@ drop database bw;
 
 ## Pending Feature's
 - deploy prisma client
-
 
 ## extension todo
 - multi select drop down list of advertiser.
