@@ -50,17 +50,20 @@ drop database bw;
 - value can be taken from the browser
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
-## Pending things
+## Pending backlog
 - add types for input to campaign
 - refactor so when api fails, it returns error rather than hanging. e.g. create campaign fails
 - refactor api to handle unsupported methods
 - refactor types to a common place
 - move delay in ajax calls out to common place
 - think and refactor if should dates be kept as dates over string, and if dates can be over datetime in db
-- redirect / toast after create or edit
+- loading, disabled, enabled & toast after create or edit
 - add middleware for sleep
 - login error: `Try signing in with a different account`
-- 
+
+## Pending nice to do
+- make edit & create use separate forms rather than sharing one
+
 ## Pending Feature's
 - deploy prisma client
 

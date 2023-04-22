@@ -1,61 +1,31 @@
-import React, { useState } from "react";
-import { useSession } from "next-auth/react";
-import {
-  Alert,
-  AlertIcon,
-  Box,
-  Button,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Heading,
-  Input,
-  Table,
-  TableCaption,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Tfoot,
-  Th,
-  Thead,
-  Tr,
-  VStack,
-} from "@chakra-ui/react";
-import Settings from "@/pages/settings";
+import React from "react";
+import { Box, Heading } from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
 import { Link, Image } from "@chakra-ui/next-js";
-import { addDays, formatISO } from "date-fns";
 import { useSWRConfig } from "swr";
-import { Campaign as CampaignPrismaType } from "@prisma/client";
 import CampaignForm from "@/components/CampaignForm";
-import AnyObject from "@/types/AnyObject";
-
-type InputEvent = React.ChangeEvent<HTMLInputElement>;
-type ButtonEvent = React.MouseEvent<HTMLButtonElement>;
-
-const now = new Date();
+import { CampaignType } from "@/types/campaign-types";
 
 const NewCampaign: FCWithAuth = () => {
   const { mutate } = useSWRConfig();
 
-  const submitHandler = async (campaign: AnyObject) => {
-    const {start, end, name} = campaign;
+  const submitHandler = async (campaign: CampaignType) => {
+    const { start, end, name } = campaign;
 
     await mutate("/api/campaigns", createCampaign.bind(this, campaign), {
-      optimisticData: (currentData: CampaignPrismaType[]) => {
-        console.log("optimistic Data funcion called with: ", currentData)
+      optimisticData: (currentData: CampaignType[]) => {
+        console.log("optimistic Data function called with: ", currentData);
         return [
           ...currentData,
-          {id: Date(), start, end, name, optimisticValue: true}
-        ]
+          { id: Date(), start, end, name, optimisticValue: true },
+        ];
       },
-      populateCache: false
+      populateCache: false,
     });
-  }
+  };
 
-  const createCampaign = async (campaign: AnyObject) => {
-    const {start, end, name} = campaign;
+  const createCampaign = async (campaign: CampaignType) => {
+    const { start, end, name } = campaign;
 
     const payload = {
       start,
@@ -80,7 +50,9 @@ const NewCampaign: FCWithAuth = () => {
       <Heading my={5}>Create Campaign</Heading>
       <CampaignForm submitHandler={submitHandler} />
       <Box mt={5}>
-        <Link href={'/campaigns'} colorScheme={'green'}>Go to All Campaigns</Link>
+        <Link href={"/campaigns"} colorScheme={"green"}>
+          Go to All Campaigns
+        </Link>
       </Box>
     </Box>
   );

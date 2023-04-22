@@ -6,29 +6,19 @@ import {
   Input,
   VStack,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { addDays, formatISO } from "date-fns";
-import AnyObject from "@/types/AnyObject";
-import campaign from "@/pages/api/campaigns/[cid]";
+import { CampaignType } from "@/types/campaign-types";
 
 const now = new Date();
 
-export type Campaign = {
-  id: string;
-  name: string;
-  start: string;
-  end: string;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: string;
-};
-
-type CampaignFormProps = {
-  submitHandler: (input: AnyObject) => void;
-  campaign?: Campaign;
-};
 type InputEvent = React.ChangeEvent<HTMLInputElement>;
 type ButtonEvent = React.MouseEvent<HTMLButtonElement>;
+
+type CampaignFormProps = {
+  submitHandler: (input: CampaignType) => void;
+  campaign?: CampaignType;
+};
 
 const CampaignForm = (props: CampaignFormProps) => {
   const { campaign, submitHandler } = props;

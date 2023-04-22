@@ -1,43 +1,28 @@
 import React from "react";
-import { useSession } from "next-auth/react";
 import {
-  Alert,
-  AlertIcon,
   Box,
   Button,
   Heading,
   HStack,
-  Skeleton,
-  SkeletonText,
   Spacer,
   Spinner,
-  Stack,
   Table,
   TableCaption,
   TableContainer,
   Tbody,
   Td,
-  Text,
-  Tfoot,
   Th,
   Thead,
   Tr,
-  VStack,
 } from "@chakra-ui/react";
-import Settings from "@/pages/settings";
 import FCWithAuth from "@/types/FCWithAuth";
-import { Link, Image } from "@chakra-ui/next-js";
-import NewCampaign from "@/pages/campaigns/new";
-import useSWR, { mutate } from "swr";
-import { Campaign as CampaignPrismaType } from "@prisma/client";
-import { format, parseISO } from "date-fns";
+import {Link} from "@chakra-ui/next-js";
+import useSWR, {mutate} from "swr";
+import {format, parseISO} from "date-fns";
 import fetcher from "@/helpers/fetcher";
-import { useRouter } from "next/router";
-import { AddIcon } from "@chakra-ui/icons";
-
-type CampaignWithOptimisticValue = CampaignPrismaType & {
-  optimisticValue: boolean;
-};
+import {useRouter} from "next/router";
+import {AddIcon} from "@chakra-ui/icons";
+import {CampaignType} from "@/types/campaign-types";
 
 const ErrorRow = () => {
   return (
@@ -71,7 +56,7 @@ const LoadingDataRow = () => {
 
 const Campaigns: FCWithAuth = () => {
   const router = useRouter();
-  const { data, error, isLoading } = useSWR<CampaignWithOptimisticValue[]>(
+  const { data, error, isLoading } = useSWR<CampaignType[]>(
     "/api/campaigns",
     fetcher
   );
@@ -83,7 +68,7 @@ const Campaigns: FCWithAuth = () => {
   };
   const deleteHandler = async (cid: string) => {
     const result = mutate("/api/campaigns", deleteCampaign.bind(this, cid), {
-      optimisticData: (currentData: CampaignWithOptimisticValue[]) => {
+      optimisticData: (currentData: CampaignType[]) => {
         return currentData.filter((x) => x.id != cid);
       },
       populateCache: false,
@@ -129,7 +114,7 @@ const Campaigns: FCWithAuth = () => {
                       <Button
                         isDisabled={!!x.optimisticValue}
                         size={"sm"}
-                        onClick={deleteHandler.bind(this, x.id)}
+                        onClick={deleteHandler.bind(this, x.id as string)}
                       >
                         Delete
                       </Button>

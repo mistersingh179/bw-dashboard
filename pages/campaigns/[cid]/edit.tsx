@@ -1,42 +1,19 @@
-import React, { ReactNode, useState } from "react";
-import { useSession } from "next-auth/react";
+import React from "react";
 import { useRouter } from "next/router";
 
 import {
-  Alert,
-  AlertIcon,
   Box,
-  Button,
-  FormControl,
-  FormHelperText,
-  FormLabel,
   Heading,
-  HStack,
-  Input,
   Spinner,
-  Table,
-  TableCaption,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Tfoot,
-  Th,
-  Thead,
-  Tr,
-  VStack,
 } from "@chakra-ui/react";
-import Settings from "@/pages/settings";
 import FCWithAuth from "@/types/FCWithAuth";
 import { Link, Image } from "@chakra-ui/next-js";
 import useSWR, {mutate, useSWRConfig} from "swr";
-import { Campaign as CampaignPrismaType } from "@prisma/client";
 import { QueryParams } from "@/types/QueryParams";
 import fetcher from "@/helpers/fetcher";
-import campaign from "@/pages/api/campaigns/[cid]";
 import {formatISO, parseISO} from "date-fns";
 import CampaignForm from "@/components/CampaignForm";
-import AnyObject from "@/types/AnyObject";
+import {CampaignType} from "@/types/campaign-types";
 
 const now = new Date();
 
@@ -52,20 +29,16 @@ const LoadingBox = () => {
   );
 };
 
-type CampaignProps = {
-  campaign: Campaign;
-};
-
-const CampaignBox = (props: CampaignProps) => {
-  const { campaign } = props;
+const CampaignBox = (props: {campaign: CampaignType}) => {
+  const {campaign} = props;
   console.log("in campaignBox with: ", campaign)
 
-  const submitHandler = async (campaign: AnyObject) => {
+  const submitHandler = async (campaign: CampaignType) => {
     const {start, end, name, id} = campaign;
     console.log("in submit of edit: ", campaign);
 
     await mutate(`/api/campaigns`, editCampaign.bind(this, campaign), {
-      optimisticData: (currentData: CampaignPrismaType[]) => {
+      optimisticData: (currentData: CampaignType[]) => {
         console.log("optimistic Data funcion called with: ", currentData)
         const updatedData = currentData.filter(x => x.id != id);
         return [
@@ -77,7 +50,7 @@ const CampaignBox = (props: CampaignProps) => {
     });
   }
 
-  const editCampaign = async (campaign: AnyObject) => {
+  const editCampaign = async (campaign: CampaignType) => {
     console.log("in edit with: ", campaign);
     const res = await fetch(`/api/campaigns/${campaign.id}`, {
       method: "PUT",
@@ -99,21 +72,11 @@ const CampaignBox = (props: CampaignProps) => {
   );
 };
 
-export type Campaign = {
-  id: string
-  name: string
-  start: string
-  end: string
-  createdAt: Date
-  updatedAt: Date
-  userId: string
-}
-
 const EditCampaign: FCWithAuth = () => {
   const router = useRouter();
   const { cid } = router.query as QueryParams;
 
-  const { data, error, isLoading } = useSWR<Campaign>(
+  const { data: campaign, error, isLoading } = useSWR<CampaignType>(
     `/api/campaigns/${cid}`,
     fetcher
   );
@@ -123,7 +86,7 @@ const EditCampaign: FCWithAuth = () => {
       <Heading my={5}>Campaign Edit</Heading>
       {isLoading && <LoadingBox />}
       {error && <ErrorBox />}
-      {data && <CampaignBox campaign={data} />}
+      {campaign && <CampaignBox campaign={campaign} />}
       <Box mt={5}>
         <Link href={'/campaigns'} colorScheme={'green'}>Go to All Campaigns</Link>
       </Box>
