@@ -1,7 +1,7 @@
-import {NextApiHandler, NextApiRequest, NextApiResponse} from "next";
+import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
-import {QueryParams} from "@/types/QueryParams";
-import {formatISO, parseISO} from "date-fns";
+import { QueryParams } from "@/types/QueryParams";
+import { formatISO, parseISO } from "date-fns";
 import withMiddleware from "@/middlewares/withMiddleware";
 
 const campaign: NextApiHandler = async (req, res) => {
@@ -14,7 +14,7 @@ const campaign: NextApiHandler = async (req, res) => {
   }
 };
 
-export default withMiddleware('getPutDeleteOnly', "auth")(campaign);
+export default withMiddleware("getPutDeleteOnly", "auth")(campaign);
 
 const handleUpdateCampaign = async (
   req: NextApiRequest,
@@ -23,11 +23,23 @@ const handleUpdateCampaign = async (
   const query = req.query as QueryParams;
   const cid = query.cid;
 
-  const { name, start, end } = req.body;
+  // const {
+  //   name,
+  //   start,
+  //   end,
+  //   impressionCap,
+  //   fixedCpm,
+  //   brandName,
+  //   brandDescription,
+  //   clickUrl,
+  //   requiredCssSelector,
+  //   pacing,
+  //   status,
+  // } = req.body;
+
+  const { start, end } = req.body;
   const startWithTime = formatISO(parseISO(start));
   const endWithTime = formatISO(parseISO(end));
-
-  // throw new Error("s")
 
   const campaign = await prisma.campaign.update({
     where: {
@@ -37,7 +49,7 @@ const handleUpdateCampaign = async (
       },
     },
     data: {
-      name,
+      ...req.body,
       start: startWithTime,
       end: endWithTime,
     },
@@ -71,7 +83,6 @@ const handleDeleteCampaign = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-
   const query = req.query as QueryParams;
   const cid = query.cid;
 

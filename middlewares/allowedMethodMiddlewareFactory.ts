@@ -25,7 +25,7 @@ export const getPostOnlyMethodMiddleware = allowedMethodMiddlewareFactory([
 export const getPutDeleteOnlyMethodMiddleware = allowedMethodMiddlewareFactory([
   "GET",
   "PUT",
-  "POST",
+  "DELETE",
 ]);
 
 export const getOnlyMethodMiddleware = allowedMethodMiddlewareFactory([

@@ -12,16 +12,14 @@ const NewCampaign: FCWithAuth = () => {
   const { success, failure } = useTxToast();
 
   const submitHandler = async (campaign: CampaignType) => {
-    const { start, end, name } = campaign;
     try {
       await mutate("/api/campaigns", createCampaign.bind(this, campaign), {
         optimisticData: (currentData: CampaignType[]) => {
           currentData = currentData ?? [];
-          console.log("optimistic Data function called with: ", currentData);
           success("Campaign", "Created successfully");
           return [
             ...currentData,
-            { id: Date(), start, end, name, optimisticValue: true },
+            { ...campaign, id: Date(), optimisticValue: true },
           ];
         },
         populateCache: false,
@@ -33,26 +31,19 @@ const NewCampaign: FCWithAuth = () => {
   };
 
   const createCampaign = async (campaign: CampaignType) => {
-    const { start, end, name } = campaign;
-
-    const payload = {
-      start,
-      end,
-      name,
-    };
-    console.log("create payload: ", payload);
+    console.log("create payload: ", campaign);
     const res = await fetch("/api/campaigns", {
       method: "POST",
-      body: JSON.stringify(payload),
+      body: JSON.stringify(campaign),
       headers: {
         "Content-Type": "application/json",
       },
     });
     console.log("res result: ", res.status);
+    const data = await res.json();
     if (res.status >= 400) {
-      throw new Error("failed to fetch");
+      throw new Error(data.message);
     } else {
-      const data = await res.json();
       console.log("got new campaign: ", data);
       return data;
     }
@@ -63,7 +54,7 @@ const NewCampaign: FCWithAuth = () => {
       <Heading my={5}>Create Campaign</Heading>
       <CampaignForm submitHandler={submitHandler} />
       <Box mt={5}>
-        <Link href={"/campaigns"} colorScheme={"green"}>
+        <Link href={"/campaigns/list"} colorScheme={"green"}>
           Go to All Campaigns
         </Link>
       </Box>

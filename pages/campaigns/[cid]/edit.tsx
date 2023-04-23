@@ -95,7 +95,7 @@ const EditCampaign: FCWithAuth = () => {
       {error && <ErrorBox />}
       {campaign && <CampaignBox campaign={campaign} />}
       <Box mt={5}>
-        <Link href={"/campaigns"} colorScheme={"green"}>
+        <Link href={"/campaigns/list"} colorScheme={"green"}>
           Go to All Campaigns
         </Link>
       </Box>

@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Badge,
   Box,
   Button,
   Heading,
@@ -16,13 +17,14 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
-import {Link} from "@chakra-ui/next-js";
-import useSWR, {mutate} from "swr";
-import {format, parseISO} from "date-fns";
+import { Link } from "@chakra-ui/next-js";
+import useSWR, { mutate } from "swr";
+import { format, parseISO } from "date-fns";
 import fetcher from "@/helpers/fetcher";
-import {useRouter} from "next/router";
-import {AddIcon} from "@chakra-ui/icons";
-import {CampaignType} from "@/types/campaign-types";
+import { useRouter } from "next/router";
+import { AddIcon } from "@chakra-ui/icons";
+import { CampaignType } from "@/types/campaign-types";
+import StatusBadge from "@/components/StatusBadge";
 
 const ErrorRow = () => {
   return (
@@ -66,7 +68,7 @@ const Campaigns: FCWithAuth = () => {
     });
   };
   const deleteHandler = async (cid: string) => {
-    const result = mutate("/api/campaigns", deleteCampaign.bind(this, cid), {
+    const result = await mutate("/api/campaigns", deleteCampaign.bind(this, cid), {
       optimisticData: (currentData: CampaignType[]) => {
         return currentData.filter((x) => x.id != cid);
       },
@@ -94,6 +96,7 @@ const Campaigns: FCWithAuth = () => {
               <Th>Name</Th>
               <Th>Start</Th>
               <Th>End</Th>
+              <Th>Status</Th>
               <Th>Actions</Th>
             </Tr>
           </Thead>
@@ -103,22 +106,32 @@ const Campaigns: FCWithAuth = () => {
             {data && data.length == 0 && <NoDataRow />}
             {data &&
               data.length > 0 &&
-              data.map((x) => (
-                <Tr key={x.id ?? JSON.stringify(x)}>
-                  <Td>{x.name}</Td>
-                  <Td>{format(parseISO(x.start.toString()), "MM/dd/yyyy")}</Td>
-                  <Td>{format(parseISO(x.end.toString()), "MM/dd/yyyy")}</Td>
+              data.map((campaign) => (
+                <Tr key={campaign.id ?? JSON.stringify(campaign)}>
+                  <Td>{campaign.name}</Td>
+                  <Td>
+                    {format(parseISO(campaign.start.toString()), "MM/dd/yyyy")}
+                  </Td>
+                  <Td>
+                    {format(parseISO(campaign.end.toString()), "MM/dd/yyyy")}
+                  </Td>
+                  <Td>
+                    <StatusBadge status={campaign.status} />
+                  </Td>
                   <Td>
                     <HStack spacing={5}>
                       <Button
-                        isDisabled={!!x.optimisticValue}
+                        isDisabled={!!campaign.optimisticValue}
                         size={"sm"}
-                        onClick={deleteHandler.bind(this, x.id as string)}
+                        onClick={deleteHandler.bind(
+                          this,
+                          campaign.id as string
+                        )}
                       >
                         Delete
                       </Button>
-                      <Link href={`/campaigns/${x.id}`}>Details</Link>
-                      <Link href={`/campaigns/${x.id}/edit`}>Edit</Link>
+                      <Link href={`/campaigns/${campaign.id}/show`}>Details</Link>
+                      <Link href={`/campaigns/${campaign.id}/edit`}>Edit</Link>
                     </HStack>
                   </Td>
                 </Tr>

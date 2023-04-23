@@ -51,15 +51,19 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
+- optimistic data needs to be sorted after it is added to match sort of backend data, this is to prevent flicker.
+- setup redirect for index to list and index to show
+- edit is showing spinner, it should show cached data 
 
 ## Pending nice to do
-- make edit & create use separate forms rather than sharing one
+- make edit & create use separate forms rather than sharing one or merge typescript types on functions
 - maintain cache of show, edit, create, separate from index, they 
 - make index for to manage all middleware exports
+- add validations to campaign form e.g. requiredCssSelector, url etc.
 
 ## Pending Feature's
 - deploy prisma client
 
-## extension todo
+## Pending extension work
 - multi select drop down list of advertiser.
 - Brands Ranked by Relevance

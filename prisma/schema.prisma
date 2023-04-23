@@ -75,12 +75,20 @@ model VerificationToken {
 }
 
 model Campaign {
-  id        String   @id @default(cuid())
-  name      String
-  start     DateTime
-  end       DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                  String   @id @default(cuid())
+  name                String   @default("")
+  start               DateTime
+  end                 DateTime
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  impressionCap       Int      @default(1000000)
+  fixedCpm            Decimal  @default(10.00) @db.Decimal(10, 2)
+  brandName           String   @default("")
+  brandDescription    String   @default("")
+  clickUrl            String   @default("")
+  requiredCssSelector String   @default("")
+  pacing              Boolean  @default(false)
+  status              Boolean  @default(false)
 }

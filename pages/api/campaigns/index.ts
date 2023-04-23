@@ -22,11 +22,9 @@ const handleCreateCampaign = async (
   req: NextApiRequest,
   res: NextApiResponse<Campaign>
 ) => {
-  const { name, start, end } = req.body;
+  const { start, end } = req.body;
   const startWithTime = formatISO(parseISO(start));
   const endWithTime = formatISO(parseISO(end));
-  // throw new Error("i aint working");
-  // return;
 
   const campaign = await prisma.campaign.create({
     data: {
@@ -35,9 +33,9 @@ const handleCreateCampaign = async (
           id: req.authenticatedUserId,
         },
       },
+      ...req.body,
       start: startWithTime,
       end: endWithTime,
-      name,
     },
   });
   res.json(campaign);
@@ -50,7 +48,7 @@ const handleListCampaigns = async (
   const campaigns = await prisma.user
     .findFirstOrThrow({
       where: {
-        id: req.authenticatedUserId || "" ,
+        id: req.authenticatedUserId || "",
       },
     })
     .campaigns();
