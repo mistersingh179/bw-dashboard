@@ -46,24 +46,26 @@ model Session {
 }
 
 model User {
-  id            String     @id @default(cuid())
-  name          String?
-  email         String?    @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  auctions      Auction[]
-  campaigns     Campaign[]
+  id             String          @id @default(cuid())
+  name           String?
+  email          String?         @unique
+  emailVerified  DateTime?
+  image          String?
+  accounts       Account[]
+  sessions       Session[]
+  auctions       Auction[]
+  campaigns      Campaign[]
+  advertisements Advertisement[]
+  websiteUrls    WebsiteUrl[]
 }
 
 model Auction {
   id        String   @id @default(cuid())
   userId    String
   url       String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
@@ -74,21 +76,63 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model WebsiteUrl {
+  id             String          @id @default(cuid())
+  url            String
+  corpus         String
+  status         Boolean
+  advertisements Advertisement[]
+  userId         String
+  user           User            @relation(fields: [userId], references: [id])
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Advertisement {
+  id           String       @id @default(cuid())
+  userId       String
+  user         User         @relation(fields: [userId], references: [id])
+  beforeText   String
+  afterText    String
+  advertText   String
+  impressions  Impression[]
+  status       Boolean
+  websiteUrlId String
+  websiteUrl   WebsiteUrl   @relation(fields: [websiteUrlId], references: [id])
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
 model Campaign {
-  id                  String   @id @default(cuid())
-  name                String   @default("")
+  id                  String       @id @default(cuid())
+  name                String       @default("")
   start               DateTime
   end                 DateTime
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
   userId              String
-  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  impressionCap       Int      @default(1000000)
-  fixedCpm            Decimal  @default(10.00) @db.Decimal(10, 2)
-  brandName           String   @default("")
-  brandDescription    String   @default("")
-  clickUrl            String   @default("")
-  requiredCssSelector String   @default("")
-  pacing              Boolean  @default(false)
-  status              Boolean  @default(false)
+  user                User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  impressionCap       Int          @default(1000000)
+  fixedCpm            Decimal      @default(10.00) @db.Decimal(10, 2)
+  brandName           String       @default("")
+  brandDescription    String       @default("")
+  clickUrl            String       @default("")
+  requiredCssSelector String       @default("")
+  pacing              Boolean      @default(false)
+  status              Boolean      @default(false)
+  impressions         Impression[]
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+}
+
+model Impression {
+  id              String        @id @default(cuid())
+  campaignId      String
+  campaign        Campaign      @relation(fields: [campaignId], references: [id])
+  url             String
+  userAgent       String
+  ip              String        @db.Inet
+  clicked         Boolean
+  advertisementId String
+  advertisement   Advertisement @relation(fields: [advertisementId], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }

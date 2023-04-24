@@ -4,7 +4,7 @@ import FCWithAuth from "@/types/FCWithAuth";
 import { Link } from "@chakra-ui/next-js";
 import { useSWRConfig } from "swr";
 import CampaignForm from "@/components/CampaignForm";
-import { CampaignType } from "@/types/campaign-types";
+import { CampaignType } from "@/types/my-types";
 import useTxToast from "@/hooks/useTxToast";
 
 const NewCampaign: FCWithAuth = () => {
@@ -26,7 +26,7 @@ const NewCampaign: FCWithAuth = () => {
       });
     } catch (err) {
       console.log("campaign creation mutation failed: ", err);
-      failure("Campaign", "Rolling back as campaign creation failed!");
+      failure("Campaign", "Rolling back as creation failed!");
     }
   };
 

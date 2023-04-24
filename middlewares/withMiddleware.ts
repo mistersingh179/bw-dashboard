@@ -12,6 +12,7 @@ import {
   getPutDeleteOnlyMethodMiddleware, postOnlyMethodMiddleware
 } from "@/middlewares/allowedMethodMiddlewareFactory";
 import delayMiddleware from "@/middlewares/delayMiddleware";
+import botRejectingMiddleware from "@/middlewares/botRejectingMiddleware";
 
 const defaults: string[] = ["reqId", "logging", "headers", "errors", "delay"];
 
@@ -28,6 +29,7 @@ const middleware: LabeledMiddleware = {
   getPutDeleteOnly: getPutDeleteOnlyMethodMiddleware,
   postOnly: postOnlyMethodMiddleware,
   delay: delayMiddleware,
+  rejectBots: botRejectingMiddleware
 };
 
 const withMiddleware = label(middleware, defaults);

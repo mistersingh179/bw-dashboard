@@ -56,6 +56,12 @@ const TopNav: React.FC = () => {
             >
               Settings
             </Link>
+            <Link
+              href={"/websiteUrls/list"}
+              fontWeight={currentRoute === "/websiteUrls/list" ? "bold" : "normal"}
+            >
+              Website Urls
+            </Link>
           </Show>
         </HStack>
         <Spacer />

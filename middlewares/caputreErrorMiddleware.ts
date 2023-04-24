@@ -6,8 +6,8 @@ const captureErrors: Middleware = async (req, res, next) => {
   try {
     await next();
   } catch (err) {
-    console.log("error: ", (err as Error)?.message);
     res.status(500).json({ message: (err as Error)?.message });
+    console.log("error: ", (err as Error)?.message);
   }
 };
 

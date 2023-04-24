@@ -9,7 +9,7 @@ import { QueryParams } from "@/types/QueryParams";
 import fetcher from "@/helpers/fetcher";
 import { formatISO, parseISO } from "date-fns";
 import CampaignForm from "@/components/CampaignForm";
-import { CampaignType } from "@/types/campaign-types";
+import { CampaignType } from "@/types/my-types";
 import useTxToast from "@/hooks/useTxToast";
 
 const now = new Date();

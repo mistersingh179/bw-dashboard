@@ -18,3 +18,13 @@ export type CampaignType = {
   pacing: boolean;
   status: boolean;
 };
+
+export type WebsiteUrlType = {
+  id?: string
+  url: string
+  corpus: string
+  status: boolean
+  userId?: string
+  createdAt?: String
+  updatedAt?: String
+}

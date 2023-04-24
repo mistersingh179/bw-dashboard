@@ -23,7 +23,7 @@ import { format, parseISO } from "date-fns";
 import fetcher from "@/helpers/fetcher";
 import { useRouter } from "next/router";
 import { AddIcon } from "@chakra-ui/icons";
-import { CampaignType } from "@/types/campaign-types";
+import { CampaignType } from "@/types/my-types";
 import StatusBadge from "@/components/StatusBadge";
 
 const ErrorRow = () => {

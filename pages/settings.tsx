@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import {Text, Box, Heading, VStack, Code, Stack, Button} from "@chakra-ui/react";
+import {
+  Text,
+  Box,
+  Heading,
+  VStack,
+  Code,
+  Stack,
+  Button,
+  OrderedList,
+  ListItem,
+} from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
+import MyCode from "@/components/MyCode";
 
 const BW_SCRIPT_BASE_URL = process.env.NEXT_PUBLIC_BW_SCRIPT_BASE_URL;
 
 const scriptTag = (userId: string) => {
   return `<!-- BrandWeaver tag (bw.js) -->
-<script defer src="${BW_SCRIPT_BASE_URL}/bw.js?id=${userId}"></script>`
-}
+<script defer src="${BW_SCRIPT_BASE_URL}/bw.js?id=${userId}"></script>`;
+};
 
 const Settings: FCWithAuth = () => {
   const { data: session } = useSession();
@@ -30,7 +41,7 @@ const Settings: FCWithAuth = () => {
   return (
     <Box>
       <Heading mt={5}>Settings</Heading>
-      <VStack spacing={5} alignItems={"start"}>
+      <VStack spacing={7} alignItems={"start"}>
         <Heading size={"md"} mt={5}>
           JavaScript Snippet
         </Heading>
@@ -40,20 +51,39 @@ const Settings: FCWithAuth = () => {
           &lt;head&gt; element. Don’t add more than one BrandWeaver tag to each
           page.
         </Text>
-        <Code
-          _selection={{color: "gray.800", bg: 'orange.300'}}
-          whiteSpace={"pre"}
-          variant={"solid"}
-          bg={"yellow.100"}
-          color={"gray.700"}
-          border={"1px"}
-          borderColor={"gray.300"}
-          boxShadow={"lg"}
-          borderRadius={"lg"}
-          p={5}
-        >
-          {scriptTag(userId)}
-        </Code>
+        <MyCode> {scriptTag(userId)} </MyCode>
+        <Heading size={"md"}>
+         How to restrict BrandWeaver code from running on your website?
+        </Heading>
+        <Box>
+          <Text mb={5}>
+            Here are some ways you can use to limit BrandWeaver:
+          </Text>
+          <OrderedList spacing={2}>
+            <ListItem>
+              Don&apos;t include the script on the pages you don&apos;t want it
+              to run on. If there is no script on the page, then there is no way
+              BrandWeaver can run.
+            </ListItem>
+            <ListItem>
+              Add meta tag: <MyCode>meta[bw-opt-out=&quot;true&quot;]</MyCode>{" "}
+              to the pages you don&apos;t it to run. When brandweaver script
+              loads it scans the page and if this meta tag is found it will
+              abort itself.
+            </ListItem>
+            <ListItem>
+              Provide a list of &quot;allowed&quot; urls. When brandweaver
+              script loads it will check if the URL it is loaded on is in the
+              allowed list. If not found, it will abort itself.
+            </ListItem>
+            <ListItem>
+              In your campaign provide a css selector. If this css selector is
+              not found on the page, then that campaign will not run. Note: This
+              limits only the campaign from running and not the entire
+              BrandWeaver product.
+            </ListItem>
+          </OrderedList>
+        </Box>
       </VStack>
     </Box>
   );

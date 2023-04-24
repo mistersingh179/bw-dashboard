@@ -9,10 +9,13 @@ type AuctionResponseData = {
 };
 
 const campaigns: NextApiHandler = async (req, res) => {
-  if (req.method === "GET") {
-    await handleListCampaigns(req, res);
-  } else if (req.method === "POST") {
-    await handleCreateCampaign(req, res);
+  switch (req.method) {
+    case "GET":
+      await handleListCampaigns(req, res);
+      break;
+    case "POST":
+      await handleCreateCampaign(req, res);
+      break;
   }
 };
 
@@ -25,17 +28,16 @@ const handleCreateCampaign = async (
   const { start, end } = req.body;
   const startWithTime = formatISO(parseISO(start));
   const endWithTime = formatISO(parseISO(end));
-
   const campaign = await prisma.campaign.create({
     data: {
+      ...req.body,
+      start: startWithTime,
+      end: endWithTime,
       user: {
         connect: {
           id: req.authenticatedUserId,
         },
       },
-      ...req.body,
-      start: startWithTime,
-      end: endWithTime,
     },
   });
   res.json(campaign);

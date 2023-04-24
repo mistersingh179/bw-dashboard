@@ -51,9 +51,14 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
-- optimistic data needs to be sorted after it is added to match sort of backend data, this is to prevent flicker.
+- sort optimistic data to match sort of backend data, this is to prevent flicker.
 - setup redirect for index to list and index to show
 - edit is showing spinner, it should show cached data 
+- add indexes as needed in db
+- setup prisma studio for production
+
+## Pending Tasks
+- automate website url creation from sitemap
 
 ## Pending nice to do
 - make edit & create use separate forms rather than sharing one or merge typescript types on functions

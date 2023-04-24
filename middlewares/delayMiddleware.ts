@@ -7,7 +7,7 @@ export const sleep = async (ms: number) =>{
 }
 const delayMiddleware:Middleware = async (req, res, next) => {
   if(process.env.NODE_ENV !== "production"){
-    await sleep(1000);
+    await sleep(0);
   }
   await next();
 }

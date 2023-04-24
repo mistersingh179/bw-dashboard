@@ -5,6 +5,7 @@
   "scripts": {
     "db": "docker compose up",
     "dev": "next dev",
+    "debug": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
     "vercel-build": "prisma generate && prisma migrate deploy && next build",
@@ -29,6 +30,7 @@
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
     "framer-motion": "^10.9.1",
+    "isbot": "^3.6.10",
     "lodash": "^4.17.21",
     "nanoid": "^4.0.2",
     "next": "13.2.4",

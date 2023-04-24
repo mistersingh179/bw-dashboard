@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import React, { ChangeEvent, useState } from "react";
 import { addDays, formatISO } from "date-fns";
-import { CampaignType } from "@/types/campaign-types";
+import { CampaignType } from "@/types/my-types";
 import {
   animals,
   colors,
@@ -282,14 +282,14 @@ const CampaignForm = (props: CampaignFormProps) => {
         </FormHelperText>
       </FormControl>
       <FormControl display={"flex"} alignItems={"center"}>
-        <FormLabel>Pacing</FormLabel>
+        <FormLabel mb={0}>Pacing</FormLabel>
         <Switch
           isChecked={inputs?.pacing}
           onChange={setSwitchInput.bind(this, "pacing")}
         />
       </FormControl>
       <FormControl display={"flex"} alignItems={"center"}>
-        <FormLabel>Status</FormLabel>
+        <FormLabel mb={0}>Status</FormLabel>
         <Switch
           isChecked={inputs?.status}
           onChange={setSwitchInput.bind(this, "status")}

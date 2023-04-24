@@ -8,7 +8,7 @@ import useSWR from "swr";
 import { QueryParams } from "@/types/QueryParams";
 import fetcher from "@/helpers/fetcher";
 import { formatISO, parseISO } from "date-fns";
-import { CampaignType } from "@/types/campaign-types";
+import { CampaignType } from "@/types/my-types";
 import StatusBadge from "@/components/StatusBadge";
 import numeral from "numeral";
 import {ExternalLinkIcon} from "@chakra-ui/icons";
