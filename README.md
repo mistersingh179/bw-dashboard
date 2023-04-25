@@ -56,9 +56,12 @@ drop database bw;
 - edit is showing spinner, it should show cached data 
 - add indexes as needed in db
 - setup prisma studio for production
+- website url toggle not flipping immediately
 
 ## Pending Tasks
 - automate website url creation from sitemap
+- setting to bypass website url check
+- status option on BW option
 
 ## Pending nice to do
 - make edit & create use separate forms rather than sharing one or merge typescript types on functions
