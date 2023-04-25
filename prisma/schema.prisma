@@ -14,8 +14,9 @@ datasource db {
 }
 
 generator erd {
-  provider = "prisma-erd-generator"
-  output   = "ERD.pdf"
+  provider                  = "prisma-erd-generator"
+  output                    = "ERD.pdf"
+  includeRelationFromFields = true
 }
 
 model Account {

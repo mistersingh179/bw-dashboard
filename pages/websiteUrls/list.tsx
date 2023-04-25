@@ -14,6 +14,7 @@ import {
   Th,
   Thead,
   Tr,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
@@ -131,6 +132,30 @@ const WebsiteUrls: FCWithAuth = () => {
         onClose={onClose}
         onSave={onSave}
       />
+      // Basic version
+      <Text noOfLines={1}>
+        "The quick brown fox jumps over the lazy dog" is an English-language
+        pangram—a sentence that contains all of the letters of the English
+        alphabet. Owing to its existence, Chakra was created. "The quick brown
+        fox jumps over the lazy dog" is an English-language pangram—a sentence
+        that contains all of the letters of the English alphabet. Owing to its
+        existence, Chakra was created. "The quick brown fox jumps over the lazy
+        dog" is an English-language pangram—a sentence that contains all of the
+        letters of the English alphabet. Owing to its existence, Chakra was
+        created.
+      </Text>
+      // Responsive version
+      <Text noOfLines={2}>
+        "The quick brown fox jumps over the lazy dog" is an English-language
+        pangram—a sentence that contains all of the letters of the English
+        alphabet. Owing to its existence, Chakra was created. "The quick brown
+        fox jumps over the lazy dog" is an English-language pangram—a sentence
+        that contains all of the letters of the English alphabet. Owing to its
+        existence, Chakra was created. "The quick brown fox jumps over the lazy
+        dog" is an English-language pangram—a sentence that contains all of the
+        letters of the English alphabet. Owing to its existence, Chakra was
+        created.
+      </Text>
       <HStack>
         <Heading my={5}>Website Urls</Heading>
         <Spacer />
@@ -158,7 +183,11 @@ const WebsiteUrls: FCWithAuth = () => {
               websiteUrls.map((websiteUrl: WebsiteUrlType) => (
                 <Tr key={websiteUrl.id ?? JSON.stringify(websiteUrl)}>
                   <Td>{websiteUrl.url}</Td>
-                  <Td>{websiteUrl.corpus}</Td>
+                  <Td maxW={"lg"}>
+                    <Text textOverflow={"ellipsis"} overflow={"clip"}>
+                      {websiteUrl.corpus}
+                    </Text>
+                  </Td>
                   <Td>
                     <Switch
                       isChecked={websiteUrl.status}

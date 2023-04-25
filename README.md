@@ -9,6 +9,21 @@
 - `npx ts-node --transpile-only` the `--transpile-only` makes it so that it doesn't complain on TS issues
 - for production / non dev usage we do `npm run build` & then use `npm start` to serve it 
 
+## running arbitrary script
+- `tsx scripts/foo.ts`
+- `tsx watch scripts/foo.ts` for quicker iterations in dev
+- or `npx ts-node scripts/foo.ts` but also requires `"module": "CommonJS"` set in tsconfig.json. this can be set just for `ts-node` by putting it in `"ts-node"` block.
+
+## REPL like behavior with Editor
+- build .ts file & run it with `ts watch`
+- inside the file use `require.main === module` to detect that it was called directly
+- when called directly run the module or function it exports
+
+## regular generic REPL 
+- use `prisma-repl --verbose`
+- supports top line `await`, auto-complete 
+- access prisma db object by variable `db` so query is like `await db.user.findMany()`
+
 ## Useful
 
 - `http://localhost:3000/api/auth/providers` gives links of all providers we have
@@ -58,6 +73,8 @@ drop database bw;
 - setup prisma studio for production
 - website url toggle not flipping immediately
 - rename brand to product both be & fe
+- ditch our types for prisma types for campaign
+- look at await in map
 
 ## Pending Tasks
 - automate website url creation from sitemap

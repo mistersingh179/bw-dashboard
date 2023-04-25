@@ -11,6 +11,7 @@
     "vercel-build": "prisma generate && prisma migrate deploy && next build",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:console": "prisma-repl --verbose",
     "lint": "next lint"
   },
   "dependencies": {
@@ -51,6 +52,7 @@
     "@mermaid-js/mermaid-cli": "^10.0.2",
     "@types/cors": "^2.8.13",
     "@types/numeral": "^2.0.2",
-    "prisma-erd-generator": "^1.5.4"
+    "prisma-erd-generator": "^1.5.4",
+    "tsx": "^3.12.6"
   }
 }
