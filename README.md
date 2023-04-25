@@ -57,11 +57,13 @@ drop database bw;
 - add indexes as needed in db
 - setup prisma studio for production
 - website url toggle not flipping immediately
+- rename brand to product both be & fe
 
 ## Pending Tasks
 - automate website url creation from sitemap
 - setting to bypass website url check
 - status option on BW option
+- for each url, see if any relevant campaign score is missing and if missing get them.
 
 ## Pending nice to do
 - make edit & create use separate forms rather than sharing one or merge typescript types on functions

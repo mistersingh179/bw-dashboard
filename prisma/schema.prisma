@@ -45,18 +45,25 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
 model User {
-  id             String          @id @default(cuid())
-  name           String?
-  email          String?         @unique
-  emailVerified  DateTime?
-  image          String?
-  accounts       Account[]
-  sessions       Session[]
-  auctions       Auction[]
-  campaigns      Campaign[]
-  advertisements Advertisement[]
-  websiteUrls    WebsiteUrl[]
+  id            String       @id @default(cuid())
+  name          String?
+  email         String?      @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  auctions      Auction[]
+  campaigns     Campaign[]
+  websiteUrls   WebsiteUrl[]
 }
 
 model Auction {
@@ -68,71 +75,74 @@ model Auction {
   updatedAt DateTime @updatedAt
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
+model WebsiteUrl {
+  id                String             @id @default(cuid())
+  relevantCampaigns RelevantCampaign[]
+  url               String
+  corpus            String
+  status            Boolean
+  userId            String
+  user              User               @relation(fields: [userId], references: [id])
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 }
 
-model WebsiteUrl {
+model RelevantCampaign {
   id             String          @id @default(cuid())
-  url            String
-  corpus         String
-  status         Boolean
+  websiteUrlId   String
+  websiteUrl     WebsiteUrl      @relation(fields: [websiteUrlId], references: [id])
+  campaignId     String
+  campaign       Campaign        @relation(fields: [campaignId], references: [id])
   advertisements Advertisement[]
-  userId         String
-  user           User            @relation(fields: [userId], references: [id])
+  score          Int
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 }
 
 model Advertisement {
-  id           String       @id @default(cuid())
-  userId       String
-  user         User         @relation(fields: [userId], references: [id])
-  beforeText   String
-  afterText    String
-  advertText   String
-  impressions  Impression[]
-  status       Boolean
-  websiteUrlId String
-  websiteUrl   WebsiteUrl   @relation(fields: [websiteUrlId], references: [id])
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  id                 String           @id @default(cuid())
+  relevantCampaignId String
+  relevantCampaign   RelevantCampaign @relation(fields: [relevantCampaignId], references: [id])
+  impressions        Impression[]
+  beforeText         String
+  afterText          String
+  advertText         String
+  status             Boolean
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
 }
 
 model Campaign {
-  id                  String       @id @default(cuid())
-  name                String       @default("")
+  id                  String             @id @default(cuid())
+  userId              String
+  user                User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  relevantCampaigns   RelevantCampaign[]
+  impressions         Impression[]
+  name                String             @default("")
   start               DateTime
   end                 DateTime
-  userId              String
-  user                User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  impressionCap       Int          @default(1000000)
-  fixedCpm            Decimal      @default(10.00) @db.Decimal(10, 2)
-  brandName           String       @default("")
-  brandDescription    String       @default("")
-  clickUrl            String       @default("")
-  requiredCssSelector String       @default("")
-  pacing              Boolean      @default(false)
-  status              Boolean      @default(false)
-  impressions         Impression[]
-  createdAt           DateTime     @default(now())
-  updatedAt           DateTime     @updatedAt
+  impressionCap       Int                @default(1000000)
+  fixedCpm            Decimal            @default(10.00) @db.Decimal(10, 2)
+  brandName           String             @default("")
+  brandDescription    String             @default("")
+  clickUrl            String             @default("")
+  requiredCssSelector String             @default("")
+  pacing              Boolean            @default(false)
+  status              Boolean            @default(false)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
 }
 
 model Impression {
   id              String        @id @default(cuid())
   campaignId      String
   campaign        Campaign      @relation(fields: [campaignId], references: [id])
+  advertisementId String
+  advertisement   Advertisement @relation(fields: [advertisementId], references: [id])
   url             String
   userAgent       String
   ip              String        @db.Inet
   clicked         Boolean
-  advertisementId String
-  advertisement   Advertisement @relation(fields: [advertisementId], references: [id])
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 }
