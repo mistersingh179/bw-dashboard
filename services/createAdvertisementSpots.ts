@@ -1,33 +1,27 @@
-import {
-  Advertisement,
-  Prisma,
-  RelevantCampaign,
-  WebsiteUrl,
-} from "@prisma/client";
+import {Prisma, WebsiteUrl} from "@prisma/client";
 import prisma from "@/lib/prisma";
-import getAdvertisementText from "@/services/prompts/getAdvertisementText";
-import AdvertisementCreateManyInput = Prisma.AdvertisementCreateManyInput;
-import AdvertisementCreateManyRelevantCampaignInput = Prisma.AdvertisementCreateManyRelevantCampaignInput;
-import getAdSpotsForWebpage, {
-  nextWithText,
-} from "@/services/helpers/getAdSpotsForWebpage";
+import getAdSpotsForWebpage from "@/services/helpers/getAdSpotsForWebpage";
 import AdvertisementSpotCreateManyWebsiteUrlInput = Prisma.AdvertisementSpotCreateManyWebsiteUrlInput;
+import {DESIRED_ADVERTISEMENT_SPOT_COUNT} from "@/constants";
+
+const enoughAdSpotsExist = async (websiteUrl: WebsiteUrl): Promise<boolean> => {
+  const result = await prisma.advertisementSpot.findMany({
+    where: {
+      websiteUrlId: websiteUrl.id,
+    },
+    select: {
+      id: true,
+    },
+    take: DESIRED_ADVERTISEMENT_SPOT_COUNT,
+  });
+  return result.length === DESIRED_ADVERTISEMENT_SPOT_COUNT;
+};
 
 const createAdvertisementSpots = async (websiteUrl: WebsiteUrl) => {
   console.log("in createAdvertisementSpots for: ", websiteUrl);
 
-  const spotsExist = Boolean(
-    await prisma.advertisementSpot.findFirst({
-      where: {
-        websiteUrlId: websiteUrl.id
-      },
-      select: {
-        id: true,
-      },
-    })
-  );
-  if (spotsExist) {
-    console.log(`Aborting createAdvertisementSpots as we already have them`);
+  if (await enoughAdSpotsExist(websiteUrl)) {
+    console.log(`Aborting createAdvertisementSpots as we already enough`);
     return;
   }
 

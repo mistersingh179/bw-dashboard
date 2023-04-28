@@ -1,6 +1,7 @@
 import { WebsiteUrl } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { JSDOM } from "jsdom";
+import { DESIRED_ADVERTISEMENT_SPOT_COUNT } from "@/constants";
 
 type AdSpotText = {
   beforeText: string;
@@ -20,7 +21,7 @@ type AdSelectionOptions = {
 
 const defaultAdSelectionOptions: AdSelectionOptions = {
   contentSelector: "body p:nth-child(3n)",
-  count: 5,
+  count: DESIRED_ADVERTISEMENT_SPOT_COUNT,
   minCharLimit: 20,
   sameTypeElemWithTextToFollow: true,
 };

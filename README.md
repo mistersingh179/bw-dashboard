@@ -85,6 +85,7 @@ drop database bw;
 - if we dont have 5 spots, lets get to 5 spots, but we dont want the same spots again, so maybe use index to prevent that insertion
 - our createMany should not fail if one record fails to enter - `skipDuplicates`
 - set up cascade delete
+- advertisement before & after together should be unique as we dont want the same spot again
 
 ## Pending immediate next thing
 - show scoredCampaigns for our every url
@@ -100,9 +101,11 @@ drop database bw;
 - allow user to set threshold
 - use threshold when picking relevant campaigns for showing
 - use threshold when picking relevant campaigns for building ads 
+- add TopLevelDomains table & move pages under it
 
 ## Pending prompt research
 - research if sending campaigns individually or with a group make a difference
+- how many tokens do we need for an average request
 
 ## Pending nice to do
 - make edit & create use separate forms rather than sharing one or merge typescript types on functions
@@ -123,6 +126,11 @@ drop database bw;
 
 ## Pending script
 - remove query params before checking url
+
+## Pending performance
+- will try to get ad spots when page doesn't have enough.
+- it doesn't know we don't have enough cause its page fault & not our service issue
+
 
 ## Notes on how services are working the background
 

@@ -1,9 +1,8 @@
+import { DESIRED_ADVERTISEMENT_COUNT } from "@/constants";
 import { AdvertisementSpot, Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import getAdvertisementText from "@/services/prompts/getAdvertisementText";
 import AdvertisementCreateManyAdvertisementSpotInput = Prisma.AdvertisementCreateManyAdvertisementSpotInput;
-
-const ENOUGH_COUNT = 5;
 
 const enoughActiveAdsExist = async (
   advertisementSpot: AdvertisementSpot
@@ -16,9 +15,9 @@ const enoughActiveAdsExist = async (
     select: {
       id: true,
     },
-    take: ENOUGH_COUNT,
+    take: DESIRED_ADVERTISEMENT_COUNT,
   });
-  return result.length === ENOUGH_COUNT;
+  return result.length === DESIRED_ADVERTISEMENT_COUNT;
 };
 
 const createAdvertisement = async (advertisementSpot: AdvertisementSpot) => {
@@ -86,10 +85,10 @@ if (require.main === module) {
   (async () => {
     const websiteUrl = await prisma.websiteUrl.findFirstOrThrow({
       include: {
-        advertisementSpots: true
-      }
+        advertisementSpots: true,
+      },
     });
-    for (const as of websiteUrl.advertisementSpots){
+    for (const as of websiteUrl.advertisementSpots) {
       await createAdvertisement(as);
     }
   })();
