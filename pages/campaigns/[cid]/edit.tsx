@@ -39,9 +39,13 @@ const CampaignBox = (props: { campaign: CampaignType }) => {
       await mutate(`/api/campaigns`, editCampaign.bind(this, campaign), {
         optimisticData: (currentData: CampaignType[]) => {
           console.log("optimistic Data funcion called with: ", currentData);
-          const updatedData = currentData.filter((x) => x.id != id);
+          const idx = currentData.findIndex((x) => x.id === campaign.id);
           success("Campaign", "Edited successfullty");
-          return [...updatedData, { ...campaign, optimisticValue: true }];
+          return [
+            ...currentData.slice(0, idx),
+            { ...campaign, optimisticValue: true },
+            ...currentData.slice(idx + 1),
+          ];
         },
         populateCache: false,
       });
@@ -49,7 +53,7 @@ const CampaignBox = (props: { campaign: CampaignType }) => {
       console.log("the campaign edit mutation failed");
       failure("Campaign", "Rolling back as campaign edit failed!");
     }
-    await mutate(`/api/campaigns/${id}`, campaign)
+    await mutate(`/api/campaigns/${id}`, campaign);
   };
 
   const editCampaign = async (campaign: CampaignType) => {

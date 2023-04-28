@@ -23,6 +23,9 @@ const handleListWebsiteUrls = async (
     where: {
       userId: req.authenticatedUserId,
     },
+    orderBy: {
+      id: "asc"
+    }
   });
   console.log("websiteUrls: ", websiteUrls);
   res.json(websiteUrls);

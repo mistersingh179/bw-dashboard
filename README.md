@@ -66,7 +66,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
-- sort optimistic data to match sort of backend data, this is to prevent flicker.
 - setup redirect for index to list and index to show
 - edit is showing spinner, it should show cached data 
 - add indexes as needed in db
@@ -85,6 +84,7 @@ drop database bw;
 - rename WebsiteUrl to Webpage & call join table WebpageCampaigns
 - if we dont have 5 spots, lets get to 5 spots, but we dont want the same spots again, so maybe use index to prevent that insertion
 - our createMany should not fail if one record fails to enter - `skipDuplicates`
+- set up cascade delete
 
 ## Pending immediate next thing
 - show scoredCampaigns for our every url

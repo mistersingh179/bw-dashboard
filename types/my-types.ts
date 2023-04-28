@@ -25,6 +25,6 @@ export type WebsiteUrlType = {
   corpus: string
   status: boolean
   userId?: string
-  createdAt?: String
-  updatedAt?: String
+  createdAt?: string
+  updatedAt?: string
 }

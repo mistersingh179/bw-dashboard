@@ -50,14 +50,19 @@ const WebsiteUrls: FCWithAuth = () => {
     try {
       await mutate(updateWebsiteUrl.bind(this, updatedWebsiteUrl), {
         optimisticData: (currentData) => {
+          console.log("in optimisticData with: ", currentData);
           success("Website Url", "Updated successfully");
           if (currentData) {
-            const newData = currentData.filter(
-              (x) => x.id != updatedWebsiteUrl.id
+            const idx = currentData.findIndex(
+              (x) => x.id === updatedWebsiteUrl.id
             );
-            return [...newData, updatedWebsiteUrl];
+            return [
+              ...currentData.slice(0, idx),
+              { ...updatedWebsiteUrl },
+              ...currentData.slice(idx + 1),
+            ];
           } else {
-            return [updatedWebsiteUrl];
+            return [{ ...updatedWebsiteUrl }];
           }
         },
         populateCache: false,
@@ -75,9 +80,9 @@ const WebsiteUrls: FCWithAuth = () => {
         optimisticData: (currentData) => {
           success("Website Url", "Created successfully");
           if (currentData) {
-            return [...currentData, newWebsiteUrl];
+            return [...currentData, {...newWebsiteUrl}];
           } else {
-            return [newWebsiteUrl];
+            return [{...newWebsiteUrl}];
           }
         },
         populateCache: false,
@@ -144,26 +149,20 @@ const WebsiteUrls: FCWithAuth = () => {
           <Thead>
             <Tr>
               <Th>Url</Th>
-              <Th>Corpus</Th>
               <Th>Status</Th>
             </Tr>
           </Thead>
           <Tbody>
-            {error && <ErrorRow colSpan={3} />}
-            {isLoading && <LoadingDataRow colSpan={3} />}
+            {error && <ErrorRow colSpan={2} />}
+            {isLoading && <LoadingDataRow colSpan={2} />}
             {websiteUrls && websiteUrls.length == 0 && (
-              <NoDataRow colSpan={3} />
+              <NoDataRow colSpan={2} />
             )}
             {websiteUrls &&
               websiteUrls.length > 0 &&
               websiteUrls.map((websiteUrl: WebsiteUrlType) => (
                 <Tr key={websiteUrl.id ?? JSON.stringify(websiteUrl)}>
                   <Td>{websiteUrl.url}</Td>
-                  <Td maxW={"lg"}>
-                    <Text textOverflow={"ellipsis"} overflow={"clip"}>
-                      {websiteUrl.corpus}
-                    </Text>
-                  </Td>
                   <Td>
                     <Switch
                       isChecked={websiteUrl.status}

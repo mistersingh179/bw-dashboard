@@ -47,13 +47,14 @@ const handleListCampaigns = async (
   req: NextApiRequest,
   res: NextApiResponse<Campaign[]>
 ) => {
-  const campaigns = await prisma.user
-    .findFirstOrThrow({
-      where: {
-        id: req.authenticatedUserId || "",
-      },
-    })
-    .campaigns();
+  const campaigns = await prisma.campaign.findMany({
+    where: {
+      userId: req.authenticatedUserId || "",
+    },
+    orderBy: {
+      id: "asc",
+    },
+  });
   console.log("campaigns: ", campaigns);
   res.status(200).json(campaigns);
 };
