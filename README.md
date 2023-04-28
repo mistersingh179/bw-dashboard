@@ -66,7 +66,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
-- fix temp in websiteUrls/list.tsx
 - sort optimistic data to match sort of backend data, this is to prevent flicker.
 - setup redirect for index to list and index to show
 - edit is showing spinner, it should show cached data 
@@ -96,6 +95,11 @@ drop database bw;
 - setting to bypass website url check
 - status option on BW option
 - for each url, see if any relevant campaign score is missing and if missing get them.
+- ui to show ad spots, ads & relevant campaigns for the url
+- allow user to enter top level urls
+- allow user to set threshold
+- use threshold when picking relevant campaigns for showing
+- use threshold when picking relevant campaigns for building ads 
 
 ## Pending prompt research
 - research if sending campaigns individually or with a group make a difference
