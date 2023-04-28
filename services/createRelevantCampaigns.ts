@@ -1,13 +1,13 @@
 import prisma from "@/lib/prisma";
-import getCampaignsWhichNeedScore from "@/services/getCampaignsWhichNeedScore";
-import {Prisma, RelevantCampaign, WebsiteUrl} from "@prisma/client";
-import addBrandRelevanceScore from "@/services/addBrandRelevanceScore";
+import getCampaignsWhichNeedScore from "@/services/helpers/getCampaignsWhichNeedScore";
+import { Prisma, WebsiteUrl } from "@prisma/client";
+import getCampaignsWithTheirScores from "@/services/prompts/getCampaignsWithTheirScores";
 import RelevantCampaignCreateManyWebsiteUrlInput = Prisma.RelevantCampaignCreateManyWebsiteUrlInput;
 
-const buildRelevantCampaigns = async (websiteUrl: WebsiteUrl) => {
+const createRelevantCampaigns = async (websiteUrl: WebsiteUrl) => {
   console.log("websiteUrl: ", websiteUrl);
   const campaignsWhichNeedScore = await getCampaignsWhichNeedScore(websiteUrl);
-  const campaignsWithScore = await addBrandRelevanceScore(
+  const campaignsWithScore = await getCampaignsWithTheirScores(
     websiteUrl,
     campaignsWhichNeedScore
   );
@@ -42,8 +42,8 @@ if (require.main === module) {
         id: "clgv42xj5000l98yf73ocppzq",
       },
     });
-    await buildRelevantCampaigns(websiteUrl);
+    await createRelevantCampaigns(websiteUrl);
   })();
 }
 
-export default buildRelevantCampaigns;
+export default createRelevantCampaigns;

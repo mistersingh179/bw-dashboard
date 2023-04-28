@@ -25,7 +25,7 @@ const Home: React.FC = () => {
       <Heading size={"xl"}>BrandWeaver.ai</Heading>
       <Text>
         AI Places Products Into Every Piece of{" "}
-        <Show above={"sm"}>Publisher</Show>
+        <Show above={"sm"}>Publisher</Show>{" "}
         Content
       </Text>
       <HStack>

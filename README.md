@@ -66,6 +66,7 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
+- fix temp in websiteUrls/list.tsx
 - sort optimistic data to match sort of backend data, this is to prevent flicker.
 - setup redirect for index to list and index to show
 - edit is showing spinner, it should show cached data 
@@ -75,6 +76,17 @@ drop database bw;
 - rename brand to product both be & fe
 - ditch our types for prisma types for campaign
 - look at await in map
+- add reason to relevant campaign
+- rename relevantCampaign to scoredCampaigns
+- add types to service functions, so they can't be called wrong
+- think on how may advertisements we need. currently it builds every time it is called.
+- unique index on the many to many join table for websiteUrl, campaignId
+- rename corpus to html
+- take users threshold
+
+## Pending immediate next thing
+- show scoredCampaigns for our every url
+- storing of entire page & before, after
 
 ## Pending Tasks
 - automate website url creation from sitemap
@@ -82,11 +94,18 @@ drop database bw;
 - status option on BW option
 - for each url, see if any relevant campaign score is missing and if missing get them.
 
+## Pending prompt research
+- research if sending campaigns individually or with a group make a difference
+
 ## Pending nice to do
 - make edit & create use separate forms rather than sharing one or merge typescript types on functions
 - maintain cache of show, edit, create, separate from index, they 
 - make index for to manage all middleware exports
 - add validations to campaign form e.g. requiredCssSelector, url etc.
+
+## Pending integration reserach
+- scrapeops.io
+- 
 
 ## Pending Feature's
 - deploy prisma client
@@ -94,3 +113,14 @@ drop database bw;
 ## Pending extension work
 - multi select drop down list of advertiser.
 - Brands Ranked by Relevance
+
+## Pending script
+- remove query params before checking url
+
+## Notes on how services are working the background
+
+1. User gives us their top level domain name(s).
+2. We get that domains sitemap, and from that we save all of its urls.
+3. For each `websiteUrl` we call `updateCorpus()` to get its html content.
+4. Then for each `websiteUrl` we call `createRelevantCampaigns()` so we have campaigns with scores which can run when this website is loaded
+5. Then for each `relevantCampaign` we call `createAdvertisements` so we have advertisement spots that campaign can run with before & after text.

@@ -1,6 +1,8 @@
 import prisma from "@/lib/prisma";
 import { WebsiteUrl } from "@prisma/client";
 
+// todo - should have type to declare return as its any right now
+
 const getCampaignsWhichNeedScore = async (websiteUrl: WebsiteUrl) => {
   console.log("in getCampaignsWhichNeedScore with websiteUrl: ", websiteUrl.id);
 

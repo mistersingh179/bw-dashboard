@@ -3,11 +3,11 @@ import prisma from "@/lib/prisma";
 
 type CampaignWithScore = Campaign & { score: number };
 
-const addBrandRelevanceScore = async (
+const getCampaignsWithTheirScores = async (
   websiteUrl: WebsiteUrl,
   campaigns: Campaign[]
 ) => {
-  console.log("in addBrandRelevanceScore with: ", websiteUrl, campaigns);
+  console.log("in getCampaignsWithTheirScores with: ", websiteUrl, campaigns);
   // TODO – call openai chatgpt here
   const campaignsWithScore: CampaignWithScore[] = campaigns.map((c) => {
     return {
@@ -33,9 +33,9 @@ if (require.main === module) {
         },
       },
     });
-    const campaignsWithScore = await addBrandRelevanceScore(websiteUrl,campaignsWhichNeedScore);
+    const campaignsWithScore = await getCampaignsWithTheirScores(websiteUrl,campaignsWhichNeedScore);
     console.log("campaignsWithScore: ", campaignsWithScore);
   })();
 }
 
-export default addBrandRelevanceScore;
+export default getCampaignsWithTheirScores;

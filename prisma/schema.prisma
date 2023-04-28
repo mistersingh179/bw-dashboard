@@ -15,7 +15,7 @@ datasource db {
 
 generator erd {
   provider                  = "prisma-erd-generator"
-  output                    = "ERD.pdf"
+  output                    = "ERD.svg"
   includeRelationFromFields = true
 }
 
@@ -77,15 +77,27 @@ model Auction {
 }
 
 model WebsiteUrl {
-  id                String             @id @default(cuid())
-  relevantCampaigns RelevantCampaign[]
-  url               String
-  corpus            String
-  status            Boolean
-  userId            String
-  user              User               @relation(fields: [userId], references: [id])
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
+  id                 String              @id @default(cuid())
+  relevantCampaigns  RelevantCampaign[]
+  url                String
+  corpus             String
+  status             Boolean
+  userId             String
+  user               User                @relation(fields: [userId], references: [id])
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  advertisementSpots AdvertisementSpot[]
+}
+
+model AdvertisementSpot {
+  id            String          @id @default(cuid())
+  websiteUrlId  String
+  websiteUrl    WebsiteUrl      @relation(fields: [websiteUrlId], references: [id])
+  beforeText    String
+  afterText     String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  advertisement Advertisement[]
 }
 
 model RelevantCampaign {
@@ -101,16 +113,16 @@ model RelevantCampaign {
 }
 
 model Advertisement {
-  id                 String           @id @default(cuid())
-  relevantCampaignId String
-  relevantCampaign   RelevantCampaign @relation(fields: [relevantCampaignId], references: [id])
-  impressions        Impression[]
-  beforeText         String
-  afterText          String
-  advertText         String
-  status             Boolean
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
+  id                  String            @id @default(cuid())
+  relevantCampaignId  String
+  relevantCampaign    RelevantCampaign  @relation(fields: [relevantCampaignId], references: [id])
+  impressions         Impression[]
+  advertisementSpotId String
+  advertisementSpot   AdvertisementSpot @relation(fields: [advertisementSpotId], references: [id])
+  advertText          String
+  status              Boolean
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
 }
 
 model Campaign {
