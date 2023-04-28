@@ -1,3 +1,5 @@
+import {DESIRED_ADVERTISEMENT_COUNT} from "@/constants";
+
 type GetAdvertisementText = (
   corpus: string,
   beforeText: string,
@@ -23,7 +25,7 @@ const getAdvertisementText: GetAdvertisementText = async (
     `${brandName} rocks because – ${brandDescription}`,
     `always use ${brandName} as – ${brandDescription}`,
     `i trust ${brandName} period. It is ${brandDescription}`
-  ];
+  ].slice(0, DESIRED_ADVERTISEMENT_COUNT);
 };
 
 export default getAdvertisementText;

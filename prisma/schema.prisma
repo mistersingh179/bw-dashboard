@@ -70,7 +70,7 @@ model User {
 model Auction {
   id        String   @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   url       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -79,7 +79,7 @@ model Auction {
 model WebsiteUrl {
   id                 String              @id @default(cuid())
   userId             String
-  user               User                @relation(fields: [userId], references: [id])
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   relevantCampaigns  RelevantCampaign[]
   advertisementSpots AdvertisementSpot[]
   url                String
@@ -87,12 +87,14 @@ model WebsiteUrl {
   status             Boolean
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
+
+  @@index([createdAt(sort: Asc)])
 }
 
 model AdvertisementSpot {
   id             String          @id @default(cuid())
   websiteUrlId   String
-  websiteUrl     WebsiteUrl      @relation(fields: [websiteUrlId], references: [id])
+  websiteUrl     WebsiteUrl      @relation(fields: [websiteUrlId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   advertisements Advertisement[]
   beforeText     String
   afterText      String
@@ -103,9 +105,9 @@ model AdvertisementSpot {
 model RelevantCampaign {
   id             String          @id @default(cuid())
   websiteUrlId   String
-  websiteUrl     WebsiteUrl      @relation(fields: [websiteUrlId], references: [id])
+  websiteUrl     WebsiteUrl      @relation(fields: [websiteUrlId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   campaignId     String
-  campaign       Campaign        @relation(fields: [campaignId], references: [id])
+  campaign       Campaign        @relation(fields: [campaignId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   advertisements Advertisement[]
   score          Int
   createdAt      DateTime        @default(now())
@@ -115,10 +117,10 @@ model RelevantCampaign {
 model Advertisement {
   id                  String            @id @default(cuid())
   relevantCampaignId  String
-  relevantCampaign    RelevantCampaign  @relation(fields: [relevantCampaignId], references: [id])
+  relevantCampaign    RelevantCampaign  @relation(fields: [relevantCampaignId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   impressions         Impression[]
   advertisementSpotId String
-  advertisementSpot   AdvertisementSpot @relation(fields: [advertisementSpotId], references: [id])
+  advertisementSpot   AdvertisementSpot @relation(fields: [advertisementSpotId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   advertText          String
   status              Boolean
   createdAt           DateTime          @default(now())
@@ -128,7 +130,7 @@ model Advertisement {
 model Campaign {
   id                  String             @id @default(cuid())
   userId              String
-  user                User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                User               @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   relevantCampaigns   RelevantCampaign[]
   impressions         Impression[]
   name                String             @default("")
@@ -144,14 +146,16 @@ model Campaign {
   status              Boolean            @default(false)
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
+
+  @@index([createdAt(sort: Asc)])
 }
 
 model Impression {
   id              String        @id @default(cuid())
   campaignId      String
-  campaign        Campaign      @relation(fields: [campaignId], references: [id])
+  campaign        Campaign      @relation(fields: [campaignId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   advertisementId String
-  advertisement   Advertisement @relation(fields: [advertisementId], references: [id])
+  advertisement   Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   url             String
   userAgent       String
   ip              String        @db.Inet

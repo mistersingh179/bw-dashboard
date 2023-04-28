@@ -65,9 +65,7 @@ drop database bw;
 - value can be taken from the browser
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
-## Pending backlog
-- setup redirect for index to list and index to show
-- edit is showing spinner, it should show cached data 
+## Pending backlog 
 - add indexes as needed in db
 - setup prisma studio for production
 - website url toggle not flipping immediately

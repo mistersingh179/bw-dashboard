@@ -99,6 +99,7 @@ export default getAdSpotsForWebpage;
 if (require.main === module) {
   (async () => {
     const webisteUrl = await prisma.websiteUrl.findFirstOrThrow();
+    console.log("website's corpus length: ", webisteUrl.corpus.length);
     await getAdSpotsForWebpage(webisteUrl);
   })();
 }
