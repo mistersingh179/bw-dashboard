@@ -14,13 +14,15 @@ const getAdvertisementText: GetAdvertisementText = async (
   brandName,
   brandDescription
 ) => {
-  // todo – call openai api here
+  // todo – call openai chat gpt api here
   // limit corpus characters so the prompt fits
 
   return [
     `${brandName} is the best product. Please use it.`,
     `This is the best – ${brandName}.`,
     `${brandName} rocks because – ${brandDescription}`,
+    `always use ${brandName} as – ${brandDescription}`,
+    `i trust ${brandName} period. It is ${brandDescription}`
   ];
 };
 

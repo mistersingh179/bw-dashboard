@@ -83,6 +83,9 @@ drop database bw;
 - unique index on the many to many join table for websiteUrl, campaignId
 - rename corpus to html
 - take users threshold
+- rename WebsiteUrl to Webpage & call join table WebpageCampaigns
+- if we dont have 5 spots, lets get to 5 spots, but we dont want the same spots again, so maybe use index to prevent that insertion
+- our createMany should not fail if one record fails to enter - `skipDuplicates`
 
 ## Pending immediate next thing
 - show scoredCampaigns for our every url
