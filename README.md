@@ -66,7 +66,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog 
-- add indexes as needed in db
 - check how to arrange queries so prisma orders the where items
 - setup prisma studio for production
 - website url toggle not flipping immediately
@@ -101,6 +100,9 @@ drop database bw;
 - use threshold when picking relevant campaigns for showing
 - use threshold when picking relevant campaigns for building ads 
 - add TopLevelDomains table & move pages under it
+- add middleware to check referrer
+- revisit indexes after doing front end auction/impresssion creation/insertion
+- revisit indexes after doing pacing
 
 ## Pending prompt research
 - research if sending campaigns individually or with a group make a difference
