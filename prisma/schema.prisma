@@ -140,7 +140,6 @@ model Advertisement {
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
 
-  @@unique([relevantCampaignId, advertisementSpotId])
   @@index([relevantCampaignId])
   @@index([relevantCampaignId, status])
   @@index([advertisementSpotId])
