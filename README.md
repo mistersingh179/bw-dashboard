@@ -51,6 +51,9 @@ drop database bw;
 - `pgbouncer` so that it used to manage connections
 - `prisma migrate` does not work with `pool` connections. so need to use direct db url.
 
+## Prisma Queries
+- it will honor the order in which you specify the `where` keys. this can be helpful to match the indexes
+
 ## Deployments
 
 - package.json has `vercel-build` task setup to build TS artifacts & deploy schema to database
@@ -65,8 +68,7 @@ drop database bw;
 - value can be taken from the browser
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
-## Pending backlog 
-- check how to arrange queries so prisma orders the where items
+## Pending backlog
 - setup prisma studio for production
 - website url toggle not flipping immediately
 - rename brand to product both be & fe
