@@ -74,6 +74,9 @@ model Auction {
   url       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, createdAt(sort: Asc)])
 }
 
 model WebsiteUrl {
@@ -88,7 +91,8 @@ model WebsiteUrl {
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
 
-  @@index([createdAt(sort: Asc)])
+  @@index([userId])
+  @@index([userId, createdAt(sort: Asc)])
 }
 
 model AdvertisementSpot {
@@ -100,6 +104,8 @@ model AdvertisementSpot {
   afterText      String
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+
+  @@index([websiteUrlId])
 }
 
 model RelevantCampaign {
@@ -112,6 +118,10 @@ model RelevantCampaign {
   score          Int
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+
+  @@index([websiteUrlId])
+  @@index([campaignId])
+  @@index([score])
 }
 
 model Advertisement {
@@ -125,6 +135,9 @@ model Advertisement {
   status              Boolean
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
+
+  @@index([relevantCampaignId])
+  @@index([advertisementSpotId])
 }
 
 model Campaign {
@@ -148,6 +161,8 @@ model Campaign {
   updatedAt           DateTime           @updatedAt
 
   @@index([createdAt(sort: Asc)])
+  @@index([userId])
+  @@index([userId, status, start, end, fixedCpm(sort: Desc)])
 }
 
 model Impression {
@@ -162,4 +177,7 @@ model Impression {
   clicked         Boolean
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
+
+  @@index([campaignId, createdAt(sort: Asc)])
+  @@index([advertisementId, createdAt(sort: Asc)])
 }

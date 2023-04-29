@@ -67,6 +67,7 @@ drop database bw;
 
 ## Pending backlog 
 - add indexes as needed in db
+- check how to arrange queries so prisma orders the where items
 - setup prisma studio for production
 - website url toggle not flipping immediately
 - rename brand to product both be & fe
