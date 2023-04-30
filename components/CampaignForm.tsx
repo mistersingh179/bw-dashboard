@@ -50,8 +50,8 @@ const CampaignForm = (props: CampaignFormProps) => {
         end: formatISO(addDays(now, 7), { representation: "date" }),
         impressionCap: 1_000_000,
         fixedCpm: 10,
-        brandName: "Acme Corp",
-        brandDescription:
+        productName: "Acme Corp",
+        productDescription:
           "Acme Corporation is a fictional corporation that features prominently in the Road Runner/Wile E. Coyote animated shorts as a running gag. The company manufactures outlandish products.",
         clickUrl: `https://en.wikipedia.org/wiki/Acme_Corporation?utm_campaign=${tempName}&utm_source=brandweaver.ai`,
         requiredCssSelector: "",
@@ -67,8 +67,8 @@ const CampaignForm = (props: CampaignFormProps) => {
     end,
     impressionCap,
     fixedCpm,
-    brandName,
-    brandDescription,
+    productName,
+    productDescription,
     clickUrl,
     requiredCssSelector,
     status,
@@ -131,8 +131,8 @@ const CampaignForm = (props: CampaignFormProps) => {
   };
 
   const nameMissing = name?.length === 0 ? true : false;
-  const brandNameMissing = brandName?.length === 0 ? true : false;
-  const brandDescriptionMissing = brandDescription?.length === 0 ? true : false;
+  const productNameMissing = productName?.length === 0 ? true : false;
+  const productDescriptionMissing = productDescription?.length === 0 ? true : false;
   const clickUrlMissing = clickUrl?.length === 0 ? true : false;
 
   return (
@@ -208,41 +208,41 @@ const CampaignForm = (props: CampaignFormProps) => {
           The maximum number of impressions you want to deliver in this campaign
         </FormHelperText>
       </FormControl>
-      <FormControl isRequired isInvalid={brandNameMissing}>
-        <FormLabel>Brand Name</FormLabel>
+      <FormControl isRequired isInvalid={productNameMissing}>
+        <FormLabel>Product Name</FormLabel>
         <Input
           type="text"
-          value={brandName}
-          onChange={setInput.bind(this, "brandName")}
+          value={productName}
+          onChange={setInput.bind(this, "productName")}
           placeholder={"Acme Corp."}
         />
-        {brandNameMissing && (
+        {productNameMissing && (
           <FormErrorMessage>
-            You must provide the name of the brand, this campaign is for.
+            You must provide the name of the product, this campaign is for.
           </FormErrorMessage>
         )}
-        {!brandNameMissing && (
+        {!productNameMissing && (
           <FormHelperText>
-            This is the name of the brand you are advertising like Target,
+            This is the name of the product you are advertising like Target,
             Apple, Microsoft etc.
           </FormHelperText>
         )}
       </FormControl>
-      <FormControl isRequired isInvalid={brandDescriptionMissing}>
-        <FormLabel>Brand Description</FormLabel>
+      <FormControl isRequired isInvalid={productDescriptionMissing}>
+        <FormLabel>Product Description</FormLabel>
         <Textarea
-          value={brandDescription}
-          onChange={setText.bind(this, "brandDescription")}
-          placeholder={brandDescription}
+          value={productDescription}
+          onChange={setText.bind(this, "productDescription")}
+          placeholder={productDescription}
         />
-        {brandDescriptionMissing && (
+        {productDescriptionMissing && (
           <FormErrorMessage>
-            You must provide the description of the brand.
+            You must provide the description of the product.
           </FormErrorMessage>
         )}
-        {!brandDescriptionMissing && (
+        {!productDescriptionMissing && (
           <FormHelperText>
-            This is the meta description of the brand you are advertising.
+            This is the meta description of the product you are advertising.
           </FormHelperText>
         )}
       </FormControl>

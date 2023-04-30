@@ -51,13 +51,13 @@ const createAdvertisement = async (advertisementSpot: AdvertisementSpot) => {
   const { relevantCampaigns } = existingAdvertisementSpot.websiteUrl;
 
   for (const rc of relevantCampaigns) {
-    const { brandName, brandDescription } = rc.campaign;
+    const { productName, productDescription } = rc.campaign;
     const adTextCopies = await getAdvertisementText(
       corpus,
       beforeText,
       afterText,
-      brandName,
-      brandDescription
+      productName,
+      productDescription
     );
     const advertisementInputArr: AdvertisementCreateManyAdvertisementSpotInput[] =
       adTextCopies.map((adTextCopy) => ({

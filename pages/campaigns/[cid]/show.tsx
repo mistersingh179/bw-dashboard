@@ -65,12 +65,12 @@ const CampaignBox = (props: { campaign: CampaignType }) => {
         </Box>
       </HStack>
       <HStack>
-        <Box minW={"3xs"}>Brand Name: </Box>
-        <Box>{campaign.brandName}</Box>
+        <Box minW={"3xs"}>Product Name: </Box>
+        <Box>{campaign.productName}</Box>
       </HStack>
       <HStack>
-        <Box minW={"3xs"}>Brand Description: </Box>
-        <Box>{campaign.brandDescription}</Box>
+        <Box minW={"3xs"}>Poduct Description: </Box>
+        <Box>{campaign.productDescription}</Box>
       </HStack>
       <HStack>
         <Box minW={"3xs"}>Click Url: </Box>

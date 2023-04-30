@@ -156,8 +156,8 @@ model Campaign {
   end                 DateTime
   impressionCap       Int                @default(1000000)
   fixedCpm            Decimal            @default(10.00) @db.Decimal(10, 2)
-  brandName           String             @default("")
-  brandDescription    String             @default("")
+  productName         String             @default("")
+  productDescription  String             @default("")
   clickUrl            String             @default("")
   requiredCssSelector String             @default("")
   pacing              Boolean            @default(false)

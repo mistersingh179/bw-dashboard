@@ -11,8 +11,8 @@ export type CampaignType = {
   optimisticValue?: boolean;
   impressionCap: number;
   fixedCpm: number;
-  brandName: string;
-  brandDescription: string;
+  productName: string;
+  productDescription: string;
   clickUrl: string;
   requiredCssSelector: string;
   pacing: boolean;

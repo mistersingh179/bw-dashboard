@@ -4,8 +4,8 @@ type GetAdvertisementText = (
   corpus: string,
   beforeText: string,
   afterText: string,
-  brandName: string,
-  brandDescription: string
+  productName: string,
+  productDescription: string
 ) => Promise<string[]>;
 
 // todo - take object here rather than so many params
@@ -13,18 +13,18 @@ const getAdvertisementText: GetAdvertisementText = async (
   corpus,
   beforeText: string,
   afterText: string,
-  brandName,
-  brandDescription
+  productName,
+  productDescription
 ) => {
   // todo – call openai chat gpt api here
   // limit corpus characters so the prompt fits
 
   return [
-    `${brandName} is the best product. Please use it.`,
-    `This is the best – ${brandName}.`,
-    `${brandName} rocks because – ${brandDescription}`,
-    `always use ${brandName} as – ${brandDescription}`,
-    `i trust ${brandName} period. It is ${brandDescription}`
+    `${productName} is the best product. Please use it.`,
+    `This is the best – ${productName}.`,
+    `${productName} rocks because – ${productDescription}`,
+    `always use ${productName} as – ${productDescription}`,
+    `i trust ${productName} period. It is ${productDescription}`
   ].slice(0, DESIRED_ADVERTISEMENT_COUNT);
 };
 

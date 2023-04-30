@@ -73,7 +73,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
-- rename brand to product both be & fe
 - ditch our types for prisma types for campaign
 - look at await in map
 - add reason to relevant campaign
