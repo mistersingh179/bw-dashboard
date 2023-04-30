@@ -28,6 +28,10 @@
 
 - `http://localhost:3000/api/auth/providers` gives links of all providers we have
 
+## URL's
+
+- Prisma studio: https://cloud.prisma.io/mistersingh179/gold-lion-vrfjsebfou/production/databrowser
+
 ## SQL
 
 - Drop database
@@ -69,8 +73,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
-- setup prisma studio for production
-- website url toggle not flipping immediately
 - rename brand to product both be & fe
 - ditch our types for prisma types for campaign
 - look at await in map

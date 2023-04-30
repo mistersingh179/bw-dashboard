@@ -14,22 +14,16 @@ import {
   Th,
   Thead,
   Tr,
-  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
-import { format, parseISO } from "date-fns";
-import StatusBadge from "@/components/StatusBadge";
-import { Link } from "@chakra-ui/next-js";
 import React from "react";
 import { ErrorRow, LoadingDataRow, NoDataRow } from "@/components/genericRows";
 import useSWR from "swr";
 import fetcher from "@/helpers/fetcher";
-import AnyObject from "@/types/AnyObject";
 import CreateWebsiteUrlModal from "@/components/modals/CreateWebsiteUrlModal";
 import { WebsiteUrlType } from "@/types/my-types";
 import useTxToast from "@/hooks/useTxToast";
-import { WebsiteUrl } from "@prisma/client";
 
 const WebsiteUrls: FCWithAuth = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -45,24 +39,23 @@ const WebsiteUrls: FCWithAuth = () => {
     updatedWebsiteUrl: WebsiteUrlType,
     evt: React.ChangeEvent<HTMLInputElement>
   ) => {
-    updatedWebsiteUrl.status = evt.target.checked;
-    console.log("updated website url is: ", updatedWebsiteUrl);
+    const updatedItem = { ...updatedWebsiteUrl };
+    updatedItem.status = evt.target.checked;
+    console.log("updated website url is: ", updatedItem);
     try {
-      await mutate(updateWebsiteUrl.bind(this, updatedWebsiteUrl), {
+      await mutate(updateWebsiteUrl.bind(this, updatedItem), {
         optimisticData: (currentData) => {
           console.log("in optimisticData with: ", currentData);
           success("Website Url", "Updated successfully");
           if (currentData) {
-            const idx = currentData.findIndex(
-              (x) => x.id === updatedWebsiteUrl.id
-            );
+            const idx = currentData.findIndex((x) => x.id === updatedItem.id);
             return [
               ...currentData.slice(0, idx),
-              { ...updatedWebsiteUrl },
+              { ...updatedItem },
               ...currentData.slice(idx + 1),
             ];
           } else {
-            return [{ ...updatedWebsiteUrl }];
+            return [{ ...updatedItem }];
           }
         },
         populateCache: false,
@@ -80,9 +73,9 @@ const WebsiteUrls: FCWithAuth = () => {
         optimisticData: (currentData) => {
           success("Website Url", "Created successfully");
           if (currentData) {
-            return [...currentData, {...newWebsiteUrl}];
+            return [...currentData, { ...newWebsiteUrl }];
           } else {
-            return [{...newWebsiteUrl}];
+            return [{ ...newWebsiteUrl }];
           }
         },
         populateCache: false,

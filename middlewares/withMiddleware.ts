@@ -14,7 +14,7 @@ import {
 import delayMiddleware from "@/middlewares/delayMiddleware";
 import botRejectingMiddleware from "@/middlewares/botRejectingMiddleware";
 
-const defaults: string[] = ["reqId", "logging", "headers", "errors", "delay"];
+const defaults: string[] = ["reqId", "delay", "logging", "headers", "errors"];
 
 const middleware: LabeledMiddleware = {
   logging: loggingMiddleware,
