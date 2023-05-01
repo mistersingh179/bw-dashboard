@@ -1,7 +1,7 @@
 import { Campaign, WebsiteUrl } from "@prisma/client";
 import prisma from "@/lib/prisma";
 
-type CampaignWithScore = Campaign & { score: number };
+type CampaignWithScore = Campaign & { score: number, reason: string };
 
 const getCampaignsWithTheirScores = async (
   websiteUrl: WebsiteUrl,
@@ -13,6 +13,7 @@ const getCampaignsWithTheirScores = async (
     return {
       ...c,
       score: Math.round(Math.random() * 10),
+      reason: "Lorem Lipsum"
     };
   });
   console.log("return with campaings with scores: ", campaignsWithScore);

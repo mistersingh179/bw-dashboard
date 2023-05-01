@@ -73,8 +73,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
-- ditch our types for prisma types for campaign
-- look at await in map
 - add reason to relevant campaign
 - rename relevantCampaign to scoredCampaigns
 - add types to service functions, so they can't be called wrong

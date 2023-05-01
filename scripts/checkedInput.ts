@@ -34,9 +34,9 @@ const main = async () => {
       id: websiteUrl.id,
     },
     data: {
-      relevantCampaigns: {
+      scoredCampaigns: {
         createMany: {
-          data: [{ campaignId: "1", score: 2 }],
+          data: [{ campaignId: "1", score: 2, reason: "Lorem Lipsum" }],
         },
       },
     },

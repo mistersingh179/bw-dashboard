@@ -2,9 +2,9 @@ import prisma from "@/lib/prisma";
 import getCampaignsWhichNeedScore from "@/services/helpers/getCampaignsWhichNeedScore";
 import { Prisma, WebsiteUrl } from "@prisma/client";
 import getCampaignsWithTheirScores from "@/services/prompts/getCampaignsWithTheirScores";
-import RelevantCampaignCreateManyWebsiteUrlInput = Prisma.RelevantCampaignCreateManyWebsiteUrlInput;
+import ScoredCampaignCreateManyWebsiteUrlInput = Prisma.ScoredCampaignCreateManyWebsiteUrlInput;
 
-const createRelevantCampaigns = async (websiteUrl: WebsiteUrl) => {
+const createScoredCampaigns = async (websiteUrl: WebsiteUrl) => {
   console.log("websiteUrl: ", websiteUrl);
   const campaignsWhichNeedScore = await getCampaignsWhichNeedScore(websiteUrl);
   const campaignsWithScore = await getCampaignsWithTheirScores(
@@ -12,23 +12,24 @@ const createRelevantCampaigns = async (websiteUrl: WebsiteUrl) => {
     campaignsWhichNeedScore
   );
 
-  const relevantCampaignInput: RelevantCampaignCreateManyWebsiteUrlInput[] =
+  const scoredCampaignInput: ScoredCampaignCreateManyWebsiteUrlInput[] =
     campaignsWithScore.map((c) => {
       return {
         campaignId: c.id,
         score: c.score,
+        reason: c.reason,
       };
     });
-  console.log("input to create relevant campaigns: ", relevantCampaignInput);
+  console.log("input to create scored campaigns: ", scoredCampaignInput);
 
   await prisma.websiteUrl.update({
     where: {
       id: websiteUrl.id,
     },
     data: {
-      relevantCampaigns: {
+      scoredCampaigns: {
         createMany: {
-          data: relevantCampaignInput,
+          data: scoredCampaignInput,
         },
       },
     },
@@ -37,13 +38,9 @@ const createRelevantCampaigns = async (websiteUrl: WebsiteUrl) => {
 
 if (require.main === module) {
   (async () => {
-    const websiteUrl = await prisma.websiteUrl.findFirstOrThrow({
-      where: {
-        id: "clgv42xj5000l98yf73ocppzq",
-      },
-    });
-    await createRelevantCampaigns(websiteUrl);
+    const websiteUrl = await prisma.websiteUrl.findFirstOrThrow();
+    await createScoredCampaigns(websiteUrl);
   })();
 }
 
-export default createRelevantCampaigns;
+export default createScoredCampaigns;

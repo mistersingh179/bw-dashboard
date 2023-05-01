@@ -36,7 +36,7 @@ const createAdvertisement = async (advertisementSpot: AdvertisementSpot) => {
       include: {
         websiteUrl: {
           include: {
-            relevantCampaigns: {
+            scoredCampaigns: {
               include: {
                 campaign: true,
               },
@@ -48,10 +48,10 @@ const createAdvertisement = async (advertisementSpot: AdvertisementSpot) => {
 
   const { beforeText, afterText } = existingAdvertisementSpot;
   const { corpus } = existingAdvertisementSpot.websiteUrl;
-  const { relevantCampaigns } = existingAdvertisementSpot.websiteUrl;
+  const { scoredCampaigns } = existingAdvertisementSpot.websiteUrl;
 
-  for (const rc of relevantCampaigns) {
-    const { productName, productDescription } = rc.campaign;
+  for (const sc of scoredCampaigns) {
+    const { productName, productDescription } = sc.campaign;
     const adTextCopies = await getAdvertisementText(
       corpus,
       beforeText,
@@ -62,7 +62,7 @@ const createAdvertisement = async (advertisementSpot: AdvertisementSpot) => {
     const advertisementInputArr: AdvertisementCreateManyAdvertisementSpotInput[] =
       adTextCopies.map((adTextCopy) => ({
         advertText: adTextCopy,
-        relevantCampaignId: rc.id,
+        scoredCampaignId: sc.id,
         status: true,
       }));
 

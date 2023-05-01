@@ -13,23 +13,23 @@ const getCampaignsWhichNeedScore = async (websiteUrl: WebsiteUrl) => {
   });
   console.log("user: ", user);
 
-  const existingRelevantCampaigns = await prisma.relevantCampaign.findMany({
+  const existingScoredCampaigns = await prisma.scoredCampaign.findMany({
     where: {
       websiteUrlId: websiteUrl.id,
     },
   });
-  console.log("existingRelevantCampaigns: ", existingRelevantCampaigns);
+  console.log("existingScoredCampaigns: ", existingScoredCampaigns);
 
-  const existingRelevantCampaignsIds = existingRelevantCampaigns.map(
+  const existingScoredCampaignsIds = existingScoredCampaigns.map(
     (c) => c.campaignId
   );
-  console.log("existingRelevantCampaignsIds: ", existingRelevantCampaignsIds);
+  console.log("existingScoredCampaignsIds: ", existingScoredCampaignsIds);
 
   const campaignsWhichNeedScore = await prisma.campaign.findMany({
     where: {
       userId: user.id,
       id: {
-        notIn: existingRelevantCampaignsIds,
+        notIn: existingScoredCampaignsIds,
       },
     },
   });

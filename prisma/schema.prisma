@@ -83,7 +83,7 @@ model WebsiteUrl {
   id                 String              @id @default(cuid())
   userId             String
   user               User                @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  relevantCampaigns  RelevantCampaign[]
+  scoredCampaigns    ScoredCampaign[]
   advertisementSpots AdvertisementSpot[]
   url                String
   corpus             String
@@ -111,7 +111,7 @@ model AdvertisementSpot {
   @@index([websiteUrlId])
 }
 
-model RelevantCampaign {
+model ScoredCampaign {
   id             String          @id @default(cuid())
   websiteUrlId   String
   websiteUrl     WebsiteUrl      @relation(fields: [websiteUrlId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -119,6 +119,7 @@ model RelevantCampaign {
   campaign       Campaign        @relation(fields: [campaignId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   advertisements Advertisement[]
   score          Int
+  reason         String
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
@@ -130,8 +131,8 @@ model RelevantCampaign {
 
 model Advertisement {
   id                  String            @id @default(cuid())
-  relevantCampaignId  String
-  relevantCampaign    RelevantCampaign  @relation(fields: [relevantCampaignId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  scoredCampaignId    String
+  scoredCampaign      ScoredCampaign    @relation(fields: [scoredCampaignId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   impressions         Impression[]
   advertisementSpotId String
   advertisementSpot   AdvertisementSpot @relation(fields: [advertisementSpotId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -140,30 +141,30 @@ model Advertisement {
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
 
-  @@index([relevantCampaignId])
-  @@index([relevantCampaignId, status])
+  @@index([scoredCampaignId])
+  @@index([scoredCampaignId, status])
   @@index([advertisementSpotId])
 }
 
 model Campaign {
-  id                  String             @id @default(cuid())
+  id                  String           @id @default(cuid())
   userId              String
-  user                User               @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  relevantCampaigns   RelevantCampaign[]
+  user                User             @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  scoredCampaigns     ScoredCampaign[]
   impressions         Impression[]
-  name                String             @default("")
+  name                String           @default("")
   start               DateTime
   end                 DateTime
-  impressionCap       Int                @default(1000000)
-  fixedCpm            Decimal            @default(10.00) @db.Decimal(10, 2)
-  productName         String             @default("")
-  productDescription  String             @default("")
-  clickUrl            String             @default("")
-  requiredCssSelector String             @default("")
-  pacing              Boolean            @default(false)
-  status              Boolean            @default(false)
-  createdAt           DateTime           @default(now())
-  updatedAt           DateTime           @updatedAt
+  impressionCap       Int              @default(1000000)
+  fixedCpm            Decimal          @default(10.00) @db.Decimal(10, 2)
+  productName         String           @default("")
+  productDescription  String           @default("")
+  clickUrl            String           @default("")
+  requiredCssSelector String           @default("")
+  pacing              Boolean          @default(false)
+  status              Boolean          @default(false)
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
 
   @@unique([userId, name])
   @@index([createdAt(sort: Asc)])
