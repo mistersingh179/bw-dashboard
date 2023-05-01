@@ -1,30 +1,21 @@
 import { Prisma } from ".prisma/client";
+import CampaignUncheckedCreateWithoutUserInput = Prisma.CampaignUncheckedCreateWithoutUserInput;
 
-export type CampaignType = {
-  id?: string;
-  name: string;
+export type CampaignType = Omit<
+  CampaignUncheckedCreateWithoutUserInput,
+  "start" | "end" | "fixedCpm"
+> & {
   start: string;
   end: string;
-  createdAt?: string;
-  updatedAt?: string;
-  userId?: string;
-  optimisticValue?: boolean;
-  impressionCap: number;
   fixedCpm: number;
-  productName: string;
-  productDescription: string;
-  clickUrl: string;
-  requiredCssSelector: string;
-  pacing: boolean;
-  status: boolean;
 };
 
 export type WebsiteUrlType = {
-  id?: string
-  url: string
-  corpus: string
-  status: boolean
-  userId?: string
-  createdAt?: string
-  updatedAt?: string
-}
+  id?: string;
+  url: string;
+  corpus: string;
+  status: boolean;
+  userId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
