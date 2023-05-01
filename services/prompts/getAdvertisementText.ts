@@ -1,4 +1,4 @@
-import {DESIRED_ADVERTISEMENT_COUNT} from "@/constants";
+import { DESIRED_ADVERTISEMENT_COUNT } from "@/constants";
 
 type GetAdvertisementText = (
   corpus: string,
@@ -11,8 +11,8 @@ type GetAdvertisementText = (
 // todo - take object here rather than so many params
 const getAdvertisementText: GetAdvertisementText = async (
   corpus,
-  beforeText: string,
-  afterText: string,
+  beforeText,
+  afterText,
   productName,
   productDescription
 ) => {
@@ -24,7 +24,7 @@ const getAdvertisementText: GetAdvertisementText = async (
     `This is the best – ${productName}.`,
     `${productName} rocks because – ${productDescription}`,
     `always use ${productName} as – ${productDescription}`,
-    `i trust ${productName} period. It is ${productDescription}`
+    `i trust ${productName} period. It is ${productDescription}`,
   ].slice(0, DESIRED_ADVERTISEMENT_COUNT);
 };
 

@@ -17,7 +17,9 @@ const enoughAdSpotsExist = async (websiteUrl: WebsiteUrl): Promise<boolean> => {
   return result.length === DESIRED_ADVERTISEMENT_SPOT_COUNT;
 };
 
-const createAdvertisementSpots = async (websiteUrl: WebsiteUrl) => {
+type CreateAdvertisementSpots = (websiteUrl: WebsiteUrl) => Promise<void>;
+
+const createAdvertisementSpots: CreateAdvertisementSpots = async (websiteUrl) => {
   console.log("in createAdvertisementSpots for: ", websiteUrl);
 
   if (await enoughAdSpotsExist(websiteUrl)) {

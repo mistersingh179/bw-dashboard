@@ -32,5 +32,6 @@ if (require.main === module) {
   (async () => {
     const websiteUrl = await prisma.websiteUrl.findFirstOrThrow();
     const updatedWebsiteUrl = await updateWebsiteUrlCorpus(websiteUrl);
+    console.log(updatedWebsiteUrl);
   })();
 }

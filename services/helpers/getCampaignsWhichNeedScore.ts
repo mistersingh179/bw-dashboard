@@ -1,9 +1,10 @@
 import prisma from "@/lib/prisma";
-import { WebsiteUrl } from "@prisma/client";
+import {Campaign, WebsiteUrl} from "@prisma/client";
 
 // todo - should have type to declare return as its any right now
+type GetCampaignsWhichNeedScore = (websiteUrl: WebsiteUrl) => Promise<Campaign[]>;
 
-const getCampaignsWhichNeedScore = async (websiteUrl: WebsiteUrl) => {
+const getCampaignsWhichNeedScore: GetCampaignsWhichNeedScore = async (websiteUrl) => {
   console.log("in getCampaignsWhichNeedScore with websiteUrl: ", websiteUrl.id);
 
   const user = await prisma.user.findFirstOrThrow({
@@ -34,7 +35,6 @@ const getCampaignsWhichNeedScore = async (websiteUrl: WebsiteUrl) => {
     },
   });
   console.log("campaignsWhichNeedScore: ", campaignsWhichNeedScore);
-
   return campaignsWhichNeedScore;
 };
 

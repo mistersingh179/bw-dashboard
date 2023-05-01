@@ -73,9 +73,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
-- add reason to relevant campaign
-- rename relevantCampaign to scoredCampaigns
-- add types to service functions, so they can't be called wrong
 - think on how may advertisements we need. currently it builds every time it is called.
 - unique index on the many to many join table for websiteUrl, campaignId
 - rename corpus to html

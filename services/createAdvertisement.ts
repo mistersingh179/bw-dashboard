@@ -20,7 +20,11 @@ const enoughActiveAdsExist = async (
   return result.length === DESIRED_ADVERTISEMENT_COUNT;
 };
 
-const createAdvertisement = async (advertisementSpot: AdvertisementSpot) => {
+type CreateAdvertisement = (
+  advertisementSpot: AdvertisementSpot
+) => Promise<void>;
+
+const createAdvertisement: CreateAdvertisement = async (advertisementSpot) => {
   console.log("will create advertisement(s) for spot: ", advertisementSpot);
 
   if (await enoughActiveAdsExist(advertisementSpot)) {

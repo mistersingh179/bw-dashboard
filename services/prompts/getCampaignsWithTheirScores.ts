@@ -1,11 +1,15 @@
 import { Campaign, WebsiteUrl } from "@prisma/client";
 import prisma from "@/lib/prisma";
 
-type CampaignWithScore = Campaign & { score: number, reason: string };
-
-const getCampaignsWithTheirScores = async (
+type CampaignWithScore = Campaign & { score: number; reason: string };
+type GetCampaignsWithTheirScores = (
   websiteUrl: WebsiteUrl,
-  campaigns: Campaign[]
+  campaign: Campaign[]
+) => Promise<CampaignWithScore[]>;
+
+const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
+  websiteUrl,
+  campaigns
 ) => {
   console.log("in getCampaignsWithTheirScores with: ", websiteUrl, campaigns);
   // TODO – call openai chatgpt here
@@ -13,7 +17,7 @@ const getCampaignsWithTheirScores = async (
     return {
       ...c,
       score: Math.round(Math.random() * 10),
-      reason: "Lorem Lipsum"
+      reason: "Lorem Lipsum",
     };
   });
   console.log("return with campaings with scores: ", campaignsWithScore);
@@ -34,7 +38,10 @@ if (require.main === module) {
         },
       },
     });
-    const campaignsWithScore = await getCampaignsWithTheirScores(websiteUrl,campaignsWhichNeedScore);
+    const campaignsWithScore = await getCampaignsWithTheirScores(
+      websiteUrl,
+      campaignsWhichNeedScore
+    );
     console.log("campaignsWithScore: ", campaignsWithScore);
   })();
 }

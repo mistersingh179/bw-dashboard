@@ -4,7 +4,9 @@ import { Prisma, WebsiteUrl } from "@prisma/client";
 import getCampaignsWithTheirScores from "@/services/prompts/getCampaignsWithTheirScores";
 import ScoredCampaignCreateManyWebsiteUrlInput = Prisma.ScoredCampaignCreateManyWebsiteUrlInput;
 
-const createScoredCampaigns = async (websiteUrl: WebsiteUrl) => {
+type CreateScoredCampaigns = (websiteUrl: WebsiteUrl) => Promise<void>;
+
+const createScoredCampaigns: CreateScoredCampaigns = async (websiteUrl) => {
   console.log("websiteUrl: ", websiteUrl);
   const campaignsWhichNeedScore = await getCampaignsWhichNeedScore(websiteUrl);
   const campaignsWithScore = await getCampaignsWithTheirScores(
