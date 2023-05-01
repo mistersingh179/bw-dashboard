@@ -51,13 +51,13 @@ const createAdvertisement: CreateAdvertisement = async (advertisementSpot) => {
     });
 
   const { beforeText, afterText } = existingAdvertisementSpot;
-  const { corpus } = existingAdvertisementSpot.websiteUrl;
+  const { html } = existingAdvertisementSpot.websiteUrl;
   const { scoredCampaigns } = existingAdvertisementSpot.websiteUrl;
 
   for (const sc of scoredCampaigns) {
     const { productName, productDescription } = sc.campaign;
     const adTextCopies = await getAdvertisementText(
-      corpus,
+      html,
       beforeText,
       afterText,
       productName,

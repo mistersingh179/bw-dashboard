@@ -67,7 +67,7 @@ const nextElementWithTextOfSameTypeFilter: ElementFilter = (elem) => {
   return ans;
 };
 const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (websiteUrl) => {
-  const dom = new JSDOM(websiteUrl.corpus);
+  const dom = new JSDOM(websiteUrl.html);
   const {
     window: { document },
   } = dom;
@@ -99,7 +99,7 @@ export default getAdSpotsForWebpage;
 if (require.main === module) {
   (async () => {
     const webisteUrl = await prisma.websiteUrl.findFirstOrThrow();
-    console.log("website's corpus length: ", webisteUrl.corpus.length);
+    console.log("website's html length: ", webisteUrl.html.length);
     await getAdSpotsForWebpage(webisteUrl);
   })();
 }

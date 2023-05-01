@@ -9,8 +9,8 @@ const updateWebsiteUrlCorpus: UpdateCorpus = async (websiteUrl) => {
       id: websiteUrl.id,
     },
   });
-  if (existingWebsiteUrl.corpus?.length > 0) {
-    console.log("aborting as corpus already exists");
+  if (existingWebsiteUrl.html?.length > 0) {
+    console.log("aborting as html already exists");
     return existingWebsiteUrl;
   }
 
@@ -20,7 +20,7 @@ const updateWebsiteUrlCorpus: UpdateCorpus = async (websiteUrl) => {
       id: websiteUrl.id,
     },
     data: {
-      corpus: htmlContent,
+      html: htmlContent,
     },
   });
   return updatedWebsiteUrl;

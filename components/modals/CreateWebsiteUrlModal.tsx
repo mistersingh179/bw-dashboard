@@ -31,7 +31,7 @@ const CreateWebsiteUrlModal = ({
   onSave: (newWebsiteUrl: WebsiteUrlType) => void;
 }) => {
   const [url, setUrl] = useState("https://acme.com");
-  const [corpus, setCorpus] = useState("");
+  const [html, setCorpus] = useState("");
   const [status, setStatus] = useState(false);
 
   const urlMissing = url.length === 0 ? true : false;
@@ -63,7 +63,7 @@ const CreateWebsiteUrlModal = ({
             <FormControl>
               <FormLabel>Corpus</FormLabel>
               <Textarea
-                value={corpus}
+                value={html}
                 onChange={(evt) => setCorpus(evt.target.value)}
               />
               <FormHelperText>
@@ -90,7 +90,7 @@ const CreateWebsiteUrlModal = ({
             onClick={async () => {
               const newWebsiteUrl: WebsiteUrlType = {
                 url,
-                corpus,
+                html,
                 status,
               };
               await onSave(newWebsiteUrl);

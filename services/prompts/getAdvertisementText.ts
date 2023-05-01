@@ -1,7 +1,7 @@
 import { DESIRED_ADVERTISEMENT_COUNT } from "@/constants";
 
 type GetAdvertisementText = (
-  corpus: string,
+  html: string,
   beforeText: string,
   afterText: string,
   productName: string,
@@ -10,14 +10,14 @@ type GetAdvertisementText = (
 
 // todo - take object here rather than so many params
 const getAdvertisementText: GetAdvertisementText = async (
-  corpus,
+  html,
   beforeText,
   afterText,
   productName,
   productDescription
 ) => {
   // todo – call openai chat gpt api here
-  // limit corpus characters so the prompt fits
+  // limit html characters so the prompt fits
 
   return [
     `${productName} is the best product. Please use it.`,

@@ -86,7 +86,7 @@ model WebsiteUrl {
   scoredCampaigns    ScoredCampaign[]
   advertisementSpots AdvertisementSpot[]
   url                String
-  corpus             String
+  html               String
   status             Boolean
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt

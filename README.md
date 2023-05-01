@@ -73,9 +73,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
-- think on how may advertisements we need. currently it builds every time it is called.
-- unique index on the many to many join table for websiteUrl, campaignId
-- rename corpus to html
 - take users threshold
 - rename WebsiteUrl to Webpage & call join table WebpageCampaigns
 - if we dont have 5 spots, lets get to 5 spots, but we dont want the same spots again, so maybe use index to prevent that insertion
