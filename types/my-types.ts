@@ -10,12 +10,5 @@ export type CampaignType = Omit<
   fixedCpm: number;
 };
 
-export type WebsiteUrlType = {
-  id?: string;
-  url: string;
-  corpus: string;
-  status: boolean;
-  userId?: string;
-  createdAt?: string;
-  updatedAt?: string;
-};
+export type WebsiteUrlType =
+  Prisma.WebsiteUrlUncheckedCreateWithoutUserInput & {};
