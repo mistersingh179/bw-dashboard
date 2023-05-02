@@ -4,22 +4,22 @@ import { Campaign } from "@prisma/client";
 import { formatISO, parseISO } from "date-fns";
 import withMiddleware from "@/middlewares/withMiddleware";
 
-const websiteUrlsHandler: NextApiHandler = async (req, res) => {
+const websitesHandler: NextApiHandler = async (req, res) => {
   switch (req.method) {
     case "GET":
-      await handleListWebsiteUrls(req, res);
+      await handleListWebsites(req, res);
       break;
     case "POST":
-      await handleCreateWebsiteUrl(req, res);
+      await handleCreateWebsite(req, res);
       break;
   }
 };
 
-const handleListWebsiteUrls = async (
+const handleListWebsites = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  const websiteUrls = await prisma.websiteUrl.findMany({
+  const websites = await prisma.website.findMany({
     where: {
       userId: req.authenticatedUserId,
     },
@@ -27,21 +27,21 @@ const handleListWebsiteUrls = async (
       id: "asc"
     }
   });
-  console.log("websiteUrls: ", websiteUrls);
-  res.json(websiteUrls);
+  console.log("websites: ", websites);
+  res.json(websites);
 };
 
-const handleCreateWebsiteUrl = async (
+const handleCreateWebsite = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  const websiteUrl = await prisma.websiteUrl.create({
+  const website = await prisma.website.create({
     data: {
       ...req.body,
       userId: req.authenticatedUserId,
     },
   });
-  res.json(websiteUrl);
+  res.json(website);
 };
 
-export default withMiddleware("getPostOnly", "auth")(websiteUrlsHandler);
+export default withMiddleware("getPostOnly", "auth")(websitesHandler);

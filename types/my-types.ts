@@ -1,4 +1,4 @@
-import { Campaign, WebsiteUrl, Prisma } from ".prisma/client";
+import { Campaign, Webpage, Website, Prisma } from ".prisma/client";
 import CampaignUncheckedCreateWithoutUserInput = Prisma.CampaignUncheckedCreateWithoutUserInput;
 
 export type CampaignType = Omit<
@@ -15,8 +15,19 @@ export type CampaignType = Omit<
   updatedAt?: string;
 };
 
-export type WebsiteUrlType = Omit<
-  WebsiteUrl,
+export type WebpageType = Omit<
+  Webpage,
+  "id" | "userId" | "websiteId" | "createdAt" | "updatedAt"
+> & {
+  id?: string;
+  userId?: string;
+  websiteId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type WebsiteType = Omit<
+  Website,
   "id" | "userId" | "createdAt" | "updatedAt"
 > & {
   id?: string;

@@ -1,13 +1,13 @@
-import {Prisma, WebsiteUrl} from "@prisma/client";
+import {Prisma, Webpage} from "@prisma/client";
 import prisma from "@/lib/prisma";
 import getAdSpotsForWebpage from "@/services/helpers/getAdSpotsForWebpage";
-import AdvertisementSpotCreateManyWebsiteUrlInput = Prisma.AdvertisementSpotCreateManyWebsiteUrlInput;
+import AdvertisementSpotCreateManyWebpageInput = Prisma.AdvertisementSpotCreateManyWebpageInput;
 import {DESIRED_ADVERTISEMENT_SPOT_COUNT} from "@/constants";
 
-const enoughAdSpotsExist = async (websiteUrl: WebsiteUrl): Promise<boolean> => {
+const enoughAdSpotsExist = async (webpage: Webpage): Promise<boolean> => {
   const result = await prisma.advertisementSpot.findMany({
     where: {
-      websiteUrlId: websiteUrl.id,
+      webpageId: webpage.id,
     },
     select: {
       id: true,
@@ -17,27 +17,27 @@ const enoughAdSpotsExist = async (websiteUrl: WebsiteUrl): Promise<boolean> => {
   return result.length === DESIRED_ADVERTISEMENT_SPOT_COUNT;
 };
 
-type CreateAdvertisementSpots = (websiteUrl: WebsiteUrl) => Promise<void>;
+type CreateAdvertisementSpots = (webpage: Webpage) => Promise<void>;
 
-const createAdvertisementSpots: CreateAdvertisementSpots = async (websiteUrl) => {
-  console.log("in createAdvertisementSpots for: ", websiteUrl);
+const createAdvertisementSpots: CreateAdvertisementSpots = async (webpage) => {
+  console.log("in createAdvertisementSpots for: ", webpage);
 
-  if (await enoughAdSpotsExist(websiteUrl)) {
+  if (await enoughAdSpotsExist(webpage)) {
     console.log(`Aborting createAdvertisementSpots as we already enough`);
     return;
   }
 
-  const adSpotTextArr = await getAdSpotsForWebpage(websiteUrl);
+  const adSpotTextArr = await getAdSpotsForWebpage(webpage);
 
-  const advertisementSpotInputs: AdvertisementSpotCreateManyWebsiteUrlInput[] =
+  const advertisementSpotInputs: AdvertisementSpotCreateManyWebpageInput[] =
     adSpotTextArr.map((item) => ({
       beforeText: item.beforeText,
       afterText: item.afterText,
     }));
 
-  await prisma.websiteUrl.update({
+  await prisma.webpage.update({
     where: {
-      id: websiteUrl.id,
+      id: webpage.id,
     },
     data: {
       advertisementSpots: {
@@ -53,7 +53,7 @@ export default createAdvertisementSpots;
 
 if (require.main === module) {
   (async () => {
-    const wu = await prisma.websiteUrl.findFirstOrThrow();
-    createAdvertisementSpots(wu);
+    const wp = await prisma.webpage.findFirstOrThrow();
+    createAdvertisementSpots(wp);
   })();
 }

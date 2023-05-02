@@ -28,10 +28,10 @@ const main = async () => {
     },
   });
 
-  const websiteUrl = await prisma.websiteUrl.findFirstOrThrow();
-  await prisma.websiteUrl.update({
+  const webpage = await prisma.webpage.findFirstOrThrow();
+  await prisma.webpage.update({
     where: {
-      id: websiteUrl.id,
+      id: webpage.id,
     },
     data: {
       scoredCampaigns: {

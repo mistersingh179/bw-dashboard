@@ -1,22 +1,30 @@
 import prisma from "@/lib/prisma";
-import {Campaign, WebsiteUrl} from "@prisma/client";
+import {Campaign, Webpage} from "@prisma/client";
 
 // todo - should have type to declare return as its any right now
-type GetCampaignsWhichNeedScore = (websiteUrl: WebsiteUrl) => Promise<Campaign[]>;
+type GetCampaignsWhichNeedScore = (webpage: Webpage) => Promise<Campaign[]>;
 
-const getCampaignsWhichNeedScore: GetCampaignsWhichNeedScore = async (websiteUrl) => {
-  console.log("in getCampaignsWhichNeedScore with websiteUrl: ", websiteUrl.id);
+const getCampaignsWhichNeedScore: GetCampaignsWhichNeedScore = async (webpage) => {
+  console.log("in getCampaignsWhichNeedScore with webpage: ", webpage.id);
 
   const user = await prisma.user.findFirstOrThrow({
     where: {
-      id: websiteUrl.userId,
+      websites: {
+        some: {
+          webpages: {
+            some: {
+              id: webpage.id
+            }
+          }
+        }
+      }
     },
   });
   console.log("user: ", user);
 
   const existingScoredCampaigns = await prisma.scoredCampaign.findMany({
     where: {
-      websiteUrlId: websiteUrl.id,
+      webpageId: webpage.id,
     },
   });
   console.log("existingScoredCampaigns: ", existingScoredCampaigns);
@@ -40,12 +48,12 @@ const getCampaignsWhichNeedScore: GetCampaignsWhichNeedScore = async (websiteUrl
 
 if (require.main === module) {
   (async () => {
-    const websiteUrl = await prisma.websiteUrl.findFirstOrThrow({
+    const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
         id: "clgv42xj5000l98yf73ocppzq",
       },
     });
-    await getCampaignsWhichNeedScore(websiteUrl);
+    await getCampaignsWhichNeedScore(webpage);
   })();
 }
 

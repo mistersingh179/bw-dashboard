@@ -19,22 +19,24 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import StatusBadge from "@/components/StatusBadge";
-import { WebsiteUrlType } from "@/types/my-types";
+import { WebsiteType } from "@/types/my-types";
 
-const CreateWebsiteUrlModal = ({
+const CreateWebsiteModal = ({
   isOpen,
   onClose,
   onSave,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (newWebsiteUrl: WebsiteUrlType) => void;
+  onSave: (newWebsite: WebsiteType) => void;
 }) => {
-  const [url, setUrl] = useState("https://acme.com");
-  const [html, setCorpus] = useState("");
+  const [topLevelDomainUrl, setTopLevelDomainUrl] =
+    useState("https://acme.com");
+  const [sitemapUrl, setSitemapUrl] = useState("https://acme.com/sitemap.xml");
   const [status, setStatus] = useState(false);
 
-  const urlMissing = url.length === 0 ? true : false;
+  const topLevelDomainUrlMissing =
+    topLevelDomainUrl.length === 0 ? true : false;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
@@ -44,32 +46,30 @@ const CreateWebsiteUrlModal = ({
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing={5}>
-            <FormControl isRequired isInvalid={urlMissing}>
+            <FormControl isRequired isInvalid={topLevelDomainUrlMissing}>
               <FormLabel>Url</FormLabel>
               <Input
                 type="text"
-                value={url}
-                onChange={(evt) => setUrl(evt.target.value)}
+                value={topLevelDomainUrl}
+                onChange={(evt) => setTopLevelDomainUrl(evt.target.value)}
               />
-              {!urlMissing && (
+              {!topLevelDomainUrlMissing && (
                 <FormHelperText>This is the url of the webpage</FormHelperText>
               )}
-              {urlMissing && (
+              {topLevelDomainUrlMissing && (
                 <FormErrorMessage>
                   This is a require field and thus you must provide a url
                 </FormErrorMessage>
               )}
             </FormControl>
             <FormControl>
-              <FormLabel>Corpus</FormLabel>
-              <Textarea
-                value={html}
-                onChange={(evt) => setCorpus(evt.target.value)}
+              <FormLabel>Sitemap</FormLabel>
+              <Input
+                type="text"
+                value={sitemapUrl}
+                onChange={(evt) => setSitemapUrl(evt.target.value)}
               />
-              <FormHelperText>
-                The content of this website. You can leave this blank as nightly
-                background jobs will fetch it for you when they are blank.
-              </FormHelperText>
+              <FormHelperText>This is the url to your sitemap.</FormHelperText>
             </FormControl>
             <FormControl>
               <HStack>
@@ -88,14 +88,15 @@ const CreateWebsiteUrlModal = ({
             colorScheme="blue"
             mr={3}
             onClick={async () => {
-              const newWebsiteUrl: WebsiteUrlType = {
-                url,
-                html,
+              const newWebsite: WebsiteType = {
+                topLevelDomainUrl,
+                sitemapUrl,
                 status,
               };
-              await onSave(newWebsiteUrl);
-              setUrl("https://acme.com");
-              setCorpus("");
+              onClose();
+              await onSave(newWebsite);
+              setTopLevelDomainUrl("https://acme.com");
+              setSitemapUrl("https://acme.com/sitemap.xml");
               setStatus(false);
             }}
           >
@@ -110,4 +111,4 @@ const CreateWebsiteUrlModal = ({
   );
 };
 
-export default CreateWebsiteUrlModal;
+export default CreateWebsiteModal;

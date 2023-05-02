@@ -1,4 +1,4 @@
-import { WebsiteUrl } from "@prisma/client";
+import { Webpage } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { JSDOM } from "jsdom";
 import { DESIRED_ADVERTISEMENT_SPOT_COUNT } from "@/constants";
@@ -9,7 +9,7 @@ type AdSpotText = {
 };
 
 type GetAdSpotsTextForWebpage = (
-  websiteUrl: WebsiteUrl
+  webpage: Webpage
 ) => Promise<AdSpotText[]>;
 
 type AdSelectionOptions = {
@@ -66,8 +66,8 @@ const nextElementWithTextOfSameTypeFilter: ElementFilter = (elem) => {
   }
   return ans;
 };
-const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (websiteUrl) => {
-  const dom = new JSDOM(websiteUrl.html);
+const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (webpage) => {
+  const dom = new JSDOM(webpage.html);
   const {
     window: { document },
   } = dom;
@@ -98,8 +98,8 @@ export default getAdSpotsForWebpage;
 
 if (require.main === module) {
   (async () => {
-    const webisteUrl = await prisma.websiteUrl.findFirstOrThrow();
-    console.log("website's html length: ", webisteUrl.html.length);
-    await getAdSpotsForWebpage(webisteUrl);
+    const webpage = await prisma.webpage.findFirstOrThrow();
+    console.log("webpage's html length: ", webpage.html.length);
+    await getAdSpotsForWebpage(webpage);
   })();
 }

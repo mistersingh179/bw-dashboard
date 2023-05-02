@@ -1,37 +1,37 @@
-import { WebsiteUrl } from "@prisma/client";
+import { Webpage } from "@prisma/client";
 import fetchHtmlOfWebpage from "@/services/helpers/fetchHtmlOfWebpage";
 import prisma from "@/lib/prisma";
 
-type UpdateCorpus = (websiteUrl: WebsiteUrl) => Promise<WebsiteUrl>;
-const updateWebsiteUrlCorpus: UpdateCorpus = async (websiteUrl) => {
-  const existingWebsiteUrl = await prisma.websiteUrl.findFirstOrThrow({
+type UpdateCorpus = (webpage: Webpage) => Promise<Webpage>;
+const updateWebpageCorpus: UpdateCorpus = async (webpage) => {
+  const existingWebpage = await prisma.webpage.findFirstOrThrow({
     where: {
-      id: websiteUrl.id,
+      id: webpage.id,
     },
   });
-  if (existingWebsiteUrl.html?.length > 0) {
+  if (existingWebpage.html?.length > 0) {
     console.log("aborting as html already exists");
-    return existingWebsiteUrl;
+    return existingWebpage;
   }
 
-  const htmlContent = await fetchHtmlOfWebpage(websiteUrl.url);
-  const updatedWebsiteUrl = await prisma.websiteUrl.update({
+  const htmlContent = await fetchHtmlOfWebpage(webpage.url);
+  const updatedWebpage = await prisma.webpage.update({
     where: {
-      id: websiteUrl.id,
+      id: webpage.id,
     },
     data: {
       html: htmlContent,
     },
   });
-  return updatedWebsiteUrl;
+  return updatedWebpage;
 };
 
-export default updateWebsiteUrlCorpus;
+export default updateWebpageCorpus;
 
 if (require.main === module) {
   (async () => {
-    const websiteUrl = await prisma.websiteUrl.findFirstOrThrow();
-    const updatedWebsiteUrl = await updateWebsiteUrlCorpus(websiteUrl);
-    console.log(updatedWebsiteUrl);
+    const webpage = await prisma.webpage.findFirstOrThrow();
+    const updatedWebpage = await updateWebpageCorpus(webpage);
+    console.log(updatedWebpage);
   })();
 }

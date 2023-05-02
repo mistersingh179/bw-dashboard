@@ -38,7 +38,7 @@ const createAdvertisement: CreateAdvertisement = async (advertisementSpot) => {
         id: advertisementSpot.id,
       },
       include: {
-        websiteUrl: {
+        webpage: {
           include: {
             scoredCampaigns: {
               include: {
@@ -51,8 +51,8 @@ const createAdvertisement: CreateAdvertisement = async (advertisementSpot) => {
     });
 
   const { beforeText, afterText } = existingAdvertisementSpot;
-  const { html } = existingAdvertisementSpot.websiteUrl;
-  const { scoredCampaigns } = existingAdvertisementSpot.websiteUrl;
+  const { html } = existingAdvertisementSpot.webpage;
+  const { scoredCampaigns } = existingAdvertisementSpot.webpage;
 
   for (const sc of scoredCampaigns) {
     const { productName, productDescription } = sc.campaign;
@@ -87,12 +87,12 @@ export default createAdvertisement;
 
 if (require.main === module) {
   (async () => {
-    const websiteUrl = await prisma.websiteUrl.findFirstOrThrow({
+    const webpage = await prisma.webpage.findFirstOrThrow({
       include: {
         advertisementSpots: true,
       },
     });
-    for (const as of websiteUrl.advertisementSpots) {
+    for (const as of webpage.advertisementSpots) {
       await createAdvertisement(as);
     }
   })();

@@ -1,20 +1,20 @@
 import prisma from "@/lib/prisma";
 import getCampaignsWhichNeedScore from "@/services/helpers/getCampaignsWhichNeedScore";
-import { Prisma, WebsiteUrl } from "@prisma/client";
+import { Prisma, Webpage } from "@prisma/client";
 import getCampaignsWithTheirScores from "@/services/prompts/getCampaignsWithTheirScores";
-import ScoredCampaignCreateManyWebsiteUrlInput = Prisma.ScoredCampaignCreateManyWebsiteUrlInput;
+import ScoredCampaignCreateManyWebpageInput = Prisma.ScoredCampaignCreateManyWebpageInput;
 
-type CreateScoredCampaigns = (websiteUrl: WebsiteUrl) => Promise<void>;
+type CreateScoredCampaigns = (webpage: Webpage) => Promise<void>;
 
-const createScoredCampaigns: CreateScoredCampaigns = async (websiteUrl) => {
-  console.log("websiteUrl: ", websiteUrl);
-  const campaignsWhichNeedScore = await getCampaignsWhichNeedScore(websiteUrl);
+const createScoredCampaigns: CreateScoredCampaigns = async (webpage) => {
+  console.log("webpage: ", webpage);
+  const campaignsWhichNeedScore = await getCampaignsWhichNeedScore(webpage);
   const campaignsWithScore = await getCampaignsWithTheirScores(
-    websiteUrl,
+    webpage,
     campaignsWhichNeedScore
   );
 
-  const scoredCampaignInput: ScoredCampaignCreateManyWebsiteUrlInput[] =
+  const scoredCampaignInput: ScoredCampaignCreateManyWebpageInput[] =
     campaignsWithScore.map((c) => {
       return {
         campaignId: c.id,
@@ -24,9 +24,9 @@ const createScoredCampaigns: CreateScoredCampaigns = async (websiteUrl) => {
     });
   console.log("input to create scored campaigns: ", scoredCampaignInput);
 
-  await prisma.websiteUrl.update({
+  await prisma.webpage.update({
     where: {
-      id: websiteUrl.id,
+      id: webpage.id,
     },
     data: {
       scoredCampaigns: {
@@ -40,8 +40,8 @@ const createScoredCampaigns: CreateScoredCampaigns = async (websiteUrl) => {
 
 if (require.main === module) {
   (async () => {
-    const websiteUrl = await prisma.websiteUrl.findFirstOrThrow();
-    await createScoredCampaigns(websiteUrl);
+    const webpage = await prisma.webpage.findFirstOrThrow();
+    await createScoredCampaigns(webpage);
   })();
 }
 

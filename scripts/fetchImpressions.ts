@@ -2,17 +2,16 @@ import prisma from "@/lib/prisma";
 
 const main = async () => {
   console.log("hello from main again: ", typeof prisma);
-  const user = await prisma.user.findFirstOrThrow();
-  console.log("user: ", user);
-  const campaigns = await prisma.user.findFirstOrThrow().campaigns();
-  console.log("campaigns: ", campaigns);
-  const websiteUrls = await prisma.user.findFirstOrThrow({
-    include: {
-      websiteUrls: true,
-    },
-  });
-  console.log("websiteUrls: ", websiteUrls);
-
+  const impressions = await prisma.impression.findMany({
+    where: {
+      campaign: {
+        user: {
+          id: "clfqyzo1z000k98fclzdb0h0e"
+        }
+      }
+    }
+  })
+  console.log("impressions: ", impressions);
 };
 
 main();

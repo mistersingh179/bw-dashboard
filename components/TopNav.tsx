@@ -45,22 +45,16 @@ const TopNav: React.FC = () => {
               Campaigns
             </Link>
             <Link
-              href={"/reporting"}
-              fontWeight={currentRoute === "/reporting" ? "bold" : "normal"}
+              href={"/websites/list"}
+              fontWeight={currentRoute === "/websites/list" ? "bold" : "normal"}
             >
-              Reporting
+              Websites
             </Link>
             <Link
               href={"/settings"}
               fontWeight={currentRoute === "/settings" ? "bold" : "normal"}
             >
               Settings
-            </Link>
-            <Link
-              href={"/websiteUrls/list"}
-              fontWeight={currentRoute === "/websiteUrls/list" ? "bold" : "normal"}
-            >
-              Website Urls
             </Link>
           </Show>
         </HStack>

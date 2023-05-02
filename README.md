@@ -73,8 +73,9 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
+- refactor the creating & updating item out. can we move this all to a hook?
+- store modal object together in state with type
 - take users threshold
-- rename WebsiteUrl to Webpage & call join table WebpageCampaigns
 - if we dont have 5 spots, lets get to 5 spots, but we dont want the same spots again, so maybe use index to prevent that insertion
 - our createMany should not fail if one record fails to enter - `skipDuplicates`
 - set up cascade delete

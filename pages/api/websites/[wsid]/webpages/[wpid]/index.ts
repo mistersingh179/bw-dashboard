@@ -1,0 +1,37 @@
+import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
+import withMiddleware from "@/middlewares/withMiddleware";
+import { QueryParams } from "@/types/QueryParams";
+import prisma from "@/lib/prisma";
+
+const webpage: NextApiHandler = async (req, res) => {
+  switch (req.method) {
+    case "PUT":
+      await handleWebpageUpdate(req, res);
+      break;
+  }
+};
+
+const handleWebpageUpdate = async (
+  req: NextApiRequest,
+  res: NextApiResponse
+) => {
+  const { wpid, wsid } = req.query as QueryParams;
+  const webpage = await prisma.webpage.update({
+    where: {
+      id: wpid,
+      website: {
+        id: wsid,
+        user: {
+          id: req.authenticatedUserId,
+        },
+      },
+    },
+    data: {
+      ...req.body,
+    },
+  });
+  console.log("updated webpage is: ", webpage);
+  res.json(webpage);
+};
+
+export default withMiddleware("getPutDeleteOnly", "auth")(webpage);

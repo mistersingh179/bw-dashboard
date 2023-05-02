@@ -3,30 +3,30 @@ import withMiddleware from "@/middlewares/withMiddleware";
 import { QueryParams } from "@/types/QueryParams";
 import prisma from "@/lib/prisma";
 
-const websiteUrl: NextApiHandler = async (req, res) => {
+const website: NextApiHandler = async (req, res) => {
   switch (req.method) {
     case "PUT":
-      await handleWebsiteUrlUpdate(req, res);
+      await handleWebsiteUpdate(req, res);
       break;
   }
 };
 
-const handleWebsiteUrlUpdate = async (
+const handleWebsiteUpdate = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  const { wuid } = req.query as QueryParams;
-  const websiteUrl = await prisma.websiteUrl.update({
+  const { wsid } = req.query as QueryParams;
+  const website = await prisma.website.update({
     where: {
-      id: wuid,
+      id: wsid,
       userId: req.authenticatedUserId,
     },
     data: {
       ...req.body
     }
   });
-  console.log("updated websiteUrl is: ", websiteUrl);
-  res.json(websiteUrl);
+  console.log("updated website is: ", website);
+  res.json(website);
 };
 
-export default withMiddleware("getPutDeleteOnly", "auth")(websiteUrl);
+export default withMiddleware("getPutDeleteOnly", "auth")(website);

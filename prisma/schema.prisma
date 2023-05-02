@@ -55,14 +55,14 @@ model VerificationToken {
 }
 
 model User {
-  id            String       @id @default(cuid())
+  id            String     @id @default(cuid())
   accounts      Account[]
   sessions      Session[]
   auctions      Auction[]
   campaigns     Campaign[]
-  websiteUrls   WebsiteUrl[]
+  websites      Website[]
   name          String?
-  email         String?      @unique
+  email         String?    @unique
   emailVerified DateTime?
   image         String?
 }
@@ -79,10 +79,26 @@ model Auction {
   @@index([userId, createdAt(sort: Asc)])
 }
 
-model WebsiteUrl {
+model Website {
+  id                String    @id @default(cuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  webpages          Webpage[]
+  topLevelDomainUrl String
+  sitemapUrl        String
+  status            Boolean
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([userId, topLevelDomainUrl])
+  @@index([userId, topLevelDomainUrl, status])
+  @@index([userId])
+}
+
+model Webpage {
   id                 String              @id @default(cuid())
-  userId             String
-  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  websiteId          String
+  website            Website             @relation(fields: [websiteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   scoredCampaigns    ScoredCampaign[]
   advertisementSpots AdvertisementSpot[]
   url                String
@@ -91,30 +107,30 @@ model WebsiteUrl {
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
 
-  @@unique([userId, url])
-  @@index([userId])
-  @@index([userId, url, status])
-  @@index([userId, createdAt(sort: Asc)])
+  @@unique([websiteId, url])
+  @@index([websiteId])
+  @@index([websiteId, url, status])
+  @@index([websiteId, createdAt(sort: Asc)])
 }
 
 model AdvertisementSpot {
   id             String          @id @default(cuid())
-  websiteUrlId   String
-  websiteUrl     WebsiteUrl      @relation(fields: [websiteUrlId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  webpageId      String
+  webpage        Webpage         @relation(fields: [webpageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   advertisements Advertisement[]
   beforeText     String
   afterText      String
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
-  @@unique([websiteUrlId, beforeText, afterText])
-  @@index([websiteUrlId])
+  @@unique([webpageId, beforeText, afterText])
+  @@index([webpageId])
 }
 
 model ScoredCampaign {
   id             String          @id @default(cuid())
-  websiteUrlId   String
-  websiteUrl     WebsiteUrl      @relation(fields: [websiteUrlId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  webpageId      String
+  webpage        Webpage         @relation(fields: [webpageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   campaignId     String
   campaign       Campaign        @relation(fields: [campaignId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   advertisements Advertisement[]
@@ -123,8 +139,8 @@ model ScoredCampaign {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
-  @@unique([websiteUrlId, campaignId])
-  @@index([websiteUrlId, score])
+  @@unique([webpageId, campaignId])
+  @@index([webpageId, score])
   @@index([campaignId])
   @@index([score])
 }
