@@ -13,6 +13,7 @@
 - `tsx scripts/foo.ts`
 - `tsx watch scripts/foo.ts` for quicker iterations in dev
 - or `npx ts-node scripts/foo.ts` but also requires `"module": "CommonJS"` set in tsconfig.json. this can be set just for `ts-node` by putting it in `"ts-node"` block.
+  - to run from webstorm create a new config called `tsx` and setup Node parameters to be `--loader tsx` and javascript file to `$FilePathRelativeToProjectRoot$`. this will basically do `node --loader ts ./currentFile.ts` which runs the file.  `Ctrl + r` will get the same.
 
 ## REPL like behavior with Editor
 - build .ts file & run it with `ts watch`
@@ -73,7 +74,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
-- make services runnable from the editor
 - our createMany should not fail if one record fails to enter - `skipDuplicates`
 - set up cascade delete
 - advertisement before & after together should be unique as we dont want the same spot again
