@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import React from "react";
-import { ErrorRow, LoadingDataRow, NoDataRow } from "@/components/genericRows";
+import { ErrorRow, LoadingDataRow, NoDataRow } from "@/components/genericMessages";
 import { WebsiteType } from "@/types/my-types";
 import useSWR from "swr";
 import fetcher from "@/helpers/fetcher";

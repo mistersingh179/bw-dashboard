@@ -1,20 +1,37 @@
-import NextAuth, {NextAuthOptions, User} from "next-auth";
+import NextAuth, { NextAuthOptions, User } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 
 import { debug } from "util";
 import { NextApiHandler } from "next";
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "../../../lib/prisma";
+import { DEFAULT_SCORE_THRESHOLD } from "@/constants";
+import findOrCreateSettings from "@/services/findOrCreateSettings";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   callbacks: {
-    async session({session, token, user}){
+    async session({ session, token, user }) {
       session.user.id = user.id;
       return session;
-    }
+    },
+    async signIn({ user, account, profile, email, credentials }) {
+      console.log("in signIn with: ", user);
+      return true;
+    },
+  },
+  events: {
+    signIn: async (message) => {
+      const { user, account, profile, isNewUser } = message;
+      console.log("got signIn event with: ", message);
+    },
+    createUser: async (message) => {
+      const { user } = message;
+      console.log("got createUser event with: ", message);
+      await findOrCreateSettings(user);
+    },
   },
   // Configure one or more authentication providers
   providers: [
@@ -29,9 +46,9 @@ export const authOptions: NextAuthOptions = {
         params: {
           prompt: "consent",
           access_type: "offline",
-          response_type: "code"
-        }
-      }
+          response_type: "code",
+        },
+      },
     }),
     // EmailProvider({
     //   server: {

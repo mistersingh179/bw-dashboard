@@ -61,10 +61,23 @@ model User {
   auctions      Auction[]
   campaigns     Campaign[]
   websites      Website[]
+  setting       Setting?
   name          String?
   email         String?    @unique
   emailVerified DateTime?
   image         String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @default(now()) @updatedAt
+}
+
+model Setting {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id])
+  scoreThreshold Int
+  status         Boolean
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model Auction {

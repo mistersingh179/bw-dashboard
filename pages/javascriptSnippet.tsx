@@ -21,7 +21,7 @@ const scriptTag = (userId: string) => {
 <script defer src="${BW_SCRIPT_BASE_URL}/bw.js?id=${userId}"></script>`;
 };
 
-const Settings: FCWithAuth = () => {
+const JavascriptSnippet: FCWithAuth = () => {
   const { data: session } = useSession();
   console.log(session);
   const [userId, setUserId] = useState("unknown");
@@ -89,6 +89,6 @@ const Settings: FCWithAuth = () => {
   );
 };
 
-Settings.auth = true;
+JavascriptSnippet.auth = true;
 
-export default Settings;
+export default JavascriptSnippet;

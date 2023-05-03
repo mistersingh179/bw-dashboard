@@ -1,7 +1,7 @@
 import React from "react";
 import { useSession } from "next-auth/react";
 import {Box, Heading, Text, VStack} from "@chakra-ui/react";
-import Settings from "@/pages/settings";
+import JavascriptSnippet from "@/pages/javascriptSnippet";
 import FCWithAuth from "@/types/FCWithAuth";
 
 const Reporting: FCWithAuth = () => {

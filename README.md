@@ -73,9 +73,7 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
-- refactor the creating & updating item out. can we move this all to a hook?
-- store modal object together in state with type
-- take users threshold
+- refactor to the generic rows to use generic alerts
 - if we dont have 5 spots, lets get to 5 spots, but we dont want the same spots again, so maybe use index to prevent that insertion
 - our createMany should not fail if one record fails to enter - `skipDuplicates`
 - set up cascade delete
@@ -86,6 +84,7 @@ drop database bw;
 - storing of entire page & before, after
 
 ## Pending Tasks
+- on a webpage, show impact of threshold to matched campaigns
 - automate website url creation from sitemap
 - setting to bypass website url check
 - status option on BW option
@@ -97,8 +96,12 @@ drop database bw;
 - use threshold when picking relevant campaigns for building ads 
 - add TopLevelDomains table & move pages under it
 - add middleware to check referrer
+- add middleware to rate limit by ip, fp, cookie etc.
+- add page for founders to log in as customer & troubleshoot
 - revisit indexes after doing front end auction/impresssion creation/insertion
 - revisit indexes after doing pacing
+- see impact of allowing `{...req.body}` in update. can userId be provided to update wrong user, fix it if so.
+- extend NextAuth user with the date fields 
 
 ## Pending prompt research
 - research if sending campaigns individually or with a group make a difference

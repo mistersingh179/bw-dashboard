@@ -1,6 +1,33 @@
-import { Spinner, Td, Tr } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle, Progress,
+  Spinner,
+  Td,
+  Tr,
+} from "@chakra-ui/react";
 import { Link } from "@chakra-ui/next-js";
-import React from "react";
+import React, { ReactElement } from "react";
+
+export const AnimatedProgressBar = () => {
+  return <Progress size="xs" isIndeterminate />;
+};
+export const ErrorAlert = ({
+  title = "Error",
+  description = "An error has occurred, perhaps retry?",
+}: {
+  title?: string;
+  description?: string;
+}): ReactElement => {
+  return (
+    <Alert status="error">
+      <AlertIcon />
+      <AlertTitle>{title}</AlertTitle>
+      <AlertDescription>{description}</AlertDescription>
+    </Alert>
+  );
+};
 
 export const ErrorRow = ({ colSpan }: { colSpan: number }) => {
   return (
