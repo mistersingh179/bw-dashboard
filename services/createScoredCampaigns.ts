@@ -32,6 +32,7 @@ const createScoredCampaigns: CreateScoredCampaigns = async (webpage) => {
       scoredCampaigns: {
         createMany: {
           data: scoredCampaignInput,
+          skipDuplicates: true,
         },
       },
     },

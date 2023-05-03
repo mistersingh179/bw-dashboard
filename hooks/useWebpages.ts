@@ -25,7 +25,7 @@ const useWebpages = (wsid: string) => {
       await mutate(updateWebpage.bind(this, updatedItem), {
         optimisticData: (currentData) => {
           console.log("in optimisticData with: ", currentData);
-          success("Website Url", "Updated successfully");
+          success("Webpage", "Updated successfully");
           if (currentData) {
             const idx = currentData.findIndex((x) => x.id === updatedItem.id);
             return [
@@ -41,7 +41,7 @@ const useWebpages = (wsid: string) => {
       });
     } catch (err) {
       console.log("error updating webpage:", err);
-      failure("Website Url", "rolling back as update failed");
+      failure("Webpage", "rolling back as update failed");
     }
   };
 
@@ -50,7 +50,7 @@ const useWebpages = (wsid: string) => {
     try {
       await mutate(saveWebpage.bind(this, newWebpage), {
         optimisticData: (currentData) => {
-          success("Website Url", "Created successfully");
+          success("Webpage", "Created successfully");
           if (currentData) {
             return [...currentData, { ...newWebpage }];
           } else {
@@ -61,7 +61,7 @@ const useWebpages = (wsid: string) => {
       });
     } catch (err) {
       console.log("website url creation failed: ", err);
-      failure("Website Url", "Rolling back as creation failed!");
+      failure("Webpage", "Rolling back as creation failed!");
     }
   };
 

@@ -74,9 +74,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
-- our createMany should not fail if one record fails to enter - `skipDuplicates`
-- set up cascade delete
-- advertisement before & after together should be unique as we dont want the same spot again
 
 ## Pending immediate next thing
 - show scoredCampaigns for our every url
