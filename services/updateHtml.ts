@@ -2,8 +2,8 @@ import { Webpage } from "@prisma/client";
 import fetchHtmlOfWebpage from "@/services/helpers/fetchHtmlOfWebpage";
 import prisma from "@/lib/prisma";
 
-type UpdateCorpus = (webpage: Webpage) => Promise<Webpage>;
-const updateWebpageCorpus: UpdateCorpus = async (webpage) => {
+type UpdateHtml = (webpage: Webpage) => Promise<Webpage>;
+const updateWebpageCorpus: UpdateHtml = async (webpage) => {
   const existingWebpage = await prisma.webpage.findFirstOrThrow({
     where: {
       id: webpage.id,
@@ -30,7 +30,11 @@ export default updateWebpageCorpus;
 
 if (require.main === module) {
   (async () => {
-    const webpage = await prisma.webpage.findFirstOrThrow();
+    const webpage = await prisma.webpage.findFirstOrThrow({
+      where: {
+        id: "clh6eip82001298kw3dmr4idj",
+      },
+    });
     const updatedWebpage = await updateWebpageCorpus(webpage);
     console.log(updatedWebpage);
   })();

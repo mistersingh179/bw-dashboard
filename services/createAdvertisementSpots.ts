@@ -20,7 +20,7 @@ const enoughAdSpotsExist = async (webpage: Webpage): Promise<boolean> => {
 type CreateAdvertisementSpots = (webpage: Webpage) => Promise<void>;
 
 const createAdvertisementSpots: CreateAdvertisementSpots = async (webpage) => {
-  console.log("in createAdvertisementSpots for: ", webpage);
+  console.log("in createAdvertisementSpots for: ", webpage.id);
 
   if (await enoughAdSpotsExist(webpage)) {
     console.log(`Aborting createAdvertisementSpots as we already enough`);
@@ -43,6 +43,7 @@ const createAdvertisementSpots: CreateAdvertisementSpots = async (webpage) => {
       advertisementSpots: {
         createMany: {
           data: advertisementSpotInputs,
+          skipDuplicates: true
         },
       },
     },
@@ -53,7 +54,11 @@ export default createAdvertisementSpots;
 
 if (require.main === module) {
   (async () => {
-    const wp = await prisma.webpage.findFirstOrThrow();
-    createAdvertisementSpots(wp);
+    const wp = await prisma.webpage.findFirstOrThrow({
+      where: {
+        id: "clh6eip82001298kw3dmr4idj"
+      }
+    });
+    await createAdvertisementSpots(wp);
   })();
 }

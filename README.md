@@ -73,7 +73,7 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
-- if we dont have 5 spots, lets get to 5 spots, but we dont want the same spots again, so maybe use index to prevent that insertion
+- make services runnable from the editor
 - our createMany should not fail if one record fails to enter - `skipDuplicates`
 - set up cascade delete
 - advertisement before & after together should be unique as we dont want the same spot again
@@ -114,7 +114,7 @@ drop database bw;
 
 ## Pending integration reserach
 - scrapeops.io
-- 
+- fingerprint.com
 
 ## Pending Feature's
 - deploy prisma client
@@ -129,6 +129,10 @@ drop database bw;
 ## Pending performance
 - will try to get ad spots when page doesn't have enough.
 - it doesn't know we don't have enough cause its page fault & not our service issue
+
+## Pending later things
+- refresh data - fetch data even if we have it like webpage html
+
 
 
 ## Notes on how services are working the background

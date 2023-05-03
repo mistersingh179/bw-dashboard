@@ -78,7 +78,7 @@ const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (webpage) => {
     ? elementsArr.filter(nextElementWithTextOfSameTypeFilter)
     : elementsArr;
   elementsArr = elementsArr.slice(0, count);
-  console.log("here are the possible ad spots: ");
+  console.log(`here are the possible ${elementsArr.length} ad spots: `);
   const adSpots: AdSpotText[] = elementsArr.map((elem) => ({
     beforeText: elem.textContent?.trim() ?? "",
     afterText: nextWithText(elem)?.textContent?.trim() ?? "",
@@ -91,7 +91,7 @@ const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (webpage) => {
     console.groupEnd();
   });
 
-  return adSpots;
+  return adSpots
 };
 
 export default getAdSpotsForWebpage;
