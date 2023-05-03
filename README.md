@@ -73,7 +73,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
-- refactor to the generic rows to use generic alerts
 - if we dont have 5 spots, lets get to 5 spots, but we dont want the same spots again, so maybe use index to prevent that insertion
 - our createMany should not fail if one record fails to enter - `skipDuplicates`
 - set up cascade delete

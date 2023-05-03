@@ -25,36 +25,12 @@ import { useRouter } from "next/router";
 import { AddIcon } from "@chakra-ui/icons";
 import { CampaignType } from "@/types/my-types";
 import StatusBadge from "@/components/StatusBadge";
-
-const ErrorRow = () => {
-  return (
-    <Tr>
-      <Td colSpan={4} textAlign={"center"}>
-        There was an error processing your request. Try again?
-      </Td>
-    </Tr>
-  );
-};
-
-const NoDataRow = () => {
-  return (
-    <Tr>
-      <Td colSpan={4} textAlign={"center"}>
-        No campaigns yet, shall we <Link href={"/campaign"}>create</Link> one?
-      </Td>
-    </Tr>
-  );
-};
-
-const LoadingDataRow = () => {
-  return (
-    <Tr>
-      <Td colSpan={4} textAlign={"center"}>
-        <Spinner color={"blue.500"} />
-      </Td>
-    </Tr>
-  );
-};
+import {
+  ErrorAlert,
+  ErrorRow,
+  LoadingDataRow,
+  NoDataRow,
+} from "@/components/genericMessages";
 
 const Campaigns: FCWithAuth = () => {
   const router = useRouter();
@@ -68,12 +44,16 @@ const Campaigns: FCWithAuth = () => {
     });
   };
   const deleteHandler = async (cid: string) => {
-    const result = await mutate("/api/campaigns", deleteCampaign.bind(this, cid), {
-      optimisticData: (currentData: CampaignType[]) => {
-        return currentData.filter((x) => x.id != cid);
-      },
-      populateCache: false,
-    });
+    const result = await mutate(
+      "/api/campaigns",
+      deleteCampaign.bind(this, cid),
+      {
+        optimisticData: (currentData: CampaignType[]) => {
+          return currentData.filter((x) => x.id != cid);
+        },
+        populateCache: false,
+      }
+    );
     console.log("result of mutate call: ", result);
   };
   return (
@@ -101,9 +81,9 @@ const Campaigns: FCWithAuth = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {error && <ErrorRow />}
-            {isLoading && <LoadingDataRow />}
-            {data && data.length == 0 && <NoDataRow />}
+            {error && <ErrorRow colSpan={5} />}
+            {isLoading && <LoadingDataRow colSpan={5} />}
+            {data && data.length == 0 && <NoDataRow colSpan={5} />}
             {data &&
               data.length > 0 &&
               data.map((campaign) => (
@@ -130,7 +110,9 @@ const Campaigns: FCWithAuth = () => {
                       >
                         Delete
                       </Button>
-                      <Link href={`/campaigns/${campaign.id}/show`}>Details</Link>
+                      <Link href={`/campaigns/${campaign.id}/show`}>
+                        Details
+                      </Link>
                       <Link href={`/campaigns/${campaign.id}/edit`}>Edit</Link>
                     </HStack>
                   </Td>

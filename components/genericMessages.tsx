@@ -2,7 +2,8 @@ import {
   Alert,
   AlertDescription,
   AlertIcon,
-  AlertTitle, Progress,
+  AlertTitle,
+  Progress,
   Spinner,
   Td,
   Tr,
@@ -21,7 +22,7 @@ export const ErrorAlert = ({
   description?: string;
 }): ReactElement => {
   return (
-    <Alert status="error">
+    <Alert status="error" justifyContent={"center"}>
       <AlertIcon />
       <AlertTitle>{title}</AlertTitle>
       <AlertDescription>{description}</AlertDescription>
@@ -29,11 +30,25 @@ export const ErrorAlert = ({
   );
 };
 
+export const WarningAlert = ({
+  title = "No Data",
+  description = "It seems like there is nothing to look here :-|",
+}: {
+  title?: string;
+  description?: string;
+}): ReactElement => {
+  return (<Alert status="warning" justifyContent={"center"}>
+    <AlertIcon />
+    <AlertTitle>{title}</AlertTitle>
+    <AlertDescription>{description}</AlertDescription>
+  </Alert>)
+};
+
 export const ErrorRow = ({ colSpan }: { colSpan: number }) => {
   return (
     <Tr>
       <Td colSpan={colSpan} textAlign={"center"}>
-        There was an error processing your request. Try again?
+        <ErrorAlert />
       </Td>
     </Tr>
   );
@@ -43,7 +58,7 @@ export const NoDataRow = ({ colSpan }: { colSpan: number }) => {
   return (
     <Tr>
       <Td colSpan={colSpan} textAlign={"center"}>
-        No data, thus nothing to look here :-|
+        <WarningAlert />
       </Td>
     </Tr>
   );
