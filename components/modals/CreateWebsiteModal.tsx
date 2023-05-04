@@ -38,6 +38,9 @@ const CreateWebsiteModal = ({
   const topLevelDomainUrlMissing =
     topLevelDomainUrl.length === 0 ? true : false;
 
+  const sitemapUrlMissing =
+    sitemapUrl.length === 0 ? true : false;
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
       <ModalOverlay />
@@ -56,13 +59,11 @@ const CreateWebsiteModal = ({
               {!topLevelDomainUrlMissing && (
                 <FormHelperText>This is the url of the webpage</FormHelperText>
               )}
-              {topLevelDomainUrlMissing && (
-                <FormErrorMessage>
-                  This is a require field and thus you must provide a url
-                </FormErrorMessage>
-              )}
+              <FormErrorMessage>
+                This is a require field and thus you must provide a url
+              </FormErrorMessage>
             </FormControl>
-            <FormControl>
+            <FormControl isRequired isInvalid={sitemapUrlMissing}>
               <FormLabel>Sitemap</FormLabel>
               <Input
                 type="text"
@@ -70,6 +71,10 @@ const CreateWebsiteModal = ({
                 onChange={(evt) => setSitemapUrl(evt.target.value)}
               />
               <FormHelperText>This is the url to your sitemap.</FormHelperText>
+              <FormErrorMessage>
+                This is a require field. It is used for us to fetch the pages,
+                posts etc. of your website & then build ads for them.
+              </FormErrorMessage>
             </FormControl>
             <FormControl>
               <HStack>
