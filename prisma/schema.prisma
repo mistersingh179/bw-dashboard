@@ -117,6 +117,7 @@ model Webpage {
   url                String
   html               String
   status             Boolean
+  lastModifiedAt     DateTime            @default(now())
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
 

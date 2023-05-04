@@ -1,12 +1,16 @@
-import {Prisma,} from ".prisma/client";
+import { Prisma } from ".prisma/client";
 import prisma from "@/lib/prisma";
-import {XMLParser} from "fast-xml-parser";
+import { XMLParser } from "fast-xml-parser";
 import fetchContentOfWebpage from "@/services/helpers/fetchContentOfWebpage";
 import WebpageCreateManyWebsiteInput = Prisma.WebpageCreateManyWebsiteInput;
+import { isAfter, parseISO, subDays } from "date-fns";
+import { WEBPAGE_LOOK_BACK_DAYS } from "@/constants";
 
 export type UrlsetUrl = {
   loc: string;
   lastmod: string;
+  changefreq?: string;
+  priority?: number;
   [key: string]: any;
 };
 
@@ -17,6 +21,8 @@ export type SitemapIndexSitemap = {
 };
 
 type CreateWebpages = (website: string, sitemapUrl?: string) => Promise<void>;
+
+const lookBackDate = subDays(new Date(), WEBPAGE_LOOK_BACK_DAYS);
 
 const createWebpages: CreateWebpages = async (
   websiteId: string,
@@ -54,14 +60,29 @@ const createWebpages: CreateWebpages = async (
 
   if (Array.isArray(jsonObj?.urlset?.url)) {
     const urlArray = jsonObj.urlset.url as UrlsetUrl[];
-    console.log("we have a sitemap with urlset");
-    const webpageInputs: WebpageCreateManyWebsiteInput[] = urlArray.map(
-      (item): WebpageCreateManyWebsiteInput => ({
-        url: item.loc,
-        html: "",
-        status: true,
-      })
-    );
+    console.log("we have a sitemap with urlset: ", urlArray.length);
+    console.log("lookBackDate is: ", lookBackDate);
+
+    let webpageInputs: WebpageCreateManyWebsiteInput[] = [];
+    webpageInputs = urlArray.reduce((accumulator, currentValue) => {
+      if (isAfter(parseISO(currentValue.lastmod), lookBackDate)) {
+        console.log("taking as recent: ", currentValue.lastmod);
+        return [
+          ...accumulator,
+          {
+            url: currentValue.loc,
+            lastModifiedAt: currentValue.lastmod,
+            html: "",
+            status: true,
+          },
+        ];
+      } else {
+        console.log("skipping as not recent: ", currentValue.lastmod);
+        return accumulator;
+      }
+    }, webpageInputs);
+    console.log('we have webpageInputs: ', webpageInputs.length)
+
     await prisma.website.update({
       where: {
         id: websiteId,
@@ -90,14 +111,22 @@ export default createWebpages;
 
 if (require.main === module) {
   (async () => {
-    const website = await prisma.website.findFirstOrThrow({
-      orderBy: {
-        id: "asc",
-      },
-      where: {
-        id: "clh58j7rl000z98kwx3diilzx"
+    const websites = await prisma.website.findMany();
+    for (const website of websites){
+      try{
+        await createWebpages(website.id);
+      }catch(e){
+       console.error("there was an issue creating webpages for: ", website.id);
       }
-    });
-    await createWebpages(website.id);
+    }
+    // const website = await prisma.website.findFirstOrThrow({
+    //   orderBy: {
+    //     id: "asc",
+    //   },
+    //   where: {
+    //     id: "clh58j7rl000z98kwx3diilzx",
+    //   },
+    // });
+    // await createWebpages(website.id);
   })();
 }

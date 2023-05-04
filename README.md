@@ -102,6 +102,8 @@ drop database bw;
 - revisit indexes after doing pacing
 - see impact of allowing `{...req.body}` in update. can userId be provided to update wrong user, fix it if so.
 - extend NextAuth user with the date fields 
+- what happens if an advertisement wins which belongs to an ad spot which doesn't exist as the page has changed
+- move constants to be per user in to its own table, add approve to it & onlyFounders middleware
 
 ## Pending prompt research
 - research if sending campaigns individually or with a group make a difference
@@ -132,7 +134,13 @@ drop database bw;
 - it doesn't know we don't have enough cause its page fault & not our service issue
 
 ## Pending later things
-- refresh data - fetch data even if we have it like webpage html
+- refresh data
+  - fetch html of existing html pages which have changed ??
+  - update the lastModifiedAt of Webpage, currently limited as the createMany does not have on conflict update option
+  - fetch newer webpages of existing websites
+  - fetch webpages of new websites
+  - 
+- 
 
 
 
