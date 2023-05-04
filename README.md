@@ -74,6 +74,10 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=12345`
 
 ## Pending backlog
+- make sitemap a required field on domain 
+- allow editing sitemap url
+- store last modified date on webpage
+- make site have many sitemaps. if entered sitemap has urls, save them. if entered sitemap has more sitemaps, then add their underlying sitemap in with false status.
 
 ## Pending immediate next thing
 - show scoredCampaigns for our every url

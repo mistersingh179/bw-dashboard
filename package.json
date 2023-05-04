@@ -30,6 +30,7 @@
     "date-fns": "^2.29.3",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
+    "fast-xml-parser": "^4.2.2",
     "framer-motion": "^10.9.1",
     "isbot": "^3.6.10",
     "jsdom": "^21.1.1",

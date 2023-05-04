@@ -1,5 +1,5 @@
 import { Webpage } from "@prisma/client";
-import fetchHtmlOfWebpage from "@/services/helpers/fetchHtmlOfWebpage";
+import fetchContentOfWebpage from "@/services/helpers/fetchContentOfWebpage";
 import prisma from "@/lib/prisma";
 
 type UpdateHtml = (webpage: Webpage) => Promise<Webpage>;
@@ -14,7 +14,7 @@ const updateWebpageCorpus: UpdateHtml = async (webpage) => {
     return existingWebpage;
   }
 
-  const htmlContent = await fetchHtmlOfWebpage(webpage.url);
+  const htmlContent = await fetchContentOfWebpage(webpage.url, "text/html");
   const updatedWebpage = await prisma.webpage.update({
     where: {
       id: webpage.id,

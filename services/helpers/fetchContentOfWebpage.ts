@@ -2,27 +2,31 @@ import fetch from "node-fetch";
 import { JSDOM } from "jsdom";
 import UserAgent from "user-agents";
 
-type FetchHtmlOfWebpage = (url: string) => Promise<string>;
-const fetchHtmlOfWebpage: FetchHtmlOfWebpage = async (url) => {
-  console.log("in fetchHtmlOfWebpage with: ", url);
+type FetchContentOfWebpage = (url: string, accept?: string) => Promise<string>;
+
+const fetchContentOfWebpage: FetchContentOfWebpage = async (
+  url,
+  accept = "*/*"
+) => {
+  console.log("in fetchContentOfWebpage with: ", url);
   const userAgent = new UserAgent({ deviceCategory: "desktop" });
   const res = await fetch(url, {
     method: "GET",
     headers: {
-      "Content-Type": "text/html",
+      "Accept": accept,
       "User-Agent": userAgent.random().toString(),
     },
     redirect: "follow",
   });
-  const data = await res.text()
+  const data = await res.text();
   return data;
 };
 
-export default fetchHtmlOfWebpage;
+export default fetchContentOfWebpage;
 
 if (require.main === module) {
   (async () => {
-    const ans = await fetchHtmlOfWebpage(
+    const ans = await fetchContentOfWebpage(
       "https://www.simplyrecipes.com/recipes/homemade_pizza/"
     );
     console.log("ans: ", ans.substring(0, 100));
