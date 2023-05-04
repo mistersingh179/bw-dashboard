@@ -18,13 +18,14 @@ export type CampaignType = Omit<
 
 export type WebpageType = Omit<
   Webpage,
-  "id" | "userId" | "websiteId" | "createdAt" | "updatedAt"
+  "id" | "userId" | "websiteId" | "createdAt" | "updatedAt" | "lastModifiedAt"
 > & {
   id?: string;
   userId?: string;
   websiteId?: string;
   createdAt?: string;
   updatedAt?: string;
+  lastModifiedAt?: string;
 };
 
 export type WebsiteType = Omit<
