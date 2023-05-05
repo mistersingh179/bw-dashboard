@@ -15,24 +15,37 @@ import {
   Tr,
   useDisclosure,
 } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
-import React from "react";
-import { ErrorRow, LoadingDataRow, NoDataRow } from "@/components/genericMessages";
-import { WebsiteType } from "@/types/my-types";
-import useSWR from "swr";
-import fetcher from "@/helpers/fetcher";
+import {AddIcon} from "@chakra-ui/icons";
+import React, {useState} from "react";
+import {ErrorRow, LoadingDataRow, NoDataRow,} from "@/components/genericMessages";
+import {NullableWebsiteType, WebsiteType} from "@/types/my-types";
 import CreateWebsiteModal from "@/components/modals/CreateWebsiteModal";
-import useTxToast from "@/hooks/useTxToast";
 import useWebsites from "@/hooks/useWebsites";
-import { Link } from "@chakra-ui/next-js";
+import {Link} from "@chakra-ui/next-js";
+import EditWebsiteModal from "@/components/modals/EditWebsiteModal";
 
 const Website = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: editModalIsOpen,
+    onOpen: editModalOnOpen,
+    onClose: editModalOnClose,
+  } = useDisclosure();
   const { websites, isLoading, error, onSave, onUpdate } = useWebsites();
+  const [websiteBeingEdited, setWebsiteBeingEdited] =
+    useState<NullableWebsiteType>(undefined);
 
   return (
     <Box>
       <CreateWebsiteModal isOpen={isOpen} onClose={onClose} onSave={onSave} />
+      {websiteBeingEdited && (
+        <EditWebsiteModal
+          isOpen={editModalIsOpen}
+          onClose={editModalOnClose}
+          onUpdate={onUpdate}
+          website={websiteBeingEdited}
+        />
+      )}
       <HStack>
         <Heading my={5}>Websites</Heading>
         <Spacer />
@@ -73,7 +86,20 @@ const Website = () => {
                     />
                   </Td>
                   <Td>
-                    <Link href={`/websites/${website.id}/webpages/list`}>Webpages</Link>
+                    <HStack>
+                      <Link href={`/websites/${website.id}/webpages/list`}>
+                        Webpages
+                      </Link>
+                      <Button
+                        variant={"ghost"}
+                        onClick={() => {
+                          setWebsiteBeingEdited(website);
+                          editModalOnOpen();
+                        }}
+                      >
+                        Edit
+                      </Button>
+                    </HStack>
                   </Td>
                 </Tr>
               ))}

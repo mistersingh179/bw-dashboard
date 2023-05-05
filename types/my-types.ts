@@ -38,6 +38,8 @@ export type WebsiteType = Omit<
   updatedAt?: string;
 };
 
+export type NullableWebsiteType = WebsiteType | null | undefined;
+
 export type SettingType = Omit<
   Setting,
   "id" | "userId" | "createdAt" | "updatedAt"
