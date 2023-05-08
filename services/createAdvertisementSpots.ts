@@ -1,8 +1,8 @@
-import {Prisma, Webpage} from "@prisma/client";
+import { Prisma, Webpage } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import getAdSpotsForWebpage from "@/services/helpers/getAdSpotsForWebpage";
 import AdvertisementSpotCreateManyWebpageInput = Prisma.AdvertisementSpotCreateManyWebpageInput;
-import {DESIRED_ADVERTISEMENT_SPOT_COUNT} from "@/constants";
+import { DESIRED_ADVERTISEMENT_SPOT_COUNT } from "@/constants";
 
 const enoughAdSpotsExist = async (webpage: Webpage): Promise<boolean> => {
   const result = await prisma.advertisementSpot.findMany({
@@ -29,6 +29,11 @@ const createAdvertisementSpots: CreateAdvertisementSpots = async (webpage) => {
 
   const adSpotTextArr = await getAdSpotsForWebpage(webpage);
 
+  if (adSpotTextArr.length === 0) {
+    console.log("Aborting createAdvertisementSpots as unable to get ad spots");
+    return;
+  }
+
   const advertisementSpotInputs: AdvertisementSpotCreateManyWebpageInput[] =
     adSpotTextArr.map((item) => ({
       beforeText: item.beforeText,
@@ -43,7 +48,7 @@ const createAdvertisementSpots: CreateAdvertisementSpots = async (webpage) => {
       advertisementSpots: {
         createMany: {
           data: advertisementSpotInputs,
-          skipDuplicates: true
+          skipDuplicates: true,
         },
       },
     },
@@ -56,8 +61,8 @@ if (require.main === module) {
   (async () => {
     const wp = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clh6eip82001298kw3dmr4idj"
-      }
+        id: "clh6eip82001298kw3dmr4idj",
+      },
     });
     await createAdvertisementSpots(wp);
   })();

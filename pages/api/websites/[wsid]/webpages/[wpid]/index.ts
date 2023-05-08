@@ -2,16 +2,26 @@ import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import withMiddleware from "@/middlewares/withMiddleware";
 import { QueryParams } from "@/types/QueryParams";
 import prisma from "@/lib/prisma";
+import getWebpageDetail from "@/services/queries/getWebpageDetail";
 
 const webpage: NextApiHandler = async (req, res) => {
   switch (req.method) {
+    case "GET":
+      await handleShowWebpage(req, res);
+      break;
     case "PUT":
-      await handleWebpageUpdate(req, res);
+      await handleUpdateWebpage(req, res);
       break;
   }
 };
 
-const handleWebpageUpdate = async (
+const handleShowWebpage = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { wpid, wsid } = req.query as QueryParams;
+  const webpageWithDetail = await getWebpageDetail(wpid as string);
+  res.json(webpageWithDetail);
+}
+
+const handleUpdateWebpage = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {

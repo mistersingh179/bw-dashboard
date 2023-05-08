@@ -30,7 +30,11 @@ const handleListWebpages = async (
             id: req.authenticatedUserId
           }
         }
-      }
+      },
+      orderBy: {
+        createdAt: "asc"
+      },
+      take: 10
     }
   );
   console.log("webpages: ", webpages);

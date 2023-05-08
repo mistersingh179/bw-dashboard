@@ -7,7 +7,7 @@ import ScoredCampaignCreateManyWebpageInput = Prisma.ScoredCampaignCreateManyWeb
 type CreateScoredCampaigns = (webpage: Webpage) => Promise<void>;
 
 const createScoredCampaigns: CreateScoredCampaigns = async (webpage) => {
-  console.log("webpage: ", webpage);
+  console.log("webpage: ", webpage.id, webpage.url);
   const campaignsWhichNeedScore = await getCampaignsWhichNeedScore(webpage);
   const campaignsWithScore = await getCampaignsWithTheirScores(
     webpage,

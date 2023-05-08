@@ -1,15 +1,17 @@
 import { DESIRED_ADVERTISEMENT_COUNT } from "@/constants";
-import { AdvertisementSpot, Prisma } from "@prisma/client";
+import { AdvertisementSpot, Prisma, ScoredCampaign } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import getAdvertisementText from "@/services/prompts/getAdvertisementText";
 import AdvertisementCreateManyAdvertisementSpotInput = Prisma.AdvertisementCreateManyAdvertisementSpotInput;
 
 const enoughActiveAdsExist = async (
-  advertisementSpot: AdvertisementSpot
+  advertisementSpot: AdvertisementSpot,
+  scoredCampaign: ScoredCampaign
 ): Promise<boolean> => {
   const result = await prisma.advertisement.findMany({
     where: {
       advertisementSpotId: advertisementSpot.id,
+      scoredCampaignId: scoredCampaign.id,
       status: true,
     },
     select: {
@@ -21,66 +23,68 @@ const enoughActiveAdsExist = async (
 };
 
 type CreateAdvertisement = (
-  advertisementSpot: AdvertisementSpot
+  advertisementSpot: AdvertisementSpot,
+  scoredCampaign: ScoredCampaign
 ) => Promise<void>;
 
-const createAdvertisement: CreateAdvertisement = async (advertisementSpot) => {
-  console.log("will create advertisement(s) for spot: ", advertisementSpot);
+const createAdvertisement: CreateAdvertisement = async (
+  advertisementSpot,
+  scoredCampaign
+) => {
+  console.log(
+    "will create advertisement(s) for spot ",
+    advertisementSpot.id,
+    "and scored campaign ",
+    scoredCampaign.id
+  );
 
-  if (await enoughActiveAdsExist(advertisementSpot)) {
+  if (await enoughActiveAdsExist(advertisementSpot, scoredCampaign)) {
     console.log("Aborting as we have enough advertisements");
     return;
   }
 
-  const existingAdvertisementSpot =
-    await prisma.advertisementSpot.findFirstOrThrow({
-      where: {
-        id: advertisementSpot.id,
-      },
-      include: {
-        webpage: {
-          include: {
-            scoredCampaigns: {
-              include: {
-                campaign: true,
-              },
-            },
-          },
-        },
-      },
-    });
+  const webpage = await prisma.webpage.findFirstOrThrow({
+    where: {
+      id: advertisementSpot.webpageId,
+    },
+  });
 
-  const { beforeText, afterText } = existingAdvertisementSpot;
-  const { html } = existingAdvertisementSpot.webpage;
-  const { scoredCampaigns } = existingAdvertisementSpot.webpage;
+  const { beforeText, afterText } = advertisementSpot;
+  const { html } = webpage;
 
-  for (const sc of scoredCampaigns) {
-    const { productName, productDescription } = sc.campaign;
-    const adTextCopies = await getAdvertisementText(
-      html,
-      beforeText,
-      afterText,
-      productName,
-      productDescription
-    );
-    const advertisementInputArr: AdvertisementCreateManyAdvertisementSpotInput[] =
-      adTextCopies.map((adTextCopy) => ({
-        advertText: adTextCopy,
-        scoredCampaignId: sc.id,
-        status: true,
-      }));
+  const campaign = await prisma.campaign.findFirstOrThrow({
+    where: {
+      id: scoredCampaign.campaignId,
+    },
+  });
 
-    await prisma.advertisementSpot.update({
-      where: {
-        id: advertisementSpot.id,
+  const { productName, productDescription } = campaign;
+
+  const adTextCopies = await getAdvertisementText(
+    html,
+    beforeText,
+    afterText,
+    productName,
+    productDescription
+  );
+
+  const advertisementInputArr: AdvertisementCreateManyAdvertisementSpotInput[] =
+    adTextCopies.map((adTextCopy) => ({
+      advertText: adTextCopy,
+      scoredCampaignId: scoredCampaign.id,
+      status: true,
+    }));
+
+  await prisma.advertisementSpot.update({
+    where: {
+      id: advertisementSpot.id,
+    },
+    data: {
+      advertisements: {
+        createMany: { data: advertisementInputArr },
       },
-      data: {
-        advertisements: {
-          createMany: { data: advertisementInputArr },
-        },
-      },
-    });
-  }
+    },
+  });
 };
 
 export default createAdvertisement;
@@ -88,12 +92,19 @@ export default createAdvertisement;
 if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
+      where: {
+        id: "clh9dgf1r05e498okjtns3uai"
+      },
       include: {
         advertisementSpots: true,
+        scoredCampaigns: true,
       },
     });
+    // console.log("webpage: ", webpage);
     for (const as of webpage.advertisementSpots) {
-      await createAdvertisement(as);
+      for(const sc of webpage.scoredCampaigns){
+        await createAdvertisement(as, sc);
+      }
     }
   })();
 }

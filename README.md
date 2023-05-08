@@ -71,15 +71,30 @@ drop database bw;
 ## Postman
 - to call authenticated API add cookie `next-auth.session-token` to the request
 - value can be taken from the browser
-- add it as a header with key `cookie` & value of `next-auth.session-token=12345`
+- add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
-- make sitemap a required field on domain 
-- allow editing sitemap url
-- store last modified date on webpage
-- make site have many sitemaps. if entered sitemap has urls, save them. if entered sitemap has more sitemaps, then add their underlying sitemap in with false status.
+- design improvement to reduce scored campaigns
+  - user has categories
+  - categories are build as process webpages (upsert)
+  - campaign belongs to category or none. no cascade delete
+  - webpages also belong to category or none. no cascade delete
+  - for every webpage, get all campaigns with same category and build scored campaigns
+  - don't build scored campaign if already there.
+  - when request comes in we will get webpage -> scoredCampaigns -> campaigns (filter campaigns whose category is not blank and is not same as that of webpage).
+- paginate webpages and setup pattern for all pagination 
+- refactor `GetCampaignsWhichNeedScore` to user queries which filter on relations
+- we need page's category & a category selection on campaign
+- shall we score all campaigns or only ones which match category
+- on webpage's detail page show its category & the campaigns category showing that it won't run
+- show campaigns of matching category separate from campaigns which are not matching
+- how can we support campaign which can run on multiple categories
+- the part in process user which calls a third party api like chat gpt or http fetch can be parallelized
+- only process those ad spots which dont have an advertisement for every scored campaign.
+  - it is anyways building the advertisement seperately for each scored campaignso we can call it individually
+- going through all webpages without html is slow. need an index here. but adding just an index doesn't work as index is too large
 
-## Pending immediate next thing
+## Pending immediate next thing 
 - show scoredCampaigns for our every url
 - storing of entire page & before, after
 
@@ -104,6 +119,15 @@ drop database bw;
 - extend NextAuth user with the date fields 
 - what happens if an advertisement wins which belongs to an ad spot which doesn't exist as the page has changed
 - move constants to be per user in to its own table, add approve to it & onlyFounders middleware
+- update relation mappings for auctions
+- store auctions
+- show auctions
+- think on how to prevent processing a website, because it fetches its sitemap which is slow and we don't want to fetch it repeatedly. our db is protected as it will just conflict and not insert.
+- write top level job which spits out other jobs for smaller things
+- should we do mass insert of webpages rather than 1 at a time
+- re-do services to accept objects over id after confirming that we can serialize the object in the message
+- if we design onboarding insertion to happen together then we don't need to insert & then read and thus don't need indexes fo this read as they are not the same as when we do impressions
+- mark pages for whom we can't get spots, and now they sit to be processed again when we run and most likely we won't get spots again unless either our logic changes or their content changes
 
 ## Pending prompt research
 - research if sending campaigns individually or with a group make a difference
@@ -114,6 +138,7 @@ drop database bw;
 - maintain cache of show, edit, create, separate from index, they 
 - make index for to manage all middleware exports
 - add validations to campaign form e.g. requiredCssSelector, url etc.
+- make site have many sitemaps. if entered sitemap has urls, save them. if entered sitemap has more sitemaps, then add  their underlying sitemap in with false status.
 
 ## Pending integration reserach
 - scrapeops.io
@@ -139,8 +164,7 @@ drop database bw;
   - update the lastModifiedAt of Webpage, currently limited as the createMany does not have on conflict update option
   - fetch newer webpages of existing websites
   - fetch webpages of new websites
-  - 
-- 
+  -
 
 
 

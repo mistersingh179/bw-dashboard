@@ -60,12 +60,13 @@ const Webpages: FCWithAuth = () => {
             <Tr>
               <Th>Url</Th>
               <Th>Status</Th>
+              <Th>Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
-            {error && <ErrorRow colSpan={2} />}
-            {isLoading && <LoadingDataRow colSpan={2} />}
-            {webpages && webpages.length == 0 && <NoDataRow colSpan={2} />}
+            {error && <ErrorRow colSpan={3} />}
+            {isLoading && <LoadingDataRow colSpan={3} />}
+            {webpages && webpages.length == 0 && <NoDataRow colSpan={3} />}
             {webpages &&
               webpages.length > 0 &&
               webpages.map((webpage: WebpageType) => (
@@ -77,6 +78,9 @@ const Webpages: FCWithAuth = () => {
                       isDisabled={webpage.id ? false : true}
                       onChange={onUpdate.bind(this, webpage)}
                     />
+                  </Td>
+                  <Td>
+                    <Link href={`/websites/${wsid}/webpages/${webpage.id}/show`}>Details</Link>
                   </Td>
                 </Tr>
               ))}

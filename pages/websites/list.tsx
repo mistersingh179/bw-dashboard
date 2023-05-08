@@ -90,8 +90,7 @@ const Website = () => {
                       <Link href={`/websites/${website.id}/webpages/list`}>
                         Webpages
                       </Link>
-                      <Button
-                        variant={"ghost"}
+                      <Button size={'sm'}
                         onClick={() => {
                           setWebsiteBeingEdited(website);
                           editModalOnOpen();
