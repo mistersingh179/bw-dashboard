@@ -3,12 +3,14 @@ import getCampaignsWhichNeedScore from "@/services/helpers/getCampaignsWhichNeed
 import { Prisma, Webpage } from "@prisma/client";
 import getCampaignsWithTheirScores from "@/services/prompts/getCampaignsWithTheirScores";
 import ScoredCampaignCreateManyWebpageInput = Prisma.ScoredCampaignCreateManyWebpageInput;
+import getCampaignsWithoutScoredCampaignsForWebpage from "@/services/queries/getCamapignsWithoutScoredCampaignsForWebpage";
 
 type CreateScoredCampaigns = (webpage: Webpage) => Promise<void>;
 
 const createScoredCampaigns: CreateScoredCampaigns = async (webpage) => {
   console.log("webpage: ", webpage.id, webpage.url);
-  const campaignsWhichNeedScore = await getCampaignsWhichNeedScore(webpage);
+  const campaignsWhichNeedScore =
+    await getCampaignsWithoutScoredCampaignsForWebpage(webpage.id);
   const campaignsWithScore = await getCampaignsWithTheirScores(
     webpage,
     campaignsWhichNeedScore
@@ -41,7 +43,11 @@ const createScoredCampaigns: CreateScoredCampaigns = async (webpage) => {
 
 if (require.main === module) {
   (async () => {
-    const webpage = await prisma.webpage.findFirstOrThrow();
+    const webpage = await prisma.webpage.findFirstOrThrow({
+      where: {
+        id: "clh9d58tw000098c05nhdmbql"
+      }
+    });
     await createScoredCampaigns(webpage);
   })();
 }

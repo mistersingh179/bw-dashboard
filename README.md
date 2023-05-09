@@ -74,6 +74,8 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
+- look into how to use prisma types directly. it is giving us dates & we are getting strings. if we can also get dates, then we can use its type. there is speed damage of converting strings to dates, but most times if we are using the date, then we need it in date format as we are not going to use the UTC returned by next api
+  - or the front end code can just always call `.toString` on a string before using it. they way then typescript compiler know that they this is a string and no longer a date.
 - design improvement to reduce scored campaigns
   - user has categories
   - categories are build as process webpages (upsert)
@@ -84,7 +86,6 @@ drop database bw;
   - when request comes in we will get webpage -> scoredCampaigns -> campaigns (filter campaigns whose category is not blank and is not same as that of webpage).
 - paginate webpages and setup pattern for all pagination 
 - backend should reject api calls from front end where params are undefined.
-- refactor `GetCampaignsWhichNeedScore` to user queries which filter on relations
 - we need page's category & a category selection on campaign
 - shall we score all campaigns or only ones which match category
 - on webpage's detail page show its category & the campaigns category showing that it won't run
@@ -94,12 +95,17 @@ drop database bw;
 - only process those ad spots which dont have an advertisement for every scored campaign.
   - it is anyways building the advertisement seperately for each scored campaignso we can call it individually
 - going through all webpages without html is slow. need an index here. but adding just an index doesn't work as index is too large
-- look into how to use prisma types directly. it is giving us dates & we are getting strings. if we can also get dates, then we can use its type. there is speed damage of converting strings to dates, but most times if we are using the date, then we need it in date format as we are not going to use the UTC returned by next api
-  - or the front end code can just always call `.toString` on a string before using it. they way then typescript compiler know that they this is a string and no longer a date.
+- change from cuid to autoincrement
 
-## Pending immediate next thing 
+## Pending immediate next thing/feature 
 - show scoredCampaigns for our every url
 - storing of entire page & before, after
+- gray out advertisements which are not going to run
+- campaign is out of date range
+- campaign is paused
+- campaign category is different from webpage category
+- allow editing advertisement text
+- allow linking/dislinking advertisement
 
 ## Pending Tasks
 - on a webpage, show impact of threshold to matched campaigns
