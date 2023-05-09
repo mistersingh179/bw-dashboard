@@ -83,6 +83,7 @@ drop database bw;
   - don't build scored campaign if already there.
   - when request comes in we will get webpage -> scoredCampaigns -> campaigns (filter campaigns whose category is not blank and is not same as that of webpage).
 - paginate webpages and setup pattern for all pagination 
+- backend should reject api calls from front end where params are undefined.
 - refactor `GetCampaignsWhichNeedScore` to user queries which filter on relations
 - we need page's category & a category selection on campaign
 - shall we score all campaigns or only ones which match category
@@ -93,6 +94,8 @@ drop database bw;
 - only process those ad spots which dont have an advertisement for every scored campaign.
   - it is anyways building the advertisement seperately for each scored campaignso we can call it individually
 - going through all webpages without html is slow. need an index here. but adding just an index doesn't work as index is too large
+- look into how to use prisma types directly. it is giving us dates & we are getting strings. if we can also get dates, then we can use its type. there is speed damage of converting strings to dates, but most times if we are using the date, then we need it in date format as we are not going to use the UTC returned by next api
+  - or the front end code can just always call `.toString` on a string before using it. they way then typescript compiler know that they this is a string and no longer a date.
 
 ## Pending immediate next thing 
 - show scoredCampaigns for our every url

@@ -1,6 +1,7 @@
 import { Campaign, Webpage, Website, Prisma } from ".prisma/client";
 import CampaignUncheckedCreateWithoutUserInput = Prisma.CampaignUncheckedCreateWithoutUserInput;
-import {Setting} from "@prisma/client";
+import { Setting } from "@prisma/client";
+import { WebpageWithDetail } from "@/services/queries/getWebpageDetail";
 
 export type CampaignType = Omit<
   Campaign,
@@ -48,4 +49,12 @@ export type SettingType = Omit<
   userId?: string;
   createdAt?: string;
   updatedAt?: string;
+};
+
+export type WebpageWithDetailType = Omit<
+  WebpageWithDetail,
+  "createdAt" | "updatedAt"
+> & {
+  createdAt: string;
+  updatedAt: string;
 };

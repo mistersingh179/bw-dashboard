@@ -36,7 +36,7 @@ const Webpages: FCWithAuth = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { wsid } = router.query as QueryParams;
   const { webpages, error, isLoading, onSave, onUpdate } = useWebpages(
-    wsid as string
+    wsid
   );
   const { websites } = useWebsites();
   const website = (websites || []).find((ws) => ws.id === wsid);

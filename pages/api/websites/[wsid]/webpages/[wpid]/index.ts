@@ -2,7 +2,6 @@ import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import withMiddleware from "@/middlewares/withMiddleware";
 import { QueryParams } from "@/types/QueryParams";
 import prisma from "@/lib/prisma";
-import getWebpageDetail from "@/services/queries/getWebpageDetail";
 
 const webpage: NextApiHandler = async (req, res) => {
   switch (req.method) {
@@ -17,9 +16,19 @@ const webpage: NextApiHandler = async (req, res) => {
 
 const handleShowWebpage = async (req: NextApiRequest, res: NextApiResponse) => {
   const { wpid, wsid } = req.query as QueryParams;
-  const webpageWithDetail = await getWebpageDetail(wpid as string);
-  res.json(webpageWithDetail);
-}
+  const webpage = await prisma.webpage.findFirstOrThrow({
+    where: {
+      id: wpid,
+      website: {
+        id: wsid,
+        user: {
+          id: req.authenticatedUserId,
+        },
+      },
+    },
+  });
+  res.json(webpage);
+};
 
 const handleUpdateWebpage = async (
   req: NextApiRequest,

@@ -9,18 +9,15 @@ import {
 
 type GetWebpageDetail = (webpageId: string) => Promise<WebpageWithDetail>;
 
-type WebpageWithDetail = Webpage & {
-  website: Website;
-  _count: { scoredCampaigns: number; advertisementSpots: number };
+export type WebpageWithDetail = Webpage & {
   scoredCampaigns: (ScoredCampaign & {
     campaign: Campaign;
-    advertisements: Advertisement[];
-    _count: { advertisements: number };
-  })[];
-  advertisementSpots: (AdvertisementSpot & {
-    advertisements: Advertisement[];
+    advertisements: (Advertisement & {
+      advertisementSpot: AdvertisementSpot;
+    })[];
   })[];
 };
+
 
 const getWebpageDetail: GetWebpageDetail = async (webpageId) => {
   console.log("inside service: getWebpageDetail");
@@ -32,24 +29,11 @@ const getWebpageDetail: GetWebpageDetail = async (webpageId) => {
       scoredCampaigns: {
         include: {
           campaign: true,
-          advertisements: true,
-          _count: {
-            select: {
-              advertisements: true,
+          advertisements: {
+            include: {
+              advertisementSpot: true,
             },
           },
-        },
-      },
-      advertisementSpots: {
-        include: {
-          advertisements: true,
-        },
-      },
-      website: true,
-      _count: {
-        select: {
-          scoredCampaigns: true,
-          advertisementSpots: true,
         },
       },
     },
@@ -62,8 +46,6 @@ export default getWebpageDetail;
 if (require.main === module) {
   (async () => {
     const ans = await getWebpageDetail("clh9d58tw000098c05nhdmbql");
-    console.log(ans.scoredCampaigns[0].advertisements.length);
-    console.log(ans.advertisementSpots[0].advertisements.length);
-
+    console.dir(ans, { depth: 4 });
   })();
 }

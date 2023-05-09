@@ -1,3 +1,3 @@
-export interface QueryParams {
-  [key: string]: string | undefined;
-}
+  export interface QueryParams {
+    [key: string]: string;
+  }
