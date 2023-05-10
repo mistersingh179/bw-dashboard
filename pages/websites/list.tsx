@@ -15,14 +15,20 @@ import {
   Tr,
   useDisclosure,
 } from "@chakra-ui/react";
-import {AddIcon} from "@chakra-ui/icons";
-import React, {useState} from "react";
-import {ErrorRow, LoadingDataRow, NoDataRow,} from "@/components/genericMessages";
-import {NullableWebsiteType, WebsiteType} from "@/types/my-types";
+import { AddIcon } from "@chakra-ui/icons";
+import React, { useState } from "react";
+import {
+  ErrorRow,
+  LoadingDataRow,
+  NoDataRow,
+} from "@/components/genericMessages";
+import { NullableWebsiteType, WebsiteType } from "@/types/my-types";
 import CreateWebsiteModal from "@/components/modals/CreateWebsiteModal";
 import useWebsites from "@/hooks/useWebsites";
-import {Link} from "@chakra-ui/next-js";
+import { Link } from "@chakra-ui/next-js";
 import EditWebsiteModal from "@/components/modals/EditWebsiteModal";
+import fetcher from "@/helpers/fetcher";
+import { preload } from "swr";
 
 const Website = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -87,10 +93,19 @@ const Website = () => {
                   </Td>
                   <Td>
                     <HStack>
-                      <Link href={`/websites/${website.id}/webpages/list`}>
+                      <Link
+                        href={`/websites/${website.id}/webpages/list`}
+                        onMouseEnter={() =>
+                          preload(
+                            `/api/websites/${website.id}/webpages`,
+                            fetcher
+                          )
+                        }
+                      >
                         Webpages
                       </Link>
-                      <Button size={'sm'}
+                      <Button
+                        size={"sm"}
                         onClick={() => {
                           setWebsiteBeingEdited(website);
                           editModalOnOpen();

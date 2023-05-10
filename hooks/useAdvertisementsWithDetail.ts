@@ -10,7 +10,7 @@ const useAdvertisementsWithDetail = (wsid: string, wpid: string) => {
     error,
     isLoading,
     mutate,
-  } = useSWR<AdvertisementWithDetail[]>(`/api/websites/${wsid}/webpages/${wpid}/advertisements/`, fetcher);
+  } = useSWR<AdvertisementWithDetail[]>(`/api/websites/${wsid}/webpages/${wpid}/advertisements`, fetcher);
 
   return {advertisements, error, isLoading};
 }

@@ -33,7 +33,7 @@ const useWebsites = () => {
   };
 
   const createWebsite = async (newWebsite: WebsiteType) => {
-    const res = await fetch("/api/websites/", {
+    const res = await fetch("/api/websites", {
       method: "POST",
       body: JSON.stringify(newWebsite),
       headers: {

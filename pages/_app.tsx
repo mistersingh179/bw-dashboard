@@ -37,6 +37,13 @@ const App = ({
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta name="referrer" content="no-referrer" />
           <link rel="icon" href="/favicon.ico" />
+
+          <link rel="preload" href="/api/campaigns" as="fetch" crossOrigin="anonymous" />
+          <link rel="preload" href="/api/websites" as="fetch" crossOrigin="anonymous" />
+          <link rel="preload" href="/api/dashboard" as="fetch" crossOrigin="anonymous" />
+          <link rel="preload" href="/api/user" as="fetch" crossOrigin="anonymous" />
+          <link rel="preload" href="/api/settings" as="fetch" crossOrigin="anonymous" />
+
         </Head>
       </SessionProvider>
       <Analytics />

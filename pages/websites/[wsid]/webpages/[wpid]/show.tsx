@@ -18,6 +18,9 @@ import { formatISO } from "date-fns";
 import StatusBadge from "@/components/StatusBadge";
 import { Link } from "@chakra-ui/next-js";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
+import useAdvertisementsWithDetail from "@/hooks/useAdvertisementsWithDetail";
+import { preload } from "swr";
+import fetcher from "@/helpers/fetcher";
 
 const WebpageBox = ({ webpage }: { webpage: WebpageType }) => {
   console.log("in WebpageBox with: ", webpage);
@@ -70,6 +73,12 @@ const Show = () => {
           onClick={() => {
             router.push(
               `/websites/${wsid}/webpages/${wpid}/advertisements/list`
+            );
+          }}
+          onMouseEnter={() => {
+            preload(
+              `/api/websites/${wsid}/webpages/${wpid}/advertisements`,
+              fetcher
             );
           }}
           colorScheme={"blue"}

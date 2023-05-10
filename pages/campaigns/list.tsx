@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
 import { Link } from "@chakra-ui/next-js";
-import useSWR, { mutate } from "swr";
+import useSWR, { mutate, preload } from "swr";
 import { format } from "date-fns";
 import fetcher from "@/helpers/fetcher";
 import { useRouter } from "next/router";
@@ -103,7 +103,12 @@ const Campaigns: FCWithAuth = () => {
                       >
                         Delete
                       </Button>
-                      <Link href={`/campaigns/${campaign.id}/show`}>
+                      <Link
+                        href={`/campaigns/${campaign.id}/show`}
+                        onMouseEnter={() =>
+                          preload(`/api/campaigns/${campaign.id}`, fetcher)
+                        }
+                      >
                         Details
                       </Link>
                       <Link href={`/campaigns/${campaign.id}/edit`}>Edit</Link>

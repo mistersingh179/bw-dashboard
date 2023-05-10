@@ -18,8 +18,12 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import React from "react";
-import { ErrorRow, LoadingDataRow, NoDataRow } from "@/components/genericMessages";
-import useSWR from "swr";
+import {
+  ErrorRow,
+  LoadingDataRow,
+  NoDataRow,
+} from "@/components/genericMessages";
+import useSWR, { preload } from "swr";
 import fetcher from "@/helpers/fetcher";
 import CreateWebpageModal from "@/components/modals/CreateWebpageModal";
 import { WebpageType } from "@/types/my-types";
@@ -35,9 +39,7 @@ const Webpages: FCWithAuth = () => {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { wsid } = router.query as QueryParams;
-  const { webpages, error, isLoading, onSave, onUpdate } = useWebpages(
-    wsid
-  );
+  const { webpages, error, isLoading, onSave, onUpdate } = useWebpages(wsid);
   const { websites } = useWebsites();
   const website = (websites || []).find((ws) => ws.id === wsid);
 
@@ -80,7 +82,17 @@ const Webpages: FCWithAuth = () => {
                     />
                   </Td>
                   <Td>
-                    <Link href={`/websites/${wsid}/webpages/${webpage.id}/show`}>Details</Link>
+                    <Link
+                      href={`/websites/${wsid}/webpages/${webpage.id}/show`}
+                      onMouseEnter={() =>
+                        preload(
+                          `/api/websites/${wsid}/webpages/${webpage.id}`,
+                          fetcher
+                        )
+                      }
+                    >
+                      Details
+                    </Link>
                   </Td>
                 </Tr>
               ))}
