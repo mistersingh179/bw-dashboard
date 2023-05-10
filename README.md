@@ -13,7 +13,8 @@
 - `tsx scripts/foo.ts`
 - `tsx watch scripts/foo.ts` for quicker iterations in dev
 - or `npx ts-node scripts/foo.ts` but also requires `"module": "CommonJS"` set in tsconfig.json. this can be set just for `ts-node` by putting it in `"ts-node"` block.
-  - to run from webstorm create a new config called `tsx` and setup Node parameters to be `--loader tsx` and javascript file to `$FilePathRelativeToProjectRoot$`. this will basically do `node --loader ts ./currentFile.ts` which runs the file.  `Ctrl + r` will get the same.
+- to run from webstorm create a new config called `tsx` and setup Node parameters to be `--loader tsx` and javascript file to `$FilePathRelativeToProjectRoot$`. this will basically do `node --loader ts ./currentFile.ts` which runs the file.  `Ctrl + r` will get the same.
+- to run in watch mode from repl we can use node v19 and then the `--watch option` along with the `--loader tsx` option. 
 
 ## REPL like behavior with Editor
 - build .ts file & run it with `ts watch`
@@ -74,7 +75,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
-- on webpage detail show counts of spots & advertisements
 - setup pattern for api to disclose the return type to be prisma object nested inside a superjson result
 - design improvement to reduce scored campaigns
   - user has categories

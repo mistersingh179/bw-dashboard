@@ -13,16 +13,19 @@ import {
 import React from "react";
 import useWebpage from "@/hooks/useWepage";
 import { ErrorAlert } from "@/components/genericMessages";
-import { WebpageType } from "@/types/my-types";
 import { formatISO } from "date-fns";
 import StatusBadge from "@/components/StatusBadge";
 import { Link } from "@chakra-ui/next-js";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import useAdvertisementsWithDetail from "@/hooks/useAdvertisementsWithDetail";
 import { preload } from "swr";
 import fetcher from "@/helpers/fetcher";
+import { WebpageWithAdSpotsAndOtherCounts } from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
 
-const WebpageBox = ({ webpage }: { webpage: WebpageType }) => {
+const WebpageBox = ({
+  webpage,
+}: {
+  webpage: WebpageWithAdSpotsAndOtherCounts;
+}) => {
   console.log("in WebpageBox with: ", webpage);
   return (
     <VStack alignItems={"start"}>
@@ -54,6 +57,23 @@ const WebpageBox = ({ webpage }: { webpage: WebpageType }) => {
         <Box minW={"3xs"}>Status: </Box>
         <Box>
           <StatusBadge status={webpage.status} />
+        </Box>
+      </HStack>
+      <HStack>
+        <Box minW={"3xs"}># of Ad Spots: </Box>
+        <Box>{webpage._count.advertisementSpots}</Box>
+      </HStack>
+      <HStack>
+        <Box minW={"3xs"}># of Scored Campaigns: </Box>
+        <Box>{webpage._count.scoredCampaigns}</Box>
+      </HStack>
+      <HStack>
+        <Box minW={"3xs"}># of Ads: </Box>
+        <Box>
+          {webpage.advertisementSpots.reduce(
+            (pv, cv) => pv + cv._count.advertisements,
+            0
+          )}
         </Box>
       </HStack>
     </VStack>

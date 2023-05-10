@@ -3,6 +3,7 @@ import withMiddleware from "@/middlewares/withMiddleware";
 import { QueryParams } from "@/types/QueryParams";
 import prisma from "@/lib/prisma";
 import superjson from "superjson";
+import getWebpageWithAdSpotsAndAdsCount from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
 
 const webpage: NextApiHandler = async (req, res) => {
   switch (req.method) {
@@ -17,17 +18,11 @@ const webpage: NextApiHandler = async (req, res) => {
 
 const handleShowWebpage = async (req: NextApiRequest, res: NextApiResponse) => {
   const { wpid, wsid } = req.query as QueryParams;
-  const webpage = await prisma.webpage.findFirstOrThrow({
-    where: {
-      id: wpid,
-      website: {
-        id: wsid,
-        user: {
-          id: req.authenticatedUserId,
-        },
-      },
-    },
-  });
+  const webpage = await getWebpageWithAdSpotsAndAdsCount(
+    wpid,
+    wsid,
+    req.authenticatedUserId as string
+  );
   res
     .setHeader("Content-Type", "application/json")
     .status(200)

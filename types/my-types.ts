@@ -1,5 +1,4 @@
 import { Campaign, Webpage, Website, Prisma } from ".prisma/client";
-import CampaignUncheckedCreateWithoutUserInput = Prisma.CampaignUncheckedCreateWithoutUserInput;
 import { Setting } from "@prisma/client";
 import { WebpageWithDetail } from "@/services/queries/getWebpageDetail";
 
