@@ -2,6 +2,7 @@ import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import withMiddleware from "@/middlewares/withMiddleware";
 import { QueryParams } from "@/types/QueryParams";
 import prisma from "@/lib/prisma";
+import superjson from "superjson";
 
 const webpage: NextApiHandler = async (req, res) => {
   switch (req.method) {
@@ -27,7 +28,10 @@ const handleShowWebpage = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     },
   });
-  res.json(webpage);
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify(webpage));
 };
 
 const handleUpdateWebpage = async (
@@ -50,7 +54,10 @@ const handleUpdateWebpage = async (
     },
   });
   console.log("updated webpage is: ", webpage);
-  res.json(webpage);
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify(webpage));
 };
 
 export default withMiddleware("getPutDeleteOnly", "auth")(webpage);

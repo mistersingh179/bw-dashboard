@@ -1,16 +1,16 @@
 import React from "react";
-import { useRouter } from "next/router";
+import {useRouter} from "next/router";
 
-import { Box, Heading, Spinner } from "@chakra-ui/react";
+import {Box, Heading, Spinner} from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
-import { Link } from "@chakra-ui/next-js";
-import useSWR, { mutate } from "swr";
-import { QueryParams } from "@/types/QueryParams";
+import {Link} from "@chakra-ui/next-js";
+import useSWR, {mutate} from "swr";
+import {QueryParams} from "@/types/QueryParams";
 import fetcher from "@/helpers/fetcher";
-import { formatISO, parseISO } from "date-fns";
 import CampaignForm from "@/components/CampaignForm";
-import { CampaignType } from "@/types/my-types";
+import {CampaignType} from "@/types/my-types";
 import useTxToast from "@/hooks/useTxToast";
+import superjson from "superjson";
 
 const now = new Date();
 
@@ -65,18 +65,17 @@ const CampaignBox = (props: { campaign: CampaignType }) => {
         "Content-Type": "application/json",
       },
     });
-    if (res.status >= 400) {
-      throw new Error("unable to edit campaign");
-    }
-    const data = await res.json();
-    console.log("got updated campaign: ", data);
-    return data;
-  };
 
-  campaign.start = formatISO(parseISO(campaign.start), {
-    representation: "date",
-  });
-  campaign.end = formatISO(parseISO(campaign.end), { representation: "date" });
+    console.log("res result: ", res.status);
+    const text = await res.text();
+    const data = await superjson.parse<any>(text);
+    if (res.status >= 400) {
+      throw new Error(data.message);
+    } else {
+      console.log("got updated campaign: ", data);
+      return data;
+    }
+  };
 
   return <CampaignForm campaign={campaign} submitHandler={submitHandler} />;
 };

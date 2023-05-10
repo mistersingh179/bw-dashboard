@@ -74,8 +74,10 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
-- look into how to use prisma types directly. it is giving us dates & we are getting strings. if we can also get dates, then we can use its type. there is speed damage of converting strings to dates, but most times if we are using the date, then we need it in date format as we are not going to use the UTC returned by next api
-  - or the front end code can just always call `.toString` on a string before using it. they way then typescript compiler know that they this is a string and no longer a date.
+- take care of the id/optimisitcValue thing in campaign
+- look in to prefetching using useSWR
+- on webpage detail show counts of spots & advertisements
+- setup pattern for api to disclose the return type to be prisma object nested inside a superjson result
 - design improvement to reduce scored campaigns
   - user has categories
   - categories are build as process webpages (upsert)

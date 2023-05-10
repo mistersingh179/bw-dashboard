@@ -3,6 +3,7 @@ import type { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 import prisma from "@/lib/prisma";
+import superjson from "superjson";
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,5 +20,8 @@ export default async function handler(
     },
   });
   console.log(user);
-  res.status(200).json({ user });
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify(user));
 }

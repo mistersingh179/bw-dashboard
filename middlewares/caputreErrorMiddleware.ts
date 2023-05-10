@@ -1,4 +1,5 @@
 import { Middleware } from "next-api-middleware";
+import superjson from "superjson";
 
 const captureErrors: Middleware = async (req, res, next) => {
   // Catch any errors that are thrown in remaining middleware and the API route handler
@@ -6,7 +7,10 @@ const captureErrors: Middleware = async (req, res, next) => {
   try {
     await next();
   } catch (err) {
-    res.status(500).json({ message: (err as Error)?.message });
+    res
+      .setHeader("Content-Type", "application/json")
+      .status(500)
+      .send(superjson.stringify({ message: (err as Error)?.message }));
     console.log("error: ", (err as Error)?.message);
   }
 };

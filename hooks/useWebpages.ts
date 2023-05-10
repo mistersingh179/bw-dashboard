@@ -3,6 +3,7 @@ import useSWR from "swr";
 import {WebpageType} from "@/types/my-types";
 import fetcher from "@/helpers/fetcher";
 import React from "react";
+import superjson from "superjson";
 
 const useWebpages = (wsid: string) => {
   const { success, failure } = useTxToast();
@@ -74,7 +75,8 @@ const useWebpages = (wsid: string) => {
       },
     });
     console.log("res result: ", res.status);
-    const data = await res.json();
+    const text = await res.text();
+    const data = await superjson.parse<any>(text);
     if (res.status >= 400) {
       throw new Error(data.message);
     } else {
@@ -92,7 +94,8 @@ const useWebpages = (wsid: string) => {
       },
     });
     console.log("res result: ", res.status);
-    const data = await res.json();
+    const text = await res.text();
+    const data = await superjson.parse<any>(text);
     if (res.status >= 400) {
       throw new Error(data.message);
     } else {

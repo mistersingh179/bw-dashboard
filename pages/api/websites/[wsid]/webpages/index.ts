@@ -4,6 +4,7 @@ import { Campaign } from "@prisma/client";
 import { formatISO, parseISO } from "date-fns";
 import withMiddleware from "@/middlewares/withMiddleware";
 import {QueryParams} from "@/types/QueryParams";
+import superjson from "superjson";
 
 const webpagesHandler: NextApiHandler = async (req, res) => {
   switch (req.method) {
@@ -38,7 +39,10 @@ const handleListWebpages = async (
     }
   );
   console.log("webpages: ", webpages);
-  res.json(webpages);
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify(webpages));
 };
 
 const handleCreateWebpage = async (
@@ -59,7 +63,10 @@ const handleCreateWebpage = async (
       }
     },
   });
-  res.json(webpage);
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify(webpage));
 };
 
 export default withMiddleware("getPostOnly", "auth")(webpagesHandler);

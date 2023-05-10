@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { Campaign } from "@prisma/client";
 import { formatISO, parseISO } from "date-fns";
 import withMiddleware from "@/middlewares/withMiddleware";
+import superjson from "superjson";
 
 type AuctionResponseData = {
   message: string;
@@ -23,7 +24,7 @@ export default withMiddleware("getPostOnly", "auth")(campaigns);
 
 const handleCreateCampaign = async (
   req: NextApiRequest,
-  res: NextApiResponse<Campaign>
+  res: NextApiResponse
 ) => {
   const { start, end } = req.body;
   const startWithTime = formatISO(parseISO(start));
@@ -40,12 +41,15 @@ const handleCreateCampaign = async (
       },
     },
   });
-  res.json(campaign);
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify(campaign));
 };
 
 const handleListCampaigns = async (
   req: NextApiRequest,
-  res: NextApiResponse<Campaign[]>
+  res: NextApiResponse
 ) => {
   const campaigns = await prisma.campaign.findMany({
     where: {
@@ -55,6 +59,8 @@ const handleListCampaigns = async (
       id: "asc",
     },
   });
-  console.log("campaigns: ", campaigns);
-  res.status(200).json(campaigns);
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify(campaigns));
 };

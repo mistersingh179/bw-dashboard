@@ -11,6 +11,7 @@ import {
   Td,
   Th,
   Thead,
+  Tooltip,
   Tr,
 } from "@chakra-ui/react";
 import React from "react";
@@ -26,6 +27,7 @@ import useAdvertisementsWithDetail from "@/hooks/useAdvertisementsWithDetail";
 import Link from "next/link";
 import { AdvertisementWithDetail } from "@/services/queries/getAdvertisementsForWebpage";
 import useWebpage from "@/hooks/useWepage";
+import { format } from "date-fns";
 
 const Advertisements: FCWithAuth = () => {
   const router = useRouter();
@@ -58,42 +60,75 @@ const Advertisements: FCWithAuth = () => {
           <Thead>
             <Tr>
               <Th>Name</Th>
-              <Th>Dates</Th>
               <Th>Score</Th>
-              <Th>Reason</Th>
-              <Th>Product Name</Th>
-              <Th>Product Description</Th>
-              <Th>Before</Th>
+              <Th>Product</Th>
               <Th>Advertisement</Th>
-              <Th>After</Th>
               <Th>Status</Th>
             </Tr>
           </Thead>
           <Tbody>
-            {error && <ErrorRow colSpan={10} />}
-            {isLoading && <LoadingDataRow colSpan={10} />}
+            {error && <ErrorRow colSpan={5} />}
+            {isLoading && <LoadingDataRow colSpan={5} />}
             {advertisements && advertisements.length == 0 && (
-              <NoDataRow colSpan={10} />
+              <NoDataRow colSpan={5} />
             )}
             {advertisements &&
               advertisements.length > 0 &&
               advertisements.map((advertisement: AdvertisementWithDetail) => (
                 <Tr key={advertisement.id}>
-                  <Td>{advertisement.scoredCampaign.campaign.name}</Td>
                   <Td>
-                    {advertisement.scoredCampaign.campaign.start.toString()}{" "}
-                    <br />
-                    {advertisement.scoredCampaign.campaign.start.toString()}
+                    <Tooltip
+                      label={
+                        <Box>
+                          Start:{" "}
+                          {format(
+                            advertisement.scoredCampaign.campaign.start,
+                            "yyyy/MM/dd"
+                          )}
+                          <br />
+                          End:{" "}
+                          {format(
+                            advertisement.scoredCampaign.campaign.end,
+                            "yyyy/MM/dd"
+                          )}
+                          <br />
+                          Status:{" "}
+                          {advertisement.scoredCampaign.campaign.status
+                            ? "On"
+                            : "Off"}
+                        </Box>
+                      }
+                    >
+                      {advertisement.scoredCampaign.campaign.name}
+                    </Tooltip>
                   </Td>
-                  <Td>{advertisement.scoredCampaign.score}</Td>
-                  <Td>{advertisement.scoredCampaign.reason}</Td>
-                  <Td>{advertisement.scoredCampaign.campaign.productName}</Td>
                   <Td>
-                    {advertisement.scoredCampaign.campaign.productDescription}
+                    <Tooltip label={advertisement.scoredCampaign.reason}>
+                      {advertisement.scoredCampaign.score.toString()}
+                    </Tooltip>
                   </Td>
-                  <Td>{advertisement.advertisementSpot.beforeText}</Td>
-                  <Td>{advertisement.advertText}</Td>
-                  <Td>{advertisement.advertisementSpot.afterText}</Td>
+                  <Td>
+                    <Tooltip
+                      label={
+                        advertisement.scoredCampaign.campaign.productDescription
+                      }
+                    >
+                      {advertisement.scoredCampaign.campaign.productName}
+                    </Tooltip>
+                  </Td>
+                  <Td>
+                    <Tooltip
+                      label={
+                        <Box>
+                          Before: {advertisement.advertisementSpot.beforeText}
+                          <br />
+                          After: {advertisement.advertisementSpot.afterText}
+                        </Box>
+                      }
+                    >
+                      {advertisement.advertText}
+                    </Tooltip>
+                  </Td>
                   <Td>
                     <Switch isChecked={advertisement.status} />
                   </Td>

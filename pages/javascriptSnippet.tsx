@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
 import MyCode from "@/components/MyCode";
+import superjson from "superjson";
 
 const BW_SCRIPT_BASE_URL = process.env.NEXT_PUBLIC_BW_SCRIPT_BASE_URL;
 
@@ -29,9 +30,11 @@ const JavascriptSnippet: FCWithAuth = () => {
   useEffect(() => {
     const getUser = async () => {
       const res = await fetch("/api/user");
-      const data = await res.json();
+      console.log("res result: ", res.status);
+      const text = await res.text();
+      const data = await superjson.parse<any>(text);
       console.log(data);
-      setUserId(data.user.id);
+      setUserId(data.id);
     };
     if (session?.user?.email) {
       getUser();

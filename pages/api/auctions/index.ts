@@ -1,12 +1,10 @@
 import {NextApiHandler, NextApiRequest, NextApiResponse} from "next";
 import prisma from "@/lib/prisma";
 import withMiddleware from "@/middlewares/withMiddleware";
+import superjson from "superjson";
 
-type AuctionResponseData = {
-  message: string;
-};
 
-const auctions: NextApiHandler<AuctionResponseData> = async (req, res) => {
+const auctions: NextApiHandler = async (req, res) => {
   await handleCreateAuction(req, res);
 };
 
@@ -14,7 +12,7 @@ export default withMiddleware("cors", "postOnly")(auctions);
 
 const handleCreateAuction = async (
   req: NextApiRequest,
-  res: NextApiResponse<AuctionResponseData>
+  res: NextApiResponse
 ) => {
   console.log("in handleAuctionPost");
   console.log("req.query: ", req.query);
@@ -37,7 +35,10 @@ const handleCreateAuction = async (
       },
     });
 
-    res.status(201).json({ message: "creating an auction" });
+    res
+      .setHeader("Content-Type", "application/json")
+      .status(201)
+      .send(superjson.stringify({ message: "creating an auction" }));
   } else {
     console.log("not an approved user. failing silently");
     res.status(204).end();

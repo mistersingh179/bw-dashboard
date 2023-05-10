@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { QueryParams } from "@/types/QueryParams";
 import { formatISO, parseISO } from "date-fns";
 import withMiddleware from "@/middlewares/withMiddleware";
+import superjson from "superjson";
 
 const campaign: NextApiHandler = async (req, res) => {
   if (req.method === "GET") {
@@ -57,7 +58,10 @@ const handleUpdateCampaign = async (
 
   console.log("sending back campaign: ", campaign);
 
-  res.status(200).json(campaign);
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify(campaign));
 };
 
 const handleShowCampaign = async (
@@ -76,7 +80,10 @@ const handleShowCampaign = async (
 
   console.log("sending back campaign: ", campaign);
 
-  res.status(200).json(campaign);
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify(campaign));
 };
 
 const handleDeleteCampaign = async (

@@ -14,7 +14,7 @@ import React from "react";
 import useWebpage from "@/hooks/useWepage";
 import { ErrorAlert } from "@/components/genericMessages";
 import { WebpageType } from "@/types/my-types";
-import { formatISO, parseISO } from "date-fns";
+import { formatISO } from "date-fns";
 import StatusBadge from "@/components/StatusBadge";
 import { Link } from "@chakra-ui/next-js";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
@@ -42,7 +42,7 @@ const WebpageBox = ({ webpage }: { webpage: WebpageType }) => {
       <HStack>
         <Box minW={"3xs"}>last Modified At: </Box>
         <Box>
-          {formatISO(parseISO(webpage.lastModifiedAt ?? ""), {
+          {formatISO(webpage.lastModifiedAt, {
             representation: "date",
           })}
         </Box>

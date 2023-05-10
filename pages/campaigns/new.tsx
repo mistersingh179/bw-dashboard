@@ -6,6 +6,7 @@ import { useSWRConfig } from "swr";
 import CampaignForm from "@/components/CampaignForm";
 import { CampaignType } from "@/types/my-types";
 import useTxToast from "@/hooks/useTxToast";
+import superjson from "superjson";
 
 const NewCampaign: FCWithAuth = () => {
   const { mutate } = useSWRConfig();
@@ -40,7 +41,8 @@ const NewCampaign: FCWithAuth = () => {
       },
     });
     console.log("res result: ", res.status);
-    const data = await res.json();
+    const text = await res.text();
+    const data = await superjson.parse<any>(text);
     if (res.status >= 400) {
       throw new Error(data.message);
     } else {

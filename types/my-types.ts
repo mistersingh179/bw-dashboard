@@ -5,28 +5,25 @@ import { WebpageWithDetail } from "@/services/queries/getWebpageDetail";
 
 export type CampaignType = Omit<
   Campaign,
-  "id" | "start" | "end" | "fixedCpm" | "userId" | "createdAt" | "updatedAt"
+  "id" | "fixedCpm" | "userId" | "createdAt" | "updatedAt"
 > & {
   id?: string;
   userId?: string;
-  start: string;
-  end: string;
   fixedCpm: number;
   optimisticValue?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type WebpageType = Omit<
   Webpage,
-  "id" | "userId" | "websiteId" | "createdAt" | "updatedAt" | "lastModifiedAt"
+  "id" | "userId" | "websiteId" | "createdAt" | "updatedAt"
 > & {
   id?: string;
   userId?: string;
   websiteId?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  lastModifiedAt?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type WebsiteType = Omit<
@@ -35,11 +32,15 @@ export type WebsiteType = Omit<
 > & {
   id?: string;
   userId?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type NullableWebsiteType = WebsiteType | null | undefined;
+
+export type MyErrorType = {
+  message: string;
+};
 
 export type SettingType = Omit<
   Setting,
@@ -47,14 +48,14 @@ export type SettingType = Omit<
 > & {
   id?: string;
   userId?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type WebpageWithDetailType = Omit<
   WebpageWithDetail,
   "createdAt" | "updatedAt"
 > & {
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 };

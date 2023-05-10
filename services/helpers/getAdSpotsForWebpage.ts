@@ -98,7 +98,11 @@ export default getAdSpotsForWebpage;
 
 if (require.main === module) {
   (async () => {
-    const webpage = await prisma.webpage.findFirstOrThrow();
+    const webpage = await prisma.webpage.findFirstOrThrow({
+      where: {
+        id: "clh9d58tw000g98c0zarqhhc6"
+      }
+    });
     console.log("webpage's html length: ", webpage.html.length);
     await getAdSpotsForWebpage(webpage);
   })();

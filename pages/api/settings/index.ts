@@ -3,6 +3,7 @@ import withMiddleware from "@/middlewares/withMiddleware";
 import { Campaign, Setting } from "@prisma/client";
 import { formatISO, parseISO } from "date-fns";
 import prisma from "@/lib/prisma";
+import superjson from "superjson";
 
 const settings: NextApiHandler = async (req, res) => {
   switch (req.method) {
@@ -19,8 +20,9 @@ export default withMiddleware("getPutDeleteOnly", "auth")(settings);
 
 const handleCreateOrUpdateSettings = async (
   req: NextApiRequest,
-  res: NextApiResponse<Setting>
+  res: NextApiResponse
 ) => {
+
   const { status, scoreThreshold } = req.body;
   const userWithSetting = await prisma.user.update({
     where: {
@@ -42,12 +44,16 @@ const handleCreateOrUpdateSettings = async (
       setting: true
     }
   });
-  res.json(userWithSetting.setting as Setting);
+
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify(userWithSetting.setting));
 };
 
 const handleShowSettings = async (
   req: NextApiRequest,
-  res: NextApiResponse<Setting>
+  res: NextApiResponse
 ) => {
   const setting = await prisma.setting.findFirstOrThrow({
     where: {
@@ -57,5 +63,8 @@ const handleShowSettings = async (
     },
   });
   console.log("setting: ", setting);
-  res.status(200).json(setting);
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify(setting));
 };

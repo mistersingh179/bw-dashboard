@@ -3,6 +3,7 @@ import type { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 import prisma from "@/lib/prisma";
+import superjson from "superjson";
 
 const handler: NextApiHandler = async (req, res) => {
   const session = await getServerSession(req, res, authOptions);
@@ -11,7 +12,10 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   const user = await prisma.user.findFirst();
-  res.status(200).json({ user });
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify(user));
 };
 
 export default handler;

@@ -7,11 +7,11 @@ import { Link } from "@chakra-ui/next-js";
 import useSWR from "swr";
 import { QueryParams } from "@/types/QueryParams";
 import fetcher from "@/helpers/fetcher";
-import { formatISO, parseISO } from "date-fns";
+import { formatISO } from "date-fns";
 import { CampaignType } from "@/types/my-types";
 import StatusBadge from "@/components/StatusBadge";
 import numeral from "numeral";
-import {ExternalLinkIcon} from "@chakra-ui/icons";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 const ErrorBox = () => {
   return <Box>There was an error processing your request. Try again?</Box>;
@@ -40,15 +40,11 @@ const CampaignBox = (props: { campaign: CampaignType }) => {
       </HStack>
       <HStack>
         <Box minW={"3xs"}>Start: </Box>
-        <Box>
-          {formatISO(parseISO(campaign.start), { representation: "date" })}
-        </Box>
+        <Box>{formatISO(campaign.start, { representation: "date" })}</Box>
       </HStack>
       <HStack>
         <Box minW={"3xs"}>End: </Box>
-        <Box>
-          {formatISO(parseISO(campaign.end), { representation: "date" })}
-        </Box>
+        <Box>{formatISO(campaign.end, { representation: "date" })}</Box>
       </HStack>
       <HStack>
         <Box minW={"3xs"}>Impression Cap: </Box>
@@ -75,16 +71,14 @@ const CampaignBox = (props: { campaign: CampaignType }) => {
       <HStack>
         <Box minW={"3xs"}>Click Url: </Box>
         <Box>
-          <Link href={campaign.clickUrl} target={"_blank"} >
+          <Link href={campaign.clickUrl} target={"_blank"}>
             {campaign.clickUrl} <ExternalLinkIcon mx="2px" />
           </Link>
         </Box>
       </HStack>
       <HStack>
         <Box minW={"3xs"}>CSS Selector: </Box>
-        <Box>
-          {campaign.requiredCssSelector || "--Not Provided--"}
-        </Box>
+        <Box>{campaign.requiredCssSelector || "--Not Provided--"}</Box>
       </HStack>
       <HStack>
         <Box minW={"3xs"}>Pacing: </Box>

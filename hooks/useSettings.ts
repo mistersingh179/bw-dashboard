@@ -1,8 +1,9 @@
 import useSWR from "swr";
 import useTxToast from "@/hooks/useTxToast";
 import fetcher from "@/helpers/fetcher";
-import { SettingType, WebpageType, WebsiteType } from "@/types/my-types";
+import { SettingType } from "@/types/my-types";
 import React from "react";
+import superjson from "superjson";
 
 const useSettings = () => {
   const { success, failure } = useTxToast();
@@ -21,8 +22,8 @@ const useSettings = () => {
         "Content-Type": "application/json",
       },
     });
-    console.log("res result: ", res.status);
-    const data = await res.json();
+    const text = await res.text();
+    const data = superjson.parse<any>(text);
     if (res.status >= 400) {
       throw new Error(data.message);
     } else {
@@ -42,7 +43,7 @@ const useSettings = () => {
         populateCache: false,
       });
     } catch (err) {
-      console.log("failed to save settings");
+      console.log("failed to save settings: ", err);
       failure("Settings", "Unable to save settings");
     }
   };

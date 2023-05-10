@@ -1,7 +1,8 @@
 import useTxToast from "@/hooks/useTxToast";
 import useSWR from "swr";
-import { WebsiteType } from "@/types/my-types";
+import {MyErrorType, WebsiteType} from "@/types/my-types";
 import fetcher from "@/helpers/fetcher";
+import superjson from "superjson";
 
 const useWebsites = () => {
   const { success, failure } = useTxToast();
@@ -21,7 +22,8 @@ const useWebsites = () => {
       },
     });
     console.log("res result: ", res.status);
-    const data = await res.json();
+    const text = await res.text();
+    const data = superjson.parse<any>(text);
     if (res.status >= 400) {
       throw new Error(data.message);
     } else {
@@ -39,7 +41,8 @@ const useWebsites = () => {
       },
     });
     console.log("res result: ", res.status);
-    const data = await res.json();
+    const text = await res.text();
+    const data = await superjson.parse<any>(text);
     if (res.status >= 400) {
       throw new Error(data.message);
     } else {
@@ -62,7 +65,7 @@ const useWebsites = () => {
         populateCache: false,
       });
     } catch (e) {
-      console.log("saving website failed");
+      console.log("saving website failed: ", e);
       failure("Website", "Rolling back as saving failed");
     }
   };
@@ -88,7 +91,7 @@ const useWebsites = () => {
         populateCache: false,
       });
     } catch (e) {
-      console.log("updating website failed");
+      console.log("updating website failed: ", e);
       failure("Website", "Rolling back as update failed");
     }
   };

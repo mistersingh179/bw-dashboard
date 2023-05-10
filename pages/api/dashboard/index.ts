@@ -1,13 +1,9 @@
 import {NextApiHandler} from "next";
 import prisma from "@/lib/prisma";
 import withMiddleware from "@/middlewares/withMiddleware";
+import superjson from "superjson";
 
-
-type DashboardResponseData = {
-  auctionsCount: Number;
-};
-
-const dashboard: NextApiHandler<DashboardResponseData> = async (req, res) => {
+const dashboard: NextApiHandler = async (req, res) => {
 
   const auctionsCount = await prisma.auction.aggregate({
     _count: true,
@@ -18,7 +14,10 @@ const dashboard: NextApiHandler<DashboardResponseData> = async (req, res) => {
 
   console.log("auctionsCount: ", auctionsCount);
 
-  res.status(200).json({ auctionsCount: auctionsCount._count });
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify({ auctionsCount: auctionsCount._count }));
 };
 
 export default withMiddleware(

@@ -15,7 +15,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React, { ChangeEvent, useState } from "react";
-import { addDays, formatISO } from "date-fns";
+import {addDays, format, parse} from "date-fns";
 import { CampaignType } from "@/types/my-types";
 import {
   animals,
@@ -46,8 +46,8 @@ const CampaignForm = (props: CampaignFormProps) => {
     ? campaign
     : {
         name: tempName,
-        start: formatISO(now, { representation: "date" }),
-        end: formatISO(addDays(now, 7), { representation: "date" }),
+        start: now,
+        end: addDays(now, 7),
         impressionCap: 1_000_000,
         fixedCpm: 10,
         productName: "Acme Corp",
@@ -83,7 +83,7 @@ const CampaignForm = (props: CampaignFormProps) => {
     inputName: string,
     evt: ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(inputName, evt.target.checked);
+    console.log("in setSwitchInput with: ", inputName, evt.target.checked);
     setInputs((oldInputs) => ({
       ...oldInputs,
       [inputName]: evt.target.checked,
@@ -95,16 +95,28 @@ const CampaignForm = (props: CampaignFormProps) => {
     valueAsString: string,
     valueAsNumber: number
   ) => {
-    if(isNaN(valueAsNumber)){
+    if (isNaN(valueAsNumber)) {
       valueAsNumber = 0;
     }
-    if(valueAsString === ""){
+    if (valueAsString === "") {
       valueAsString = "0";
     }
-    console.log(inputName, valueAsNumber, valueAsString);
+    console.log("in setNumberInput with: ", inputName, valueAsNumber, valueAsString);
     setInputs((oldInputs) => ({
       ...oldInputs,
       [inputName]: valueAsNumber,
+    }));
+  };
+
+  const setDate = (
+    inputName: string,
+    evt: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    console.log("in setDate with: ", inputName, evt.target.value);
+    const dateObj = parse(evt.target.value, "yyyy-MM-dd", new Date());
+    setInputs((oldInputs) => ({
+      ...oldInputs,
+      [inputName]: dateObj,
     }));
   };
 
@@ -112,7 +124,7 @@ const CampaignForm = (props: CampaignFormProps) => {
     inputName: string,
     evt: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    console.log(inputName, evt.target.value);
+    console.log("in setText with: ", inputName, evt.target.value);
     setInputs((oldInputs) => ({
       ...oldInputs,
       [inputName]: evt.target.value,
@@ -123,7 +135,7 @@ const CampaignForm = (props: CampaignFormProps) => {
     inputName: string,
     evt: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(inputName, evt.target.value);
+    console.log("in setInput with: ", inputName, evt.target.value);
     setInputs((oldInputs) => ({
       ...oldInputs,
       [inputName]: evt.target.value,
@@ -132,7 +144,8 @@ const CampaignForm = (props: CampaignFormProps) => {
 
   const nameMissing = name?.length === 0 ? true : false;
   const productNameMissing = productName?.length === 0 ? true : false;
-  const productDescriptionMissing = productDescription?.length === 0 ? true : false;
+  const productDescriptionMissing =
+    productDescription?.length === 0 ? true : false;
   const clickUrlMissing = clickUrl?.length === 0 ? true : false;
 
   return (
@@ -160,14 +173,18 @@ const CampaignForm = (props: CampaignFormProps) => {
         <FormLabel>Start Date</FormLabel>
         <Input
           type="date"
-          value={start}
-          onChange={setInput.bind(this, "start")}
+          value={format(start, "yyyy-MM-dd")}
+          onChange={setDate.bind(this, "start")}
         />
         <FormHelperText>When to start this campaign</FormHelperText>
       </FormControl>
       <FormControl>
         <FormLabel>End Date</FormLabel>
-        <Input type="date" value={end} onChange={setInput.bind(this, "end")} />
+        <Input
+          type="date"
+          value={format(end, "yyyy-MM-dd")}
+          onChange={setDate.bind(this, "end")}
+        />
         <FormHelperText>When to stop this campaign</FormHelperText>
       </FormControl>
       <FormControl>

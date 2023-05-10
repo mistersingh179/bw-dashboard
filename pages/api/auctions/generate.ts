@@ -5,6 +5,7 @@ import Cors from "cors";
 import corsMiddleware from "@/middlewares/corsMiddleware";
 import isbot from "isbot";
 import webpages from "../websites/[wsid]/webpages";
+import superjson from "superjson";
 
 const cors = Cors();
 
@@ -50,7 +51,10 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
   });
   console.log("currently running campaigns: ", campaigns);
 
-  res.json({ message: "thanks" });
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify({ message: "thanks" }));
 };
 
 // @ts-ignore

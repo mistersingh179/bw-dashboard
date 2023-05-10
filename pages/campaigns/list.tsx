@@ -1,12 +1,10 @@
 import React from "react";
 import {
-  Badge,
   Box,
   Button,
   Heading,
   HStack,
   Spacer,
-  Spinner,
   Table,
   TableCaption,
   TableContainer,
@@ -19,14 +17,13 @@ import {
 import FCWithAuth from "@/types/FCWithAuth";
 import { Link } from "@chakra-ui/next-js";
 import useSWR, { mutate } from "swr";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import fetcher from "@/helpers/fetcher";
 import { useRouter } from "next/router";
 import { AddIcon } from "@chakra-ui/icons";
 import { CampaignType } from "@/types/my-types";
 import StatusBadge from "@/components/StatusBadge";
 import {
-  ErrorAlert,
   ErrorRow,
   LoadingDataRow,
   NoDataRow,
@@ -89,12 +86,8 @@ const Campaigns: FCWithAuth = () => {
               data.map((campaign) => (
                 <Tr key={campaign.id ?? JSON.stringify(campaign)}>
                   <Td>{campaign.name}</Td>
-                  <Td>
-                    {format(parseISO(campaign.start.toString()), "MM/dd/yyyy")}
-                  </Td>
-                  <Td>
-                    {format(parseISO(campaign.end.toString()), "MM/dd/yyyy")}
-                  </Td>
+                  <Td>{format(campaign.start, "MM/dd/yyyy")}</Td>
+                  <Td>{format(campaign.end, "MM/dd/yyyy")}</Td>
                   <Td>
                     <StatusBadge status={campaign.status} />
                   </Td>

@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { Campaign } from "@prisma/client";
 import { formatISO, parseISO } from "date-fns";
 import withMiddleware from "@/middlewares/withMiddleware";
+import superjson from "superjson";
 
 const websitesHandler: NextApiHandler = async (req, res) => {
   switch (req.method) {
@@ -28,7 +29,10 @@ const handleListWebsites = async (
     }
   });
   console.log("websites: ", websites);
-  res.json(websites);
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify(websites));
 };
 
 const handleCreateWebsite = async (
@@ -41,7 +45,10 @@ const handleCreateWebsite = async (
       userId: req.authenticatedUserId,
     },
   });
-  res.json(website);
+  res
+    .setHeader("Content-Type", "application/json")
+    .status(200)
+    .send(superjson.stringify(website));
 };
 
 export default withMiddleware("getPostOnly", "auth")(websitesHandler);

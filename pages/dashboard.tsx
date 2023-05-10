@@ -26,6 +26,7 @@ import {
   Legend,
 } from "recharts";
 import _ from "lodash";
+import fetcher from "@/helpers/fetcher";
 
 const data = [
   { name: "03/01/23", auctions: 400, impressions: 300, revenue: 20 },
@@ -64,19 +65,9 @@ const renderLineChart = (
   </ResponsiveContainer>
 );
 
-const dashboardFetcher = async (key: string) => {
-  const res = await fetch("/api/dashboard", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const data = await res.json();
-  return data;
-};
 
 const Dashboard: FCWithAuth = () => {
-  const { data, error, isLoading } = useSWR("/api/dashboard", dashboardFetcher);
+  const { data, error, isLoading } = useSWR<any>("/api/dashboard", fetcher);
   return (
     <Box>
       <Heading mt={5}>Dashboard</Heading>
