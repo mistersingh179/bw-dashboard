@@ -43,7 +43,7 @@ const CampaignBox = (props: { campaign: CampaignType }) => {
           success("Campaign", "Edited successfullty");
           return [
             ...currentData.slice(0, idx),
-            { ...campaign, optimisticValue: true },
+            { ...campaign },
             ...currentData.slice(idx + 1),
           ];
         },

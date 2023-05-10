@@ -10,7 +10,6 @@ export type CampaignType = Omit<
   id?: string;
   userId?: string;
   fixedCpm: number;
-  optimisticValue?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 };

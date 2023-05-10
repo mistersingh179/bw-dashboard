@@ -20,7 +20,7 @@ const NewCampaign: FCWithAuth = () => {
           success("Campaign", "Created successfully");
           return [
             ...currentData,
-            { ...campaign, id: Date(), optimisticValue: true },
+            { ...campaign },
           ];
         },
         populateCache: false,

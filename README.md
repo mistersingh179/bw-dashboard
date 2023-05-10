@@ -74,7 +74,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
-- take care of the id/optimisitcValue thing in campaign
 - look in to prefetching using useSWR
 - on webpage detail show counts of spots & advertisements
 - setup pattern for api to disclose the return type to be prisma object nested inside a superjson result

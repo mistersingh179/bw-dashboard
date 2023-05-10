@@ -94,7 +94,7 @@ const Campaigns: FCWithAuth = () => {
                   <Td>
                     <HStack spacing={5}>
                       <Button
-                        isDisabled={!!campaign.optimisticValue}
+                        isDisabled={campaign.id ? false : true}
                         size={"sm"}
                         onClick={deleteHandler.bind(
                           this,
