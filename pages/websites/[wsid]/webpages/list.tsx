@@ -43,7 +43,7 @@ const Webpages: FCWithAuth = () => {
   const router = useRouter();
   const { wsid } = router.query as QueryParams;
 
-  const { page, setPage, pageSize } = usePagination();
+  const { page, setPage, pageSize, setPageSize } = usePagination();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -119,10 +119,14 @@ const Webpages: FCWithAuth = () => {
             <PaginationRow
               page={page}
               setPage={setPage}
+              pageSize={pageSize}
+              setPageSize={setPageSize}
               colSpan={3}
               onMouseOverFn={() =>
                 preload(
-                  `/api/websites/${wsid}/webpages?page=${page+1}&pageSize=${pageSize}`,
+                  `/api/websites/${wsid}/webpages?page=${
+                    page + 1
+                  }&pageSize=${pageSize}`,
                   fetcher
                 )
               }

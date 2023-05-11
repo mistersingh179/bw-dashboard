@@ -1,24 +1,60 @@
-import { Button, HStack, Spacer, Td, Text, Tr } from "@chakra-ui/react";
-import React, {Dispatch, SetStateAction} from "react";
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  HStack,
+  Select,
+  Spacer,
+  Td,
+  Text,
+  Tr,
+} from "@chakra-ui/react";
+import React, { Dispatch, SetStateAction } from "react";
 
 const PaginationRow = ({
   page,
   setPage,
+  pageSize,
+  setPageSize,
   colSpan,
   onMouseOverFn,
 }: {
   page: number;
   setPage: Dispatch<SetStateAction<number>>;
+  pageSize: number;
+  setPageSize: Dispatch<SetStateAction<number>>;
   colSpan: number;
-  onMouseOverFn? : Function
+  onMouseOverFn?: Function;
 }) => {
   return (
-    <Tr onMouseOver={() => onMouseOverFn ? onMouseOverFn() : null}>
+    <Tr onMouseOver={() => (onMouseOverFn ? onMouseOverFn() : null)}>
       <Td colSpan={colSpan}>
         <HStack>
-          <Text color={"gray.600"} fontSize={"sm"}>
+          <Text color={"gray.600"} fontSize={"sm"} width={"100px"}>
             Page # {page}
           </Text>
+          <FormControl
+            display={"flex"}
+            alignItems={"baseline"}
+            justifyContent={"start"}
+          >
+            <FormLabel color={"gray.600"} fontWeight={"normal"} fontSize={"sm"}>
+              Items per page
+            </FormLabel>
+            <Select
+              width={"100px"}
+              size={"sm"}
+              onChange={(evt) => setPageSize(Number(evt.target.value))}
+            >
+              <option value={"10"}>10</option>
+              <option value={"25"}>25</option>
+              <option value={"50"}>50</option>
+              <option value={"100"}>100</option>
+              <option value={"250"}>250</option>
+              <option value={"500"}>500</option>
+              <option value={"1000"}>1000</option>
+            </Select>
+          </FormControl>
           <Spacer />
           <Button
             isDisabled={page === 1}
