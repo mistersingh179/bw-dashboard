@@ -80,7 +80,7 @@ const Campaigns: FCWithAuth = () => {
           <Tbody>
             {error && <ErrorRow colSpan={5} />}
             {isLoading && <LoadingDataRow colSpan={5} />}
-            {data && data.length == 0 && <NoDataRow colSpan={5} />}
+            {!isLoading && data && data.length == 0 && <NoDataRow colSpan={5} />}
             {data &&
               data.length > 0 &&
               data.map((campaign) => (

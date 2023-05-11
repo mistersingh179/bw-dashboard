@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import fetcher from "@/helpers/fetcher";
-import {WebpageWithAdSpotsAndOtherCounts} from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
+import { WebpageWithAdSpotsAndOtherCounts } from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
 
 // type UseWebpageDetail = (websiteId: string, webpageId: string) => {webpage: }
 
@@ -11,7 +11,7 @@ const useWebpage = (wsid: string, wpid: string) => {
     isLoading,
     mutate,
   } = useSWR<WebpageWithAdSpotsAndOtherCounts>(
-    `/api/websites/${wsid}/webpages/${wpid}`,
+    wsid && wpid ? `/api/websites/${wsid}/webpages/${wpid}` : null,
     fetcher
   );
 

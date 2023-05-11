@@ -89,7 +89,7 @@ const EditCampaign: FCWithAuth = () => {
     data: campaign,
     error,
     isLoading,
-  } = useSWR<CampaignType>(`/api/campaigns/${cid}`, fetcher);
+  } = useSWR<CampaignType>(cid ? `/api/campaigns/${cid}` : null, fetcher);
 
   return (
     <Box>

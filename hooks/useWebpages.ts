@@ -13,7 +13,7 @@ const useWebpages = (wsid: string) => {
     error,
     isLoading,
     mutate,
-  } = useSWR<WebpageType[]>(`/api/websites/${wsid}/webpages`, fetcher);
+  } = useSWR<WebpageType[]>(wsid ?`/api/websites/${wsid}/webpages` : null, fetcher);
 
   const onUpdate = async (
     updatedWebpage: WebpageType,

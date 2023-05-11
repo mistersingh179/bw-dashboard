@@ -75,7 +75,8 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
-- setup pattern for api to disclose the return type to be prisma object nested inside a superjson result
+- paginate webpages and setup pattern for all pagination
+- we need page's category & a category selection on campaign
 - design improvement to reduce scored campaigns
   - user has categories
   - categories are build as process webpages (upsert)
@@ -84,9 +85,6 @@ drop database bw;
   - for every webpage, get all campaigns with same category and build scored campaigns
   - don't build scored campaign if already there.
   - when request comes in we will get webpage -> scoredCampaigns -> campaigns (filter campaigns whose category is not blank and is not same as that of webpage).
-- paginate webpages and setup pattern for all pagination 
-- backend should reject api calls from front end where params are undefined.
-- we need page's category & a category selection on campaign
 - shall we score all campaigns or only ones which match category
 - on webpage's detail page show its category & the campaigns category showing that it won't run
 - show campaigns of matching category separate from campaigns which are not matching
@@ -173,9 +171,6 @@ drop database bw;
   - update the lastModifiedAt of Webpage, currently limited as the createMany does not have on conflict update option
   - fetch newer webpages of existing websites
   - fetch webpages of new websites
-  -
-
-
 
 ## Notes on how services are working the background
 

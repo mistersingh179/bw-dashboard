@@ -69,7 +69,7 @@ const Advertisements: FCWithAuth = () => {
           <Tbody>
             {error && <ErrorRow colSpan={5} />}
             {isLoading && <LoadingDataRow colSpan={5} />}
-            {advertisements && advertisements.length == 0 && (
+            {!isLoading && advertisements && advertisements.length == 0 && (
               <NoDataRow colSpan={5} />
             )}
             {advertisements &&

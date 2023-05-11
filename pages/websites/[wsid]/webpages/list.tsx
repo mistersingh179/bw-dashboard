@@ -68,7 +68,7 @@ const Webpages: FCWithAuth = () => {
           <Tbody>
             {error && <ErrorRow colSpan={3} />}
             {isLoading && <LoadingDataRow colSpan={3} />}
-            {webpages && webpages.length == 0 && <NoDataRow colSpan={3} />}
+            {!isLoading && webpages && webpages.length == 0 && <NoDataRow colSpan={3} />}
             {webpages &&
               webpages.length > 0 &&
               webpages.map((webpage: WebpageType) => (

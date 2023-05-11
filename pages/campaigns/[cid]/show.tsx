@@ -12,6 +12,7 @@ import { CampaignType } from "@/types/my-types";
 import StatusBadge from "@/components/StatusBadge";
 import numeral from "numeral";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
+import {WarningAlert} from "@/components/genericMessages";
 
 const ErrorBox = () => {
   return <Box>There was an error processing your request. Try again?</Box>;
@@ -98,7 +99,7 @@ const ShowCampaign: FCWithAuth = () => {
     data: campaign,
     error,
     isLoading,
-  } = useSWR<CampaignType>(`/api/campaigns/${cid}`, fetcher);
+  } = useSWR<CampaignType>(cid ? `/api/campaigns/${cid}` : null, fetcher);
 
   return (
     <Box>
@@ -106,6 +107,7 @@ const ShowCampaign: FCWithAuth = () => {
       {isLoading && <LoadingBox />}
       {error && <ErrorBox />}
       {campaign && <CampaignBox campaign={campaign} />}
+      {!isLoading && !campaign && <WarningAlert />}
       <Box mt={5}>
         <Link href={"/campaigns/list"} colorScheme={"green"}>
           Go to All Campaigns

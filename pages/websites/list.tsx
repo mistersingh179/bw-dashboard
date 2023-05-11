@@ -72,7 +72,7 @@ const Website = () => {
           <Tbody>
             {error && <ErrorRow colSpan={4} />}
             {isLoading && <LoadingDataRow colSpan={4} />}
-            {websites && websites.length == 0 && <NoDataRow colSpan={4} />}
+            {!isLoading && websites && websites.length == 0 && <NoDataRow colSpan={4} />}
             {websites &&
               websites.length > 0 &&
               websites.map((website: WebsiteType) => (
