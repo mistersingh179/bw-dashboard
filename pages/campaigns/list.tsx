@@ -66,7 +66,7 @@ const Campaigns: FCWithAuth = () => {
           Create New Campaign
         </Button>
       </HStack>
-      <TableContainer>
+      <TableContainer whiteSpace={'normal'}>
         <Table variant="simple" colorScheme="gray" size={"md"}>
           <Thead>
             <Tr>

@@ -1,11 +1,11 @@
 import useTxToast from "@/hooks/useTxToast";
 import useSWR from "swr";
-import {WebpageType} from "@/types/my-types";
+import { WebpageType } from "@/types/my-types";
 import fetcher from "@/helpers/fetcher";
 import React from "react";
 import superjson from "superjson";
 
-const useWebpages = (wsid: string) => {
+const useWebpages = (wsid: string, page: number, pageSize: number) => {
   const { success, failure } = useTxToast();
 
   const {
@@ -13,7 +13,10 @@ const useWebpages = (wsid: string) => {
     error,
     isLoading,
     mutate,
-  } = useSWR<WebpageType[]>(wsid ?`/api/websites/${wsid}/webpages` : null, fetcher);
+  } = useSWR<WebpageType[]>(
+    wsid ? `/api/websites/${wsid}/webpages?page=${page}&pageSize=${pageSize}` : null,
+    fetcher
+  );
 
   const onUpdate = async (
     updatedWebpage: WebpageType,
@@ -67,13 +70,16 @@ const useWebpages = (wsid: string) => {
   };
 
   const updateWebpage = async (updatedWebpage: WebpageType) => {
-    const res = await fetch(`/api/websites/${wsid}/webpages/${updatedWebpage.id}`, {
-      method: "PUT",
-      body: JSON.stringify(updatedWebpage),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      `/api/websites/${wsid}/webpages/${updatedWebpage.id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(updatedWebpage),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     console.log("res result: ", res.status);
     const text = await res.text();
     const data = await superjson.parse<any>(text);
@@ -105,6 +111,6 @@ const useWebpages = (wsid: string) => {
   };
 
   return { webpages, error, isLoading, onSave, onUpdate };
-}
+};
 
 export default useWebpages;

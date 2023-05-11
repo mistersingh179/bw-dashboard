@@ -15,9 +15,11 @@ import {
   Thead,
   Tr,
   useDisclosure,
+  Text,
+  Tfoot,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
-import React from "react";
+import React, { useState } from "react";
 import {
   ErrorRow,
   LoadingDataRow,
@@ -34,12 +36,23 @@ import { useRouter } from "next/router";
 import useWebpages from "@/hooks/useWebpages";
 import useWebsites from "@/hooks/useWebsites";
 import Link from "next/link";
+import PaginationRow from "@/components/PaginationRow";
+import usePagination from "@/hooks/usePagination";
 
 const Webpages: FCWithAuth = () => {
   const router = useRouter();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const { wsid } = router.query as QueryParams;
-  const { webpages, error, isLoading, onSave, onUpdate } = useWebpages(wsid);
+
+  const { page, setPage, pageSize } = usePagination();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { webpages, error, isLoading, onSave, onUpdate } = useWebpages(
+    wsid,
+    page,
+    pageSize
+  );
+
   const { websites } = useWebsites();
   const website = (websites || []).find((ws) => ws.id === wsid);
 
@@ -56,8 +69,8 @@ const Webpages: FCWithAuth = () => {
           Add another Webpage
         </Button>
       </HStack>
-      <TableContainer>
-        <Table variant="simple" colorScheme="gray" size={"md"}>
+      <TableContainer whiteSpace={"normal"}>
+        <Table variant={"simple"} size={"md"}>
           <Thead>
             <Tr>
               <Th>Url</Th>
@@ -67,8 +80,10 @@ const Webpages: FCWithAuth = () => {
           </Thead>
           <Tbody>
             {error && <ErrorRow colSpan={3} />}
-            {isLoading && <LoadingDataRow colSpan={3} />}
-            {!isLoading && webpages && webpages.length == 0 && <NoDataRow colSpan={3} />}
+            {isLoading && <LoadingDataRow colSpan={3} height={"lg"} />}
+            {!isLoading && webpages && webpages.length == 0 && (
+              <NoDataRow colSpan={3} />
+            )}
             {webpages &&
               webpages.length > 0 &&
               webpages.map((webpage: WebpageType) => (
@@ -100,6 +115,19 @@ const Webpages: FCWithAuth = () => {
           {webpages && webpages.length > 0 && (
             <TableCaption>These are your sweet webpages.</TableCaption>
           )}
+          <Tfoot>
+            <PaginationRow
+              page={page}
+              setPage={setPage}
+              colSpan={3}
+              onMouseOverFn={() =>
+                preload(
+                  `/api/websites/${wsid}/webpages?page=${page+1}&pageSize=${pageSize}`,
+                  fetcher
+                )
+              }
+            />
+          </Tfoot>
         </Table>
       </TableContainer>
     </Box>

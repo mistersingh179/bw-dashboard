@@ -59,7 +59,7 @@ const Website = () => {
           Add Website
         </Button>
       </HStack>
-      <TableContainer>
+      <TableContainer whiteSpace={'normal'}>
         <Table variant="simple" colorScheme="gray" size={"md"}>
           <Thead>
             <Tr>

@@ -64,9 +64,9 @@ export const NoDataRow = ({ colSpan }: { colSpan: number }) => {
   );
 };
 
-export const LoadingDataRow = ({ colSpan }: { colSpan: number }) => {
+export const LoadingDataRow = ({ colSpan, height='auto' }: { colSpan: number, height?: string }) => {
   return (
-    <Tr>
+    <Tr height={height}>
       <Td colSpan={colSpan} textAlign={"center"}>
         <Spinner color={"blue.500"} />
       </Td>

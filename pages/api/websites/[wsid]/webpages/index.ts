@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { Campaign } from "@prisma/client";
 import { formatISO, parseISO } from "date-fns";
 import withMiddleware from "@/middlewares/withMiddleware";
-import {QueryParams} from "@/types/QueryParams";
+import { QueryParams } from "@/types/QueryParams";
 import superjson from "superjson";
 
 const webpagesHandler: NextApiHandler = async (req, res) => {
@@ -21,23 +21,25 @@ const handleListWebpages = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  const { wsid } = req.query as QueryParams;
-  const webpages = await prisma.webpage.findMany(
-    {
-      where: {
-        website: {
-          id: wsid,
-          user: {
-            id: req.authenticatedUserId
-          }
-        }
+  const { wsid, page = 1, pageSize = 10 } = req.query as QueryParams;
+  const skip = (Number(page) - 1) * Number(pageSize);
+  const take = Number(pageSize);
+
+  const webpages = await prisma.webpage.findMany({
+    where: {
+      website: {
+        id: wsid,
+        user: {
+          id: req.authenticatedUserId,
+        },
       },
-      orderBy: {
-        createdAt: "asc"
-      },
-      take: 10
-    }
-  );
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+    take,
+    skip
+  });
   console.log("webpages: ", webpages);
   res
     .setHeader("Content-Type", "application/json")
@@ -57,10 +59,10 @@ const handleCreateWebpage = async (
         connect: {
           id: wsid,
           user: {
-            id: req.authenticatedUserId
-          }
-        }
-      }
+            id: req.authenticatedUserId,
+          },
+        },
+      },
     },
   });
   res
