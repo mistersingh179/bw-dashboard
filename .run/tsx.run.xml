@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="tsx" type="NodeJSConfigurationType" node-parameters="--loader tsx" path-to-js-file="$FilePathRelativeToProjectRoot$" working-dir="$PROJECT_DIR$">
+    <method v="2" />
+  </configuration>
+</component>

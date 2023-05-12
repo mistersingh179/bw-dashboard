@@ -7,12 +7,13 @@ import {
   HStack,
   Spacer,
   Spinner,
+  Tag,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
 import useWebpage from "@/hooks/useWepage";
-import { ErrorAlert } from "@/components/genericMessages";
+import { ErrorAlert, WarningAlert } from "@/components/genericMessages";
 import { formatISO } from "date-fns";
 import StatusBadge from "@/components/StatusBadge";
 import { Link } from "@chakra-ui/next-js";
@@ -20,6 +21,38 @@ import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { preload } from "swr";
 import fetcher from "@/helpers/fetcher";
 import { WebpageWithAdSpotsAndOtherCounts } from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
+import useCategoriesOfWebpage from "@/hooks/useCategoriesOfWebpage";
+
+const Categories = () => {
+  const router = useRouter();
+  const { wsid, wpid } = router.query as QueryParams;
+  const { categories, isLoading, error } = useCategoriesOfWebpage(wsid, wpid);
+  return (
+    <>
+      <HStack>
+        <Box minW={"3xs"}>Categories: </Box>
+        <Box>
+          {isLoading && <Spinner color={"blue.500"} />}
+          {categories && (
+            <HStack>
+              {categories.map((c) => (
+                <Tag key={c.id}>{c.name}</Tag>
+              ))}
+            </HStack>
+          )}
+          {!isLoading && categories && categories.length === 0 && (
+            <WarningAlert
+              showIcon={false}
+              title={""}
+              description={"None Found"}
+            />
+          )}
+          {error && <ErrorAlert />}
+        </Box>
+      </HStack>
+    </>
+  );
+};
 
 const WebpageBox = ({
   webpage,
@@ -111,6 +144,9 @@ const Show = () => {
       {isLoading && <Spinner color={"blue.500"} />}
       {error && <ErrorAlert />}
       {webpage && <WebpageBox webpage={webpage} />}
+      <Box my={5}>
+        <Categories />
+      </Box>
       <HStack mt={5} spacing={5}>
         <Link href={`/websites/${wsid}/webpages/list`} colorScheme={"green"}>
           Return to the list of all Webpages

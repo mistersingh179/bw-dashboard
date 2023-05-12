@@ -79,10 +79,19 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clh9d58tw000098c05nhdmbql",
-        // id: "clh9d58tw000198c0g5kfluac",
+        // id: "clh9d58tw000098c05nhdmbql",
+        id: "clh9d58tw000198c0g5kfluac",
       },
+      include: {
+        website: {
+          include: {
+            user: true
+          }
+        },
+        categories: true
+      }
     });
+    console.log("webpage: ", webpage.id, webpage.website.id, webpage.website.user.id, webpage.categories);
     await createCategories(webpage);
   })();
 }

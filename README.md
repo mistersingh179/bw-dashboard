@@ -16,6 +16,10 @@
 - to run from webstorm create a new config called `tsx` and setup Node parameters to be `--loader tsx` and javascript file to `$FilePathRelativeToProjectRoot$`. this will basically do `node --loader ts ./currentFile.ts` which runs the file.  `Ctrl + r` will get the same.
 - to run in watch mode from repl we can use node v19 and then the `--watch option` along with the `--loader tsx` option. 
 
+## Webstorm
+- run configs can be stored in directory `.run`, but do not exclude this directory or webstorm won't pick it up.
+- also adding it to git will make sure other devs also get the same run configuration.
+
 ## REPL like behavior with Editor
 - build .ts file & run it with `ts watch`
 - inside the file use `require.main === module` to detect that it was called directly
@@ -174,6 +178,7 @@ drop database bw;
 - will try to get ad spots when page doesn't have enough.
 - it doesn't know we don't have enough cause its page fault & not our service issue
 - should we parse webpage if it already has categories
+- remove html from the webpage table, no point sending it down
 
 ## Pending later things
 - refresh data

@@ -31,14 +31,16 @@ export const ErrorAlert = ({
 };
 
 export const WarningAlert = ({
+  showIcon = true,
   title = "No Data",
   description = "It seems like there is nothing to look here :-|",
 }: {
+  showIcon?: boolean
   title?: string;
   description?: string;
 }): ReactElement => {
   return (<Alert status="warning" justifyContent={"center"}>
-    <AlertIcon />
+    {showIcon && <AlertIcon />}
     <AlertTitle>{title}</AlertTitle>
     <AlertDescription>{description}</AlertDescription>
   </Alert>)

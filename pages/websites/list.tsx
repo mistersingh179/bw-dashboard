@@ -97,7 +97,7 @@ const Website = () => {
                         href={`/websites/${website.id}/webpages/list`}
                         onMouseEnter={() =>
                           preload(
-                            `/api/websites/${website.id}/webpages`,
+                            `/api/websites/${website.id}/webpages?page=1&pageSize=10`,
                             fetcher
                           )
                         }
