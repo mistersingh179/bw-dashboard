@@ -61,6 +61,7 @@ model User {
   auctions      Auction[]
   campaigns     Campaign[]
   websites      Website[]
+  categories    Category[]
   setting       Setting?
   name          String?
   email         String?    @unique
@@ -116,6 +117,7 @@ model Webpage {
   website            Website             @relation(fields: [websiteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   scoredCampaigns    ScoredCampaign[]
   advertisementSpots AdvertisementSpot[]
+  categories         Category[]
   url                String
   html               String
   status             Boolean
@@ -128,6 +130,20 @@ model Webpage {
   @@index([websiteId, status])
   @@index([websiteId, url, status])
   @@index([websiteId, createdAt(sort: Asc)])
+}
+
+model Category {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  webpages  Webpage[]
+  campaigns Campaign[]
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([userId, name])
+  @@index([userId])
 }
 
 model AdvertisementSpot {
@@ -185,6 +201,7 @@ model Campaign {
   user                User             @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   scoredCampaigns     ScoredCampaign[]
   impressions         Impression[]
+  categories          Category[]
   name                String           @default("")
   start               DateTime
   end                 DateTime

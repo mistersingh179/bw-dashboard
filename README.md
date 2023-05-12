@@ -74,9 +74,18 @@ drop database bw;
 - value can be taken from the browser
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
+## Pending – build categories concept
+- Webpage will have many categories & categories will hany many webpages
+- When we get a webpage's html, we will also parse it and set up its categories
+- display categories of the webpage on its show page
+- api to get categories of a webpage
+- campaign can also have many categories & categories can have many campaigns
+- when campaign is created we can provide which categories to run on
+- categories UI to see list of categories & the campaign count & webpage count for each category
+
+
 ## Pending backlog
-- paginate webpages and setup pattern for all pagination
-- we need page's category & a category selection on campaign
+  - we need page's category & a category selection on campaign
 - design improvement to reduce scored campaigns
   - user has categories
   - categories are build as process webpages (upsert)
@@ -164,6 +173,7 @@ drop database bw;
 ## Pending performance
 - will try to get ad spots when page doesn't have enough.
 - it doesn't know we don't have enough cause its page fault & not our service issue
+- should we parse webpage if it already has categories
 
 ## Pending later things
 - refresh data
