@@ -43,6 +43,7 @@ const App = ({
           <link rel="preload" href="/api/dashboard" as="fetch" crossOrigin="anonymous" />
           <link rel="preload" href="/api/user" as="fetch" crossOrigin="anonymous" />
           <link rel="preload" href="/api/settings" as="fetch" crossOrigin="anonymous" />
+          <link rel="preload" href="/api/categories" as="fetch" crossOrigin="anonymous" />
 
         </Head>
       </SessionProvider>

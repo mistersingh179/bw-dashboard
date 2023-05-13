@@ -1,18 +1,19 @@
 import React from "react";
 import { useRouter } from "next/router";
 
-import { Box, Heading, HStack, Spinner, VStack } from "@chakra-ui/react";
+import { Box, Heading, HStack, Spinner, Tag, VStack } from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
 import { Link } from "@chakra-ui/next-js";
 import useSWR from "swr";
 import { QueryParams } from "@/types/QueryParams";
 import fetcher from "@/helpers/fetcher";
 import { formatISO } from "date-fns";
-import { CampaignType } from "@/types/my-types";
+import { CampaignType, CategoryType } from "@/types/my-types";
 import StatusBadge from "@/components/StatusBadge";
 import numeral from "numeral";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import {WarningAlert} from "@/components/genericMessages";
+import { WarningAlert } from "@/components/genericMessages";
+import useCategoriesOfCampaign from "@/hooks/useCategoriesOfCampaign";
 
 const ErrorBox = () => {
   return <Box>There was an error processing your request. Try again?</Box>;
@@ -26,8 +27,15 @@ const LoadingBox = () => {
   );
 };
 
-const CampaignBox = (props: { campaign: CampaignType }) => {
-  const { campaign } = props;
+const CampaignBox = ({
+  campaign,
+  campaignCategories,
+  isLoadingCampaignCategories,
+}: {
+  campaign: CampaignType;
+  campaignCategories?: CategoryType[];
+  isLoadingCampaignCategories: boolean;
+}) => {
   console.log("in campaignBox with: ", campaign);
   return (
     <VStack alignItems={"start"}>
@@ -87,6 +95,26 @@ const CampaignBox = (props: { campaign: CampaignType }) => {
           <StatusBadge status={campaign.pacing} />
         </Box>
       </HStack>
+      <HStack>
+        <Box minW={"3xs"}>Categories: </Box>
+        <Box>
+          {isLoadingCampaignCategories && <Spinner color={"blue.500"} />}
+          {!isLoadingCampaignCategories && campaignCategories && campaignCategories.length == 0 && (
+            <WarningAlert
+              showIcon={false}
+              title={""}
+              description={"None Found"}
+            />
+          )}
+          {!isLoadingCampaignCategories && campaignCategories && campaignCategories.length > 0 && (
+            <HStack>
+              {campaignCategories.map((c) => (
+                <Tag key={c.id}>{c.name}</Tag>
+              ))}
+            </HStack>
+          )}
+        </Box>
+      </HStack>
     </VStack>
   );
 };
@@ -101,12 +129,23 @@ const ShowCampaign: FCWithAuth = () => {
     isLoading,
   } = useSWR<CampaignType>(cid ? `/api/campaigns/${cid}` : null, fetcher);
 
+  const {
+    categories: campaignCategories,
+    isLoading: isLoadingCampaignCategories,
+  } = useCategoriesOfCampaign(cid);
+
   return (
     <Box>
       <Heading my={5}>Campaign Details</Heading>
       {isLoading && <LoadingBox />}
       {error && <ErrorBox />}
-      {campaign && <CampaignBox campaign={campaign} />}
+      {campaign && (
+        <CampaignBox
+          campaign={campaign}
+          campaignCategories={campaignCategories}
+          isLoadingCampaignCategories={isLoadingCampaignCategories}
+        />
+      )}
       {!isLoading && !campaign && <WarningAlert />}
       <Box mt={5}>
         <Link href={"/campaigns/list"} colorScheme={"green"}>

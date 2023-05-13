@@ -1,4 +1,4 @@
-import { Campaign, Webpage, Website, Prisma } from ".prisma/client";
+import {Campaign, Webpage, Website, Prisma, Category} from ".prisma/client";
 import { Setting } from "@prisma/client";
 import { WebpageWithDetail } from "@/services/queries/getWebpageDetail";
 
@@ -9,6 +9,16 @@ export type CampaignType = Omit<
   id?: string;
   userId?: string;
   fixedCpm: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
+export type CategoryType = Omit<
+  Category,
+  "id" | "userId" | "createdAt" | "updatedAt"
+> & {
+  id?: string;
+  userId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 };

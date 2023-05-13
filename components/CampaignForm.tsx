@@ -9,25 +9,29 @@ import {
   NumberIncrementStepper,
   NumberInput,
   NumberInputField,
-  NumberInputStepper,
+  NumberInputStepper, Spinner,
   Switch,
   Textarea,
   VStack,
 } from "@chakra-ui/react";
-import React, { ChangeEvent, useState } from "react";
-import {addDays, format, parse} from "date-fns";
+import { Select } from "chakra-react-select";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { addDays, format, parse } from "date-fns";
 import { CampaignType } from "@/types/my-types";
-import {
-  animals,
-  colors,
-  languages,
-  names,
-  starWars,
-  uniqueNamesGenerator,
-} from "unique-names-generator";
+import { animals, colors, uniqueNamesGenerator } from "unique-names-generator";
+import useCategories from "@/hooks/useCategories";
+import useCategoriesOfCampaign from "@/hooks/useCategoriesOfCampaign";
+
+export type CategoryOptionType = {
+  label: string;
+  value: string;
+};
 
 type CampaignFormProps = {
-  submitHandler: (input: CampaignType) => void;
+  submitHandler: (
+    input: CampaignType,
+    selectedCategoryOptions: CategoryOptionType[]
+  ) => void;
   campaign?: CampaignType;
 };
 
@@ -38,6 +42,55 @@ const uniqueNameConfig = {
 
 const CampaignForm = (props: CampaignFormProps) => {
   const { campaign, submitHandler } = props;
+
+  const { categories: allCategories, isLoading: isLoadingAllCategories } =
+    useCategories();
+  const allCategoryOptions: CategoryOptionType[] = allCategories
+    ? allCategories.map((c) => ({
+        value: c.id,
+        label: c.name,
+      }))
+    : [];
+
+  const {
+    categories: campaignCategories,
+    isLoading: isLoadingCampaignCategories,
+  } = useCategoriesOfCampaign(campaign?.id);
+
+  const showSpinnerForCategoriesSelect = () => {
+    if(isLoadingAllCategories){
+      return true;
+    } else if(campaign?.id && isLoadingCampaignCategories){
+      return true;
+    } else {
+      return false;
+    }
+  }
+  console.log("showSpinnerForCategoriesSelect: ", showSpinnerForCategoriesSelect())
+
+  const weHaveCategoriesData = () => {
+    if(campaign?.id){
+      return Boolean(allCategories) && Boolean(campaignCategories)
+    }else {
+      return Boolean(allCategories)
+    }
+  }
+
+  const [selectedCategoryOptions, setSelectedCategoryOptions] = useState<
+    CategoryOptionType[]
+  >([]);
+
+  useEffect(() => {
+    if (campaignCategories) {
+      console.log("*** got new campaignCategories, will update state: ", campaignCategories)
+      const campaignCategoryOptions: CategoryOptionType[] =
+        campaignCategories.map((c) => ({
+          value: c.id ? c.id : "",
+          label: c.name,
+        }));
+      setSelectedCategoryOptions(campaignCategoryOptions);
+    }
+  }, [campaignCategories]);
 
   const tempName = uniqueNamesGenerator(uniqueNameConfig);
   const now = new Date();
@@ -76,7 +129,7 @@ const CampaignForm = (props: CampaignFormProps) => {
   } = inputs;
 
   const buttonClickHandler = () => {
-    submitHandler(inputs);
+    submitHandler(inputs, selectedCategoryOptions);
   };
 
   const setSwitchInput = (
@@ -101,7 +154,12 @@ const CampaignForm = (props: CampaignFormProps) => {
     if (valueAsString === "") {
       valueAsString = "0";
     }
-    console.log("in setNumberInput with: ", inputName, valueAsNumber, valueAsString);
+    console.log(
+      "in setNumberInput with: ",
+      inputName,
+      valueAsNumber,
+      valueAsString
+    );
     setInputs((oldInputs) => ({
       ...oldInputs,
       [inputName]: valueAsNumber,
@@ -296,6 +354,27 @@ const CampaignForm = (props: CampaignFormProps) => {
         <FormHelperText>
           e.g. {`[meta-category="fashion"]`} will run the campaign only on pages
           which have been categorized as fashion articles.
+        </FormHelperText>
+      </FormControl>
+      <FormControl>
+        <FormLabel>Categories</FormLabel>
+        {showSpinnerForCategoriesSelect() && <Spinner color={"blue.500"} />}
+        {weHaveCategoriesData() && (
+          <Select
+            onChange={(newValue, actionMeta) => {
+              setSelectedCategoryOptions([...newValue]);
+            }}
+            value={selectedCategoryOptions}
+            isClearable={true}
+            isSearchable={true}
+            isMulti={true}
+            useBasicStyles={true}
+            selectedOptionStyle={"check"}
+            options={allCategoryOptions}
+          />
+        )}
+        <FormHelperText>
+          Select the webpage categories you want this campaign to run on.
         </FormHelperText>
       </FormControl>
       <FormControl display={"flex"} alignItems={"center"}>

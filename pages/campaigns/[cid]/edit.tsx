@@ -1,16 +1,17 @@
 import React from "react";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 
-import {Box, Heading, Spinner} from "@chakra-ui/react";
+import { Box, Heading, Spinner } from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
-import {Link} from "@chakra-ui/next-js";
-import useSWR, {mutate} from "swr";
-import {QueryParams} from "@/types/QueryParams";
+import { Link } from "@chakra-ui/next-js";
+import useSWR, { mutate } from "swr";
+import { QueryParams } from "@/types/QueryParams";
 import fetcher from "@/helpers/fetcher";
-import CampaignForm from "@/components/CampaignForm";
-import {CampaignType} from "@/types/my-types";
+import CampaignForm, { CategoryOptionType } from "@/components/CampaignForm";
+import { CampaignType } from "@/types/my-types";
 import useTxToast from "@/hooks/useTxToast";
 import superjson from "superjson";
+import useCategoriesOfCampaign from "@/hooks/useCategoriesOfCampaign";
 
 const now = new Date();
 
@@ -27,11 +28,19 @@ const LoadingBox = () => {
 };
 
 const CampaignBox = (props: { campaign: CampaignType }) => {
+  const router = useRouter();
+  const { cid } = router.query as QueryParams;
+
   const { success, failure } = useTxToast();
   const { campaign } = props;
-  console.log("in campaignBox with: ", campaign);
 
-  const submitHandler = async (campaign: CampaignType) => {
+  const { categories: campaignCategories, onSave: onSaveCampaignCategories } =
+    useCategoriesOfCampaign(cid);
+
+  const submitHandler = async (
+    campaign: CampaignType,
+    selectedCategoryOptions: CategoryOptionType[]
+  ) => {
     const { start, end, name, id } = campaign;
     console.log("in submit of edit: ", campaign);
 
@@ -40,7 +49,7 @@ const CampaignBox = (props: { campaign: CampaignType }) => {
         optimisticData: (currentData: CampaignType[]) => {
           console.log("optimistic Data funcion called with: ", currentData);
           const idx = currentData.findIndex((x) => x.id === campaign.id);
-          success("Campaign", "Edited successfullty");
+          success("Campaign", "Edited successfully");
           return [
             ...currentData.slice(0, idx),
             { ...campaign },
@@ -54,6 +63,9 @@ const CampaignBox = (props: { campaign: CampaignType }) => {
       failure("Campaign", "Rolling back as campaign edit failed!");
     }
     await mutate(`/api/campaigns/${id}`, campaign);
+
+    const categoryIds = selectedCategoryOptions.map((c) => c.value);
+    await onSaveCampaignCategories(categoryIds);
   };
 
   const editCampaign = async (campaign: CampaignType) => {

@@ -38,7 +38,7 @@ const handleCreateCampaign = async (
         connect: {
           id: req.authenticatedUserId,
         },
-      },
+      }
     },
   });
   res
