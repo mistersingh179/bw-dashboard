@@ -89,7 +89,6 @@ drop database bw;
 
 
 ## Pending backlog
-- camaign edit fails when campaign list has not been loaded
   - we need page's category & a category selection on campaign
 - design improvement to reduce scored campaigns
   - user has categories
