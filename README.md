@@ -89,8 +89,6 @@ drop database bw;
 
 
 ## Pending backlog
-- need spinners, error & none found for categories on a campaign
-- show on campaign breaks while it is saving, maybe dates are in wrong format?
 - camaign edit fails when campaign list has not been loaded
   - we need page's category & a category selection on campaign
 - design improvement to reduce scored campaigns

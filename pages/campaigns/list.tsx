@@ -5,6 +5,7 @@ import {
   Heading,
   HStack,
   Spacer,
+  StackProps,
   Table,
   TableCaption,
   TableContainer,
@@ -53,6 +54,12 @@ const Campaigns: FCWithAuth = () => {
     );
     console.log("result of mutate call: ", result);
   };
+
+  const disabledProps: StackProps = {
+    opacity: 0.4,
+    pointerEvents: "none",
+  };
+
   return (
     <Box>
       <HStack>
@@ -66,7 +73,7 @@ const Campaigns: FCWithAuth = () => {
           Create New Campaign
         </Button>
       </HStack>
-      <TableContainer whiteSpace={'normal'}>
+      <TableContainer whiteSpace={"normal"}>
         <Table variant="simple" colorScheme="gray" size={"md"}>
           <Thead>
             <Tr>
@@ -80,7 +87,9 @@ const Campaigns: FCWithAuth = () => {
           <Tbody>
             {error && <ErrorRow colSpan={5} />}
             {isLoading && <LoadingDataRow colSpan={5} />}
-            {!isLoading && data && data.length == 0 && <NoDataRow colSpan={5} />}
+            {!isLoading && data && data.length == 0 && (
+              <NoDataRow colSpan={5} />
+            )}
             {data &&
               data.length > 0 &&
               data.map((campaign) => (
@@ -92,27 +101,33 @@ const Campaigns: FCWithAuth = () => {
                     <StatusBadge status={campaign.status} />
                   </Td>
                   <Td>
-                    <HStack spacing={5}>
-                      <Button
-                        isDisabled={campaign.id ? false : true}
-                        size={"sm"}
-                        onClick={deleteHandler.bind(
-                          this,
-                          campaign.id as string
-                        )}
+                    {
+                      <HStack
+                        spacing={5}
+                        {...(!campaign.id ? disabledProps : {})}
                       >
-                        Delete
-                      </Button>
-                      <Link
-                        href={`/campaigns/${campaign.id}/show`}
-                        onMouseEnter={() =>
-                          preload(`/api/campaigns/${campaign.id}`, fetcher)
-                        }
-                      >
-                        Details
-                      </Link>
-                      <Link href={`/campaigns/${campaign.id}/edit`}>Edit</Link>
-                    </HStack>
+                        <Button
+                          size={"sm"}
+                          onClick={deleteHandler.bind(
+                            this,
+                            campaign.id as string
+                          )}
+                        >
+                          Delete
+                        </Button>
+                        <Link
+                          href={`/campaigns/${campaign.id}/show`}
+                          onMouseEnter={() =>
+                            preload(`/api/campaigns/${campaign.id}`, fetcher)
+                          }
+                        >
+                          Details
+                        </Link>
+                        <Link href={`/campaigns/${campaign.id}/edit`}>
+                          Edit
+                        </Link>
+                      </HStack>
+                    }
                   </Td>
                 </Tr>
               ))}
