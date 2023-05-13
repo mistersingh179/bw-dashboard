@@ -6,6 +6,7 @@ import createAdvertisementSpots from "@/services/createAdvertisementSpots";
 import createScoredCampaigns from "@/services/createScoredCampaigns";
 import createAdvertisement from "@/services/createAdvertisement";
 import {subDays} from "date-fns";
+import createCategories from "@/services/createCategories";
 
 type ProcessUser = (user: User) => Promise<void>;
 
@@ -84,6 +85,7 @@ const processUser: ProcessUser = async (user) => {
 
   for (const webpage of webpagesWithHtml) {
     await createScoredCampaigns(webpage);
+    await createCategories(webpage);
   }
 
   const webpages = await prisma.webpage.findMany({

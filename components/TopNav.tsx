@@ -40,7 +40,9 @@ const TopNav: React.FC = () => {
             </Link>
             <Link
               href={"/campaigns/list"}
-              fontWeight={currentRoute === "/campaigns/list" ? "bold" : "normal"}
+              fontWeight={
+                currentRoute === "/campaigns/list" ? "bold" : "normal"
+              }
             >
               Campaigns
             </Link>
@@ -52,7 +54,9 @@ const TopNav: React.FC = () => {
             </Link>
             <Link
               href={"/javascriptSnippet"}
-              fontWeight={currentRoute === "/javascriptSnippet" ? "bold" : "normal"}
+              fontWeight={
+                currentRoute === "/javascriptSnippet" ? "bold" : "normal"
+              }
             >
               JavaScript Snippet
             </Link>
@@ -61,6 +65,12 @@ const TopNav: React.FC = () => {
               fontWeight={currentRoute === "/settings" ? "bold" : "normal"}
             >
               Settings
+            </Link>
+            <Link
+              href={"/categories/list"}
+              fontWeight={currentRoute === "/settings" ? "bold" : "normal"}
+            >
+              Categories
             </Link>
           </Show>
         </HStack>
