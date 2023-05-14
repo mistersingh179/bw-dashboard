@@ -26,7 +26,20 @@ const useTxToast = () => {
     });
   };
 
-  return { success, failure };
+  const info = (title: string, description: string) => {
+    if (toastIdRef.current) {
+      toast.close(toastIdRef.current);
+    }
+    toast({
+      title,
+      description,
+      status: "info",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  return { success, failure, info };
 };
 
 export default useTxToast;

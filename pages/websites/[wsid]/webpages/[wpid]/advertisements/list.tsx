@@ -28,19 +28,29 @@ import Link from "next/link";
 import { AdvertisementWithDetail } from "@/services/queries/getAdvertisementsForWebpage";
 import useWebpage from "@/hooks/useWepage";
 import { format } from "date-fns";
+// import useTxToast from "@/hooks/useTxToast";
 
 const Advertisements: FCWithAuth = () => {
   const router = useRouter();
   const { wsid, wpid } = router.query as QueryParams;
-  const { advertisements, error, isLoading } = useAdvertisementsWithDetail(
-    wsid,
-    wpid
-  );
+  const { advertisements, error, isLoading, onUpdate } =
+    useAdvertisementsWithDetail(wsid, wpid);
   const {
     webpage,
     isLoading: isLoadingWp,
     error: errorWp,
   } = useWebpage(wsid, wpid);
+
+  // const { success, info, failure } = useTxToast();
+
+  // const handleThumbsUp = (aid: string, status: boolean) => {
+  //   success("Advertisement", "Upvote recorded.");
+  //   onStatusUpdate(aid, status);
+  // };
+  // const handleThumbsDown = (aid: string, status: boolean) => {
+  //   info("Advertisement", "Downvote recorded.");
+  //   onStatusUpdate(aid, status);
+  // };
 
   return (
     <Box>
@@ -130,8 +140,46 @@ const Advertisements: FCWithAuth = () => {
                     </Tooltip>
                   </Td>
                   <Td>
-                    <Switch isChecked={advertisement.status} />
+                    <Switch
+                      isChecked={advertisement.status}
+                      onChange={(evt) =>
+                        onUpdate({
+                          ...advertisement,
+                          status: evt.target.checked,
+                        })
+                      }
+                    />
                   </Td>
+                  {/*<Td>*/}
+                  {/*  <Tooltip*/}
+                  {/*    label={*/}
+                  {/*      "Train & Personalize the AI model by providing feedback."*/}
+                  {/*    }*/}
+                  {/*  >*/}
+                  {/*    <HStack spacing={2}>*/}
+                  {/*      <IconButton*/}
+                  {/*        onClick={handleThumbsUp.bind(*/}
+                  {/*          this,*/}
+                  {/*          advertisement.id,*/}
+                  {/*          true*/}
+                  {/*        )}*/}
+                  {/*        aria-label={"thumbs-up"}*/}
+                  {/*        variant={"outline"}*/}
+                  {/*        icon={<IoThumbsUpOutline />}*/}
+                  {/*      />*/}
+                  {/*      <IconButton*/}
+                  {/*        onClick={handleThumbsDown.bind(*/}
+                  {/*          this,*/}
+                  {/*          advertisement.id,*/}
+                  {/*          false*/}
+                  {/*        )}*/}
+                  {/*        aria-label={"thumbs-down"}*/}
+                  {/*        variant={"outline"}*/}
+                  {/*        icon={<IoThumbsDownOutline />}*/}
+                  {/*      />*/}
+                  {/*    </HStack>*/}
+                  {/*  </Tooltip>*/}
+                  {/*</Td>*/}
                 </Tr>
               ))}
           </Tbody>

@@ -79,28 +79,8 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
-  - we need page's category & a category selection on campaign
-- design improvement to reduce scored campaigns
-  - user has categories
-  - categories are build as process webpages (upsert)
-  - campaign belongs to category or none. no cascade delete
-  - webpages also belong to category or none. no cascade delete
-  - for every webpage, get all campaigns with same category and build scored campaigns
-  - don't build scored campaign if already there.
-  - when request comes in we will get webpage -> scoredCampaigns -> campaigns (filter campaigns whose category is not blank and is not same as that of webpage).
-- shall we score all campaigns or only ones which match category
-- on webpage's detail page show its category & the campaigns category showing that it won't run
-- show campaigns of matching category separate from campaigns which are not matching
-- how can we support campaign which can run on multiple categories
-- the part in process user which calls a third party api like chat gpt or http fetch can be parallelized
-- only process those ad spots which dont have an advertisement for every scored campaign.
-  - it is anyways building the advertisement seperately for each scored campaignso we can call it individually
-- going through all webpages without html is slow. need an index here. but adding just an index doesn't work as index is too large
-- change from cuid to autoincrement
 
-## Pending immediate next thing/feature 
-- show scoredCampaigns for our every url
-- storing of entire page & before, after
+## Pending – improve advertisements page
 - gray out advertisements which are not going to run
 - campaign is out of date range
 - campaign is paused
@@ -169,6 +149,19 @@ drop database bw;
 - it doesn't know we don't have enough cause its page fault & not our service issue
 - should we parse webpage if it already has categories
 - remove html from the webpage table, no point sending it down
+- the part in process user which calls a third party api like chat gpt or http fetch can be parallelized
+- only process those ad spots which dont have an advertisement for every scored campaign.
+- going through all webpages without html is slow. need an index here. but adding just an index doesn't work as index is too large
+
+## Pending - Reduce scored campaigns
+- user has categories
+- categories are build as process webpages (upsert)
+- campaign belongs to category or none. no cascade delete
+- webpages also belong to category or none. no cascade delete
+- for every webpage, get all campaigns with same category and build scored campaigns
+- don't build scored campaign if already there.
+- when request comes in we will get webpage -> scoredCampaigns -> campaigns (filter campaigns whose category is not blank and is not same as that of webpage).
+
 
 ## Pending later things
 - refresh data
