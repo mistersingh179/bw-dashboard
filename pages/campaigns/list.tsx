@@ -30,6 +30,11 @@ import {
   NoDataRow,
 } from "@/components/genericMessages";
 
+export const disabledProps: StackProps = {
+  opacity: 0.4,
+  pointerEvents: "none",
+};
+
 const Campaigns: FCWithAuth = () => {
   const router = useRouter();
   const { data, error, isLoading } = useSWR<CampaignType[]>(
@@ -53,11 +58,6 @@ const Campaigns: FCWithAuth = () => {
       }
     );
     console.log("result of mutate call: ", result);
-  };
-
-  const disabledProps: StackProps = {
-    opacity: 0.4,
-    pointerEvents: "none",
   };
 
   return (

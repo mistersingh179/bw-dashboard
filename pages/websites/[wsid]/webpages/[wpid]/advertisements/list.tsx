@@ -3,6 +3,7 @@ import {
   Box,
   Heading,
   HStack,
+  Icon,
   Switch,
   Table,
   TableCaption,
@@ -27,7 +28,13 @@ import useAdvertisementsWithDetail from "@/hooks/useAdvertisementsWithDetail";
 import Link from "next/link";
 import { AdvertisementWithDetail } from "@/services/queries/getAdvertisementsForWebpage";
 import useWebpage from "@/hooks/useWepage";
-import { format } from "date-fns";
+import { format, isAfter, isBefore } from "date-fns";
+import { disabledProps } from "@/pages/campaigns/list";
+import useSettings from "@/hooks/useSettings";
+import { Category } from ".prisma/client";
+import { intersection } from "lodash";
+import { AiOutlineEye } from "react-icons/ai";
+import useCategoriesOfWebpage from "@/hooks/useCategoriesOfWebpage";
 // import useTxToast from "@/hooks/useTxToast";
 
 const Advertisements: FCWithAuth = () => {
@@ -40,17 +47,81 @@ const Advertisements: FCWithAuth = () => {
     isLoading: isLoadingWp,
     error: errorWp,
   } = useWebpage(wsid, wpid);
+  const {
+    settings,
+    isLoading: isLoadingSettings,
+    error: errorSettings,
+  } = useSettings();
+  const { categories: webpageCategories } = useCategoriesOfWebpage(wsid, wpid);
 
-  // const { success, info, failure } = useTxToast();
+  const now = new Date();
 
-  // const handleThumbsUp = (aid: string, status: boolean) => {
-  //   success("Advertisement", "Upvote recorded.");
-  //   onStatusUpdate(aid, status);
-  // };
-  // const handleThumbsDown = (aid: string, status: boolean) => {
-  //   info("Advertisement", "Downvote recorded.");
-  //   onStatusUpdate(aid, status);
-  // };
+  const isThereCategoryOverlap = (
+    categsOfWp: string[],
+    categsOfCamp: string[]
+  ): boolean => {
+    const common = intersection(categsOfWp, categsOfCamp);
+    return common.length > 0 ? true : false;
+  };
+
+  type AdvertisementRunningResult = {
+    running: boolean;
+    whyNot?: string;
+  };
+
+  const isRunning = (
+    advertisement: AdvertisementWithDetail
+  ): AdvertisementRunningResult => {
+    const categsOfWp = advertisement.advertisementSpot.webpage.categories.map(
+      (c) => c.name
+    );
+    const categsOfCamp = advertisement.scoredCampaign.campaign.categories.map(
+      (c) => c.name
+    );
+
+    if (advertisement.status === false) {
+      return {
+        running: false,
+        whyNot: "advertisement is paused",
+      };
+    } else if (advertisement.scoredCampaign.campaign.status === false) {
+      return {
+        running: false,
+        whyNot: "campaign is paused",
+      };
+    } else if (isAfter(advertisement.scoredCampaign.campaign.start, now)) {
+      return {
+        running: false,
+        whyNot: "campaign hasn't started.",
+      };
+    } else if (isBefore(advertisement.scoredCampaign.campaign.end, now)) {
+      return {
+        running: false,
+        whyNot: "campaign has ended.",
+      };
+    } else if (
+      settings &&
+      advertisement.scoredCampaign.score < settings.scoreThreshold
+    ) {
+      return {
+        running: false,
+        whyNot: `campaign's relevancy score (${advertisement.scoredCampaign.score}) is below users required threshold (${settings.scoreThreshold})`,
+      };
+    } else if (!isThereCategoryOverlap(categsOfWp, categsOfCamp)) {
+      return {
+        running: false,
+        whyNot: `campaign categories (${categsOfCamp.join(
+          ","
+        )}) are not included in the webpage categories (${categsOfWp.join(
+          ","
+        )}).`,
+      };
+    } else {
+      return {
+        running: true,
+      };
+    }
+  };
 
   return (
     <Box>
@@ -58,10 +129,11 @@ const Advertisements: FCWithAuth = () => {
         <Heading>Advertisements</Heading>
         {webpage && (
           <Heading color={"gray.400"} size={"sm"}>
+            <Tooltip label={webpageCategories?.map(c => c.name).join(",")}>
             <Link href={`/websites/${wsid}/webpages/${wpid}/show`}>
-              {" "}
-              – {webpage.url}{" "}
+              – {webpage.url}
             </Link>
+            </Tooltip>
           </Heading>
         )}
       </HStack>
@@ -74,6 +146,7 @@ const Advertisements: FCWithAuth = () => {
               <Th>Product</Th>
               <Th>Advertisement</Th>
               <Th>Status</Th>
+              <Th>Will Show</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -106,6 +179,11 @@ const Advertisements: FCWithAuth = () => {
                           {advertisement.scoredCampaign.campaign.status
                             ? "On"
                             : "Off"}
+                          <br />
+                          Categories:{" "}
+                          {advertisement.scoredCampaign.campaign.categories
+                            .map((c) => c.name)
+                            .join(",")}
                         </Box>
                       }
                     >
@@ -150,36 +228,11 @@ const Advertisements: FCWithAuth = () => {
                       }
                     />
                   </Td>
-                  {/*<Td>*/}
-                  {/*  <Tooltip*/}
-                  {/*    label={*/}
-                  {/*      "Train & Personalize the AI model by providing feedback."*/}
-                  {/*    }*/}
-                  {/*  >*/}
-                  {/*    <HStack spacing={2}>*/}
-                  {/*      <IconButton*/}
-                  {/*        onClick={handleThumbsUp.bind(*/}
-                  {/*          this,*/}
-                  {/*          advertisement.id,*/}
-                  {/*          true*/}
-                  {/*        )}*/}
-                  {/*        aria-label={"thumbs-up"}*/}
-                  {/*        variant={"outline"}*/}
-                  {/*        icon={<IoThumbsUpOutline />}*/}
-                  {/*      />*/}
-                  {/*      <IconButton*/}
-                  {/*        onClick={handleThumbsDown.bind(*/}
-                  {/*          this,*/}
-                  {/*          advertisement.id,*/}
-                  {/*          false*/}
-                  {/*        )}*/}
-                  {/*        aria-label={"thumbs-down"}*/}
-                  {/*        variant={"outline"}*/}
-                  {/*        icon={<IoThumbsDownOutline />}*/}
-                  {/*      />*/}
-                  {/*    </HStack>*/}
-                  {/*  </Tooltip>*/}
-                  {/*</Td>*/}
+                  <Td>
+                    <Tooltip label={isRunning(advertisement)?.whyNot}>
+                      {isRunning(advertisement).running ? "Yes" : "No"}
+                    </Tooltip>
+                  </Td>
                 </Tr>
               ))}
           </Tbody>

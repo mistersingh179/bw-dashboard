@@ -81,12 +81,8 @@ drop database bw;
 ## Pending backlog
 
 ## Pending – improve advertisements page
-- gray out advertisements which are not going to run
-- campaign is out of date range
-- campaign is paused
-- campaign category is different from webpage category
 - allow editing advertisement text
-- allow linking/dislinking advertisement
+- allow linking/disliking advertisement
 
 ## Pending Tasks
 - on a webpage, show impact of threshold to matched campaigns

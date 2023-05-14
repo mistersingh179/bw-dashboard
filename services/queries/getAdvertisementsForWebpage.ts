@@ -5,10 +5,15 @@ import {
   Campaign,
   ScoredCampaign,
 } from "@prisma/client";
+import { Category, Webpage } from ".prisma/client";
 
 export type AdvertisementWithDetail = Advertisement & {
-  advertisementSpot: AdvertisementSpot;
-  scoredCampaign: ScoredCampaign & { campaign: Campaign };
+  advertisementSpot: AdvertisementSpot & {
+    webpage: Webpage & { categories: Category[] };
+  };
+  scoredCampaign: ScoredCampaign & {
+    campaign: Campaign & { categories: Category[] };
+  };
 };
 
 type GetAdvertisementsForWebpage = (
@@ -40,10 +45,20 @@ const getAdvertisementsForWebpage: GetAdvertisementsForWebpage = async (
     include: {
       scoredCampaign: {
         include: {
-          campaign: true,
+          campaign: {
+            include: { categories: true },
+          },
         },
       },
-      advertisementSpot: true,
+      advertisementSpot: {
+        include: {
+          webpage: {
+            include: {
+              categories: true,
+            },
+          },
+        },
+      },
     },
   });
   return advertisements;
