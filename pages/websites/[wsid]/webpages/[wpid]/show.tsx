@@ -71,14 +71,6 @@ const WebpageBox = ({
         <Box>{webpage.url}</Box>
       </HStack>
       <HStack>
-        <Box minW={"3xs"}>Html: </Box>
-        <Box>
-          <Text maxWidth={"3xl"} noOfLines={5}>
-            {webpage.html}
-          </Text>
-        </Box>
-      </HStack>
-      <HStack>
         <Box minW={"3xs"}>last Modified At: </Box>
         <Box>
           {formatISO(webpage.lastModifiedAt, {

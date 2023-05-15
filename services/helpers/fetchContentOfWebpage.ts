@@ -2,18 +2,23 @@ import fetch from "node-fetch";
 import { JSDOM } from "jsdom";
 import UserAgent from "user-agents";
 
-type FetchContentOfWebpage = (url: string, accept?: string) => Promise<string>;
+type FetchContentOfWebpage = (
+  url: string,
+  accept?: string,
+  deviceCategory?: string
+) => Promise<string>;
 
 const fetchContentOfWebpage: FetchContentOfWebpage = async (
   url,
-  accept = "*/*"
+  accept = "*/*",
+  deviceCategory = "desktop"
 ) => {
   console.log("in fetchContentOfWebpage with: ", url);
-  const userAgent = new UserAgent({ deviceCategory: "desktop" });
+  const userAgent = new UserAgent({ deviceCategory });
   const res = await fetch(url, {
     method: "GET",
     headers: {
-      "Accept": accept,
+      Accept: accept,
       "User-Agent": userAgent.random().toString(),
     },
     redirect: "follow",

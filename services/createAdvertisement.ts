@@ -46,11 +46,22 @@ const createAdvertisement: CreateAdvertisement = async (
   const webpage = await prisma.webpage.findFirstOrThrow({
     where: {
       id: advertisementSpot.webpageId,
+      content: {
+        isNot: null
+      }
     },
+    include: {
+      content: true
+    }
   });
 
   const { beforeText, afterText } = advertisementSpot;
-  const { html } = webpage;
+  const { content } = webpage;
+
+  if(content === null){
+    console.log("aborting createAdvertisement as webpage has no content");
+    return;
+  }
 
   const campaign = await prisma.campaign.findFirstOrThrow({
     where: {
@@ -61,7 +72,7 @@ const createAdvertisement: CreateAdvertisement = async (
   const { productName, productDescription } = campaign;
 
   const adTextCopies = await getAdvertisementText(
-    html,
+    content.desktopHtml,
     beforeText,
     afterText,
     productName,

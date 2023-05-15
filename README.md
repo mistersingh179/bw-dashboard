@@ -80,22 +80,10 @@ drop database bw;
 
 ## Pending backlog
 
-## Pending – improve advertisements page
-- allow editing advertisement text
-- allow linking/disliking advertisement
+## Pending – Next Up
+- do incomplete todos – chat gpt prompts & category parser
 
 ## Pending Tasks
-- on a webpage, show impact of threshold to matched campaigns
-- automate website url creation from sitemap
-- setting to bypass website url check
-- status option on BW option
-- for each url, see if any relevant campaign score is missing and if missing get them.
-- ui to show ad spots, ads & relevant campaigns for the url
-- allow user to enter top level urls
-- allow user to set threshold
-- use threshold when picking relevant campaigns for showing
-- use threshold when picking relevant campaigns for building ads 
-- add TopLevelDomains table & move pages under it
 - add middleware to check referrer
 - add middleware to rate limit by ip, fp, cookie etc.
 - add page for founders to log in as customer & troubleshoot
@@ -103,35 +91,26 @@ drop database bw;
 - revisit indexes after doing pacing
 - see impact of allowing `{...req.body}` in update. can userId be provided to update wrong user, fix it if so.
 - extend NextAuth user with the date fields 
-- what happens if an advertisement wins which belongs to an ad spot which doesn't exist as the page has changed
+- create impression after it is confirmed that it has been displayed on the frontend
 - move constants to be per user in to its own table, add approve to it & onlyFounders middleware
 - update relation mappings for auctions
 - store auctions
 - show auctions
-- think on how to prevent processing a website, because it fetches its sitemap which is slow and we don't want to fetch it repeatedly. our db is protected as it will just conflict and not insert.
 - write top level job which spits out other jobs for smaller things
 - should we do mass insert of webpages rather than 1 at a time
-- re-do services to accept objects over id after confirming that we can serialize the object in the message
 - if we design onboarding insertion to happen together then we don't need to insert & then read and thus don't need indexes fo this read as they are not the same as when we do impressions
-- mark pages for whom we can't get spots, and now they sit to be processed again when we run and most likely we won't get spots again unless either our logic changes or their content changes
+
+## Pending – improve advertisements page
+- allow editing advertisement text
+- allow linking/disliking advertisement
 
 ## Pending prompt research
 - research if sending campaigns individually or with a group make a difference
 - how many tokens do we need for an average request
 
-## Pending nice to do
-- make edit & create use separate forms rather than sharing one or merge typescript types on functions
-- maintain cache of show, edit, create, separate from index, they 
-- make index for to manage all middleware exports
-- add validations to campaign form e.g. requiredCssSelector, url etc.
-- make site have many sitemaps. if entered sitemap has urls, save them. if entered sitemap has more sitemaps, then add  their underlying sitemap in with false status.
-
 ## Pending integration reserach
 - scrapeops.io
 - fingerprint.com
-
-## Pending Feature's
-- deploy prisma client
 
 ## Pending extension work
 - multi select drop down list of advertiser.
@@ -148,6 +127,8 @@ drop database bw;
 - the part in process user which calls a third party api like chat gpt or http fetch can be parallelized
 - only process those ad spots which dont have an advertisement for every scored campaign.
 - going through all webpages without html is slow. need an index here. but adding just an index doesn't work as index is too large
+- mark pages for whom we can't get spots, and now they sit to be processed again when we run and most likely we won't get spots again unless either our logic changes or their content changes
+- think on how to prevent processing a website, because it fetches its sitemap which is slow and we don't want to fetch it repeatedly. our db is protected as it will just conflict and not insert.
 
 ## Pending - Reduce scored campaigns
 - user has categories
@@ -158,13 +139,15 @@ drop database bw;
 - don't build scored campaign if already there.
 - when request comes in we will get webpage -> scoredCampaigns -> campaigns (filter campaigns whose category is not blank and is not same as that of webpage).
 
-
 ## Pending later things
 - refresh data
   - fetch html of existing html pages which have changed ??
   - update the lastModifiedAt of Webpage, currently limited as the createMany does not have on conflict update option
   - fetch newer webpages of existing websites
   - fetch webpages of new websites
+- make edit & create use separate forms rather than sharing one or merge typescript types on functions
+- make index for to manage all middleware exports
+- add validations to campaign form e.g. requiredCssSelector, url etc.
 
 ## Notes on how services are working the background
 

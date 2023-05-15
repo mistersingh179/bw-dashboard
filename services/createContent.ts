@@ -2,15 +2,19 @@ import { Webpage } from "@prisma/client";
 import fetchContentOfWebpage from "@/services/helpers/fetchContentOfWebpage";
 import prisma from "@/lib/prisma";
 
-type UpdateHtml = (webpage: Webpage) => Promise<Webpage>;
-const updateWebpageCorpus: UpdateHtml = async (webpage) => {
+type CreateContent = (webpage: Webpage) => Promise<Webpage>;
+const createContent: CreateContent = async (webpage) => {
   const existingWebpage = await prisma.webpage.findFirstOrThrow({
     where: {
       id: webpage.id,
     },
+    include: {
+      content: true,
+    },
   });
-  if (existingWebpage.html?.length > 0) {
-    console.log("aborting as html already exists");
+
+  if (existingWebpage.content && existingWebpage.content.desktopHtml !== null) {
+    console.log("aborting as content with desktopHtml already exists");
     return existingWebpage;
   }
 
@@ -20,13 +24,23 @@ const updateWebpageCorpus: UpdateHtml = async (webpage) => {
       id: webpage.id,
     },
     data: {
-      html: htmlContent,
-    },
+      content: {
+        upsert: {
+          create: {
+            desktopHtml: htmlContent
+          },
+          update: {
+            desktopHtml: htmlContent
+          }
+        }
+      }
+    }
   });
+
   return updatedWebpage;
 };
 
-export default updateWebpageCorpus;
+export default createContent;
 
 if (require.main === module) {
   (async () => {
@@ -35,7 +49,7 @@ if (require.main === module) {
         id: "clh6eip82001298kw3dmr4idj",
       },
     });
-    const updatedWebpage = await updateWebpageCorpus(webpage);
+    const updatedWebpage = await createContent(webpage);
     console.log(updatedWebpage);
   })();
 }

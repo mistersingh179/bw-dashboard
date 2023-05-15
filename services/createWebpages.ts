@@ -72,7 +72,6 @@ const createWebpages: CreateWebpages = async (
           {
             url: currentValue.loc,
             lastModifiedAt: currentValue.lastmod,
-            html: "",
             status: true,
           },
         ];

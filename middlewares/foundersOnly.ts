@@ -13,7 +13,7 @@ const foundersOnly: Middleware = async (req, res, next) => {
         },
       },
     });
-    next();
+    await next();
   }catch(err){
     console.log('error when trying to find this user. silently failing');
     res.status(204).end();

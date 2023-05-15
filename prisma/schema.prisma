@@ -118,8 +118,8 @@ model Webpage {
   scoredCampaigns    ScoredCampaign[]
   advertisementSpots AdvertisementSpot[]
   categories         Category[]
+  content            Content?
   url                String
-  html               String
   status             Boolean
   lastModifiedAt     DateTime            @default(now())
   createdAt          DateTime            @default(now())
@@ -130,6 +130,17 @@ model Webpage {
   @@index([websiteId, status])
   @@index([websiteId, url, status])
   @@index([websiteId, createdAt(sort: Asc)])
+}
+
+model Content {
+  id          String   @id @default(cuid())
+  webpageId   String   @unique
+  webpage     Webpage  @relation(fields: [webpageId], references: [id])
+  desktopHtml String
+  mobileHtml  String?
+  tabletHtml  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Category {

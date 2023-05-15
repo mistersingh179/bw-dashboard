@@ -1,18 +1,17 @@
-import {
-  Prisma,
-  Webpage,
-} from ".prisma/client";
+import { Content, Prisma, Webpage } from ".prisma/client";
 import prisma from "@/lib/prisma";
 import extractCategoriesFromWebpage from "@/services/helpers/extractCategoriesFromWebpage";
 import CategoryCreateOrConnectWithoutWebpagesInput = Prisma.CategoryCreateOrConnectWithoutWebpagesInput;
 
-type CreateCategories = (webpage: Webpage) => Promise<void>;
+type CreateCategories = (
+  webpage:  Webpage & {content: Content | null}
+) => Promise<void>;
 
 const createCategories: CreateCategories = async (webpage) => {
   console.log("inside service: createCategories");
 
-  if (webpage.html === "") {
-    console.log("aborting createCategories as the webpage does not have html");
+  if (webpage.content?.desktopHtml === "") {
+    console.log("aborting createCategories as the webpage does not have content & desktopHtml");
     return;
   }
 
@@ -85,13 +84,20 @@ if (require.main === module) {
       include: {
         website: {
           include: {
-            user: true
-          }
+            user: true,
+          },
         },
-        categories: true
-      }
+        categories: true,
+        content: true
+      },
     });
-    console.log("webpage: ", webpage.id, webpage.website.id, webpage.website.user.id, webpage.categories);
+    console.log(
+      "webpage: ",
+      webpage.id,
+      webpage.website.id,
+      webpage.website.user.id,
+      webpage.categories
+    );
     await createCategories(webpage);
   })();
 }

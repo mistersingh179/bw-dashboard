@@ -14,11 +14,9 @@ import {
   ModalHeader,
   ModalOverlay,
   Switch,
-  Textarea,
   VStack,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import StatusBadge from "@/components/StatusBadge";
 import { WebpageType } from "@/types/my-types";
 
 const CreateWebpageModal = ({
@@ -31,7 +29,6 @@ const CreateWebpageModal = ({
   onSave: (newWebpage: WebpageType) => void;
 }) => {
   const [url, setUrl] = useState("https://acme.com");
-  const [html, setCorpus] = useState("");
   const [status, setStatus] = useState(false);
 
   const urlMissing = url.length === 0 ? true : false;
@@ -40,7 +37,7 @@ const CreateWebpageModal = ({
     <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Create Website Url</ModalHeader>
+        <ModalHeader>Create Webpage</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing={5}>
@@ -61,17 +58,6 @@ const CreateWebpageModal = ({
               )}
             </FormControl>
             <FormControl>
-              <FormLabel>Corpus</FormLabel>
-              <Textarea
-                value={html}
-                onChange={(evt) => setCorpus(evt.target.value)}
-              />
-              <FormHelperText>
-                The content of this website. You can leave this blank as nightly
-                background jobs will fetch it for you when they are blank.
-              </FormHelperText>
-            </FormControl>
-            <FormControl>
               <HStack>
                 <FormLabel mb="0">Status</FormLabel>
                 <Switch
@@ -90,13 +76,12 @@ const CreateWebpageModal = ({
             onClick={async () => {
               const newWebpage: WebpageType = {
                 url,
-                html,
                 status,
+                lastModifiedAt: new Date(),
               };
               onClose();
               await onSave(newWebpage);
               setUrl("https://acme.com");
-              setCorpus("");
               setStatus(false);
             }}
           >

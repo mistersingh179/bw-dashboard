@@ -8,9 +8,7 @@ type AdSpotText = {
   afterText: string;
 };
 
-type GetAdSpotsTextForWebpage = (
-  webpage: Webpage
-) => Promise<AdSpotText[]>;
+type GetAdSpotsTextForWebpage = (webpage: Webpage) => Promise<AdSpotText[]>;
 
 type AdSelectionOptions = {
   contentSelector: string;
@@ -67,7 +65,19 @@ const nextElementWithTextOfSameTypeFilter: ElementFilter = (elem) => {
   return ans;
 };
 const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (webpage) => {
-  const dom = new JSDOM(webpage.html);
+  const webpageWithContent = await prisma.webpage.findFirstOrThrow({
+    where: {
+      id: webpage.id,
+    },
+    include: {
+      content: true,
+    },
+  });
+  if (webpageWithContent.content === null) {
+    console.log("aborting getAdSpotsForWebpage as there is no content");
+    return [];
+  }
+  const dom = new JSDOM(webpageWithContent.content.desktopHtml);
   const {
     window: { document },
   } = dom;
@@ -91,7 +101,7 @@ const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (webpage) => {
     console.groupEnd();
   });
 
-  return adSpots
+  return adSpots;
 };
 
 export default getAdSpotsForWebpage;
@@ -100,10 +110,16 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clh9d58tw000g98c0zarqhhc6"
+        id: "clh9d58tw000g98c0zarqhhc6",
+        content: {
+          isNot: null
+        }
+      },
+      include: {
+        content: true
       }
     });
-    console.log("webpage's html length: ", webpage.html.length);
+    console.log("webpage's html length: ", webpage.content?.desktopHtml.length);
     await getAdSpotsForWebpage(webpage);
   })();
 }

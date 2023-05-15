@@ -1,11 +1,11 @@
 import prisma from "@/lib/prisma";
-import {User} from ".prisma/client";
+import { User } from ".prisma/client";
 import createWebpages from "@/services/createWebpages";
-import updateHtml from "@/services/updateHtml";
+import createContent from "@/services/createContent";
 import createAdvertisementSpots from "@/services/createAdvertisementSpots";
 import createScoredCampaigns from "@/services/createScoredCampaigns";
 import createAdvertisement from "@/services/createAdvertisement";
-import {subDays} from "date-fns";
+import { subDays } from "date-fns";
 import createCategories from "@/services/createCategories";
 
 type ProcessUser = (user: User) => Promise<void>;
@@ -34,30 +34,32 @@ const processUser: ProcessUser = async (user) => {
     await createWebpages(website.id);
   }
 
-  const webpagesWithoutHtml = await prisma.webpage.findMany({
+  const webpagesWithoutContent = await prisma.webpage.findMany({
     where: {
       website: {
         userId: user.id,
         status: true,
       },
       status: true,
-      html: "",
+      content: {
+        is: null,
+      },
     },
   });
 
-  for (const webpage of webpagesWithoutHtml) {
-    await updateHtml(webpage);
+  for (const webpage of webpagesWithoutContent) {
+    await createContent(webpage);
   }
 
-  const webpagesWithHtmlWithoutAdvertisementSpots =
+  const webpagesWithContentWithoutAdvertisementSpots =
     await prisma.webpage.findMany({
       where: {
         website: {
           userId: user.id,
           status: true,
         },
-        html: {
-          not: "",
+        content: {
+          isNot: null
         },
         status: true,
         advertisementSpots: {
@@ -66,24 +68,27 @@ const processUser: ProcessUser = async (user) => {
       },
     });
 
-  for (const webpage of webpagesWithHtmlWithoutAdvertisementSpots) {
+  for (const webpage of webpagesWithContentWithoutAdvertisementSpots) {
     await createAdvertisementSpots(webpage);
   }
 
-  const webpagesWithHtml = await prisma.webpage.findMany({
+  const webpagesWithContent = await prisma.webpage.findMany({
     where: {
       website: {
         userId: user.id,
         status: true,
       },
       status: true,
-      html: {
-        not: "",
+      content: {
+        isNot: null,
       },
     },
+    include: {
+      content: true
+    }
   });
 
-  for (const webpage of webpagesWithHtml) {
+  for (const webpage of webpagesWithContent) {
     await createScoredCampaigns(webpage);
     await createCategories(webpage);
   }

@@ -14,11 +14,9 @@ import {
   ModalHeader,
   ModalOverlay,
   Switch,
-  Textarea,
   VStack,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import StatusBadge from "@/components/StatusBadge";
 import { WebsiteType } from "@/types/my-types";
 
 const CreateWebsiteModal = ({
@@ -38,8 +36,7 @@ const CreateWebsiteModal = ({
   const topLevelDomainUrlMissing =
     topLevelDomainUrl.length === 0 ? true : false;
 
-  const sitemapUrlMissing =
-    sitemapUrl.length === 0 ? true : false;
+  const sitemapUrlMissing = sitemapUrl.length === 0 ? true : false;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
@@ -97,6 +94,7 @@ const CreateWebsiteModal = ({
                 topLevelDomainUrl,
                 sitemapUrl,
                 status,
+                processedOn: null,
               };
               onClose();
               await onSave(newWebsite);
