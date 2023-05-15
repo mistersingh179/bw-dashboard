@@ -1,7 +1,6 @@
 import FCWithAuth from "@/types/FCWithAuth";
 import {
   Box,
-  Button,
   Heading,
   HStack,
   Spacer,
@@ -11,25 +10,20 @@ import {
   TableContainer,
   Tbody,
   Td,
+  Tfoot,
   Th,
   Thead,
   Tr,
-  useDisclosure,
-  Text,
-  Tfoot,
 } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
-import React, { useState } from "react";
+import React from "react";
 import {
   ErrorRow,
   LoadingDataRow,
   NoDataRow,
 } from "@/components/genericMessages";
-import useSWR, { preload } from "swr";
+import { preload } from "swr";
 import fetcher from "@/helpers/fetcher";
-import CreateWebpageModal from "@/components/modals/CreateWebpageModal";
 import { WebpageType } from "@/types/my-types";
-import useTxToast from "@/hooks/useTxToast";
 import { QueryParams } from "@/types/QueryParams";
 import { useRouter } from "next/router";
 
@@ -45,8 +39,6 @@ const Webpages: FCWithAuth = () => {
 
   const { page, setPage, pageSize, setPageSize } = usePagination();
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
   const { webpages, error, isLoading, onSave, onUpdate } = useWebpages(
     wsid,
     page,
@@ -58,16 +50,12 @@ const Webpages: FCWithAuth = () => {
 
   return (
     <Box>
-      <CreateWebpageModal isOpen={isOpen} onClose={onClose} onSave={onSave} />
       <HStack alignItems={"baseline"} my={5}>
         <Heading>Webpages</Heading>
         <Heading color={"gray.400"} size={"sm"}>
           <Link href={"/websites/list"}> – {website?.topLevelDomainUrl} </Link>
         </Heading>
         <Spacer />
-        <Button onClick={onOpen} colorScheme={"blue"} leftIcon={<AddIcon />}>
-          Add another Webpage
-        </Button>
       </HStack>
       <TableContainer whiteSpace={"normal"}>
         <Table variant={"simple"} size={"md"}>
