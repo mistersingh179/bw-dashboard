@@ -7,7 +7,7 @@ import fetch from "node-fetch";
 import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageText";
 import { CreateChatCompletionResponse } from "openai/api";
 
-type CampaignProductWithScore = {
+export type CampaignProductWithScore = {
   id: string;
   name: string;
   description?: string;

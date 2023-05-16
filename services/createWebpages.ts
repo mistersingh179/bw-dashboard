@@ -38,7 +38,14 @@ const createWebpages: CreateWebpages = async (
     sitemapUrl = website.sitemapUrl;
   }
 
-  const sitemapXML = await fetchContentOfWebpage(sitemapUrl, "application/xml");
+  let sitemapXML = '';
+  try{
+    sitemapXML = await fetchContentOfWebpage(sitemapUrl, "application/xml");
+  }catch(err){
+    console.log("aborting as unable to fetch sitemap: ", sitemapUrl);
+    return;
+  }
+
   const options = {
     ignoreDeclaration: true,
     ignorePiTags: true,

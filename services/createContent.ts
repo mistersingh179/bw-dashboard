@@ -18,7 +18,14 @@ const createContent: CreateContent = async (webpage) => {
     return existingWebpage;
   }
 
-  const htmlContent = await fetchContentOfWebpage(webpage.url, "text/html");
+  let htmlContent = '';
+  try{
+    htmlContent = await fetchContentOfWebpage(webpage.url, "text/html");
+  }catch(err){
+    console.log("aborting as got error while fetching content of webpage: ", htmlContent);
+    return existingWebpage;
+  }
+
   const updatedWebpage = await prisma.webpage.update({
     where: {
       id: webpage.id,

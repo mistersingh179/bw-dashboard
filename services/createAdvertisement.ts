@@ -73,13 +73,20 @@ const createAdvertisement: CreateAdvertisement = async (
 
   const { productName, productDescription } = campaign;
 
-  const adTextCopies = await getAdvertisementText(
-    webpageText,
-    beforeText,
-    afterText,
-    productName,
-    productDescription
-  );
+  let adTextCopies: string[] = [];
+  try{
+    adTextCopies = await getAdvertisementText(
+      webpageText,
+      beforeText,
+      afterText,
+      productName,
+      productDescription
+    );
+  }catch(err){
+    console.log("aborting as unable to get advertisement text: ", err);
+    return;
+  }
+
 
   const advertisementInputArr: AdvertisementCreateManyAdvertisementSpotInput[] =
     adTextCopies.map((adTextCopy) => ({

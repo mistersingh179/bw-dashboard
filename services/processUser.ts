@@ -99,6 +99,12 @@ const processUser: ProcessUser = async (user) => {
         userId: user.id,
         status: true,
       },
+      advertisementSpots: {
+        some: {}
+      },
+      scoredCampaigns: {
+        some: {}
+      }
     },
     include: {
       advertisementSpots: true,

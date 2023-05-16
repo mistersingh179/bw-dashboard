@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import { Prisma, Webpage } from "@prisma/client";
-import getCampaignsWithTheirScores from "@/services/prompts/getCampaignsWithTheirScores";
+import getCampaignsWithTheirScores, {CampaignProductWithScore} from "@/services/prompts/getCampaignsWithTheirScores";
 import ScoredCampaignCreateManyWebpageInput = Prisma.ScoredCampaignCreateManyWebpageInput;
 import getCampaignsWithoutScoredCampaignsForWebpage from "@/services/queries/getCamapignsWithoutScoredCampaignsForWebpage";
 
@@ -11,12 +11,20 @@ const createScoredCampaigns: CreateScoredCampaigns = async (webpage) => {
 
   const campaignsWhichNeedScore =
     await getCampaignsWithoutScoredCampaignsForWebpage(webpage.id);
-  if(campaignsWhichNeedScore.length == 0){
-    console.log('aborting createScoredCampaigns as all campaigns are already scored');
+  if (campaignsWhichNeedScore.length == 0) {
+    console.log(
+      "aborting createScoredCampaigns as all campaigns are already scored"
+    );
     return;
   }
 
-  const campaignsWithScore = await getCampaignsWithTheirScores(webpage);
+  let campaignsWithScore: CampaignProductWithScore[] = [];
+  try {
+    campaignsWithScore = await getCampaignsWithTheirScores(webpage);
+  } catch (err) {
+    console.log("aborting as unable to get campaign scores");
+    return;
+  }
 
   const scoredCampaignInput: ScoredCampaignCreateManyWebpageInput[] =
     campaignsWithScore.map((c) => {
