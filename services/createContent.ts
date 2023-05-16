@@ -13,8 +13,8 @@ const createContent: CreateContent = async (webpage) => {
     },
   });
 
-  if (existingWebpage.content && existingWebpage.content.desktopHtml !== null) {
-    console.log("aborting as content with desktopHtml already exists");
+  if (existingWebpage.content !== null) {
+    console.log("aborting as content already exists");
     return existingWebpage;
   }
 

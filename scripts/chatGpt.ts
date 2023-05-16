@@ -1,29 +1,34 @@
-import { Campaign, Webpage } from "@prisma/client";
+import fetch from "node-fetch";
+import { config } from "dotenv";
+import AnyObject from "@/types/AnyObject";
 import prisma from "@/lib/prisma";
 import { JSDOM } from "jsdom";
 import Papa from "papaparse";
-import AnyObject from "@/types/AnyObject";
-import fetch from "node-fetch";
 
-type CampaignProductWithScore = {
-  id: string;
-  name: string;
-  description?: string;
-  score?: string;
-  scoreAsNum?: number;
-  reason?: string;
-};
+config();
 
-type GetCampaignsWithTheirScores = (
-  webpage: Webpage
-) => Promise<CampaignProductWithScore[]>;
+type CampaignWithScore = {
+  id: string,
+  name: string,
+  description?: string,
+  score?: number | "?",
+  reason?: string,
+}
 
-const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
-  webpage
-) => {
-  const webpageWithDetails = await prisma.webpage.findFirstOrThrow({
+// given a webpages content
+// given a bunch of campaigns
+// rate each campaigns relevancy on a scale of 0 to 4
+// pass in existing campaigns and rating
+// 0 - irrelevant
+// 1 - less relevant
+// 2 - relevant
+// 3 - more relevant
+// 4 - extremely relevant
+(async () => {
+  console.log("in script chatGpt");
+  const webpage = await prisma.webpage.findFirstOrThrow({
     where: {
-      id: webpage.id,
+      id: "clh9d58tw000198c0g5kfluac",
       content: {
         isNot: null,
       },
@@ -41,12 +46,11 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
       },
     },
   });
-  if (!webpageWithDetails.content) {
+  if (!webpage.content) {
     console.log("aborting as webpage has no content");
-    return [];
+    return;
   }
-
-  const dom = new JSDOM(webpageWithDetails.content.desktopHtml);
+  const dom = new JSDOM(webpage.content.desktopHtml);
   const {
     window: {
       document: { body },
@@ -59,17 +63,18 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
 
   console.log("webpageText: ", webpageText);
 
-  const campaignsWithScore: CampaignProductWithScore[] =
-    webpageWithDetails.website.user.campaigns.map((c) => ({
-      id: c.id,
-      name: c.productName,
-      description: c.productDescription,
-      score: "?",
-      reason: "?",
-    }));
+  const campaignsWithScore: CampaignWithScore[] = webpage.website.user.campaigns.map((c) => ({
+    id: c.id,
+    name: c.productName,
+    description: c.productDescription,
+    "score": "?",
+    "reason": "?",
+  }))
 
   const campaignsCsv = Papa.unparse(campaignsWithScore);
+  console.log("campaignsCsv: ", campaignsCsv);
 
+  const { OPENAI_API_KEY } = process.env;
   const messages: AnyObject[] = [
     {
       role: "system",
@@ -89,8 +94,8 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
         `On the hand a lower score is given to products which are less relevant ` +
         `to the webpage's content and more likely to be ignored by the reader, ` +
         `offend the reader or not be clicked on by the reader of the webpage. ` +
-        `Along with score, also provide a brief reason in less than 3 sentences ` +
-        `which explains why you think the product is relevant or irrelevant and which lead to the score you assigned.` +
+        `Along with score, also provide a brief reason in less than 3 sentences `+
+        `which explains why you think the product is relevant or irrelevant and thus give the score you gave it` +
         `Here is the content of the website: ${webpageText
           ?.replace("\n", "")
           .substring(0, 20000)}` +
@@ -99,12 +104,12 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
         `to you. In the csv only include the product's id, name, score and reason column. Put the reason in quotes so it does not break csv format.`,
     },
   ];
-
+  // console.log("input messages: ", messages);
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      Authorization: `Bearer ${OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
       model: "gpt-3.5-turbo-0301",
@@ -115,40 +120,16 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
     }),
   });
   let data = await response.json();
-  console.log("api returned: ");
+  console.log("api returned: ")
   console.dir(data, { depth: null, colors: true });
-  const output = (data as AnyObject).choices[0].message.content;
-  console.log("output is: ", output);
+  const ans = (data as AnyObject).choices[0].message.content;
+  console.log("ans is: ", ans);
 
-  const outputObj = Papa.parse<CampaignProductWithScore>(output, {
-    header: true,
+  const ansObj = Papa.parse<CampaignWithScore>(ans, {
+    header: true
   });
-  console.log("outputObj is: ", outputObj.data);
+  console.log("ansObj is: ", ansObj);
 
-  console.log("return with campaings with scores: ", outputObj.data);
+})();
 
-  const ans: CampaignProductWithScore[] = outputObj.data.map((c) => {
-    let scoreAsNum = parseInt(c.score || "");
-    if (isNaN(scoreAsNum)) {
-      scoreAsNum = 0;
-    }
-    return { ...c, scoreAsNum: scoreAsNum };
-  });
-
-  return ans;
-};
-
-if (require.main === module) {
-  (async () => {
-    const webpage = await prisma.webpage.findFirstOrThrow({
-      where: {
-        id: "clh9d58tw000198c0g5kfluac",
-      },
-    });
-    const ans = await getCampaignsWithTheirScores(webpage);
-
-    console.log("ans: ", ans);
-  })();
-}
-
-export default getCampaignsWithTheirScores;
+export {};

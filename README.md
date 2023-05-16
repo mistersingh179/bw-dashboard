@@ -79,6 +79,10 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
+- remove empty space when making chatgpt openai call
+- research typescript types for openai api calls
+- handle error from third party api calls & in process user & in individual services
+- do token count research on api calls
 
 ## Pending – Next Up
 - do incomplete todos – chat gpt prompts & category parser
@@ -103,6 +107,10 @@ drop database bw;
 ## Pending – improve advertisements page
 - allow editing advertisement text
 - allow linking/disliking advertisement
+- show all advertisements
+  - show ones running
+  - change threshold and see running ads going up/down
+  - add/remove categories on a campaign and see running ads go up/down
 
 ## Pending prompt research
 - research if sending campaigns individually or with a group make a difference

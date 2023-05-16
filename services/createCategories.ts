@@ -10,8 +10,8 @@ type CreateCategories = (
 const createCategories: CreateCategories = async (webpage) => {
   console.log("inside service: createCategories");
 
-  if (webpage.content?.desktopHtml === "") {
-    console.log("aborting createCategories as the webpage does not have content & desktopHtml");
+  if (webpage.content === null) {
+    console.log("aborting createCategories as the webpage does not have content");
     return;
   }
 

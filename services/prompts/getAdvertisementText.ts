@@ -8,7 +8,7 @@ type GetAdvertisementText = (
   productDescription: string
 ) => Promise<string[]>;
 
-// todo - take object here rather than so many params
+//todo - take object here rather than so many params
 const getAdvertisementText: GetAdvertisementText = async (
   html,
   beforeText,
@@ -16,7 +16,7 @@ const getAdvertisementText: GetAdvertisementText = async (
   productName,
   productDescription
 ) => {
-  // todo – call openai chat gpt api here
+  //todo – call openai chat gpt api here
   // limit html characters so the prompt fits
 
   return [

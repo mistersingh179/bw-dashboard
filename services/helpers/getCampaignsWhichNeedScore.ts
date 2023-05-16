@@ -1,7 +1,6 @@
 import prisma from "@/lib/prisma";
 import {Campaign, Webpage} from "@prisma/client";
 
-// todo - should have type to declare return as its any right now
 type GetCampaignsWhichNeedScore = (webpage: Webpage) => Promise<Campaign[]>;
 
 const getCampaignsWhichNeedScore: GetCampaignsWhichNeedScore = async (webpage) => {
@@ -53,7 +52,8 @@ if (require.main === module) {
         id: "clh9d58tw000198c0g5kfluac",
       },
     });
-    await getCampaignsWhichNeedScore(webpage);
+    const ans = await getCampaignsWhichNeedScore(webpage);
+    console.log("*** ans: ", ans);
   })();
 }
 
