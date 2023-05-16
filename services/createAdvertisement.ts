@@ -3,7 +3,7 @@ import { AdvertisementSpot, Prisma, ScoredCampaign } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import AdvertisementCreateManyAdvertisementSpotInput = Prisma.AdvertisementCreateManyAdvertisementSpotInput;
 import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageText";
-import getAdvertisementText2 from "@/services/prompts/getAdvertisementText2";
+import getAdvertisementText from "@/services/prompts/getAdvertisementText";
 
 const enoughActiveAdsExist = async (
   advertisementSpot: AdvertisementSpot,
@@ -73,7 +73,7 @@ const createAdvertisement: CreateAdvertisement = async (
 
   const { productName, productDescription } = campaign;
 
-  const adTextCopies = await getAdvertisementText2(
+  const adTextCopies = await getAdvertisementText(
     webpageText,
     beforeText,
     afterText,

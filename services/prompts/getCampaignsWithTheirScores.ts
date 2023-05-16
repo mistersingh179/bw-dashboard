@@ -5,6 +5,7 @@ import Papa from "papaparse";
 import AnyObject from "@/types/AnyObject";
 import fetch from "node-fetch";
 import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageText";
+import { CreateChatCompletionResponse } from "openai/api";
 
 type CampaignProductWithScore = {
   id: string;
@@ -47,7 +48,9 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
     return [];
   }
 
-  const webpageText = extractCleanedWebpageText(webpageWithDetails.content.desktopHtml);
+  const webpageText = extractCleanedWebpageText(
+    webpageWithDetails.content.desktopHtml
+  );
 
   console.log("webpageText: ", webpageText);
 
@@ -104,10 +107,11 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
       messages: messages,
     }),
   });
-  let data = await response.json();
+  let data = (await response.json()) as CreateChatCompletionResponse;
   console.log("api returned: ");
   console.dir(data, { depth: null, colors: true });
-  const output = (data as AnyObject).choices[0].message.content;
+
+  const output = data.choices[0]?.message?.content || "";
   console.log("output is: ", output);
 
   const outputObj = Papa.parse<CampaignProductWithScore>(output, {
@@ -115,7 +119,7 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
   });
   console.log("outputObj is: ", outputObj.data);
 
-  console.log("return with campaings with scores: ", outputObj.data);
+  console.log("return with campaigns with scores: ", outputObj.data);
 
   const ans: CampaignProductWithScore[] = outputObj.data.map((c) => {
     let scoreAsNum = parseInt(c.score || "");
