@@ -79,7 +79,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
-- do token count research on api calls
 - research typescript types for openai api calls
 - handle error from third party api calls & in process user & in individual services
 

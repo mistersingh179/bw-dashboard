@@ -4,6 +4,7 @@ import { JSDOM } from "jsdom";
 import Papa from "papaparse";
 import AnyObject from "@/types/AnyObject";
 import fetch from "node-fetch";
+import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageText";
 
 type CampaignProductWithScore = {
   id: string;
@@ -46,16 +47,7 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
     return [];
   }
 
-  const dom = new JSDOM(webpageWithDetails.content.desktopHtml);
-  const {
-    window: {
-      document: { body },
-    },
-  } = dom;
-  const webpageText = body.textContent
-    ?.replaceAll(/[\n]+/g, " ")
-    .replaceAll(/[\s]+/g, " ")
-    .substring(0, 5000);
+  const webpageText = extractCleanedWebpageText(webpageWithDetails.content.desktopHtml);
 
   console.log("webpageText: ", webpageText);
 
@@ -91,9 +83,7 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
         `offend the reader or not be clicked on by the reader of the webpage. ` +
         `Along with score, also provide a brief reason in less than 3 sentences ` +
         `which explains why you think the product is relevant or irrelevant and which lead to the score you assigned.` +
-        `Here is the content of the website: ${webpageText
-          ?.replace("\n", "")
-          .substring(0, 20000)}` +
+        `Here is the content of the website: ${webpageText}` +
         ` Here is the csv list of products: ${campaignsCsv} ` +
         `For your result give me back a csv list similar to what is provided ` +
         `to you. In the csv only include the product's id, name, score and reason column. Put the reason in quotes so it does not break csv format.`,
