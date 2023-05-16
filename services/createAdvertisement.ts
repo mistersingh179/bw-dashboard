@@ -1,8 +1,9 @@
 import { DESIRED_ADVERTISEMENT_COUNT } from "@/constants";
 import { AdvertisementSpot, Prisma, ScoredCampaign } from "@prisma/client";
 import prisma from "@/lib/prisma";
-import getAdvertisementText from "@/services/prompts/getAdvertisementText";
 import AdvertisementCreateManyAdvertisementSpotInput = Prisma.AdvertisementCreateManyAdvertisementSpotInput;
+import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageText";
+import getAdvertisementText2 from "@/services/prompts/getAdvertisementText2";
 
 const enoughActiveAdsExist = async (
   advertisementSpot: AdvertisementSpot,
@@ -47,21 +48,22 @@ const createAdvertisement: CreateAdvertisement = async (
     where: {
       id: advertisementSpot.webpageId,
       content: {
-        isNot: null
-      }
+        isNot: null,
+      },
     },
     include: {
-      content: true
-    }
+      content: true,
+    },
   });
 
-  const { beforeText, afterText } = advertisementSpot;
-  const { content } = webpage;
-
-  if(content === null){
-    console.log("aborting createAdvertisement as webpage has no content");
+  if (webpage.content === null) {
+    console.log("Aborting as we dont have any content for the website");
     return;
   }
+
+  const webpageText = extractCleanedWebpageText(webpage.content.desktopHtml);
+
+  const { beforeText, afterText } = advertisementSpot;
 
   const campaign = await prisma.campaign.findFirstOrThrow({
     where: {
@@ -71,8 +73,8 @@ const createAdvertisement: CreateAdvertisement = async (
 
   const { productName, productDescription } = campaign;
 
-  const adTextCopies = await getAdvertisementText(
-    content.desktopHtml,
+  const adTextCopies = await getAdvertisementText2(
+    webpageText,
     beforeText,
     afterText,
     productName,
@@ -104,16 +106,21 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clh9dgf1r05e498okjtns3uai"
+        id: "clh9d58tw000098c05nhdmbql",
       },
       include: {
         advertisementSpots: true,
         scoredCampaigns: true,
       },
     });
-    // console.log("webpage: ", webpage);
+    console.log(
+      "webpage: ",
+      webpage.url,
+      webpage.advertisementSpots.length,
+      webpage.scoredCampaigns.length
+    );
     for (const as of webpage.advertisementSpots) {
-      for(const sc of webpage.scoredCampaigns){
+      for (const sc of webpage.scoredCampaigns) {
         await createAdvertisement(as, sc);
       }
     }

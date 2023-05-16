@@ -22,33 +22,32 @@ const getAdvertisementText: GetAdvertisementText = async (
   const messages: AnyObject[] = [
     {
       role: "system",
-      content: "You are a publishing website's advertisement editor.",
+      content:
+        `You are a blog's advertisement editor whose job is to naturally include \
+randed product placements into blog posts.`
     },
     {
       role: "user",
-      content: `Below you are provided with some of a webpage's content, \
-2 paragraphs named before and after from the webpage, \
-and a product's name & description. \
-Your job is to create a new paragraph to advertise the provided product. \
-This paragraph will be inserted between the before and after paragraph provided to you, \
-so it is important that the new paragraph you create flows and seamlessly between the paragraphs around it. \
-Very subtly please include the products name inside the advertising product you create. \
-Remember these important rules about the new advertising paragraph you are creating: \
-1. It must follow the same writing style as the webpage's post. \
-2. It should feel like the author of the blog post wrote it. \
-3. It should not not make factual assertions about the product. \
-4. It should be limited to a maximum of 4 sentences. \
-5. It should not change the intent or meaning of the webpage. \
-6. It should not seem like the author is endorsing the product. \
-7. It should not look like the product is endorsing the content of the webpage. \
-8. It should never portray the product in a negative context. \
-Here is the content of the webpage: ${html} \
-Here is the before paragraph: ${beforeText} \
-Here is the after paragraph: ${afterText} \
-Here is the product name: ${productName} \
-Here is the products description: ${productDescription} \
-For you result, only give me back the new paragraph you created, nothing more.`,
-    },
+      content: `For context here is the blog which you will be working on: ${html} \
+Write a new paragraph which subtly includes the brand, ${productName}. \
+Here is the brands description: ${productDescription} \\b\` +
+You can use the brands description for inspiration on making the advertisement for the brand. \
+This new advertisement paragraph which you create will be inserted between 2 existing paragraphs of the blog. \
+You must make sure that the new advertisement paragraph you create seamlessly connects to the paragraph before and after it. \
+Here is the paragraph which will come before the advertisement you create: ${beforeText} \
+and here is the paragraph which will come after the advertisement you create: ${afterText} \`,
+Remember these important rules: \
+Your new advertisement paragraph must follow the same writing style as the blog post. \
+Your new advertisement paragraph should feel like the author of the blog post wrote it. \
+Importantly, do not make factual assertions about the brand. \
+Limit the advertisement paragraph you create to a maximum of 4 sentences. \
+You cannot make factual assertions about the brand. \
+Do not change the intent or meaning of the blog post. \
+Do not make it seem like the author is endorsing the brand. \
+Do not make it seem like the brand is endorsing the content of the article. \
+Never portray the brand in a negative context. \
+In your reply, just provide the new paragraph.`,
+    }
   ];
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
