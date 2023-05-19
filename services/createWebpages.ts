@@ -5,6 +5,7 @@ import fetchContentOfWebpage from "@/services/helpers/fetchContentOfWebpage";
 import WebpageCreateManyWebsiteInput = Prisma.WebpageCreateManyWebsiteInput;
 import { isAfter, parseISO, subDays } from "date-fns";
 import { WEBPAGE_LOOK_BACK_DAYS } from "@/constants";
+import { getUrlProperties } from "@/pages/api/auctions/generate";
 
 export type UrlsetUrl = {
   loc: string;
@@ -24,6 +25,16 @@ type CreateWebpages = (website: string, sitemapUrl?: string) => Promise<void>;
 
 const lookBackDate = subDays(new Date(), WEBPAGE_LOOK_BACK_DAYS);
 
+const getCleanUrl = (url: string): string => {
+  try {
+    const { originWithPathName } = getUrlProperties(url);
+    return originWithPathName;
+  } catch (err) {
+    console.log("got error while cleaning url: ", url);
+  }
+  return "";
+};
+
 const createWebpages: CreateWebpages = async (
   websiteId: string,
   sitemapUrl
@@ -38,10 +49,10 @@ const createWebpages: CreateWebpages = async (
     sitemapUrl = website.sitemapUrl;
   }
 
-  let sitemapXML = '';
-  try{
+  let sitemapXML = "";
+  try {
     sitemapXML = await fetchContentOfWebpage(sitemapUrl, "application/xml");
-  }catch(err){
+  } catch (err) {
     console.log("aborting as unable to fetch sitemap: ", sitemapUrl);
     return;
   }
@@ -77,7 +88,7 @@ const createWebpages: CreateWebpages = async (
         return [
           ...accumulator,
           {
-            url: currentValue.loc,
+            url: getCleanUrl(currentValue.loc),
             lastModifiedAt: currentValue.lastmod,
             status: true,
           },
@@ -87,7 +98,7 @@ const createWebpages: CreateWebpages = async (
         return accumulator;
       }
     }, webpageInputs);
-    console.log('we have webpageInputs: ', webpageInputs.length)
+    console.log("we have webpageInputs: ", webpageInputs.length);
 
     await prisma.website.update({
       where: {
@@ -118,11 +129,11 @@ export default createWebpages;
 if (require.main === module) {
   (async () => {
     const websites = await prisma.website.findMany();
-    for (const website of websites){
-      try{
+    for (const website of websites) {
+      try {
         await createWebpages(website.id);
-      }catch(e){
-       console.error("there was an issue creating webpages for: ", website.id);
+      } catch (e) {
+        console.error("there was an issue creating webpages for: ", website.id);
       }
     }
     // const website = await prisma.website.findFirstOrThrow({

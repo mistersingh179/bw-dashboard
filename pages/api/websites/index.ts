@@ -39,6 +39,11 @@ const handleCreateWebsite = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
+
+  if(req.body["topLevelDomainUrl"]?.endsWith("/")){
+    req.body["topLevelDomainUrl"] = req.body["topLevelDomainUrl"].slice(0, -1);
+  }
+
   const website = await prisma.website.create({
     data: {
       ...req.body,

@@ -17,6 +17,11 @@ const handleWebsiteUpdate = async (
   res: NextApiResponse
 ) => {
   const { wsid } = req.query as QueryParams;
+
+  if(req.body["topLevelDomainUrl"]?.endsWith("/")){
+    req.body["topLevelDomainUrl"] = req.body["topLevelDomainUrl"].slice(0, -1);
+  }
+
   const website = await prisma.website.update({
     where: {
       id: wsid,

@@ -79,8 +79,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
-- don't save trailing slash when website is added
-- don't save trailing slash when webpage is added via service
 - put redis cache in front of repeated static repeated queries in advertisement lookup api
 - we don't want 2 ads for the same ad spot returned
 - we want randomized 2 ads
@@ -91,26 +89,21 @@ drop database bw;
 ## Pending – Next Up
 - build backend for front-end script to use
 - build front-end script
+- add middleware to rate limit by ip, fp, cookie etc.
+- revisit indexes after doing front end auction/impresssion creation/insertion
 
 ## Pending Tasks
 - build dashboard api & pages
-- add middleware to check referrer
-  - shall we get url from referrer
-- add middleware to rate limit by ip, fp, cookie etc.
 - add page for founders to log in as customer & troubleshoot
-- revisit indexes after doing front end auction/impresssion creation/insertion
 - revisit indexes after doing pacing
 - see impact of allowing `{...req.body}` in update. can userId be provided to update wrong user, fix it if so.
 - extend NextAuth user with the date fields 
-- create impression after it is confirmed that it has been displayed on the frontend
 - move constants to be per user in to its own table, add approve to it & onlyFounders middleware
-- update relation mappings for auctions
-- store auctions
-- show auctions
+- show auctions with impressions count
+- show impressions
 - write top level job which spits out other jobs for smaller things
 - should we do mass insert of webpages rather than 1 at a time
 - if we design onboarding insertion to happen together then we don't need to insert & then read and thus don't need indexes fo this read as they are not the same as when we do impressions
-- record clicks
 
 ## Pending – improve advertisements page
 - allow editing advertisement text

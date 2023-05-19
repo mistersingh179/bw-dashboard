@@ -15,7 +15,7 @@ type UrlProperties = {
   originWithPathName: string;
 };
 
-const getUrlProperties = (url: string): UrlProperties => {
+export const getUrlProperties = (url: string): UrlProperties => {
   const urlObj = new URL(url);
   const origin = urlObj.origin;
   let originWithPathName = urlObj.origin + urlObj.pathname;
