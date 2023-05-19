@@ -134,7 +134,7 @@ if (require.main === module) {
   (async () => {
     const user = await prisma.user.findFirstOrThrow({
       where: {
-        id: "clfqyzo1z000k98fclzdb0h0e",
+        id: "clhtwckif000098wp207rs2fg",
       },
     });
     await processUser(user);

@@ -9,17 +9,13 @@ import prisma from "@/lib/prisma";
   //   }
   // });
 
-  const ans = await prisma.website.findFirstOrThrow({
+  const ans = await prisma.impression.count({
     where: {
-      id: "clh58j7rl000z98kwx3diilzx"
-    },
-    include: {
-      _count: {
-        select: {
-          webpages: true
-        }
+      campaign: {
+        userId: "clfqyzo1z000k98fclzdb0h0e"
       }
     }
-  });
-  console.log("Website ", ans.sitemapUrl, " has ", ans._count.webpages, " webpages");
+  })
+
+  console.log("ans: ", ans)
 })()

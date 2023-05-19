@@ -1,5 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="tsx watch" type="NodeJSConfigurationType" path-to-node="$USER_HOME$/.nvm/versions/node/v19.9.0/bin/node" node-parameters="--loader tsx --watch" path-to-js-file="$FilePathRelativeToProjectRoot$" working-dir="$PROJECT_DIR$">
+    <envs>
+      <env name="NODE_ENV" value="development" />
+    </envs>
     <method v="2" />
   </configuration>
 </component>

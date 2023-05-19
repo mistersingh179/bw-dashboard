@@ -79,13 +79,23 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
-- handle error from third party api calls & in process user & in individual services
+- don't save trailing slash when website is added
+- don't save trailing slash when webpage is added via service
+- put redis cache in front of repeated static repeated queries in advertisement lookup api
+- we don't want 2 ads for the same ad spot returned
+- we want randomized 2 ads
+- database should have urls without a slash in the end
+- investigate statusTrue as middleware
+- add showSponsoredMessage as userSetting
 
 ## Pending – Next Up
-
+- build backend for front-end script to use
+- build front-end script
 
 ## Pending Tasks
+- build dashboard api & pages
 - add middleware to check referrer
+  - shall we get url from referrer
 - add middleware to rate limit by ip, fp, cookie etc.
 - add page for founders to log in as customer & troubleshoot
 - revisit indexes after doing front end auction/impresssion creation/insertion
@@ -100,6 +110,7 @@ drop database bw;
 - write top level job which spits out other jobs for smaller things
 - should we do mass insert of webpages rather than 1 at a time
 - if we design onboarding insertion to happen together then we don't need to insert & then read and thus don't need indexes fo this read as they are not the same as when we do impressions
+- record clicks
 
 ## Pending – improve advertisements page
 - allow editing advertisement text
@@ -161,3 +172,15 @@ drop database bw;
 3. For each `websiteUrl` we call `updateCorpus()` to get its html content.
 4. Then for each `websiteUrl` we call `createRelevantCampaigns()` so we have campaigns with scores which can run when this website is loaded
 5. Then for each `relevantCampaign` we call `createAdvertisements` so we have advertisement spots that campaign can run with before & after text.
+
+## Notes on how we handle requests from the script
+- Script 1st makes POST call to generate an auction
+- it gives us userId & and url
+- we save the auction & return back auction id
+- we also attempt to find advertisements which can be shown & return potential ads back
+- Now Script attempts to display those advertisements
+- Script makes 2nd call POST for each impression to record that impression
+- it gives us userId, auctionId? & advertisementId
+- we save impression & return back id
+- Script makes 3rd call POST for each click on that impression
+- it gives us just impressionId

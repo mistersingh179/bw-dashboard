@@ -63,6 +63,20 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
       reason: "?",
     }));
 
+  if (process.env.NODE_ENV === "development") {
+    return campaignsWithScore.map(
+      (c: CampaignProductWithScore): CampaignProductWithScore => {
+        const randomScore = Math.round(Math.random() * 4);
+        return {
+          ...c,
+          scoreAsNum: randomScore,
+          score: "0",
+          reason: "reason is this",
+        };
+      }
+    );
+  }
+
   const campaignsCsv = Papa.unparse(campaignsWithScore);
 
   const messages: AnyObject[] = [
@@ -103,7 +117,7 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
       model: "gpt-3.5-turbo-0301",
       temperature: 1,
       n: 1,
-      max_tokens: 500,
+      max_tokens: 1000,
       messages: messages,
     }),
   });

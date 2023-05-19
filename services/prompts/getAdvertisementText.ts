@@ -20,6 +20,11 @@ const getAdvertisementText: GetAdvertisementText = async (
   productName,
   productDescription
 ) => {
+
+  if(process.env.NODE_ENV === "development"){
+    return ["Ad Copy 1", "Ad Copy 2", "Ad Copy 3"]
+  }
+
   const messages: AnyObject[] = [
     {
       role: "system",
@@ -30,12 +35,13 @@ randed product placements into blog posts.`,
       role: "user",
       content: `For context here is the blog which you will be working on: ${html} \
 Write a new paragraph which subtly includes the brand, ${productName}. \
+Inside the new paragraph also subtly let the reader know that this paragraph is sponsored content. \
 Here is the brands description: ${productDescription} \\b\` +
 You can use the brands description for inspiration on making the advertisement for the brand. \
 This new advertisement paragraph which you create will be inserted between 2 existing paragraphs of the blog. \
 You must make sure that the new advertisement paragraph you create seamlessly connects to the paragraph before and after it. \
 Here is the paragraph which will come before the advertisement you create: ${beforeText} \
-and here is the paragraph which will come after the advertisement you create: ${afterText} \`,
+and here is the paragraph which will come after the advertisement you create: ${afterText} \
 Remember these important rules: \
 Your new advertisement paragraph must follow the same writing style as the blog post. \
 Your new advertisement paragraph should feel like the author of the blog post wrote it. \
@@ -60,7 +66,7 @@ In your reply, just provide the new paragraph.`,
       model: "gpt-3.5-turbo-0301",
       temperature: 1,
       n: DESIRED_ADVERTISEMENT_COUNT,
-      max_tokens: 500,
+      max_tokens: 1000,
       messages: messages,
     }),
   });
@@ -80,7 +86,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clh9d58tw000498c0vs9ikbxk",
+        id: "clhtwt1ba000l98nfssubespp",
         content: {
           isNot: null,
         },
@@ -95,7 +101,7 @@ if (require.main === module) {
     });
     const campaign = await prisma.campaign.findFirstOrThrow({
       where: {
-        id: "clhp05ky2000298vk3gk4oixh",
+        id: "clhtx8jj2000i98wp09vkdc1i",
       },
     });
     const ans = await getAdvertisementText(

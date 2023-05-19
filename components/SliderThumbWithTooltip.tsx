@@ -10,6 +10,14 @@ import {
 import React from "react";
 import { MdSportsScore } from "react-icons/md";
 
+const scoresLabel: { [key: number] : string } = {
+  0: "no relevance",
+  1: "slightly relevant",
+  2: "relevant",
+  3: "more relevant",
+  4: "extremely relevant",
+};
+
 function SliderThumbWithTooltip({
   value,
   onChangeHandler,
@@ -23,26 +31,26 @@ function SliderThumbWithTooltip({
       id="slider"
       value={value}
       min={0}
-      max={100}
+      max={4}
       colorScheme="blue"
       onChange={onChangeHandler}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
     >
       <SliderMark value={0} mt="2" ml="0" fontSize="sm">
-        0%
+        0
       </SliderMark>
-      <SliderMark value={25} mt="2" ml="-2.5" fontSize="sm">
-        25%
+      <SliderMark value={1} mt="2" ml="-1.5" fontSize="sm">
+        1
       </SliderMark>
-      <SliderMark value={50} mt="2" ml="-2.5" fontSize="sm">
-        50%
+      <SliderMark value={2} mt="2" ml="-1.5" fontSize="sm">
+        2
       </SliderMark>
-      <SliderMark value={75} mt="2" ml="-2.5" fontSize="sm">
-        75%
+      <SliderMark value={3} mt="2" ml="-1.5" fontSize="sm">
+        3
       </SliderMark>
-      <SliderMark value={100} mt="2" ml="-8" fontSize="sm">
-        100%
+      <SliderMark value={4} mt="2" ml="-1.5" fontSize="sm">
+        4
       </SliderMark>
       <SliderTrack>
         <SliderFilledTrack />
@@ -53,7 +61,7 @@ function SliderThumbWithTooltip({
         color="white"
         placement="top"
         isOpen={showTooltip}
-        label={`${value}%`}
+        label={`${scoresLabel[value]}`}
       >
         <SliderThumb w={5} h={5} bg={"gray.100"} />
       </Tooltip>
