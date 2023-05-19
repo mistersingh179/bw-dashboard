@@ -45,7 +45,7 @@ const Settings: FCWithAuth = () => {
       setScoreThreshold(settings.scoreThreshold);
       setStatus(settings.status);
     }
-  }, [settings?.scoreThreshold, settings?.status]);
+  }, [settings, settings?.scoreThreshold, settings?.status]);
 
   const handleStatus = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setStatus(evt.target.checked);
