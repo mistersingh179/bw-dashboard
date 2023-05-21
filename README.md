@@ -85,6 +85,7 @@ drop database bw;
 - database should have urls without a slash in the end
 - investigate statusTrue as middleware
 - add showSponsoredMessage as userSetting
+- order ads by most paying
 
 ## Pending – Next Up
 - build backend for front-end script to use

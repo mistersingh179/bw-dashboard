@@ -7,6 +7,7 @@ import requestIp from "request-ip";
 import { Category, Webpage } from ".prisma/client";
 import { Setting } from "@prisma/client";
 import Cors from "cors";
+import getCampaignsWhoHaveNotMetImpCap from "@/services/queries/getCamapignsWhoHaveNotMetImpCap";
 
 export const cors = Cors();
 
@@ -25,26 +26,6 @@ export const getUrlProperties = (url: string): UrlProperties => {
   return { origin, originWithPathName };
 };
 
-const getAlreadyDeliveredImpressionCount = async (
-  userId: string
-): Promise<number> => {
-  const count = await prisma.impression.count({
-    where: {
-      advertisement: {
-        advertisementSpot: {
-          webpage: {
-            website: {
-              userId: userId,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  return count;
-};
-
 export const getSettings = async (userId: string): Promise<Setting> => {
   const settings = await prisma.setting.findFirstOrThrow({
     where: {
@@ -57,18 +38,17 @@ export const getSettings = async (userId: string): Promise<Setting> => {
 type WebpageWithCategories = Webpage & { categories: Category[] };
 
 const getWebpageWithCategories = async (userId: string, url: string) => {
-  const webpage: WebpageWithCategories | null =
-    await prisma.webpage.findFirst({
-      where: {
-        url: url,
-        website: {
-          userId: userId,
-        },
+  const webpage: WebpageWithCategories | null = await prisma.webpage.findFirst({
+    where: {
+      url: url,
+      website: {
+        userId: userId,
       },
-      include: {
-        categories: true,
-      },
-    });
+    },
+    include: {
+      categories: true,
+    },
+  });
   return webpage;
 };
 
@@ -96,10 +76,9 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
   });
 
   const webpageCategoryNames = webpage?.categories.map((c) => c.name) ?? [];
-  console.log("webpageCategoryNames: ", webpageCategoryNames);
 
-  const alreadyDeliveredImpressionCount =
-    await getAlreadyDeliveredImpressionCount(userId);
+  const campaignsWhoHaveNotMetImpCap = await getCampaignsWhoHaveNotMetImpCap(userId);
+  const campIdsWhoHaveNotMetImpCap = campaignsWhoHaveNotMetImpCap.map(c => c.id);
 
   const adsWithSpots = await getAdvertisementsForUrl({
     userId: userId,
@@ -107,7 +86,7 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
     categoriesOfWebpage: webpageCategoryNames,
     originWithPathName: originWithPathName,
     origin: origin,
-    alreadyDeliveredImpressionsCount: alreadyDeliveredImpressionCount,
+    campIdsWhoHaveNotMetImpCap: campIdsWhoHaveNotMetImpCap,
   });
 
   res

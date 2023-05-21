@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { Advertisement, AdvertisementSpot, Setting } from "@prisma/client";
+import { Advertisement, AdvertisementSpot, Prisma, Setting } from "@prisma/client";
 import { Category, User } from ".prisma/client";
 
 type AdWithAdSpot = Advertisement & { advertisementSpot: AdvertisementSpot };
@@ -8,8 +8,8 @@ type AdLookupParamsForUrl = {
   originWithPathName: string;
   userId: string;
   userScoreThreshold: number;
-  alreadyDeliveredImpressionsCount: number;
   categoriesOfWebpage: string[];
+  campIdsWhoHaveNotMetImpCap: string[];
 };
 type GetAdvertisementsForUrl = (
   lookupParams: AdLookupParamsForUrl
@@ -25,8 +25,8 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
     originWithPathName,
     userId,
     userScoreThreshold,
-    alreadyDeliveredImpressionsCount,
     categoriesOfWebpage,
+    campIdsWhoHaveNotMetImpCap
   } = lookupParams;
 
   console.dir({ ...lookupParams, now });
@@ -62,8 +62,8 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
           end: {
             gt: now,
           },
-          impressionCap: {
-            gt: alreadyDeliveredImpressionsCount,
+          id: {
+            in: campIdsWhoHaveNotMetImpCap
           },
           categories: {
             some: {
@@ -89,12 +89,12 @@ if (require.main === module) {
   (async () => {
     const ans = await getAdvertisementsForUrl({
       origin: "https://www.simplyrecipes.com",
-      originWithPathName: "https://www.simplyrecipes.com/recipes/peppermint_meringue_cookies/",
-      alreadyDeliveredImpressionsCount: 5,
+      originWithPathName: "https://www.simplyrecipes.com/recipes/peppermint_meringue_cookies",
       categoriesOfWebpage: ["sr_dessert-recipes"],
       userScoreThreshold: 0,
-      userId: "clhtwckif000098wp207rs2fg"
+      userId: "clhtwckif000098wp207rs2fg",
+      campIdsWhoHaveNotMetImpCap: ["clhtx8jj2000i98wp09vkdc1i"]
     });
-    console.log("ans: ", ans);
+    console.log("ans: ", ans, ans.length);
   })();
 }
