@@ -1,8 +1,9 @@
 import prisma from "@/lib/prisma";
-import { Advertisement, AdvertisementSpot, Prisma, Setting } from "@prisma/client";
+import {Advertisement, AdvertisementSpot, Campaign, Prisma, ScoredCampaign, Setting} from "@prisma/client";
 import { Category, User } from ".prisma/client";
 
-type AdWithAdSpot = Advertisement & { advertisementSpot: AdvertisementSpot };
+type AdWithAdSpot = Advertisement & { advertisementSpot: AdvertisementSpot,  };
+// type AdWithAdSpot =  Advertisement & {advertisementSpot: AdvertisementSpot, scoredCampaign: ScoredCampaign & {campaign: Campaign}};
 type AdLookupParamsForUrl = {
   origin: string;
   originWithPathName: string;
@@ -77,7 +78,19 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
     },
     include: {
       advertisementSpot: true,
+      // scoredCampaign: {
+      //   include: {
+      //     campaign: true
+      //   }
+      // }
     },
+    orderBy: {
+      scoredCampaign: {
+        campaign: {
+          fixedCpm: "desc"
+        }
+      }
+    }
   });
 
   return advertisements;
@@ -93,8 +106,8 @@ if (require.main === module) {
       categoriesOfWebpage: ["sr_dessert-recipes"],
       userScoreThreshold: 0,
       userId: "clhtwckif000098wp207rs2fg",
-      campIdsWhoHaveNotMetImpCap: ["clhtx8jj2000i98wp09vkdc1i"]
+      campIdsWhoHaveNotMetImpCap: ["clhtx8jj2000i98wp09vkdc1i", "clhxf3s28000098s7816uadue"]
     });
-    console.log("ans: ", ans, ans.length);
+    console.log("ans: ", ans.length);
   })();
 }
