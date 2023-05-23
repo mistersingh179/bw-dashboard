@@ -21,8 +21,6 @@ export type SitemapIndexSitemap = {
   [key: string]: any;
 };
 
-type CreateWebpages = (website: string, sitemapUrl?: string) => Promise<void>;
-
 const lookBackDate = subDays(new Date(), WEBPAGE_LOOK_BACK_DAYS);
 
 const getCleanUrl = (url: string): string => {
@@ -34,6 +32,8 @@ const getCleanUrl = (url: string): string => {
   }
   return "";
 };
+
+type CreateWebpages = (website: string, sitemapUrl?: string) => Promise<void>;
 
 const createWebpages: CreateWebpages = async (
   websiteId: string,

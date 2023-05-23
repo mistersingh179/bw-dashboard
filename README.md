@@ -79,8 +79,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
-- add showSponsoredMessage as user
-- redo order in process user so we dont have to fetch top level items like user settings again.
 
 ## Pending – Next Up
 - build backend for front-end script to use
@@ -135,6 +133,7 @@ drop database bw;
 - mark pages for whom we can't get spots, and now they sit to be processed again when we run and most likely we won't get spots again unless either our logic changes or their content changes
 - think on how to prevent processing a website, because it fetches its sitemap which is slow and we don't want to fetch it repeatedly. our db is protected as it will just conflict and not insert.
 - put redis cache in front of repeated static repeated queries in advertisement lookup api
+- only send webpages to createAdvertisement service, which don't have enough advertisements
 
 ## Pending - Reduce scored campaigns
 - user has categories

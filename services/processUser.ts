@@ -12,6 +12,15 @@ type ProcessUser = (user: User) => Promise<void>;
 
 const processUser: ProcessUser = async (user) => {
   console.log("inside service processUser with: ", user.id, user.email);
+  const settings = await prisma.setting.findFirstOrThrow({
+    where: {
+      userId: user.id,
+    },
+  });
+  if (settings.status === false) {
+    console.log("aborting as users is off");
+    return;
+  }
 
   const websitesWhichNeedProcessing = await prisma.website.findMany({
     where: {
@@ -93,7 +102,8 @@ const processUser: ProcessUser = async (user) => {
     await createCategories(webpage);
   }
 
-  const webpages = await prisma.webpage.findMany({
+  // todo - extract only those webpages which dont have have enough advertisements for each spot & campaign combination
+  const webpagesWithAdSpotsAndScoredCamps = await prisma.webpage.findMany({
     where: {
       website: {
         userId: user.id,
@@ -109,26 +119,13 @@ const processUser: ProcessUser = async (user) => {
     include: {
       advertisementSpots: true,
       scoredCampaigns: true,
-      website: {
-        include: {
-          user: {
-            include: {
-              setting: true,
-            },
-          },
-        },
-      },
     },
   });
 
-  for (const wp of webpages) {
+  for (const wp of webpagesWithAdSpotsAndScoredCamps) {
     for (const advertisementSpot of wp.advertisementSpots) {
       for (const scoredCampaign of wp.scoredCampaigns) {
-        await createAdvertisement(
-          advertisementSpot,
-          scoredCampaign,
-          wp.website.user.setting!
-        );
+        await createAdvertisement(advertisementSpot, scoredCampaign, settings);
       }
     }
   }
