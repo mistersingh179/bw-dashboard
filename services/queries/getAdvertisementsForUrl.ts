@@ -1,8 +1,7 @@
 import prisma from "@/lib/prisma";
-import {Advertisement, AdvertisementSpot, Campaign, Prisma, ScoredCampaign, Setting} from "@prisma/client";
-import { Category, User } from ".prisma/client";
+import { Advertisement, AdvertisementSpot } from "@prisma/client";
 
-type AdWithAdSpot = Advertisement & { advertisementSpot: AdvertisementSpot,  };
+type AdWithAdSpot = Advertisement & { advertisementSpot: AdvertisementSpot };
 // type AdWithAdSpot =  Advertisement & {advertisementSpot: AdvertisementSpot, scoredCampaign: ScoredCampaign & {campaign: Campaign}};
 type AdLookupParamsForUrl = {
   origin: string;
@@ -19,7 +18,6 @@ type GetAdvertisementsForUrl = (
 const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
   lookupParams
 ) => {
-
   const now = new Date();
   const {
     origin,
@@ -27,7 +25,7 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
     userId,
     userScoreThreshold,
     categoriesOfWebpage,
-    campIdsWhoHaveNotMetImpCap
+    campIdsWhoHaveNotMetImpCap,
   } = lookupParams;
 
   console.dir({ ...lookupParams, now });
@@ -64,7 +62,7 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
             gt: now,
           },
           id: {
-            in: campIdsWhoHaveNotMetImpCap
+            in: campIdsWhoHaveNotMetImpCap,
           },
           categories: {
             some: {
@@ -87,10 +85,11 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
     orderBy: {
       scoredCampaign: {
         campaign: {
-          fixedCpm: "desc"
-        }
-      }
-    }
+          fixedCpm: "desc",
+        },
+      },
+    },
+    distinct: ["advertisementSpotId"],
   });
 
   return advertisements;
@@ -102,11 +101,15 @@ if (require.main === module) {
   (async () => {
     const ans = await getAdvertisementsForUrl({
       origin: "https://www.simplyrecipes.com",
-      originWithPathName: "https://www.simplyrecipes.com/recipes/peppermint_meringue_cookies",
+      originWithPathName:
+        "https://www.simplyrecipes.com/recipes/peppermint_meringue_cookies",
       categoriesOfWebpage: ["sr_dessert-recipes"],
       userScoreThreshold: 0,
       userId: "clhtwckif000098wp207rs2fg",
-      campIdsWhoHaveNotMetImpCap: ["clhtx8jj2000i98wp09vkdc1i", "clhxf3s28000098s7816uadue"]
+      campIdsWhoHaveNotMetImpCap: [
+        "clhtx8jj2000i98wp09vkdc1i",
+        "clhxf3s28000098s7816uadue",
+      ],
     });
     console.log("ans: ", ans.length);
   })();

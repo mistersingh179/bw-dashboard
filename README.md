@@ -79,8 +79,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
-- put redis cache in front of repeated static repeated queries in advertisement lookup api
-- we don't want 2 ads for the same ad spot returned
 - we want randomized 2 ads
 - database should have urls without a slash in the end
 - investigate statusTrue as middleware
@@ -138,6 +136,7 @@ drop database bw;
 - going through all webpages without html is slow. need an index here. but adding just an index doesn't work as index is too large
 - mark pages for whom we can't get spots, and now they sit to be processed again when we run and most likely we won't get spots again unless either our logic changes or their content changes
 - think on how to prevent processing a website, because it fetches its sitemap which is slow and we don't want to fetch it repeatedly. our db is protected as it will just conflict and not insert.
+- put redis cache in front of repeated static repeated queries in advertisement lookup api
 
 ## Pending - Reduce scored campaigns
 - user has categories
