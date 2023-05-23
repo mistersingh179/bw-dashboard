@@ -79,7 +79,8 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
-- add showSponsoredMessage as userSetting
+- add showSponsoredMessage as user
+- redo order in process user so we dont have to fetch top level items like user settings again.
 
 ## Pending – Next Up
 - build backend for front-end script to use

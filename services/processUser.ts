@@ -59,7 +59,7 @@ const processUser: ProcessUser = async (user) => {
           status: true,
         },
         content: {
-          isNot: null
+          isNot: null,
         },
         status: true,
         advertisementSpots: {
@@ -84,8 +84,8 @@ const processUser: ProcessUser = async (user) => {
       },
     },
     include: {
-      content: true
-    }
+      content: true,
+    },
   });
 
   for (const webpage of webpagesWithContent) {
@@ -100,29 +100,35 @@ const processUser: ProcessUser = async (user) => {
         status: true,
       },
       advertisementSpots: {
-        some: {}
+        some: {},
       },
       scoredCampaigns: {
-        some: {}
-      }
+        some: {},
+      },
     },
     include: {
       advertisementSpots: true,
       scoredCampaigns: true,
+      website: {
+        include: {
+          user: {
+            include: {
+              setting: true,
+            },
+          },
+        },
+      },
     },
   });
 
   for (const wp of webpages) {
-    console.log(
-      "processing webpage: ",
-      wp.id,
-      "which has: ",
-      wp.advertisementSpots.length,
-      wp.scoredCampaigns.length
-    );
     for (const advertisementSpot of wp.advertisementSpots) {
       for (const scoredCampaign of wp.scoredCampaigns) {
-        await createAdvertisement(advertisementSpot, scoredCampaign);
+        await createAdvertisement(
+          advertisementSpot,
+          scoredCampaign,
+          wp.website.user.setting!
+        );
       }
     }
   }

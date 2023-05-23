@@ -10,7 +10,8 @@ type GetAdvertisementText = (
   beforeText: string,
   afterText: string,
   productName: string,
-  productDescription: string
+  productDescription: string,
+  addSponsoredWording: boolean
 ) => Promise<string[]>;
 
 const getAdvertisementText: GetAdvertisementText = async (
@@ -18,25 +19,30 @@ const getAdvertisementText: GetAdvertisementText = async (
   beforeText,
   afterText,
   productName,
-  productDescription
+  productDescription,
+  addSponsoredWording
 ) => {
 
   if(process.env.NODE_ENV === "development"){
     return ["Ad Copy 1", "Ad Copy 2", "Ad Copy 3"]
   }
 
+  const sponsoredWordingInstruction: string = addSponsoredWording
+    ? "Inside the new paragraph also subtly let the reader know that this paragraph is sponsored content. "
+    : "";
+
   const messages: AnyObject[] = [
     {
       role: "system",
       content: `You are a blog's advertisement editor whose job is to naturally include \
-randed product placements into blog posts.`,
+branded product placements into blog posts.`,
     },
     {
       role: "user",
-      content: `For context here is the blog which you will be working on: ${html} \
+      content: `For context here is the blog which you will be working on: ${html} \n\n\
 Write a new paragraph which subtly includes the brand, ${productName}. \
-Inside the new paragraph also subtly let the reader know that this paragraph is sponsored content. \
-Here is the brands description: ${productDescription} \\b\` +
+${sponsoredWordingInstruction} \
+Here is the brands description: ${productDescription} \
 You can use the brands description for inspiration on making the advertisement for the brand. \
 This new advertisement paragraph which you create will be inserted between 2 existing paragraphs of the blog. \
 You must make sure that the new advertisement paragraph you create seamlessly connects to the paragraph before and after it. \
@@ -73,9 +79,7 @@ In your reply, just provide the new paragraph.`,
   let data = (await response.json()) as CreateChatCompletionResponse;
   console.log("api returned: ");
   console.dir(data, { depth: null, colors: true });
-  const output = data.choices.map(
-    (c) => c.message?.content || ""
-  );
+  const output = data.choices.map((c) => c.message?.content || "");
   console.log("output is: ", output);
   return output;
 };
@@ -86,7 +90,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clhtwt1ba000l98nfssubespp",
+        id: "clhuouuc4000798p2c5fr1xbt",
         content: {
           isNot: null,
         },
@@ -109,7 +113,8 @@ if (require.main === module) {
       webpage.advertisementSpots[0].beforeText,
       webpage.advertisementSpots[0].afterText,
       campaign.productName,
-      campaign.productDescription
+      campaign.productDescription,
+      false
     );
     console.log("ans: ", ans);
   })();

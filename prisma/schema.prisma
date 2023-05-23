@@ -72,13 +72,14 @@ model User {
 }
 
 model Setting {
-  id             String   @id @default(cuid())
-  userId         String   @unique
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  scoreThreshold Int
-  status         Boolean
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  scoreThreshold      Int
+  status              Boolean
+  addSponsoredWording Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 }
 
 model Auction {

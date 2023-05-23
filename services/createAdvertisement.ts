@@ -1,5 +1,10 @@
 import { DESIRED_ADVERTISEMENT_COUNT } from "@/constants";
-import { AdvertisementSpot, Prisma, ScoredCampaign } from "@prisma/client";
+import {
+  AdvertisementSpot,
+  Prisma,
+  ScoredCampaign,
+  Setting,
+} from "@prisma/client";
 import prisma from "@/lib/prisma";
 import AdvertisementCreateManyAdvertisementSpotInput = Prisma.AdvertisementCreateManyAdvertisementSpotInput;
 import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageText";
@@ -25,12 +30,14 @@ const enoughActiveAdsExist = async (
 
 type CreateAdvertisement = (
   advertisementSpot: AdvertisementSpot,
-  scoredCampaign: ScoredCampaign
+  scoredCampaign: ScoredCampaign,
+  settings: Setting
 ) => Promise<void>;
 
 const createAdvertisement: CreateAdvertisement = async (
   advertisementSpot,
-  scoredCampaign
+  scoredCampaign,
+  settings
 ) => {
   console.log(
     "will create advertisement(s) for spot ",
@@ -73,20 +80,22 @@ const createAdvertisement: CreateAdvertisement = async (
 
   const { productName, productDescription } = campaign;
 
+  const { addSponsoredWording } = settings;
+
   let adTextCopies: string[] = [];
-  try{
+  try {
     adTextCopies = await getAdvertisementText(
       webpageText,
       beforeText,
       afterText,
       productName,
-      productDescription
+      productDescription,
+      addSponsoredWording,
     );
-  }catch(err){
+  } catch (err) {
     console.log("aborting as unable to get advertisement text: ", err);
     return;
   }
-
 
   const advertisementInputArr: AdvertisementCreateManyAdvertisementSpotInput[] =
     adTextCopies.map((adTextCopy) => ({
@@ -118,6 +127,15 @@ if (require.main === module) {
       include: {
         advertisementSpots: true,
         scoredCampaigns: true,
+        website: {
+          include: {
+            user: {
+              include: {
+                setting: true,
+              },
+            },
+          },
+        },
       },
     });
     console.log(
@@ -128,7 +146,7 @@ if (require.main === module) {
     );
     for (const as of webpage.advertisementSpots) {
       for (const sc of webpage.scoredCampaigns) {
-        await createAdvertisement(as, sc);
+        await createAdvertisement(as, sc, webpage.website.user.setting!);
       }
     }
   })();

@@ -25,16 +25,26 @@ import { ErrorAlert, ErrorRow, NoDataRow } from "@/components/genericMessages";
 
 const Settings: FCWithAuth = () => {
   const { settings, error, isLoading, onSave } = useSettings();
-  console.log("settings: ", settings);
+  console.log("*** settings: ", settings);
 
   const [scoreThreshold, setScoreThreshold] = useState(
     settings?.scoreThreshold ?? 0
   );
   const [status, setStatus] = useState(settings?.status ?? false);
+  const [addSponsoredWording, setAddSponsoredWording] = useState(
+    settings?.addSponsoredWording ?? false
+  );
 
   useEffect(() => {
-    console.log("status: ", status, "scoreThreshold: ", scoreThreshold);
-  }, [status, scoreThreshold]);
+    console.log(
+      "status: ",
+      status,
+      "scoreThreshold: ",
+      scoreThreshold,
+      " addSponsoredWording: ",
+      addSponsoredWording
+    );
+  }, [status, scoreThreshold, addSponsoredWording]);
 
   useEffect(() => {
     if (
@@ -44,11 +54,23 @@ const Settings: FCWithAuth = () => {
     ) {
       setScoreThreshold(settings.scoreThreshold);
       setStatus(settings.status);
+      setAddSponsoredWording(settings.addSponsoredWording);
     }
-  }, [settings, settings?.scoreThreshold, settings?.status]);
+  }, [
+    settings,
+    settings?.scoreThreshold,
+    settings?.status,
+    settings?.addSponsoredWording,
+  ]);
 
   const handleStatus = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setStatus(evt.target.checked);
+  };
+
+  const handleAddSponsoredWording = (
+    evt: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setAddSponsoredWording(evt.target.checked);
   };
 
   return (
@@ -103,9 +125,43 @@ const Settings: FCWithAuth = () => {
               <FormHelperText></FormHelperText>
             </FormControl>
             <FormControl>
+              <HStack>
+                <FormLabel mb={0}>Add Sponsored Wording</FormLabel>
+                <Switch
+                  isChecked={addSponsoredWording}
+                  onChange={handleAddSponsoredWording}
+                />
+              </HStack>
+              <FormHelperText my={7} lineHeight={1.5}>
+                <Text>
+                  Instructions: Toggle this switch to enable sponsored content
+                  notifications.
+                </Text>
+                <Text my={1}>
+                  When the toggle is ON: Generated advertisements will include
+                  wording indicating that they are sponsored.
+                </Text>
+                <Text my={1}>
+                  When the toggle is OFF (default): Generated advertisements
+                  will not have any additional wording to indicate whether they
+                  are sponsored or not.
+                </Text>
+                <Text my={1}>
+                  Note: The sponsored content toggle provides transparency and
+                  helps readers distinguish between regular and sponsored
+                  messages.
+                </Text>
+              </FormHelperText>
+              <FormHelperText></FormHelperText>
+            </FormControl>
+            <FormControl>
               <Button
                 colorScheme="blue"
-                onClick={onSave.bind(this, { scoreThreshold, status })}
+                onClick={onSave.bind(this, {
+                  scoreThreshold,
+                  status,
+                  addSponsoredWording,
+                })}
               >
                 Save
               </Button>
