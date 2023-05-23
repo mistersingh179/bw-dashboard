@@ -82,13 +82,20 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
       //   }
       // }
     },
-    orderBy: {
-      scoredCampaign: {
-        campaign: {
-          fixedCpm: "desc",
+    orderBy: [
+      {
+        scoredCampaign: {
+          campaign: {
+            fixedCpm: "desc",
+          },
         },
       },
-    },
+      {
+        scoredCampaign: {
+          score: "desc",
+        },
+      }
+    ],
     distinct: ["advertisementSpotId"],
   });
 

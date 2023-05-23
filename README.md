@@ -79,9 +79,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
-- we want randomized 2 ads
-- database should have urls without a slash in the end
-- investigate statusTrue as middleware
 - add showSponsoredMessage as userSetting
 
 ## Pending – Next Up

@@ -26,15 +26,6 @@ export const getUrlProperties = (url: string): UrlProperties => {
   return { origin, originWithPathName };
 };
 
-export const getSettings = async (userId: string): Promise<Setting> => {
-  const settings = await prisma.setting.findFirstOrThrow({
-    where: {
-      userId: userId,
-    },
-  });
-  return settings;
-};
-
 type WebpageWithCategories = Webpage & { categories: Category[] };
 
 const getWebpageWithCategories = async (userId: string, url: string) => {
@@ -54,13 +45,7 @@ const getWebpageWithCategories = async (userId: string, url: string) => {
 
 const generate = async (req: NextApiRequest, res: NextApiResponse) => {
   const { userId, url } = req.body;
-
-  const settings = await getSettings(userId);
-  if (settings.status === false) {
-    console.log("Aborting as user setting status is off.");
-    res.status(204).end();
-    return;
-  }
+  const settings = req.settings!;
 
   const { origin, originWithPathName } = getUrlProperties(url);
   const webpage = await getWebpageWithCategories(userId, originWithPathName);
@@ -77,8 +62,12 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const webpageCategoryNames = webpage?.categories.map((c) => c.name) ?? [];
 
-  const campaignsWhoHaveNotMetImpCap = await getCampaignsWhoHaveNotMetImpCap(userId);
-  const campIdsWhoHaveNotMetImpCap = campaignsWhoHaveNotMetImpCap.map(c => c.id);
+  const campaignsWhoHaveNotMetImpCap = await getCampaignsWhoHaveNotMetImpCap(
+    userId
+  );
+  const campIdsWhoHaveNotMetImpCap = campaignsWhoHaveNotMetImpCap.map(
+    (c) => c.id
+  );
 
   const adsWithSpots = await getAdvertisementsForUrl({
     userId: userId,
@@ -95,5 +84,10 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
     .send(superjson.stringify({ auction, adsWithSpots }));
 };
 
-// @ts-ignore
-export default withMiddleware(cors, "postOnly", "rejectBots")(generate);
+export default withMiddleware(
+  // @ts-ignore
+  cors,
+  "postOnly",
+  "rejectBots",
+  "statusOn"
+)(generate);
