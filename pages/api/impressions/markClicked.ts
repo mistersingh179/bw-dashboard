@@ -26,4 +26,4 @@ const markClicked: NextApiHandler = async (req, res) => {
 };
 
 // @ts-ignore
-export default withMiddleware(cors, "postOnly", "rejectBots")(markClicked);
+export default withMiddleware(cors, "postOnly", "rejectBots", "statusOn")(markClicked);

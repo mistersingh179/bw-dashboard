@@ -81,7 +81,6 @@ drop database bw;
 ## Pending backlog
 
 ## Pending – Next Up
-- build backend for front-end script to use
 - build front-end script
 
 ## Pending Tasks
