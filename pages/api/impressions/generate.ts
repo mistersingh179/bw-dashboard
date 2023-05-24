@@ -14,8 +14,6 @@ const generate: NextApiHandler = async (req, res) => {
     data: {
       advertisementId: advertisementId,
       auctionId: auctionId,
-      userAgent: req.headers["user-agent"] ?? "",
-      ip: requestIp.getClientIp(req) ?? "0.0.0.0",
       clicked: false,
     },
   });

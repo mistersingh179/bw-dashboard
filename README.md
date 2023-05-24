@@ -81,10 +81,9 @@ drop database bw;
 ## Pending backlog
 
 ## Pending – Next Up
+- revisit indexes after doing front end auction/impresssion creation/insertion
 - build backend for front-end script to use
 - build front-end script
-- add middleware to rate limit by ip, fp, cookie etc.
-- revisit indexes after doing front end auction/impresssion creation/insertion
 
 ## Pending Tasks
 - build dashboard api & pages

@@ -8,6 +8,8 @@ import { Category, Webpage } from ".prisma/client";
 import { Setting } from "@prisma/client";
 import Cors from "cors";
 import getCampaignsWhoHaveNotMetImpCap from "@/services/queries/getCamapignsWhoHaveNotMetImpCap";
+import cookie from "cookie";
+import { createId } from "@paralleldrive/cuid2";
 
 export const cors = Cors();
 
@@ -43,8 +45,20 @@ const getWebpageWithCategories = async (userId: string, url: string) => {
   return webpage;
 };
 
+export const END_USER_COOKIE_NAME: string = "bw-endUserCuid";
+
+const getEndUserCuid = (req: NextApiRequest): string | null => {
+  if (req.cookies[END_USER_COOKIE_NAME]) {
+    console.log("got cookies: ", req.cookies[END_USER_COOKIE_NAME]);
+    return req.cookies[END_USER_COOKIE_NAME];
+  }else{
+    return null;
+  }
+}
+
 const generate = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { userId, url } = req.body;
+
+  const { userId, url, fp } = req.body;
   const settings = req.settings!;
 
   const { origin, originWithPathName } = getUrlProperties(url);
@@ -54,6 +68,8 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
     data: {
       userId: userId,
       url: originWithPathName,
+      endUserCuid: getEndUserCuid(req) ?? createId(),
+      endUserFp: fp,
       userAgent: req.headers["user-agent"],
       ip: requestIp.getClientIp(req) ?? "0.0.0.0",
       webpageId: webpage?.id,
@@ -77,6 +93,18 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
     origin: origin,
     campIdsWhoHaveNotMetImpCap: campIdsWhoHaveNotMetImpCap,
   });
+
+  const cookieHeaderString = cookie.serialize(
+    END_USER_COOKIE_NAME,
+    auction.endUserCuid,
+    {
+      httpOnly: process.env.NODE_ENV === "development" ? false : true,
+      maxAge: 2147483647,
+      path: "/",
+      secure: process.env.NODE_ENV === "development" ? false : true,
+    }
+  );
+  res.setHeader("Set-Cookie", cookieHeaderString);
 
   res
     .setHeader("Content-Type", "application/json")

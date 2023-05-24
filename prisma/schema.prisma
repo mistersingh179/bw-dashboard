@@ -92,6 +92,8 @@ model Auction {
   url         String?
   userAgent   String       @default("")
   ip          String       @default("0.0.0.0") @db.Inet
+  endUserCuid String       @default("")
+  endUserFp   String       @default("")
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
@@ -244,10 +246,8 @@ model Impression {
   id              String        @id @default(cuid())
   advertisementId String
   advertisement   Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  auctionId       String?
-  auction         Auction?      @relation(fields: [auctionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userAgent       String
-  ip              String        @db.Inet
+  auctionId       String
+  auction         Auction       @relation(fields: [auctionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   clicked         Boolean
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
