@@ -68,7 +68,7 @@ const TopNav: React.FC = () => {
             </Link>
             <Link
               href={"/categories/list"}
-              fontWeight={currentRoute === "/settings" ? "bold" : "normal"}
+              fontWeight={currentRoute === "/categories/list" ? "bold" : "normal"}
             >
               Categories
             </Link>

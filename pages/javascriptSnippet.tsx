@@ -56,7 +56,7 @@ const JavascriptSnippet: FCWithAuth = () => {
         </Text>
         <MyCode> {scriptTag(userId)} </MyCode>
         <Heading size={"md"}>
-         How to restrict BrandWeaver code from running on your website?
+          How to restrict BrandWeaver code from running on your website?
         </Heading>
         <Box>
           <Text mb={5}>
@@ -75,15 +75,8 @@ const JavascriptSnippet: FCWithAuth = () => {
               abort itself.
             </ListItem>
             <ListItem>
-              Provide a list of &quot;allowed&quot; urls. When brandweaver
-              script loads it will check if the URL it is loaded on is in the
-              allowed list. If not found, it will abort itself.
-            </ListItem>
-            <ListItem>
-              In your campaign provide a css selector. If this css selector is
-              not found on the page, then that campaign will not run. Note: This
-              limits only the campaign from running and not the entire
-              BrandWeaver product.
+              Turn the status off for the urls on which you
+              don&apos;t want brandweaver to run.
             </ListItem>
           </OrderedList>
         </Box>

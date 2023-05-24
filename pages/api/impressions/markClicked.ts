@@ -5,7 +5,12 @@ import requestIp from "request-ip";
 import superjson from "superjson";
 import Cors from "cors";
 
-const cors = Cors();
+const cors = Cors({
+  credentials: true,
+  origin: (requestOrigin, callback) => {
+    callback(null, requestOrigin);
+  }
+});
 
 const markClicked: NextApiHandler = async (req, res) => {
   const { impressionId } = req.body;

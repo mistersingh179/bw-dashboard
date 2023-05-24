@@ -161,12 +161,13 @@ drop database bw;
 
 ## Notes on how we handle requests from the script
 - Script 1st makes POST call to generate an auction
-- it gives us userId & and url
+- it gives us userId, url, fp & cuid cookie
 - we save the auction & return back auction id
 - we also attempt to find advertisements which can be shown & return potential ads back
+- we also set cuid cookie
 - Now Script attempts to display those advertisements
 - Script makes 2nd call POST for each impression to record that impression
-- it gives us userId, auctionId? & advertisementId
+- it gives us userId, auctionId & advertisementId
 - we save impression & return back id
 - Script makes 3rd call POST for each click on that impression
 - it gives us just impressionId

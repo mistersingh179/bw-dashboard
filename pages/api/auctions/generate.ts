@@ -11,7 +11,12 @@ import getCampaignsWhoHaveNotMetImpCap from "@/services/queries/getCamapignsWhoH
 import cookie from "cookie";
 import { createId } from "@paralleldrive/cuid2";
 
-export const cors = Cors();
+const cors = Cors({
+  credentials: true,
+  origin: (requestOrigin, callback) => {
+    callback(null, requestOrigin);
+  }
+});
 
 type UrlProperties = {
   origin: string;
@@ -99,10 +104,12 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
     END_USER_COOKIE_NAME,
     auction.endUserCuid,
     {
-      httpOnly: process.env.NODE_ENV === "development" ? false : true,
+      httpOnly: true,
       maxAge: 2147483647,
       path: "/",
-      secure: process.env.NODE_ENV === "development" ? false : true,
+      // secure: process.env.NODE_ENV === "development" ? false : true,
+      sameSite: "none",
+      secure: true
     }
   );
   res.setHeader("Set-Cookie", cookieHeaderString);

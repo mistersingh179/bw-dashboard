@@ -4,7 +4,12 @@ import prisma from "@/lib/prisma";
 import superjson from "superjson";
 import Cors from "cors";
 
-const cors = Cors();
+const cors = Cors({
+  credentials: true,
+  origin: (requestOrigin, callback) => {
+    callback(null, requestOrigin);
+  }
+});
 
 const generate: NextApiHandler = async (req, res) => {
   const { auctionId, advertisementId } = req.body;
