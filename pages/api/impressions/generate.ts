@@ -1,7 +1,6 @@
 import { NextApiHandler } from "next";
 import withMiddleware from "@/middlewares/withMiddleware";
 import prisma from "@/lib/prisma";
-import requestIp from "request-ip";
 import superjson from "superjson";
 import Cors from "cors";
 

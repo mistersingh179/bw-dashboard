@@ -33,10 +33,11 @@ type WebpageWithCategories = Webpage & { categories: Category[] };
 const getWebpageWithCategories = async (userId: string, url: string) => {
   const webpage: WebpageWithCategories | null = await prisma.webpage.findFirst({
     where: {
-      url: url,
       website: {
         userId: userId,
       },
+      url: url,
+      status: true
     },
     include: {
       categories: true,

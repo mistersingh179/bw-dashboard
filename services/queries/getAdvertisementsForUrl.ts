@@ -32,38 +32,34 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
 
   const advertisements = await prisma.advertisement.findMany({
     where: {
-      status: true,
       advertisementSpot: {
         webpage: {
-          status: true,
-          url: originWithPathName,
           website: {
-            status: true,
-            topLevelDomainUrl: origin,
             user: {
               id: userId,
               setting: {
                 status: true,
               },
             },
+            topLevelDomainUrl: origin,
+            status: true,
           },
+          url: originWithPathName,
+          status: true,
         },
       },
       scoredCampaign: {
-        score: {
-          gt: userScoreThreshold,
-        },
         campaign: {
-          status: true,
+          id: {
+            in: campIdsWhoHaveNotMetImpCap,
+          },
           start: {
             lte: now,
           },
           end: {
             gt: now,
           },
-          id: {
-            in: campIdsWhoHaveNotMetImpCap,
-          },
+          status: true,
           categories: {
             some: {
               name: {
@@ -72,7 +68,11 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
             },
           },
         },
+        score: {
+          gt: userScoreThreshold,
+        },
       },
+      status: true,
     },
     include: {
       advertisementSpot: true,

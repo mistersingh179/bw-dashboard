@@ -80,6 +80,8 @@ model Setting {
   addSponsoredWording Boolean  @default(false)
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+
+  @@index([userId, status])
 }
 
 model Auction {
@@ -151,6 +153,8 @@ model Content {
   tabletHtml  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([webpageId])
 }
 
 model Category {
@@ -195,8 +199,8 @@ model ScoredCampaign {
 
   @@unique([webpageId, campaignId])
   @@index([webpageId, score])
-  @@index([campaignId])
-  @@index([score])
+  @@index([campaignId, score])
+  @@index([score(sort: Desc)])
 }
 
 model Advertisement {
@@ -212,7 +216,7 @@ model Advertisement {
   updatedAt           DateTime          @updatedAt
 
   @@index([scoredCampaignId])
-  @@index([scoredCampaignId, status])
+  @@index([advertisementSpotId, scoredCampaignId, status])
   @@index([advertisementSpotId])
 }
 
@@ -239,7 +243,7 @@ model Campaign {
   @@unique([userId, name])
   @@index([createdAt(sort: Asc)])
   @@index([userId])
-  @@index([userId, status, start, end, impressionCap, fixedCpm(sort: Desc)])
+  @@index([id, start, end, status, fixedCpm(sort: Desc)])
 }
 
 model Impression {

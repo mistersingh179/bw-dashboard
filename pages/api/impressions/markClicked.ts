@@ -1,6 +1,5 @@
 import { NextApiHandler } from "next";
 import withMiddleware from "@/middlewares/withMiddleware";
-import { getSettings } from "@/pages/api/auctions/generate";
 import prisma from "@/lib/prisma";
 import requestIp from "request-ip";
 import superjson from "superjson";
