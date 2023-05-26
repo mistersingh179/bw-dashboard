@@ -79,11 +79,9 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
-- in fake dev ad text put name of brand & use its description.
+- adjust advertisements page to show that ad will show when campaign has no category
 
 ## Pending – Next Up
-- build front-end script
-- create settings for all users
 
 ## Pending Tasks
 - build dashboard api & pages

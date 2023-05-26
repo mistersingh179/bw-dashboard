@@ -22,9 +22,12 @@ const getAdvertisementText: GetAdvertisementText = async (
   productDescription,
   addSponsoredWording
 ) => {
-
-  if(process.env.NODE_ENV === "development"){
-    return ["Ad Copy 1", "Ad Copy 2", "Ad Copy 3"]
+  if (process.env.NODE_ENV === "development") {
+    return [
+      `Ad Copy 1 for ${productName}, ${productDescription}`,
+      `Ad Copy 2 for ${productName}, ${productDescription}`,
+      `Ad Copy 3 for ${productName}, ${productDescription}`,
+    ];
   }
 
   const sponsoredWordingInstruction: string = addSponsoredWording

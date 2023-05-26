@@ -1,7 +1,8 @@
 import prisma from "@/lib/prisma";
 import {
   Advertisement,
-  AdvertisementSpot, Campaign,
+  AdvertisementSpot,
+  Campaign,
   ScoredCampaign,
 } from "@prisma/client";
 
@@ -68,13 +69,22 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
             gt: now,
           },
           status: true,
-          categories: {
-            some: {
-              name: {
-                in: categoriesOfWebpage,
+          OR: [
+            {
+              categories: {
+                some: {
+                  name: {
+                    in: categoriesOfWebpage,
+                  },
+                },
               },
             },
-          },
+            {
+              categories: {
+                none: {}
+              }
+            }
+          ],
         },
         score: {
           gt: userScoreThreshold,
@@ -115,17 +125,18 @@ export default getAdvertisementsForUrl;
 if (require.main === module) {
   (async () => {
     const ans = await getAdvertisementsForUrl({
-      origin: "https://www.simplyrecipes.com",
-      originWithPathName:
-        "https://www.simplyrecipes.com/recipes/peppermint_meringue_cookies",
-      categoriesOfWebpage: ["sr_dessert-recipes"],
+      origin: "http://localhost:8000",
+      originWithPathName: "http://localhost:8000/simplyrecipes.html",
+      categoriesOfWebpage: ["sr_table-talk"],
       userScoreThreshold: 0,
       userId: "clhtwckif000098wp207rs2fg",
       campIdsWhoHaveNotMetImpCap: [
         "clhtx8jj2000i98wp09vkdc1i",
         "clhxf3s28000098s7816uadue",
+        "cli4mmxdg0002982qp1tnkzs2",
       ],
     });
     console.log("ans: ", ans.length);
+    console.log(ans.map((a) => a.scoredCampaign.campaign.name));
   })();
 }
