@@ -33,6 +33,15 @@ export const getUrlProperties = (url: string): UrlProperties => {
   return { origin, originWithPathName };
 };
 
+// todo - remove this and make a pattern
+
+const approvedIds = [
+  "clhtwckif000098wp207rs2fg", // me in Dev
+  "clhw27z37000098xy1ylsnlu3", // me also in Dev
+  "clgf6zqrb000098o4yf9pd6hp", // me in Prod
+  "clgfp3m6m0000k4084zse2n02", // rod in Prod
+];
+
 type WebpageWithCategories = Webpage & { categories: Category[] };
 
 const getWebpageWithCategories = async (userId: string, url: string) => {
@@ -67,6 +76,12 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
   const { userId, url, fp } = req.body;
   const settings = req.settings!;
 
+  if(approvedIds.includes(userId) === false){
+    console.log("not an approved user. failing silently");
+    res.status(204).end();
+    return;
+  }
+
   const { origin, originWithPathName } = getUrlProperties(url);
   const webpage = await getWebpageWithCategories(userId, originWithPathName);
 
@@ -91,7 +106,7 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
     (c) => c.id
   );
 
-  const adsWithSpots = await getAdvertisementsForUrl({
+  const adsWithDetail = await getAdvertisementsForUrl({
     userId: userId,
     userScoreThreshold: settings.scoreThreshold,
     categoriesOfWebpage: webpageCategoryNames,
@@ -117,7 +132,7 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
   res
     .setHeader("Content-Type", "application/json")
     .status(200)
-    .send(superjson.stringify({ auction, adsWithSpots }));
+    .send(superjson.stringify({ auction, adsWithDetail }));
 };
 
 export default withMiddleware(

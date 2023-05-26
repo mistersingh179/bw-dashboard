@@ -1,7 +1,15 @@
 import prisma from "@/lib/prisma";
-import { Advertisement, AdvertisementSpot } from "@prisma/client";
+import {
+  Advertisement,
+  AdvertisementSpot, Campaign,
+  ScoredCampaign,
+} from "@prisma/client";
 
-type AdWithAdSpot = Advertisement & { advertisementSpot: AdvertisementSpot };
+type AdWithDetail = Advertisement & {
+  advertisementSpot: AdvertisementSpot;
+  scoredCampaign: ScoredCampaign & { campaign: Campaign };
+};
+
 // type AdWithAdSpot =  Advertisement & {advertisementSpot: AdvertisementSpot, scoredCampaign: ScoredCampaign & {campaign: Campaign}};
 type AdLookupParamsForUrl = {
   origin: string;
@@ -13,7 +21,7 @@ type AdLookupParamsForUrl = {
 };
 type GetAdvertisementsForUrl = (
   lookupParams: AdLookupParamsForUrl
-) => Promise<AdWithAdSpot[]>;
+) => Promise<AdWithDetail[]>;
 
 const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
   lookupParams
@@ -76,11 +84,11 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
     },
     include: {
       advertisementSpot: true,
-      // scoredCampaign: {
-      //   include: {
-      //     campaign: true
-      //   }
-      // }
+      scoredCampaign: {
+        include: {
+          campaign: true,
+        },
+      },
     },
     orderBy: [
       {
@@ -94,7 +102,7 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
         scoredCampaign: {
           score: "desc",
         },
-      }
+      },
     ],
     distinct: ["advertisementSpotId"],
   });

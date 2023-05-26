@@ -22,7 +22,7 @@ const createContent: CreateContent = async (webpage) => {
   try{
     htmlContent = await fetchContentOfWebpage(webpage.url, "text/html");
   }catch(err){
-    console.log("aborting as got error while fetching content of webpage: ", htmlContent);
+    console.log("aborting as got error while fetching content of webpage: ", err);
     return existingWebpage;
   }
 
@@ -53,7 +53,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clh6eip82001298kw3dmr4idj",
+        id: "cli38233j000098m9ug7e78m7",
       },
     });
     const updatedWebpage = await createContent(webpage);

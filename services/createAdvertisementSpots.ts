@@ -61,7 +61,7 @@ if (require.main === module) {
   (async () => {
     const wp = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clh9d58tw000098c05nhdmbql",
+        id: "cli38233j000098m9ug7e78m7",
       },
     });
     await createAdvertisementSpots(wp);

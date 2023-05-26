@@ -34,7 +34,7 @@ export const nextWithText = (el: Element): null | Element => {
   if (!nextEl) {
     return null;
   }
-  if (nextEl.textContent && nextEl.textContent.length > 0) {
+  if (nextEl.textContent && nextEl.textContent.trim().length > 0) {
     return nextEl;
   } else {
     return nextWithText(nextEl);

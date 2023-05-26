@@ -79,9 +79,11 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
+- in fake dev ad text put name of brand & use its description.
 
 ## Pending – Next Up
 - build front-end script
+- create settings for all users
 
 ## Pending Tasks
 - build dashboard api & pages
@@ -150,6 +152,9 @@ drop database bw;
 - make edit & create use separate forms rather than sharing one or merge typescript types on functions
 - make index for to manage all middleware exports
 - add validations to campaign form e.g. requiredCssSelector, url etc.
+- setup wild card for categories on a campaign. this enables a campaign to run on all categories
+  - need to also support pages which have no categories
+
 
 ## Notes on how services are working the background
 

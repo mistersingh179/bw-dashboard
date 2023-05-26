@@ -55,7 +55,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clh9d58tw000698c07eqy8kyw",
+        id: "cli38233j000098m9ug7e78m7",
       },
     });
     await createScoredCampaigns(webpage);

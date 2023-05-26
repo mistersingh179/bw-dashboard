@@ -23,7 +23,7 @@ export type SitemapIndexSitemap = {
 
 const lookBackDate = subDays(new Date(), WEBPAGE_LOOK_BACK_DAYS);
 
-const getCleanUrl = (url: string): string => {
+export const getCleanUrl = (url: string): string => {
   try {
     const { originWithPathName } = getUrlProperties(url);
     return originWithPathName;
@@ -53,7 +53,7 @@ const createWebpages: CreateWebpages = async (
   try {
     sitemapXML = await fetchContentOfWebpage(sitemapUrl, "application/xml");
   } catch (err) {
-    console.log("aborting as unable to fetch sitemap: ", sitemapUrl);
+    console.log("aborting as unable to fetch sitemap: ", err);
     return;
   }
 
@@ -83,6 +83,7 @@ const createWebpages: CreateWebpages = async (
 
     let webpageInputs: WebpageCreateManyWebsiteInput[] = [];
     webpageInputs = urlArray.reduce((accumulator, currentValue) => {
+      // todo - is this working
       if (isAfter(parseISO(currentValue.lastmod), lookBackDate)) {
         console.log("taking as recent: ", currentValue.lastmod);
         return [

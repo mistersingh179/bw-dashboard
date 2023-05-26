@@ -22,8 +22,8 @@ const handleCreateAuction = async (
   console.log(url);
 
   const approvedIds = [
-    "clfqyzo1z000k98fclzdb0h0e", // me in Dev
-    "clfr0fa8y000298df64lsye2t", // me also in Dev
+    "clhtwckif000098wp207rs2fg", // me in Dev
+    "clhw27z37000098xy1ylsnlu3", // me also in Dev
     "clgf6zqrb000098o4yf9pd6hp", // me in Prod
     "clgfp3m6m0000k4084zse2n02", // rod in Prod
   ];
