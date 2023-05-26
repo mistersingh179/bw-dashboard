@@ -78,14 +78,23 @@ drop database bw;
 - value can be taken from the browser
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
+## Pending - background job strategy
+- add bullmq and deploy app to aws
+- ass sqs consumer and deploy app to aws
+- use defer.run
+
 ## Pending backlog
 
 ## Pending – Next Up
+- run jobs on cloud
+- dashboard api for auctions, impressions & revenue count
+- dashboard api for auctions, impressions & revenue change over yesterday
+- dashboard chart api for auctions, impressions & revenue chart
+- founders shop page to log in as customers & troubleshoot
+- generate fp in front-end script
+- rate limit on ip, fp, userid, enduser-cuid
 
 ## Pending Tasks
-- build dashboard api & pages
-- add page for founders to log in as customer & troubleshoot
-- revisit indexes after doing pacing
 - see impact of allowing `{...req.body}` in update. can userId be provided to update wrong user, fix it if so.
 - extend NextAuth user with the date fields 
 - move constants to be per user in to its own table, add approve to it & onlyFounders middleware
@@ -94,6 +103,18 @@ drop database bw;
 - write top level job which spits out other jobs for smaller things
 - should we do mass insert of webpages rather than 1 at a time
 - if we design onboarding insertion to happen together then we don't need to insert & then read and thus don't need indexes fo this read as they are not the same as when we do impressions
+
+## Pending later things
+- refresh data
+  - fetch html of existing html pages which have changed ??
+  - update the lastModifiedAt of Webpage, currently limited as the createMany does not have on conflict update option
+  - fetch newer webpages of existing websites
+  - fetch webpages of new websites
+- make edit & create use separate forms rather than sharing one or merge typescript types on functions
+- make index for to manage all middleware exports
+- add validations to campaign form e.g. requiredCssSelector, url etc.
+- setup wild card for categories on a campaign. this enables a campaign to run on all categories
+  - need to also support pages which have no categories
 
 ## Pending – improve advertisements page
 - allow editing advertisement text
@@ -139,19 +160,6 @@ drop database bw;
 - for every webpage, get all campaigns with same category and build scored campaigns
 - don't build scored campaign if already there.
 - when request comes in we will get webpage -> scoredCampaigns -> campaigns (filter campaigns whose category is not blank and is not same as that of webpage).
-
-## Pending later things
-- refresh data
-  - fetch html of existing html pages which have changed ??
-  - update the lastModifiedAt of Webpage, currently limited as the createMany does not have on conflict update option
-  - fetch newer webpages of existing websites
-  - fetch webpages of new websites
-- make edit & create use separate forms rather than sharing one or merge typescript types on functions
-- make index for to manage all middleware exports
-- add validations to campaign form e.g. requiredCssSelector, url etc.
-- setup wild card for categories on a campaign. this enables a campaign to run on all categories
-  - need to also support pages which have no categories
-
 
 ## Notes on how services are working the background
 
