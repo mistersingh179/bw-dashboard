@@ -79,7 +79,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending backlog
-- adjust advertisements page to show that ad will show when campaign has no category
 
 ## Pending – Next Up
 

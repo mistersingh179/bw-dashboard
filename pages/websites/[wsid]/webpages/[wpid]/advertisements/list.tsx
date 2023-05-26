@@ -60,8 +60,12 @@ const Advertisements: FCWithAuth = () => {
     categsOfWp: string[],
     categsOfCamp: string[]
   ): boolean => {
-    const common = intersection(categsOfWp, categsOfCamp);
-    return common.length > 0 ? true : false;
+    if(categsOfCamp.length === 0){
+      return true
+    }else{
+      const common = intersection(categsOfWp, categsOfCamp);
+      return common.length > 0 ? true : false;
+    }
   };
 
   type AdvertisementRunningResult = {
