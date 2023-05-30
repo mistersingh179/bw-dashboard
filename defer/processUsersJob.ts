@@ -2,6 +2,10 @@ import { defer, getExecution } from "@defer/client";
 import prisma from "@/lib/prisma";
 import processUser from "@/services/processUser";
 
+/*
+Process all users every day
+ */
+
 const processUsersJob = async () => {
   const users = await prisma.user.findMany({
     where: {
@@ -12,7 +16,7 @@ const processUsersJob = async () => {
   });
   for (const user of users) {
     console.log("looping over users, now with: ", user.email);
-    // await processUser(user);
+    await processUser(user);
   }
 };
 
