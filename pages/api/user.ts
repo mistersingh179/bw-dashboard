@@ -4,7 +4,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 import prisma from "@/lib/prisma";
 import superjson from "superjson";
-import helloWorld from "@/defer/hello-world";
 
 const handler: NextApiHandler = async (req, res) => {
   const session = await getServerSession(req, res, authOptions);
@@ -14,12 +13,10 @@ const handler: NextApiHandler = async (req, res) => {
 
   const user = await prisma.user.findFirst();
 
-  const jobId = await helloWorld(user?.name ?? "unknown");
-
   res
     .setHeader("Content-Type", "application/json")
     .status(200)
-    .send(superjson.stringify({ user, jobId }));
+    .send(superjson.stringify({ user }));
 };
 
 export default handler;

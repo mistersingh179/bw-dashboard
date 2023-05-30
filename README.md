@@ -84,6 +84,14 @@ drop database bw;
 - use defer.run
 
 ## Pending backlog
+- give better error when userId is not provided
+- create all webpages as OFF
+- search filter on webpages page
+- immediate webpage job process them when webpage is toggled on / "Process Webpage"
+- update the scrape settings
+- delete advertisement spots
+- re-run process webpage
+- function to turn on all webpages (internal function)
 
 ## Pending – Next Up
 - run jobs on cloud
