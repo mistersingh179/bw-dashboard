@@ -1,6 +1,7 @@
 import { Webpage } from "@prisma/client";
 import prisma from "@/lib/prisma";
-import { JSDOM } from "jsdom";
+// import { JSDOM } from "jsdom";
+import { parse, HTMLElement } from 'node-html-parser';
 import { DESIRED_ADVERTISEMENT_SPOT_COUNT } from "@/constants";
 
 type AdSpotText = {
@@ -27,9 +28,9 @@ const defaultAdSelectionOptions: AdSelectionOptions = {
 const { contentSelector, count, minCharLimit, sameTypeElemWithTextToFollow } =
   defaultAdSelectionOptions;
 
-type ElementFilter = (elem: Element) => Boolean;
+type ElementFilter = (elem: HTMLElement | Element) => Boolean;
 
-export const nextWithText = (el: Element): null | Element => {
+export const nextWithText = (el: HTMLElement | Element): null | HTMLElement | Element => {
   const nextEl = el.nextElementSibling;
   if (!nextEl) {
     return null;
@@ -58,9 +59,9 @@ const nextElementWithTextOfSameTypeFilter: ElementFilter = (elem) => {
   const followingElement = nextWithText(elem);
   const ans = followingElement?.tagName === elem.tagName;
   if (ans) {
-    console.log("keeping: ", elem, elem.tagName, followingElement?.tagName);
+    console.log("keeping: ", elem.tagName, followingElement?.tagName);
   } else {
-    console.log("rejecting: ", elem, elem.tagName, followingElement?.tagName);
+    console.log("rejecting: ", elem.tagName, followingElement?.tagName);
   }
   return ans;
 };
@@ -77,10 +78,11 @@ const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (webpage) => {
     console.log("aborting getAdSpotsForWebpage as there is no content");
     return [];
   }
-  const dom = new JSDOM(webpageWithContent.content.desktopHtml);
-  const {
-    window: { document },
-  } = dom;
+  // const dom = new JSDOM(webpageWithContent.content.desktopHtml);
+  // const {
+  //   window: { document },
+  // } = dom;
+  const document = parse(webpageWithContent.content.desktopHtml);
   let elements = document.querySelectorAll(contentSelector);
   let elementsArr = [...elements];
   elementsArr = elementsArr.filter(minCharFilter);
@@ -110,7 +112,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clh9d58tw000g98c0zarqhhc6",
+        id: "cli3v2cbk000098q7nqb4mryo",
         content: {
           isNot: null
         }
@@ -119,7 +121,6 @@ if (require.main === module) {
         content: true
       }
     });
-    console.log("webpage's html length: ", webpage.content?.desktopHtml.length);
     await getAdSpotsForWebpage(webpage);
   })();
 }

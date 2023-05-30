@@ -1,4 +1,6 @@
-import { JSDOM } from "jsdom";
+// import { JSDOM } from "jsdom";
+import { parse, HTMLElement } from "node-html-parser";
+
 import prisma from "@/lib/prisma";
 
 /*
@@ -17,14 +19,17 @@ const extractCleanedWebpageText: ExtractCleanedWebpageText = (
   maxWordCount = 500
 ) => {
   console.log("inside service: extractCleanedWebpageText");
-  const dom = new JSDOM(html);
-  const {
-    window: {
-      document: { body },
-    },
-  } = dom;
+  const document = parse(html);
+  const body = document.querySelector("body");
+  // const dom = new JSDOM(html);
+  // const {
+  //   window: {
+  //     document: { body },
+  //   },
+  // } = dom;
   const cleanedContent =
-    body.textContent?.replaceAll(/[\n]+/g, " ").replaceAll(/[\s]+/g, " ") ?? "";
+    body?.textContent?.replaceAll(/[\n]+/g, " ").replaceAll(/[\s]+/g, " ") ??
+    "";
 
   const words = cleanedContent.split(" ");
   const subsetContent = words.slice(0, maxWordCount).join(" ");
@@ -37,12 +42,14 @@ export default extractCleanedWebpageText;
 
 if (require.main === module) {
   (async () => {
-    const ans = await extractCleanedWebpageText(
-      "<div>foo<br/>\n\nbar\n\n   <br/>\n\nfoobar</div>"
-    );
-    console.log("*** ans: ", ans);
+    // const ans = await extractCleanedWebpageText(
+    //   "<body></body><div>foo<br/>\n\nbar\n\n   <br/>\n\nfoobar</div></body>"
+    // );
+    // console.log("*** ans: ", ans);
     const content = await prisma.content.findFirstOrThrow({
-      where: { id: "clhoudof600zw98ra6f9t4xhn" },
+      where: {
+        webpageId: "cli3v2cbk000098q7nqb4mryo"
+      },
     });
     const ans2 = await extractCleanedWebpageText(content.desktopHtml, 5);
     console.log("*** ans2: ", ans2);

@@ -1,6 +1,7 @@
 import { Webpage } from ".prisma/client";
 import prisma from "@/lib/prisma";
-import { JSDOM } from "jsdom";
+// import { JSDOM } from "jsdom";
+import { parse, HTMLElement } from 'node-html-parser';
 
 type ExtractCategoriesFromWebpage = (webpage: Webpage) => Promise<string[]>;
 
@@ -42,10 +43,11 @@ const extractCategoriesFromWebpage: ExtractCategoriesFromWebpage = async (
 
   let cumulativeValues: string[] = [];
 
-  const dom = new JSDOM(webpageWithContent.content.desktopHtml);
-  const {
-    window: { document },
-  } = dom;
+  // const dom = new JSDOM(webpageWithContent.content.desktopHtml);
+  // const {
+  //   window: { document },
+  // } = dom;
+  const document = parse(webpageWithContent.content.desktopHtml);
 
   const metaContentValues = [
     ...document.querySelectorAll(
@@ -56,9 +58,9 @@ const extractCategoriesFromWebpage: ExtractCategoriesFromWebpage = async (
   cumulativeValues = cumulativeValues.concat(metaContentValues);
 
   var allClasses = [];
-  var allElements = document.querySelectorAll("*");
+  var allElements: HTMLElement[] = document.querySelectorAll("*");
   for (var i = 0; i < allElements.length; i++) {
-    var classes = allElements[i].className.toString().split(/\s+/);
+    var classes = allElements[i].classNames.toString().split(/\s+/);
     for (var j = 0; j < classes.length; j++) {
       var cls = classes[j];
       if (cls && allClasses.indexOf(cls) === -1) allClasses.push(cls);
@@ -84,7 +86,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clh9d58tw000d98c0vr97pkt6",
+        id: "cli3v2cbk000098q7nqb4mryo",
       },
     });
     const ans = await extractCategoriesFromWebpage(webpage);
