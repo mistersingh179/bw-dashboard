@@ -12,7 +12,7 @@ const processUsersJob = async () => {
   });
   for (const user of users) {
     console.log("looping over users, now with: ", user.email);
-    await processUser(user);
+    // await processUser(user);
   }
 };
 
