@@ -14,7 +14,8 @@ const dailyProcessAllUsers = async () => {
   console.log("we have user count: ", users.length, " to process");
   for(const user of users){
     console.log("calling processUserJob with: ", user.email);
-    processUserJob(user);
+    const jobId = await processUserJob(user);
+    console.log("got jobId: ", jobId);
   }
   console.log("finished dailyProcessAllUsers");
 };

@@ -8,7 +8,7 @@ type GetCampaignsWithoutScoredCampaignsForWebpage = (
 
 const getCampaignsWithoutScoredCampaignsForWebpage: GetCampaignsWithoutScoredCampaignsForWebpage =
   async (wpid) => {
-    console.log("inside service: getCampaignsWithoutScoredCampaignsForWebpage");
+    console.log("started getCampaignsWithoutScoredCampaignsForWebpage with: ", wpid);
     const campaigns = await prisma.campaign.findMany({
       where: {
         user: {

@@ -84,6 +84,8 @@ drop database bw;
 - use defer.run
 
 ## Pending backlog
+- move all constants to settings
+- all fetch & chatgpt calls need timeout
 - give better error when userId is not provided
 - create all webpages as OFF
 - search filter on webpages page
@@ -92,6 +94,10 @@ drop database bw;
 - delete advertisement spots
 - re-run process webpage
 - function to turn on all webpages (internal function)
+
+## Pending callback
+- when a campaign is added, we need to build scores & then advertisements
+- when a webpage is added, we need to get content, build spots & then advertisements 
 
 ## Pending – Next Up
 - run jobs on cloud
@@ -148,6 +154,12 @@ drop database bw;
 - remove query params before checking url
 
 ## Pending performance
+- refactor jobs
+  - have 1 onboard job which we run only when onboard a website, i.e. a website is created
+  - we can automate 5 days of webpages in onboarding and admin can onboard more
+  - this does mass insert in bulks
+  - then daily we only see delta of new webpages & just insert them individually
+  - insert each new webpage individually will be cleaner as we are not doing old missed or unprocessable stuff again.
 - will try to get ad spots when page doesn't have enough.
 - it doesn't know we don't have enough cause its page fault & not our service issue
 - should we parse webpage if it already has categories

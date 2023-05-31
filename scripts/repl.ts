@@ -1,31 +1,38 @@
 import prisma from "@/lib/prisma";
 import { parse } from "node-html-parser";
 import { JSDOM } from "jsdom";
+import helloWorldJob from "@/defer/helloWorldJob";
+import { awaitResult } from "@defer/client";
+
+const foo = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, 1000);
+  });
+};
+
+const bar = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(reject, 10);
+  });
+};
 
 (async () => {
-  const userId: string = "clhtwckif000098wp207rs2fg";
-
-  const webpage = await prisma.webpage.findFirstOrThrow({
+  const ans = await prisma.setting.findFirstOrThrow({
     where: {
-      content: {
-        isNot: null,
-      },
-    },
-    include: {
-      content: true,
-    },
-  });
-
-  const dom = new JSDOM(webpage.content?.desktopHtml ?? "");
-  const {
-    window: { document },
-  } = dom;
-  const items = [...document.querySelectorAll("p")];
-  console.log(items[0].constructor.name);
-
-  const root = parse(webpage.content?.desktopHtml ?? "");
-  const elements = root.querySelectorAll("body p:nth-child(3n)");
-  console.log(elements[0].constructor.name);
+      user: {
+        websites: {
+          some: {
+            webpages: {
+              some: {
+                id: "cli38233j000098m9ug7e78m7"
+              }
+            }
+          }
+        }
+      }
+    }
+  })
+  console.log(ans)
 })();
 
 export {};

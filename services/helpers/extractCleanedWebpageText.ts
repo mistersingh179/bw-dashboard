@@ -34,7 +34,7 @@ const extractCleanedWebpageText: ExtractCleanedWebpageText = (
   const words = cleanedContent.split(" ");
   const subsetContent = words.slice(0, maxWordCount).join(" ");
 
-  console.log("cleaned webpage text: ", subsetContent);
+  console.log("cleaned webpage text: ", subsetContent.length);
   return subsetContent || "";
 };
 

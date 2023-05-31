@@ -20,7 +20,7 @@ const enoughAdSpotsExist = async (webpage: Webpage): Promise<boolean> => {
 type CreateAdvertisementSpots = (webpage: Webpage) => Promise<void>;
 
 const createAdvertisementSpots: CreateAdvertisementSpots = async (webpage) => {
-  console.log("in createAdvertisementSpots for: ", webpage.id);
+  console.log("in createAdvertisementSpots for: ", webpage.url);
 
   if (await enoughAdSpotsExist(webpage)) {
     console.log(`Aborting createAdvertisementSpots as we already enough`);

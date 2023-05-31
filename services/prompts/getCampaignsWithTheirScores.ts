@@ -52,7 +52,7 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
     webpageWithDetails.content.desktopHtml
   );
 
-  console.log("webpageText: ", webpageText);
+  // console.log("webpageText: ", webpageText);
 
   const campaignsWithScore: CampaignProductWithScore[] =
     webpageWithDetails.website.user.campaigns.map((c) => ({
@@ -103,7 +103,8 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
         `Here is the content of the website: ${webpageText}` +
         ` Here is the csv list of products: ${campaignsCsv} ` +
         `For your result give me back a csv list similar to what is provided ` +
-        `to you. In the csv only include the product's id, name, score and reason column. Put the reason in quotes so it does not break csv format.`,
+        `to you. In the csv only include the product's id, name, score and reason column. ` +
+        `Put the reason in quotes so it does not break csv format.`,
     },
   ];
 

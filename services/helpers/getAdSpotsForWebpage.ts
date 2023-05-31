@@ -48,9 +48,9 @@ const minCharFilter: ElementFilter = (elem) => {
   }
   const ans = elem.textContent.length >= minCharLimit;
   if (ans) {
-    console.log("keeping: ", elem, elem.textContent.length, minCharLimit);
+    console.log("keeping: ", elem.textContent.length, minCharLimit);
   } else {
-    console.log("rejecting: ", elem, elem.textContent.length, minCharLimit);
+    console.log("rejecting: ", elem.textContent.length, minCharLimit);
   }
   return ans;
 };

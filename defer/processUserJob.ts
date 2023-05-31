@@ -1,6 +1,6 @@
 import { defer } from "@defer/client";
 import processUser from "@/services/processUser";
-import {User} from ".prisma/client";
+import { User } from ".prisma/client";
 
 const processUserJob = async (user: User) => {
   console.log("started processUserJob with: ", user.email);

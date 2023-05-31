@@ -4,6 +4,7 @@ import { QueryParams } from "@/types/QueryParams";
 import prisma from "@/lib/prisma";
 import superjson from "superjson";
 import getWebpageWithAdSpotsAndAdsCount from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
+import processWebpageJob from "@/defer/processWebpageJob";
 
 const webpage: NextApiHandler = async (req, res) => {
   switch (req.method) {
@@ -49,6 +50,21 @@ const handleUpdateWebpage = async (
     },
   });
   console.log("updated webpage is: ", webpage);
+
+  const webpageWithContent = await prisma.webpage.findFirstOrThrow({
+    where: {
+      id: wpid,
+    },
+    include: {
+      content: true,
+    },
+  });
+  const jobId = await processWebpageJob(
+    webpageWithContent,
+    req.authenticatedUserId!
+  );
+  console.log("scheduled processWebpageJob with jobId: ", jobId);
+
   res
     .setHeader("Content-Type", "application/json")
     .status(200)

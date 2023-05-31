@@ -7,7 +7,7 @@ import getCampaignsWithoutScoredCampaignsForWebpage from "@/services/queries/get
 type CreateScoredCampaigns = (webpage: Webpage) => Promise<void>;
 
 const createScoredCampaigns: CreateScoredCampaigns = async (webpage) => {
-  console.log("webpage: ", webpage.id, webpage.url);
+  console.log("started createScoredCampaigns with: ",webpage.url);
 
   const campaignsWhichNeedScore =
     await getCampaignsWithoutScoredCampaignsForWebpage(webpage.id);

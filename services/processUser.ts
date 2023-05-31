@@ -1,26 +1,24 @@
 import prisma from "@/lib/prisma";
 import { User } from ".prisma/client";
 import createWebpages from "@/services/createWebpages";
-import createContent from "@/services/createContent";
 import createAdvertisementSpots from "@/services/createAdvertisementSpots";
-import createScoredCampaigns from "@/services/createScoredCampaigns";
-import createAdvertisement from "@/services/createAdvertisement";
 import { subDays } from "date-fns";
 import createCategories from "@/services/createCategories";
+import createContentJob from "@/defer/createContentJob";
+import { awaitResult } from "@defer/client";
+import createScoredCampaignJob from "@/defer/createScoredCampaignJob";
+import createAdvertisementJob from "@/defer/createAdvertisementJob";
 
 type ProcessUser = (user: User) => Promise<void>;
 
 const processUser: ProcessUser = async (user) => {
-  console.log("inside service processUser with: ", user.id, user.email);
+  console.log("started processUser with: ", user.id, user.email);
   const settings = await prisma.setting.findFirstOrThrow({
     where: {
       userId: user.id,
+      status: true,
     },
   });
-  if (settings.status === false) {
-    console.log("aborting as users is off");
-    return;
-  }
 
   const websitesWhichNeedProcessing = await prisma.website.findMany({
     where: {
@@ -56,9 +54,16 @@ const processUser: ProcessUser = async (user) => {
     },
   });
 
-  for (const webpage of webpagesWithoutContent) {
-    await createContent(webpage);
-  }
+  const createContentJobWithResult = awaitResult(createContentJob);
+  const createContentResult = await Promise.allSettled(
+    webpagesWithoutContent.map(async (webpage) => {
+      return createContentJobWithResult(webpage);
+    })
+  );
+  console.log(
+    "createContentResult: ",
+    createContentResult.map((r) => r.status)
+  );
 
   const webpagesWithContentWithoutAdvertisementSpots =
     await prisma.webpage.findMany({
@@ -97,8 +102,20 @@ const processUser: ProcessUser = async (user) => {
     },
   });
 
+  const createScoredCampaignJobWithResult = awaitResult(
+    createScoredCampaignJob
+  );
+  const createScoreCampaignResult = await Promise.allSettled(
+    webpagesWithContent.map((webpage) => {
+      createScoredCampaignJobWithResult(webpage);
+    })
+  );
+  console.log(
+    "createScoreCampaignResult: ",
+    createScoreCampaignResult.map((r) => r.status)
+  );
+
   for (const webpage of webpagesWithContent) {
-    await createScoredCampaigns(webpage);
     await createCategories(webpage);
   }
 
@@ -122,13 +139,31 @@ const processUser: ProcessUser = async (user) => {
     },
   });
 
+  const createAdvertisementJobWithResult = awaitResult(createAdvertisementJob);
+
+  const createAdvertisementResultPromises: Promise<void>[] = [];
   for (const wp of webpagesWithAdSpotsAndScoredCamps) {
     for (const advertisementSpot of wp.advertisementSpots) {
       for (const scoredCampaign of wp.scoredCampaigns) {
-        await createAdvertisement(advertisementSpot, scoredCampaign, settings);
+        const promiseResult = createAdvertisementJobWithResult(
+          advertisementSpot,
+          scoredCampaign,
+          settings
+        );
+        createAdvertisementResultPromises.push(promiseResult);
       }
     }
   }
+
+  const createAdvertisementResult = await Promise.allSettled(
+    createAdvertisementResultPromises
+  );
+  console.log(
+    "createAdvertisementResult:",
+    createAdvertisementResult.map((r) => r.status)
+  );
+
+  console.log("finished processUser with: ", user.id, user.email);
 };
 
 export default processUser;

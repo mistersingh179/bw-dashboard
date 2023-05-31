@@ -16,6 +16,7 @@ const fetchContentOfWebpage: FetchContentOfWebpage = async (
 ) => {
   console.log("in fetchContentOfWebpage with: ", url);
   const userAgent = new UserAgent({ deviceCategory });
+  // todo - add timeout version of fetch
   const res = await fetch(url, {
     method: "GET",
     headers: {

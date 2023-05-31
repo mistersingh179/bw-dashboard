@@ -40,9 +40,9 @@ const createAdvertisement: CreateAdvertisement = async (
   settings
 ) => {
   console.log(
-    "will create advertisement(s) for spot ",
+    "started createAdvertisement with adSpot: ",
     advertisementSpot.id,
-    "and scored campaign ",
+    " and scored campaign ",
     scoredCampaign.id
   );
 

@@ -61,7 +61,7 @@ type CampaignWithScore = {
     .replaceAll(/[\s]+/g, " ")
     .substring(0, 5000);
 
-  console.log("webpageText: ", webpageText);
+  // console.log("webpageText: ", webpageText);
 
   const campaignsWithScore: CampaignWithScore[] = webpage.website.user.campaigns.map((c) => ({
     id: c.id,

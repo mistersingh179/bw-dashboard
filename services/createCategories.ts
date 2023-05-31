@@ -8,7 +8,7 @@ type CreateCategories = (
 ) => Promise<void>;
 
 const createCategories: CreateCategories = async (webpage) => {
-  console.log("inside service: createCategories");
+  console.log("started createCategories with: ", webpage.url);
 
   if (webpage.content === null) {
     console.log("aborting createCategories as the webpage does not have content");
