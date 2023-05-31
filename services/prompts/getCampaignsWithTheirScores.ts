@@ -6,6 +6,7 @@ import AnyObject from "@/types/AnyObject";
 import fetch from "node-fetch";
 import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageText";
 import { CreateChatCompletionResponse } from "openai/api";
+import { CHAT_GPT_FETCH_TIMEOUT } from "@/constants";
 
 export type CampaignProductWithScore = {
   id: string;
@@ -108,20 +109,31 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
     },
   ];
 
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo-0301",
-      temperature: 1,
-      n: 1,
-      max_tokens: 1000,
-      messages: messages,
-    }),
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(controller.abort, CHAT_GPT_FETCH_TIMEOUT);
+  let response;
+  try {
+    response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo-0301",
+        temperature: 1,
+        n: 1,
+        max_tokens: 2000,
+        messages: messages,
+      }),
+      signal: controller.signal,
+    });
+  } catch (err) {
+    console.log("got error while getting data from chatGpt: ", err);
+    return [];
+  }
+  clearTimeout(timeoutId);
+
   let data = (await response.json()) as CreateChatCompletionResponse;
   console.log("api returned: ");
   console.dir(data, { depth: null, colors: true });

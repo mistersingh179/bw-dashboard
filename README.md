@@ -85,7 +85,6 @@ drop database bw;
 
 ## Pending backlog
 - move all constants to settings
-- all fetch & chatgpt calls need timeout
 - give better error when userId is not provided
 - create all webpages as OFF
 - search filter on webpages page

@@ -3,7 +3,9 @@ import withMiddleware from "@/middlewares/withMiddleware";
 
 const ping: NextApiHandler = async (req, res) => {
   res.setHeader("Content-Type", "text/html");
-  res.send("thanks");
+  setTimeout(() => {
+    res.send("pong");
+  }, 0);
 };
 
 export default withMiddleware("rejectBots")(ping);

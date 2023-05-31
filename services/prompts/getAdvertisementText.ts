@@ -1,4 +1,4 @@
-import { DESIRED_ADVERTISEMENT_COUNT } from "@/constants";
+import {CHAT_GPT_FETCH_TIMEOUT, DESIRED_ADVERTISEMENT_COUNT} from "@/constants";
 import AnyObject from "@/types/AnyObject";
 import fetch from "node-fetch";
 import prisma from "@/lib/prisma";
@@ -64,21 +64,31 @@ Never portray the brand in a negative context. \
 In your reply, just provide the new paragraph.`,
     },
   ];
+  let response;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(controller.abort, CHAT_GPT_FETCH_TIMEOUT);
+  try{
+    response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo-0301",
+        temperature: 1,
+        n: DESIRED_ADVERTISEMENT_COUNT,
+        max_tokens: 2000,
+        messages: messages,
+      }),
+      signal: controller.signal
+    });
+  }catch(err){
+    console.log("got error while get advertisemenet from chatGpt: ", err);
+    return []
+  }
+  clearTimeout(timeoutId);
 
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo-0301",
-      temperature: 1,
-      n: DESIRED_ADVERTISEMENT_COUNT,
-      max_tokens: 1000,
-      messages: messages,
-    }),
-  });
   let data = (await response.json()) as CreateChatCompletionResponse;
   console.log("api returned: ");
   console.dir(data, { depth: null, colors: true });

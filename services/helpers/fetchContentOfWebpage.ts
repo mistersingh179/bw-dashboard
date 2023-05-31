@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 // import { JSDOM } from "jsdom";
 import { parse, HTMLElement } from "node-html-parser";
 import UserAgent from "user-agents";
+import { FETCH_TIMEOUT } from "@/constants";
 
 type FetchContentOfWebpage = (
   url: string,
@@ -16,7 +17,8 @@ const fetchContentOfWebpage: FetchContentOfWebpage = async (
 ) => {
   console.log("in fetchContentOfWebpage with: ", url);
   const userAgent = new UserAgent({ deviceCategory });
-  // todo - add timeout version of fetch
+  const controller = new AbortController();
+  const timeoutId = setTimeout(controller.abort, FETCH_TIMEOUT);
   const res = await fetch(url, {
     method: "GET",
     headers: {
@@ -24,7 +26,9 @@ const fetchContentOfWebpage: FetchContentOfWebpage = async (
       "User-Agent": userAgent.random().toString(),
     },
     redirect: "follow",
+    signal: controller.signal,
   });
+  clearTimeout(timeoutId);
   const data = await res.text();
   return data;
 };
