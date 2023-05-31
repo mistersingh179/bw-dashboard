@@ -1,4 +1,4 @@
-import {CHAT_GPT_FETCH_TIMEOUT, DESIRED_ADVERTISEMENT_COUNT} from "@/constants";
+import { CHAT_GPT_FETCH_TIMEOUT } from "@/constants";
 import AnyObject from "@/types/AnyObject";
 import fetch from "node-fetch";
 import prisma from "@/lib/prisma";
@@ -11,7 +11,8 @@ type GetAdvertisementText = (
   afterText: string,
   productName: string,
   productDescription: string,
-  addSponsoredWording: boolean
+  addSponsoredWording: boolean,
+  desiredAdvertisementCount: number
 ) => Promise<string[]>;
 
 const getAdvertisementText: GetAdvertisementText = async (
@@ -20,14 +21,15 @@ const getAdvertisementText: GetAdvertisementText = async (
   afterText,
   productName,
   productDescription,
-  addSponsoredWording
+  addSponsoredWording,
+  desiredAdvertisementCount
 ) => {
   if (process.env.NODE_ENV === "development") {
     return [
       `Ad Copy 1 for ${productName}, ${productDescription}`,
       `Ad Copy 2 for ${productName}, ${productDescription}`,
       `Ad Copy 3 for ${productName}, ${productDescription}`,
-    ];
+    ].splice(0, desiredAdvertisementCount);
   }
 
   const sponsoredWordingInstruction: string = addSponsoredWording
@@ -67,7 +69,7 @@ In your reply, just provide the new paragraph.`,
   let response;
   const controller = new AbortController();
   const timeoutId = setTimeout(controller.abort, CHAT_GPT_FETCH_TIMEOUT);
-  try{
+  try {
     response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -77,15 +79,15 @@ In your reply, just provide the new paragraph.`,
       body: JSON.stringify({
         model: "gpt-3.5-turbo-0301",
         temperature: 1,
-        n: DESIRED_ADVERTISEMENT_COUNT,
+        n: desiredAdvertisementCount,
         max_tokens: 2000,
         messages: messages,
       }),
-      signal: controller.signal
+      signal: controller.signal,
     });
-  }catch(err){
+  } catch (err) {
     console.log("got error while get advertisemenet from chatGpt: ", err);
-    return []
+    return [];
   }
   clearTimeout(timeoutId);
 
@@ -127,7 +129,8 @@ if (require.main === module) {
       webpage.advertisementSpots[0].afterText,
       campaign.productName,
       campaign.productDescription,
-      false
+      false,
+      2
     );
     console.log("ans: ", ans);
   })();

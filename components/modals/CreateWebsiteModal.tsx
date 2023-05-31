@@ -19,6 +19,11 @@ import {
 import React, { useState } from "react";
 import { WebsiteType } from "@/types/my-types";
 
+const dummyUrl =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:8000"
+    : "https://YourWebsite.com";
+
 const CreateWebsiteModal = ({
   isOpen,
   onClose,
@@ -29,8 +34,8 @@ const CreateWebsiteModal = ({
   onSave: (newWebsite: WebsiteType) => void;
 }) => {
   const [topLevelDomainUrl, setTopLevelDomainUrl] =
-    useState("https://acme.com");
-  const [sitemapUrl, setSitemapUrl] = useState("https://acme.com/sitemap.xml");
+    useState(dummyUrl);
+  const [sitemapUrl, setSitemapUrl] = useState(`${dummyUrl}/sitemap.xml`);
   const [status, setStatus] = useState(false);
 
   const topLevelDomainUrlMissing =
@@ -98,8 +103,8 @@ const CreateWebsiteModal = ({
               };
               onClose();
               await onSave(newWebsite);
-              setTopLevelDomainUrl("https://acme.com");
-              setSitemapUrl("https://acme.com/sitemap.xml");
+              setTopLevelDomainUrl(dummyUrl);
+              setSitemapUrl(`${dummyUrl}/sitemap.xml`);
               setStatus(false);
             }}
           >

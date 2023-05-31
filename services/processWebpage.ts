@@ -12,16 +12,17 @@ type ProcessWebpage = (webpage: WebpageWithContent, userId: string) => Promise<v
 
 const processWebpage: ProcessWebpage = async (webpage, userId) => {
   console.log("started processWebpage with: ", webpage.url);
-  await createContent(webpage);
-  await createAdvertisementSpots(webpage);
-  await createScoredCampaigns(webpage);
-  await createCategories(webpage);
 
   const settings = await prisma.setting.findFirstOrThrow({
     where: {
       userId: userId,
     }
   })
+
+  await createContent(webpage);
+  await createAdvertisementSpots(webpage, settings);
+  await createScoredCampaigns(webpage);
+  await createCategories(webpage);
 
   const adSpots = await prisma.advertisementSpot.findMany({
     where: {

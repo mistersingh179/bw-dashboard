@@ -38,7 +38,7 @@ const processUser: ProcessUser = async (user) => {
   });
 
   for (const website of websitesWhichNeedProcessing) {
-    await createWebpages(website.id);
+    await createWebpages(website.id, settings);
   }
 
   const webpagesWithoutContent = await prisma.webpage.findMany({
@@ -65,26 +65,24 @@ const processUser: ProcessUser = async (user) => {
     createContentResult.map((r) => r.status)
   );
 
-  const webpagesWithContentWithoutAdvertisementSpots =
-    await prisma.webpage.findMany({
-      where: {
-        website: {
-          userId: user.id,
-          status: true,
-        },
-        content: {
-          isNot: null,
-        },
-        status: true,
-        advertisementSpots: {
-          none: {},
-        },
-      },
-    });
+  // todo - better to fetch pages without required number of ad spots
 
-  for (const webpage of webpagesWithContentWithoutAdvertisementSpots) {
-    await createAdvertisementSpots(webpage);
-  }
+  // const webpagesWithContentWithoutAdvertisementSpots =
+  //   await prisma.webpage.findMany({
+  //     where: {
+  //       website: {
+  //         userId: user.id,
+  //         status: true,
+  //       },
+  //       content: {
+  //         isNot: null,
+  //       },
+  //       status: true,
+  //       advertisementSpots: {
+  //         none: {},
+  //       },
+  //     },
+  //   });
 
   const webpagesWithContent = await prisma.webpage.findMany({
     where: {
@@ -102,14 +100,20 @@ const processUser: ProcessUser = async (user) => {
     },
   });
 
+  for (const webpage of webpagesWithContent) {
+    await createAdvertisementSpots(webpage, settings);
+  }
+
   const createScoredCampaignJobWithResult = awaitResult(
     createScoredCampaignJob
   );
+
   const createScoreCampaignResult = await Promise.allSettled(
     webpagesWithContent.map((webpage) => {
       createScoredCampaignJobWithResult(webpage);
     })
   );
+
   console.log(
     "createScoreCampaignResult: ",
     createScoreCampaignResult.map((r) => r.status)
@@ -140,7 +144,7 @@ const processUser: ProcessUser = async (user) => {
   });
 
   const createAdvertisementJobWithResult = awaitResult(createAdvertisementJob);
-
+  // todo - better if it only creates the delta number of advertisements that are needed
   const createAdvertisementResultPromises: Promise<void>[] = [];
   for (const wp of webpagesWithAdSpotsAndScoredCamps) {
     for (const advertisementSpot of wp.advertisementSpots) {

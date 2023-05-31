@@ -1,4 +1,3 @@
-import { DESIRED_ADVERTISEMENT_COUNT } from "@/constants";
 import {
   AdvertisementSpot,
   Prisma,
@@ -12,7 +11,8 @@ import getAdvertisementText from "@/services/prompts/getAdvertisementText";
 
 const enoughActiveAdsExist = async (
   advertisementSpot: AdvertisementSpot,
-  scoredCampaign: ScoredCampaign
+  scoredCampaign: ScoredCampaign,
+  settings: Setting
 ): Promise<boolean> => {
   const result = await prisma.advertisement.findMany({
     where: {
@@ -23,9 +23,9 @@ const enoughActiveAdsExist = async (
     select: {
       id: true,
     },
-    take: DESIRED_ADVERTISEMENT_COUNT,
+    take: settings.desiredAdvertisementCount,
   });
-  return result.length === DESIRED_ADVERTISEMENT_COUNT;
+  return result.length === settings.desiredAdvertisementCount;
 };
 
 type CreateAdvertisement = (
@@ -46,7 +46,7 @@ const createAdvertisement: CreateAdvertisement = async (
     scoredCampaign.id
   );
 
-  if (await enoughActiveAdsExist(advertisementSpot, scoredCampaign)) {
+  if (await enoughActiveAdsExist(advertisementSpot, scoredCampaign, settings)) {
     console.log("Aborting as we have enough advertisements");
     return;
   }
@@ -80,7 +80,7 @@ const createAdvertisement: CreateAdvertisement = async (
 
   const { productName, productDescription } = campaign;
 
-  const { addSponsoredWording } = settings;
+  const { addSponsoredWording, desiredAdvertisementCount } = settings;
 
   let adTextCopies: string[] = [];
   try {
@@ -91,6 +91,7 @@ const createAdvertisement: CreateAdvertisement = async (
       productName,
       productDescription,
       addSponsoredWording,
+      desiredAdvertisementCount
     );
   } catch (err) {
     console.log("aborting as unable to get advertisement text: ", err);

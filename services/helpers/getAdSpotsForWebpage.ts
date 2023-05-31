@@ -1,32 +1,14 @@
-import { Webpage } from "@prisma/client";
+import {Setting, Webpage} from "@prisma/client";
 import prisma from "@/lib/prisma";
 // import { JSDOM } from "jsdom";
 import { parse, HTMLElement } from 'node-html-parser';
-import { DESIRED_ADVERTISEMENT_SPOT_COUNT } from "@/constants";
 
 type AdSpotText = {
   beforeText: string;
   afterText: string;
 };
 
-type GetAdSpotsTextForWebpage = (webpage: Webpage) => Promise<AdSpotText[]>;
-
-type AdSelectionOptions = {
-  contentSelector: string;
-  count: number;
-  minCharLimit: number;
-  sameTypeElemWithTextToFollow: true;
-};
-
-const defaultAdSelectionOptions: AdSelectionOptions = {
-  contentSelector: "body p:nth-child(3n)",
-  count: DESIRED_ADVERTISEMENT_SPOT_COUNT,
-  minCharLimit: 20,
-  sameTypeElemWithTextToFollow: true,
-};
-
-const { contentSelector, count, minCharLimit, sameTypeElemWithTextToFollow } =
-  defaultAdSelectionOptions;
+type GetAdSpotsTextForWebpage = (webpage: Webpage, settings: Setting) => Promise<AdSpotText[]>;
 
 type ElementFilter = (elem: HTMLElement | Element) => Boolean;
 
@@ -42,7 +24,7 @@ export const nextWithText = (el: HTMLElement | Element): null | HTMLElement | El
   }
 };
 
-const minCharFilter: ElementFilter = (elem) => {
+const minCharFilter = (minCharLimit:number, elem: HTMLElement|Element) => {
   if (!elem.textContent) {
     elem.textContent = "";
   }
@@ -65,7 +47,7 @@ const nextElementWithTextOfSameTypeFilter: ElementFilter = (elem) => {
   }
   return ans;
 };
-const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (webpage) => {
+const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (webpage, settings) => {
   const webpageWithContent = await prisma.webpage.findFirstOrThrow({
     where: {
       id: webpage.id,
@@ -83,13 +65,13 @@ const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (webpage) => {
   //   window: { document },
   // } = dom;
   const document = parse(webpageWithContent.content.desktopHtml);
-  let elements = document.querySelectorAll(contentSelector);
+  let elements = document.querySelectorAll(settings.contentSelector);
   let elementsArr = [...elements];
-  elementsArr = elementsArr.filter(minCharFilter);
-  elementsArr = sameTypeElemWithTextToFollow
+  elementsArr = elementsArr.filter(minCharFilter.bind(this, settings.minCharLimit));
+  elementsArr = settings.sameTypeElemWithTextToFollow
     ? elementsArr.filter(nextElementWithTextOfSameTypeFilter)
     : elementsArr;
-  elementsArr = elementsArr.slice(0, count);
+  elementsArr = elementsArr.slice(0, settings.desiredAdvertisementSpotCount);
   console.log(`here are the possible ${elementsArr.length} ad spots: `);
   const adSpots: AdSpotText[] = elementsArr.map((elem) => ({
     beforeText: elem.textContent?.trim() ?? "",
@@ -118,9 +100,18 @@ if (require.main === module) {
         }
       },
       include: {
-        content: true
+        content: true,
+        website: {
+          include: {
+            user: {
+              include: {
+                setting: true
+              }
+            }
+          }
+        }
       }
     });
-    await getAdSpotsForWebpage(webpage);
+    await getAdSpotsForWebpage(webpage, webpage.website.user.setting!);
   })();
 }

@@ -4,8 +4,8 @@ import { XMLParser } from "fast-xml-parser";
 import fetchContentOfWebpage from "@/services/helpers/fetchContentOfWebpage";
 import WebpageCreateManyWebsiteInput = Prisma.WebpageCreateManyWebsiteInput;
 import { isAfter, parseISO, subDays } from "date-fns";
-import { WEBPAGE_LOOK_BACK_DAYS } from "@/constants";
 import { getUrlProperties } from "@/pages/api/auctions/generate";
+import { Setting } from "@prisma/client";
 
 export type UrlsetUrl = {
   loc: string;
@@ -21,8 +21,6 @@ export type SitemapIndexSitemap = {
   [key: string]: any;
 };
 
-const lookBackDate = subDays(new Date(), WEBPAGE_LOOK_BACK_DAYS);
-
 export const getCleanUrl = (url: string): string => {
   try {
     const { originWithPathName } = getUrlProperties(url);
@@ -33,10 +31,15 @@ export const getCleanUrl = (url: string): string => {
   return "";
 };
 
-type CreateWebpages = (website: string, sitemapUrl?: string) => Promise<void>;
+type CreateWebpages = (
+  website: string,
+  settings: Setting,
+  sitemapUrl?: string
+) => Promise<void>;
 
 const createWebpages: CreateWebpages = async (
   websiteId: string,
+  settings: Setting,
   sitemapUrl
 ) => {
   const website = await prisma.website.findFirstOrThrow({
@@ -79,6 +82,7 @@ const createWebpages: CreateWebpages = async (
   if (Array.isArray(jsonObj?.urlset?.url)) {
     const urlArray = jsonObj.urlset.url as UrlsetUrl[];
     console.log("we have a sitemap with urlset: ", urlArray.length);
+    const lookBackDate = subDays(new Date(), settings.webpageLookbackDays);
     console.log("lookBackDate is: ", lookBackDate);
 
     let webpageInputs: WebpageCreateManyWebsiteInput[] = [];
@@ -118,7 +122,7 @@ const createWebpages: CreateWebpages = async (
     const sitemapArray = jsonObj.sitemapindex.sitemap as SitemapIndexSitemap[];
     console.log("we have a sitemap of sitemaps");
     for (const item of sitemapArray) {
-      await createWebpages(websiteId, item.loc);
+      await createWebpages(websiteId, settings, item.loc);
     }
   } else {
     console.log("unable to process sitemap");
@@ -129,10 +133,18 @@ export default createWebpages;
 
 if (require.main === module) {
   (async () => {
-    const websites = await prisma.website.findMany();
+    const websites = await prisma.website.findMany({
+      include: {
+        user: {
+          include: {
+            setting: true,
+          },
+        },
+      },
+    });
     for (const website of websites) {
       try {
-        await createWebpages(website.id);
+        await createWebpages(website.id, website.user.setting!);
       } catch (e) {
         console.error("there was an issue creating webpages for: ", website.id);
       }

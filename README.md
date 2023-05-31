@@ -82,6 +82,7 @@ drop database bw;
 - add bullmq and deploy app to aws
 - ass sqs consumer and deploy app to aws
 - use defer.run
+- render, heroku etc.
 
 ## Pending backlog
 - move all constants to settings
@@ -93,6 +94,7 @@ drop database bw;
 - delete advertisement spots
 - re-run process webpage
 - function to turn on all webpages (internal function)
+- fix no id error on script
 
 ## Pending callback
 - when a campaign is added, we need to build scores & then advertisements
