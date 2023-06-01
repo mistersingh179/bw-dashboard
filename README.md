@@ -85,7 +85,6 @@ drop database bw;
 - render, heroku etc.
 
 ## Pending backlog
-- move all constants to settings
 - give better error when userId is not provided
 - create all webpages as OFF
 - search filter on webpages page

@@ -75,7 +75,11 @@ const JavascriptSnippet: FCWithAuth = () => {
               abort itself.
             </ListItem>
             <ListItem>
-              Turn the status off for the urls on which you
+              Turn the status off for the entire website on which you
+              don&apos;t want brandweaver to run.
+            </ListItem>
+            <ListItem>
+              Turn the status off for individual webpages on which you
               don&apos;t want brandweaver to run.
             </ListItem>
           </OrderedList>

@@ -16,7 +16,7 @@ const handler: NextApiHandler = async (req, res) => {
   res
     .setHeader("Content-Type", "application/json")
     .status(200)
-    .send(superjson.stringify({ user }));
+    .send(superjson.stringify(user));
 };
 
 export default handler;
