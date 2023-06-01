@@ -27,11 +27,33 @@ import {
   NoDataRow,
 } from "@/components/genericMessages";
 import useUsers, { UserWithCounts } from "@/hooks/useUsers";
-import {AddIcon, ArrowDownIcon, ChevronDownIcon, HamburgerIcon, StarIcon} from "@chakra-ui/icons";
+import {
+  AddIcon,
+  ArrowDownIcon,
+  ChevronDownIcon,
+  HamburgerIcon,
+  StarIcon,
+} from "@chakra-ui/icons";
+import { signIn } from "next-auth/react";
 
 const Users = () => {
   const { users, isLoading, error } = useUsers();
-
+  const impresonateHandler = async (id: string) => {
+    const payload = {
+      userIdToImpersonate: id,
+    };
+    const res = await fetch("/api/users/impersonate", {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("impresonateHandler result: ", res.status, res.statusText);
+    if (res.status === 204) {
+      window.location.href = window.location.origin;
+    }
+  };
   return (
     <Box>
       <HStack>
@@ -56,7 +78,7 @@ const Users = () => {
             {users &&
               users.length > 0 &&
               users.map((user: UserWithCounts) => (
-                <Tr key={user.id ?? JSON.stringify(user)}>
+                <Tr key={user.id}>
                   <Td>{user.name}</Td>
                   <Td>{user.email}</Td>
                   <Td>
@@ -67,13 +89,26 @@ const Users = () => {
                     </UnorderedList>
                   </Td>
                   <Td>
-                    <ButtonGroup size='md' isAttached colorScheme={'blue'} variant='outline'>
-                      <Button>Impersonate</Button>
+                    <ButtonGroup
+                      size="md"
+                      isAttached
+                      colorScheme={"blue"}
+                      variant="outline"
+                    >
+                      <Button
+                        onClick={() => {
+                          const ans = confirm(
+                            `Are you sure you want to impersonate: ${user.email}`
+                          );
+                          if(ans) {
+                            impresonateHandler(user.id);
+                          }
+                        }}
+                      >
+                        Impersonate
+                      </Button>
                       <Menu>
-                        <MenuButton
-                          as={IconButton}
-                          icon={<ChevronDownIcon />}
-                        >
+                        <MenuButton as={IconButton} icon={<ChevronDownIcon />}>
                           Actions
                         </MenuButton>
                         <MenuList>

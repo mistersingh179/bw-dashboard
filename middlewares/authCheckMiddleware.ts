@@ -5,7 +5,6 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 const authCheckMiddleware: Middleware = async (req, res, next) => {
   const session = await getServerSession(req, res, authOptions);
-  console.log("in Auth Check middleware with: ", session?.user?.id);
   if (session?.user?.id) {
     req.authenticatedUserId = session.user.id;
     await next();
