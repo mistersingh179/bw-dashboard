@@ -22,56 +22,38 @@ import React, { useEffect, useState } from "react";
 import SliderThumbWithTooltip from "@/components/SliderThumbWithTooltip";
 import useSettings from "@/hooks/useSettings";
 import { ErrorAlert, ErrorRow, NoDataRow } from "@/components/genericMessages";
+import {SettingType} from "@/types/my-types";
 
 const Settings: FCWithAuth = () => {
   const { settings, error, isLoading, onSave } = useSettings();
-  console.log("*** settings: ", settings);
 
-  const [scoreThreshold, setScoreThreshold] = useState(
-    settings?.scoreThreshold ?? 0
-  );
-  const [status, setStatus] = useState(settings?.status ?? false);
-  const [addSponsoredWording, setAddSponsoredWording] = useState(
-    settings?.addSponsoredWording ?? false
-  );
+  const defaultValues: SettingType = {
+    contentSelector: "",
+    desiredAdvertisementCount: 0,
+    desiredAdvertisementSpotCount: 0,
+    minCharLimit: 0,
+    sameTypeElemWithTextToFollow: false,
+    webpageLookbackDays: 0,
+    scoreThreshold: 0,
+    status: false,
+    addSponsoredWording: false
+  };
+
+  const [items, setItems] = useState(defaultValues);
+  const updateItem = (itemName: string, itemValue: any) => {
+    setItems((prevState) => ({
+      ...prevState,
+      [itemName]: itemValue,
+    }));
+  };
+  const { scoreThreshold, status, addSponsoredWording } = items;
 
   useEffect(() => {
-    console.log(
-      "status: ",
-      status,
-      "scoreThreshold: ",
-      scoreThreshold,
-      " addSponsoredWording: ",
-      addSponsoredWording
-    );
-  }, [status, scoreThreshold, addSponsoredWording]);
-
-  useEffect(() => {
-    if (
-      settings &&
-      settings.scoreThreshold !== undefined &&
-      settings.status !== undefined
-    ) {
-      setScoreThreshold(settings.scoreThreshold);
-      setStatus(settings.status);
-      setAddSponsoredWording(settings.addSponsoredWording);
+    if (settings) {
+      console.log("got updated settings: ", settings);
+      setItems(settings);
     }
-  }, [
-    settings,
-    settings?.scoreThreshold,
-    settings?.status,
-    settings?.addSponsoredWording,
-  ]);
-
-  const handleStatus = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    setStatus(evt.target.checked);
-  };
-
-  const handleAddSponsoredWording = (
-    evt: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setAddSponsoredWording(evt.target.checked);
-  };
+  }, [settings]);
 
   return (
     <Box>
@@ -85,7 +67,7 @@ const Settings: FCWithAuth = () => {
               <FormLabel>Score Threshold</FormLabel>
               <SliderThumbWithTooltip
                 value={scoreThreshold}
-                onChangeHandler={setScoreThreshold}
+                onChangeHandler={(val) => updateItem("scoreThreshold", val)}
               />
               <FormHelperText my={7} lineHeight={1.5}>
                 <Text>
@@ -104,7 +86,10 @@ const Settings: FCWithAuth = () => {
             <FormControl>
               <HStack>
                 <FormLabel mb={0}>Status</FormLabel>
-                <Switch isChecked={status} onChange={handleStatus} />
+                <Switch
+                  isChecked={status}
+                  onChange={(evt) => updateItem("status", evt.target.checked)}
+                />
               </HStack>
               <FormHelperText my={7} lineHeight={1.5}>
                 <Text>Instructions: Turn On/Off BrandWeaver Script</Text>
@@ -129,7 +114,9 @@ const Settings: FCWithAuth = () => {
                 <FormLabel mb={0}>Add Sponsored Wording</FormLabel>
                 <Switch
                   isChecked={addSponsoredWording}
-                  onChange={handleAddSponsoredWording}
+                  onChange={(evt) =>
+                    updateItem("addSponsoredWording", evt.target.checked)
+                  }
                 />
               </HStack>
               <FormHelperText my={7} lineHeight={1.5}>
@@ -157,11 +144,11 @@ const Settings: FCWithAuth = () => {
             <FormControl>
               <Button
                 colorScheme="blue"
-                onClick={onSave.bind(this, {
-                  scoreThreshold,
-                  status,
-                  addSponsoredWording,
-                })}
+                onClick={() => {
+                  onSave({
+                    ...items,
+                  });
+                }}
               >
                 Save
               </Button>

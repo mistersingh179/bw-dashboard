@@ -12,12 +12,14 @@ import {
 import { Link, Image } from "@chakra-ui/next-js";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import useUser from "@/hooks/useUser";
 
 const TopNav: React.FC = () => {
   const { data: session, status } = useSession();
   console.log("session: ", session);
   const router = useRouter();
   const currentRoute = router.pathname;
+  const { user } = useUser();
 
   return (
     <>
@@ -68,10 +70,20 @@ const TopNav: React.FC = () => {
             </Link>
             <Link
               href={"/categories/list"}
-              fontWeight={currentRoute === "/categories/list" ? "bold" : "normal"}
+              fontWeight={
+                currentRoute === "/categories/list" ? "bold" : "normal"
+              }
             >
               Categories
             </Link>
+            {user?.canManageUsers === true && (
+              <Link
+                href={"/users/list"}
+                fontWeight={currentRoute === "/users/list" ? "bold" : "normal"}
+              >
+                Users
+              </Link>
+            )}
           </Show>
         </HStack>
         <Spacer />

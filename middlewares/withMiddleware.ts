@@ -14,6 +14,7 @@ import {
 import delayMiddleware from "@/middlewares/delayMiddleware";
 import botRejectingMiddleware from "@/middlewares/botRejectingMiddleware";
 import statusCheckMiddleware from "@/middlewares/statusCheckMiddleware";
+import canManageUsersMiddleware from "@/middlewares/canManageUsersMiddleware";
 
 const defaults: string[] = ["reqId", "delay", "logging", "headers", "errors"];
 
@@ -32,6 +33,7 @@ const middleware: LabeledMiddleware = {
   delay: delayMiddleware,
   rejectBots: botRejectingMiddleware,
   statusOn: statusCheckMiddleware,
+  canManage: canManageUsersMiddleware,
 };
 
 const withMiddleware = label(middleware, defaults);

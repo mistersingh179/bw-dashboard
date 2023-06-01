@@ -10,10 +10,13 @@ import {
   Button,
   OrderedList,
   ListItem,
+  Spinner,
 } from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
 import MyCode from "@/components/MyCode";
 import superjson from "superjson";
+import useUser from "@/hooks/useUser";
+import { ErrorAlert } from "@/components/genericMessages";
 
 const BW_SCRIPT_BASE_URL = process.env.NEXT_PUBLIC_BW_SCRIPT_BASE_URL;
 
@@ -23,23 +26,7 @@ const scriptTag = (userId: string) => {
 };
 
 const JavascriptSnippet: FCWithAuth = () => {
-  const { data: session } = useSession();
-  console.log(session);
-  const [userId, setUserId] = useState("unknown");
-
-  useEffect(() => {
-    const getUser = async () => {
-      const res = await fetch("/api/user");
-      console.log("res result: ", res.status);
-      const text = await res.text();
-      const data = await superjson.parse<any>(text);
-      console.log(data);
-      setUserId(data.id);
-    };
-    if (session?.user?.email) {
-      getUser();
-    }
-  }, [session?.user?.email]);
+  const { user, error, isLoading } = useUser();
 
   return (
     <Box>
@@ -54,7 +41,9 @@ const JavascriptSnippet: FCWithAuth = () => {
           &lt;head&gt; element. Don’t add more than one BrandWeaver tag to each
           page.
         </Text>
-        <MyCode> {scriptTag(userId)} </MyCode>
+        {error && <ErrorAlert />}
+        {isLoading && <Spinner color={"blue.500"} />}
+        {user && <MyCode> {scriptTag(user.id)} </MyCode>}
         <Heading size={"md"}>
           How to restrict BrandWeaver code from running on your website?
         </Heading>
@@ -75,8 +64,8 @@ const JavascriptSnippet: FCWithAuth = () => {
               abort itself.
             </ListItem>
             <ListItem>
-              Turn the status off for the entire website on which you
-              don&apos;t want brandweaver to run.
+              Turn the status off for the entire website on which you don&apos;t
+              want brandweaver to run.
             </ListItem>
             <ListItem>
               Turn the status off for individual webpages on which you

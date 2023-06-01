@@ -4,14 +4,15 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 import prisma from "@/lib/prisma";
 import superjson from "superjson";
+import withMiddleware from "@/middlewares/withMiddleware";
 
-const handler: NextApiHandler = async (req, res) => {
-  const session = await getServerSession(req, res, authOptions);
-  if (!session) {
-    res.status(403).send("sorry access denied");
-  }
+const user: NextApiHandler = async (req, res) => {
 
-  const user = await prisma.user.findFirst();
+  const user = await prisma.user.findFirst({
+    where: {
+      id: req.authenticatedUserId
+    }
+  });
 
   res
     .setHeader("Content-Type", "application/json")
@@ -19,4 +20,4 @@ const handler: NextApiHandler = async (req, res) => {
     .send(superjson.stringify(user));
 };
 
-export default handler;
+export default withMiddleware("getOnly", "auth")(user);

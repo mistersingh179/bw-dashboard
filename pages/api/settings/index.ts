@@ -4,6 +4,7 @@ import { Campaign, Setting } from "@prisma/client";
 import { formatISO, parseISO } from "date-fns";
 import prisma from "@/lib/prisma";
 import superjson from "superjson";
+import { omit } from "lodash";
 
 const settings: NextApiHandler = async (req, res) => {
   switch (req.method) {
@@ -22,8 +23,8 @@ const handleCreateOrUpdateSettings = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-
-  const { status, scoreThreshold } = req.body;
+  const notAllowedAttributes = ["userId"];
+  const data = omit(req.body, notAllowedAttributes) as any;
   const userWithSetting = await prisma.user.update({
     where: {
       id: req.authenticatedUserId,
@@ -31,18 +32,14 @@ const handleCreateOrUpdateSettings = async (
     data: {
       setting: {
         upsert: {
-          update: {
-            ...req.body
-          },
-          create: {
-            ...req.body
-          }
+          update: { ...data },
+          create: { ...data } ,
         },
       },
     },
     include: {
-      setting: true
-    }
+      setting: true,
+    },
   });
 
   res

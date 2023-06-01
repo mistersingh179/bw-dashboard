@@ -92,6 +92,7 @@ drop database bw;
 - delete advertisement spots
 - re-run process webpage
 - function to turn on all webpages (internal function)
+- look at not cascading deletes to auction & impression
 
 ## Pending callback
 - when a campaign is added, we need to build scores & then advertisements

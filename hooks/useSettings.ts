@@ -34,17 +34,21 @@ const useSettings = () => {
 
   const onSave = async (
     updatedSettings: SettingType,
-    evt: React.MouseEvent<HTMLButtonElement>
   ) => {
     try {
+      const newSettings = {...updatedSettings};
+      await mutate(newSettings, {
+        revalidate: false,
+        populateCache: true,
+      })
       success("Settings", "Updated successfully");
-      await mutate(updateSettings.bind(this, updatedSettings), {
-        optimisticData: updatedSettings,
+      await mutate(updateSettings.bind(this, newSettings), {
+        revalidate: true,
         populateCache: false,
       });
     } catch (err) {
       console.log("failed to save settings: ", err);
-      failure("Settings", "Unable to save settings");
+      failure("Settings", "rolling back as update failed");
     }
   };
 
