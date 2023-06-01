@@ -85,7 +85,6 @@ drop database bw;
 - render, heroku etc.
 
 ## Pending backlog
-- give better error when userId is not provided
 - create all webpages as OFF
 - search filter on webpages page
 - immediate webpage job process them when webpage is toggled on / "Process Webpage"
@@ -93,7 +92,6 @@ drop database bw;
 - delete advertisement spots
 - re-run process webpage
 - function to turn on all webpages (internal function)
-- fix no id error on script
 
 ## Pending callback
 - when a campaign is added, we need to build scores & then advertisements

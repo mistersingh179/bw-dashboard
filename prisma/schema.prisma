@@ -55,20 +55,21 @@ model VerificationToken {
 }
 
 model User {
-  id            String     @id @default(cuid())
-  accounts      Account[]
-  sessions      Session[]
-  auctions      Auction[]
-  campaigns     Campaign[]
-  websites      Website[]
-  categories    Category[]
-  setting       Setting?
-  name          String?
-  email         String?    @unique
-  emailVerified DateTime?
-  image         String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @default(now()) @updatedAt
+  id             String     @id @default(cuid())
+  accounts       Account[]
+  sessions       Session[]
+  auctions       Auction[]
+  campaigns      Campaign[]
+  websites       Website[]
+  categories     Category[]
+  setting        Setting?
+  name           String?
+  email          String?    @unique
+  emailVerified  DateTime?
+  image          String?
+  canManageUsers Boolean    @default(false)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @default(now()) @updatedAt
 }
 
 model Setting {
