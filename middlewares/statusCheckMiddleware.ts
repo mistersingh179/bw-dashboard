@@ -16,15 +16,20 @@ export const getSettings = async (userId: string): Promise<Setting> => {
 
 const statusCheckMiddleware: Middleware = async (req, res, next) => {
   const { userId } = req.body;
-
-  const settings = await getSettings(userId);
-  if (settings.status === false) {
-    console.log("Aborting as user setting status is off.");
+  try{
+    const settings = await getSettings(userId);
+    if (settings.status === false) {
+      console.log("Aborting as user setting status is off.");
+      res.status(204).end();
+      return;
+    } else {
+      req.settings = settings;
+      await next();
+    }
+  }catch(err){
+    console.log("not settings found: ", userId, err);
     res.status(204).end();
     return;
-  } else {
-    req.settings = settings;
-    await next();
   }
 };
 
