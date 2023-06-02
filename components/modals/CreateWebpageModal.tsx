@@ -31,7 +31,7 @@ const CreateWebpageModal = ({
   const [url, setUrl] = useState("https://acme.com");
   const [status, setStatus] = useState(false);
 
-  const urlMissing = url.length === 0 ? true : false;
+  const urlMissing = url.trim() === '' ? true : false;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
@@ -80,9 +80,9 @@ const CreateWebpageModal = ({
                 lastModifiedAt: new Date(),
               };
               onClose();
-              await onSave(newWebpage);
               setUrl("https://acme.com");
               setStatus(false);
+              await onSave(newWebpage);
             }}
           >
             Save

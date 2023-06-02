@@ -49,21 +49,25 @@ const useWebpages = (wsid: string, page: number, pageSize: number) => {
 
   const onSave = async (newWebpage: WebpageType) => {
     console.log("going to save the website url: ", newWebpage);
-    try {
-      await mutate(saveWebpage.bind(this, newWebpage), {
-        optimisticData: (currentData) => {
-          success("Webpage", "Created successfully");
-          if (currentData) {
-            return [...currentData, { ...newWebpage }];
-          } else {
-            return [{ ...newWebpage }];
-          }
-        },
-        populateCache: false,
-      });
-    } catch (err) {
-      console.log("website url creation failed: ", err);
-      failure("Webpage", "Rolling back as creation failed!");
+    if(webpages){
+      const newWebpages: WebpageType[] = [
+        ...webpages,
+        {...newWebpage}
+      ]
+      try{
+        await mutate(newWebpages,{
+          populateCache: true,
+          revalidate: false,
+        })
+        success("Webpage", "Created successfully");
+        await mutate(saveWebpage.bind(this, newWebpage), {
+          populateCache: false,
+          revalidate: true,
+        })
+      }catch(err){
+        console.log("error while saving webpage");
+        failure("Webpage", "rolling back as creation failed");
+      }
     }
   };
 

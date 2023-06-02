@@ -1,6 +1,6 @@
 import FCWithAuth from "@/types/FCWithAuth";
 import {
-  Box,
+  Box, Button,
   Heading,
   HStack,
   Spacer,
@@ -13,7 +13,7 @@ import {
   Tfoot,
   Th,
   Thead,
-  Tr,
+  Tr, useDisclosure,
 } from "@chakra-ui/react";
 import React from "react";
 import {
@@ -32,6 +32,8 @@ import useWebsites from "@/hooks/useWebsites";
 import Link from "next/link";
 import PaginationRow from "@/components/PaginationRow";
 import usePagination from "@/hooks/usePagination";
+import {AddIcon} from "@chakra-ui/icons";
+import CreateWebpageModal from "@/components/modals/CreateWebpageModal";
 
 const Webpages: FCWithAuth = () => {
   const router = useRouter();
@@ -45,17 +47,23 @@ const Webpages: FCWithAuth = () => {
     pageSize
   );
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const { websites } = useWebsites();
   const website = (websites || []).find((ws) => ws.id === wsid);
 
   return (
     <Box>
+      <CreateWebpageModal isOpen={isOpen} onClose={onClose} onSave={onSave} />
       <HStack alignItems={"baseline"} my={5}>
         <Heading>Webpages</Heading>
         <Heading color={"gray.400"} size={"sm"}>
           <Link href={"/websites/list"}> – {website?.topLevelDomainUrl} </Link>
         </Heading>
         <Spacer />
+        <Button onClick={onOpen} colorScheme={"blue"} leftIcon={<AddIcon />}>
+          Add Webpage
+        </Button>
       </HStack>
       <TableContainer whiteSpace={"normal"}>
         <Table variant={"simple"} size={"md"}>
