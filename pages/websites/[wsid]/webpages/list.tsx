@@ -81,7 +81,9 @@ const Webpages: FCWithAuth = () => {
                     <Switch
                       isChecked={webpage.status}
                       isDisabled={webpage.id ? false : true}
-                      onChange={onUpdate.bind(this, webpage)}
+                      onChange={(evt) =>
+                        onUpdate({ ...webpage, status: evt.target.checked })
+                      }
                     />
                   </Td>
                   <Td>

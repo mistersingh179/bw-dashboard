@@ -14,38 +14,36 @@ const useWebpages = (wsid: string, page: number, pageSize: number) => {
     isLoading,
     mutate,
   } = useSWR<WebpageType[]>(
-    wsid ? `/api/websites/${wsid}/webpages?page=${page}&pageSize=${pageSize}` : null,
+    wsid
+      ? `/api/websites/${wsid}/webpages?page=${page}&pageSize=${pageSize}`
+      : null,
     fetcher
   );
 
   const onUpdate = async (
     updatedWebpage: WebpageType,
-    evt: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const updatedItem = { ...updatedWebpage };
-    updatedItem.status = evt.target.checked;
-    console.log("updated website url is: ", updatedItem);
-    try {
-      await mutate(updateWebpage.bind(this, updatedItem), {
-        optimisticData: (currentData) => {
-          console.log("in optimisticData with: ", currentData);
-          success("Webpage", "Updated successfully");
-          if (currentData) {
-            const idx = currentData.findIndex((x) => x.id === updatedItem.id);
-            return [
-              ...currentData.slice(0, idx),
-              { ...updatedItem },
-              ...currentData.slice(idx + 1),
-            ];
-          } else {
-            return [{ ...updatedItem }];
-          }
-        },
-        populateCache: false,
-      });
-    } catch (err) {
-      console.log("error updating webpage:", err);
-      failure("Webpage", "rolling back as update failed");
+    if (webpages) {
+      const idx = webpages.findIndex((x) => x.id === updatedWebpage.id);
+      const newWebpages: WebpageType[] = [
+        ...webpages.slice(0, idx),
+        { ...updatedWebpage },
+        ...webpages.slice(idx + 1),
+      ];
+      try {
+        await mutate(newWebpages, {
+          populateCache: true,
+          revalidate: false,
+        });
+        success("Webpage", "Updated successfully");
+        await mutate(updateWebpage.bind(this, updatedWebpage), {
+          revalidate: true,
+          populateCache: false,
+        });
+      } catch (err) {
+        console.log("error updating webpage: ", err);
+        failure("Webpage", "rolling back as update failed");
+      }
     }
   };
 
