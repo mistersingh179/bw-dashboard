@@ -64,7 +64,7 @@ const useAdvertisementsWithDetail = (wsid: string, wpid: string) => {
           populateCache: false,
         });
       } catch (err) {
-        failure("Webpage", "rolling back as update failed");
+        failure("Advertisement", "rolling back as update failed");
       }
     }
   };

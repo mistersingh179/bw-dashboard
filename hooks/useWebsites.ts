@@ -71,28 +71,29 @@ const useWebsites = () => {
   };
 
   const onUpdate = async (updatedWebsite: WebsiteType) => {
-    try {
-      await mutate(updateWebsite.bind(this, updatedWebsite), {
-        optimisticData: (currentData) => {
-          success("Website", "Updated successfully");
-          if (currentData) {
-            const idx = currentData.findIndex(
-              (x) => x.id === updatedWebsite.id
-            );
-            return [
-              ...currentData.slice(0, idx),
-              { ...updatedWebsite },
-              ...currentData.slice(idx + 1),
-            ];
-          } else {
-            return [{ ...updatedWebsite }];
-          }
-        },
-        populateCache: false,
-      });
-    } catch (e) {
-      console.log("updating website failed: ", e);
-      failure("Website", "Rolling back as update failed");
+    if(websites){
+      const idx = websites.findIndex(
+        (x) => x.id === updatedWebsite.id
+      );
+      const newWebsites: WebsiteType[] = [
+        ...websites.slice(0, idx),
+        updatedWebsite,
+        ...websites.slice(idx + 1),
+      ];
+      try{
+        await mutate(newWebsites, {
+          populateCache: true,
+          revalidate: false,
+        })
+        success("Website", "Updated successfully");
+        await mutate(updateWebsite.bind(this, updatedWebsite), {
+          revalidate: true,
+          populateCache: false,
+        })
+      }catch(err){
+        console.log("error updating websites: ", err);
+        failure("Website", "rolling back as update failed")
+      }
     }
   };
 
