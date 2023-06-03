@@ -7,12 +7,29 @@ import {
   HStack,
   Spacer,
   Spinner,
+  Switch,
+  Table,
+  TableCaption,
+  TableContainer,
   Tag,
+  Tbody,
+  Td,
+  Tfoot,
+  Th,
+  Thead,
+  Tr,
   VStack,
+  Text,
 } from "@chakra-ui/react";
 import React from "react";
 import useWebpage from "@/hooks/useWepage";
-import { ErrorAlert, WarningAlert } from "@/components/genericMessages";
+import {
+  ErrorAlert,
+  ErrorRow,
+  LoadingDataRow,
+  NoDataRow,
+  WarningAlert,
+} from "@/components/genericMessages";
 import { formatISO } from "date-fns";
 import StatusBadge from "@/components/StatusBadge";
 import { Link } from "@chakra-ui/next-js";
@@ -21,6 +38,81 @@ import { preload } from "swr";
 import fetcher from "@/helpers/fetcher";
 import { WebpageWithAdSpotsAndOtherCounts } from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
 import useCategoriesOfWebpage from "@/hooks/useCategoriesOfWebpage";
+import useScoredCampaignsOfWebpage from "@/hooks/useScoredCampaignsOfWebpage";
+import { WebpageType } from "@/types/my-types";
+import { ScoredCampaign } from "@prisma/client";
+import usePagination from "@/hooks/usePagination";
+import PaginationRow from "@/components/PaginationRow";
+import { ScoredCampaignWithCampaign } from "@/pages/api/websites/[wsid]/webpages/[wpid]/scoredCampaigns";
+
+const ScoredCampaigns = () => {
+  const router = useRouter();
+  const { wsid, wpid } = router.query as QueryParams;
+  const { page, setPage, pageSize, setPageSize } = usePagination(1, 5);
+  const { scoredCampaigns, isLoading, error } = useScoredCampaignsOfWebpage(
+    wsid,
+    wpid,
+    page,
+    pageSize
+  );
+
+  return (
+    <>
+      <TableContainer whiteSpace={"normal"}>
+        <Table variant={"simple"} size={"sm"}>
+          <TableCaption placement={"top"} m={0}>
+            <Text fontSize={"xl"} color={'blue.500'}>Scored Campaigns</Text>
+          </TableCaption>
+          <Thead>
+            <Tr>
+              <Th>Campaign</Th>
+              <Th>Product Name</Th>
+              <Th>Score</Th>
+              <Th>Reason</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {error && <ErrorRow colSpan={4} />}
+            {isLoading && <LoadingDataRow colSpan={4} height={"lg"} />}
+            {!isLoading && scoredCampaigns && scoredCampaigns.length == 0 && (
+              <NoDataRow colSpan={4} />
+            )}
+            {scoredCampaigns &&
+              scoredCampaigns.length > 0 &&
+              scoredCampaigns.map(
+                (scoredCampaign: ScoredCampaignWithCampaign) => (
+                  <Tr key={scoredCampaign.id ?? JSON.stringify(scoredCampaign)}>
+                    <Td>{scoredCampaign.campaign.name}</Td>
+                    <Td>{scoredCampaign.campaign.productName}</Td>
+                    <Td>{scoredCampaign.score}</Td>
+                    <Td>{scoredCampaign.reason}</Td>
+                  </Tr>
+                )
+              )}
+          </Tbody>
+          <Tfoot>
+            <PaginationRow
+              page={page}
+              setPage={setPage}
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              colSpan={4}
+              size={'xs'}
+              onMouseOverFn={() =>
+                preload(
+                  `/api/websites/${wsid}/webpages/${wpid}/scoredCampaigns?page=${
+                    page + 1
+                  }&pageSize=${pageSize}`,
+                  fetcher
+                )
+              }
+            />
+          </Tfoot>
+        </Table>
+      </TableContainer>
+    </>
+  );
+};
 
 const Categories = () => {
   const router = useRouter();
@@ -135,8 +227,15 @@ const Show = () => {
       {isLoading && <Spinner color={"blue.500"} />}
       {error && <ErrorAlert />}
       {webpage && <WebpageBox webpage={webpage} />}
-      <Box my={5}>
+      <Box mt={2}>
         <Categories />
+      </Box>
+      <Box mt={5}
+        border={"1px"}
+        borderColor={"gray.200"}
+        borderRadius={"md"}
+      >
+        <ScoredCampaigns />
       </Box>
       <HStack mt={5} spacing={5}>
         <Link href={`/websites/${wsid}/webpages/list`} colorScheme={"green"}>

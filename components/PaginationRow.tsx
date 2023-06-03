@@ -18,6 +18,7 @@ const PaginationRow = ({
   setPageSize,
   colSpan,
   onMouseOverFn,
+  size = "md",
 }: {
   page: number;
   setPage: Dispatch<SetStateAction<number>>;
@@ -25,6 +26,7 @@ const PaginationRow = ({
   setPageSize: Dispatch<SetStateAction<number>>;
   colSpan: number;
   onMouseOverFn?: Function;
+  size?: "xs" | "sm" | "md" | "lg";
 }) => {
   return (
     <Tr onMouseOver={() => (onMouseOverFn ? onMouseOverFn() : null)}>
@@ -44,8 +46,10 @@ const PaginationRow = ({
             <Select
               width={"100px"}
               size={"sm"}
+              value={pageSize}
               onChange={(evt) => setPageSize(Number(evt.target.value))}
             >
+              <option value={"5"}>5</option>
               <option value={"10"}>10</option>
               <option value={"25"}>25</option>
               <option value={"50"}>50</option>
@@ -57,13 +61,18 @@ const PaginationRow = ({
           </FormControl>
           <Spacer />
           <Button
+            size={size}
             isDisabled={page === 1}
             variant={"outline"}
             onClick={() => setPage((pv) => (pv > 1 ? pv - 1 : pv))}
           >
             Previous
           </Button>
-          <Button variant={"outline"} onClick={() => setPage((pv) => pv + 1)}>
+          <Button
+            size={size}
+            variant={"outline"}
+            onClick={() => setPage((pv) => pv + 1)}
+          >
             Next
           </Button>
         </HStack>
