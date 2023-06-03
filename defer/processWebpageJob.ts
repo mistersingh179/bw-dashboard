@@ -1,6 +1,6 @@
 import { defer } from "@defer/client";
-import processWebpage, {WebpageWithContent} from "@/services/processWebpage";
-import {Webpage} from ".prisma/client";
+import processWebpage from "@/services/processWebpage";
+import { Webpage } from ".prisma/client";
 
 const processWebpageJob = async (webpage: Webpage) => {
   console.log("started processWebpageJob with: ", webpage.url);

@@ -41,6 +41,9 @@ const createAdvertisementSpots: CreateAdvertisementSpots = async (
     },
   });
 
+  // todo - need to also not process webpages for which we have processed in past and were unable to create the spots
+  // todo - this will not stop & thus we will re-process a webpage which just doesnt have enough spots
+
   if (existingAdSpotCount >= settings.desiredAdvertisementSpotCount) {
     console.log(
       `Aborting createAdvertisementSpots as we already enough: `,

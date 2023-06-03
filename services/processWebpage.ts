@@ -10,6 +10,12 @@ export type WebpageWithContent = Webpage & { content: Content | null };
 
 type ProcessWebpage = (webpage: Webpage) => Promise<void>;
 
+// todo - accept user, settings, campaigns etc. as an injection
+// todo - this way if the caller already has all that information,
+// todo -  then this job does not need to look it up again
+// todo - that is specifically true when this job is called from campaign job
+// todo - which has that info and it is same for all webpages it call its on
+
 const processWebpage: ProcessWebpage = async (webpage) => {
   console.log("started processWebpage with: ", webpage.url);
 
