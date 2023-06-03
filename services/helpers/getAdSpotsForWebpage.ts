@@ -1,18 +1,19 @@
-import {Setting, Webpage} from "@prisma/client";
+import { Setting, Webpage } from "@prisma/client";
 import prisma from "@/lib/prisma";
 // import { JSDOM } from "jsdom";
-import { parse, HTMLElement } from 'node-html-parser';
+import { parse, HTMLElement } from "node-html-parser";
+import { Content } from ".prisma/client";
 
 type AdSpotText = {
   beforeText: string;
   afterText: string;
 };
 
-type GetAdSpotsTextForWebpage = (webpage: Webpage, settings: Setting) => Promise<AdSpotText[]>;
-
 type ElementFilter = (elem: HTMLElement | Element) => Boolean;
 
-export const nextWithText = (el: HTMLElement | Element): null | HTMLElement | Element => {
+export const nextWithText = (
+  el: HTMLElement | Element
+): null | HTMLElement | Element => {
   const nextEl = el.nextElementSibling;
   if (!nextEl) {
     return null;
@@ -24,7 +25,7 @@ export const nextWithText = (el: HTMLElement | Element): null | HTMLElement | El
   }
 };
 
-const minCharFilter = (minCharLimit:number, elem: HTMLElement|Element) => {
+const minCharFilter = (minCharLimit: number, elem: HTMLElement | Element) => {
   if (!elem.textContent) {
     elem.textContent = "";
   }
@@ -47,27 +48,30 @@ const nextElementWithTextOfSameTypeFilter: ElementFilter = (elem) => {
   }
   return ans;
 };
-const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (webpage, settings) => {
-  const webpageWithContent = await prisma.webpage.findFirstOrThrow({
-    where: {
-      id: webpage.id,
-    },
-    include: {
-      content: true,
-    },
-  });
-  if (webpageWithContent.content === null) {
-    console.log("aborting getAdSpotsForWebpage as there is no content");
-    return [];
-  }
+
+type GetAdSpotsTextForWebpage = (
+  webpage: Webpage,
+  content: Content,
+  settings: Setting
+) => Promise<AdSpotText[]>;
+
+const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (
+  webpage,
+  content,
+  settings
+) => {
+
   // const dom = new JSDOM(webpageWithContent.content.desktopHtml);
   // const {
   //   window: { document },
   // } = dom;
-  const document = parse(webpageWithContent.content.desktopHtml);
+
+  const document = parse(content.desktopHtml);
   let elements = document.querySelectorAll(settings.contentSelector);
   let elementsArr = [...elements];
-  elementsArr = elementsArr.filter(minCharFilter.bind(this, settings.minCharLimit));
+  elementsArr = elementsArr.filter(
+    minCharFilter.bind(this, settings.minCharLimit)
+  );
   elementsArr = settings.sameTypeElemWithTextToFollow
     ? elementsArr.filter(nextElementWithTextOfSameTypeFilter)
     : elementsArr;
@@ -96,22 +100,29 @@ if (require.main === module) {
       where: {
         id: "cli3v2cbk000098q7nqb4mryo",
         content: {
-          isNot: null
-        }
+          isNot: null,
+        },
       },
       include: {
-        content: true,
         website: {
           include: {
             user: {
               include: {
-                setting: true
-              }
-            }
-          }
-        }
-      }
+                setting: true,
+              },
+            },
+          },
+        },
+        content: true,
+        _count: {
+          select: {
+            categories: true,
+            advertisementSpots: true,
+            scoredCampaigns: true,
+          },
+        },
+      },
     });
-    await getAdSpotsForWebpage(webpage, webpage.website.user.setting!);
+    await getAdSpotsForWebpage(webpage, webpage.content!, webpage.website.user.setting!);
   })();
 }

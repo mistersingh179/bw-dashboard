@@ -1,13 +1,14 @@
 import { defer } from "@defer/client";
 import processWebpage, {WebpageWithContent} from "@/services/processWebpage";
+import {Webpage} from ".prisma/client";
 
-const processWebpageJob = async (webpage: WebpageWithContent, userId: string) => {
+const processWebpageJob = async (webpage: Webpage) => {
   console.log("started processWebpageJob with: ", webpage.url);
-  await processWebpage(webpage, userId);
+  await processWebpage(webpage);
   console.log("finished processWebpageJob with: ", webpage.url);
 };
 
 export default defer(processWebpageJob, {
   retry: 1,
-  concurrency: 10,
+  concurrency: 20,
 });

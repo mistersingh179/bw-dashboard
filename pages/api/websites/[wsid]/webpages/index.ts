@@ -1,10 +1,10 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
-import { Campaign } from "@prisma/client";
-import { formatISO, parseISO } from "date-fns";
 import withMiddleware from "@/middlewares/withMiddleware";
 import { QueryParams } from "@/types/QueryParams";
 import superjson from "superjson";
+import { Webpage } from ".prisma/client";
+import processWebpageJob from "@/defer/processWebpageJob";
 
 const webpagesHandler: NextApiHandler = async (req, res) => {
   switch (req.method) {
@@ -38,7 +38,7 @@ const handleListWebpages = async (
       createdAt: "asc",
     },
     take,
-    skip
+    skip,
   });
   console.log("webpages: ", webpages);
   res
@@ -52,7 +52,7 @@ const handleCreateWebpage = async (
   res: NextApiResponse
 ) => {
   const { wsid } = req.query as QueryParams;
-  const webpage = await prisma.webpage.create({
+  const webpage: Webpage = await prisma.webpage.create({
     data: {
       ...req.body,
       website: {
@@ -65,6 +65,8 @@ const handleCreateWebpage = async (
       },
     },
   });
+  const job = await processWebpageJob(webpage);
+  console.log("job id for processWebpageJob: ", job.id);
   res
     .setHeader("Content-Type", "application/json")
     .status(200)

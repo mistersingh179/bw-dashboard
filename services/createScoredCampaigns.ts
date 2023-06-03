@@ -1,26 +1,55 @@
 import prisma from "@/lib/prisma";
-import { Prisma, Webpage } from "@prisma/client";
-import getCampaignsWithTheirScores, {CampaignProductWithScore} from "@/services/prompts/getCampaignsWithTheirScores";
+import { Campaign, Prisma, Setting } from "@prisma/client";
+import getCampaignsWithTheirScores, {
+  CampaignProductWithScore,
+} from "@/services/prompts/getCampaignsWithTheirScores";
+import { Content, User, Webpage } from ".prisma/client";
 import ScoredCampaignCreateManyWebpageInput = Prisma.ScoredCampaignCreateManyWebpageInput;
-import getCampaignsWithoutScoredCampaignsForWebpage from "@/services/queries/getCamapignsWithoutScoredCampaignsForWebpage";
 
-type CreateScoredCampaigns = (webpage: Webpage) => Promise<void>;
+type CreateScoredCampaigns = (
+  webpage: Webpage,
+  content: Content,
+  settings: Setting,
+  user: User,
+  campaigns: Campaign[]
+) => Promise<void>;
 
-const createScoredCampaigns: CreateScoredCampaigns = async (webpage) => {
-  console.log("started createScoredCampaigns with: ",webpage.url);
+const createScoredCampaigns: CreateScoredCampaigns = async (
+  webpage,
+  content,
+  settings,
+  user,
+  campaigns
+) => {
+  console.log("started createScoredCampaigns with: ", webpage.url);
 
-  const campaignsWhichNeedScore =
-    await getCampaignsWithoutScoredCampaignsForWebpage(webpage.id);
-  if (campaignsWhichNeedScore.length == 0) {
-    console.log(
-      "aborting createScoredCampaigns as all campaigns are already scored"
-    );
+  // const campaignsWhichNeedScore =
+  //   await getCampaignsWithoutScoredCampaignsForWebpage(webpage.id);
+  // if (campaignsWhichNeedScore.length == 0) {
+  //   console.log(
+  //     "aborting createScoredCampaigns as all campaigns are already scored"
+  //   );
+  //   return;
+  // }
+
+  const existingScoredCampaignsCount = await prisma.scoredCampaign.count({
+    where: {
+      webpageId: webpage.id,
+    },
+  });
+
+  if (existingScoredCampaignsCount >= campaigns.length) {
+    console.log("aborting createScoredCampaigns as all are already scored");
     return;
   }
 
   let campaignsWithScore: CampaignProductWithScore[] = [];
   try {
-    campaignsWithScore = await getCampaignsWithTheirScores(webpage);
+    campaignsWithScore = await getCampaignsWithTheirScores(
+      webpage,
+      campaigns,
+      content
+    );
   } catch (err) {
     console.log("aborting as unable to get campaign scores");
     return;
@@ -57,8 +86,27 @@ if (require.main === module) {
       where: {
         id: "cli38233j000098m9ug7e78m7",
       },
+      include: {
+        website: {
+          include: {
+            user: {
+              include: {
+                setting: true,
+                campaigns: true,
+              },
+            },
+          },
+        },
+        content: true,
+      },
     });
-    await createScoredCampaigns(webpage);
+    await createScoredCampaigns(
+      webpage,
+      webpage.content!,
+      webpage.website.user.setting!,
+      webpage.website.user,
+      webpage.website.user.campaigns
+    );
   })();
 }
 

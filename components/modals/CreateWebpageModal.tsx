@@ -19,6 +19,11 @@ import {
 import React, { useState } from "react";
 import { WebpageType } from "@/types/my-types";
 
+const dummyUrl =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:8000/TestPage.html"
+    : "https://YourWebsite.com/TestPage.html";
+
 const CreateWebpageModal = ({
   isOpen,
   onClose,
@@ -28,7 +33,8 @@ const CreateWebpageModal = ({
   onClose: () => void;
   onSave: (newWebpage: WebpageType) => void;
 }) => {
-  const [url, setUrl] = useState("https://acme.com");
+
+  const [url, setUrl] = useState(dummyUrl);
   const [status, setStatus] = useState(false);
 
   const urlMissing = url.trim() === '' ? true : false;
@@ -80,7 +86,7 @@ const CreateWebpageModal = ({
                 lastModifiedAt: new Date(),
               };
               onClose();
-              setUrl("https://acme.com");
+              setUrl(dummyUrl);
               setStatus(false);
               await onSave(newWebpage);
             }}

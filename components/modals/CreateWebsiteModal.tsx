@@ -102,10 +102,10 @@ const CreateWebsiteModal = ({
                 processedOn: null,
               };
               onClose();
-              await onSave(newWebsite);
               setTopLevelDomainUrl(dummyUrl);
               setSitemapUrl(`${dummyUrl}/sitemap.xml`);
               setStatus(false);
+              await onSave(newWebsite);
             }}
           >
             Save

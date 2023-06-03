@@ -1,21 +1,18 @@
-import { Content, Prisma, Webpage } from ".prisma/client";
+import {Content, Prisma, User, Webpage} from ".prisma/client";
 import prisma from "@/lib/prisma";
 import extractCategoriesFromWebpage from "@/services/helpers/extractCategoriesFromWebpage";
 import CategoryCreateOrConnectWithoutWebpagesInput = Prisma.CategoryCreateOrConnectWithoutWebpagesInput;
 
 type CreateCategories = (
-  webpage:  Webpage & {content: Content | null}
+  webpage:  Webpage,
+  content: Content,
+  user: User
 ) => Promise<void>;
 
-const createCategories: CreateCategories = async (webpage) => {
+const createCategories: CreateCategories = async (webpage, content, user) => {
   console.log("started createCategories with: ", webpage.url);
 
-  if (webpage.content === null) {
-    console.log("aborting createCategories as the webpage does not have content");
-    return;
-  }
-
-  const myCategoryCount = await prisma.category.count({
+  const existingCategoryCount = await prisma.category.count({
     where: {
       webpages: {
         some: {
@@ -24,26 +21,15 @@ const createCategories: CreateCategories = async (webpage) => {
       },
     },
   });
-  console.log("my existing myCategoryCount: ", myCategoryCount);
-  if (myCategoryCount > 0) {
+  console.log("my existing existingCategoryCount: ", existingCategoryCount);
+
+  // todo - consider rebuilding categories when webpage content has changed.
+  if (existingCategoryCount > 0) {
     console.log("aborting createCategories as i already have them");
     return;
   }
 
-  const webpageWithUser = await prisma.webpage.findFirstOrThrow({
-    where: {
-      id: webpage.id,
-    },
-    include: {
-      website: {
-        include: {
-          user: true,
-        },
-      },
-    },
-  });
-  const user = webpageWithUser.website.user;
-  const categoriesOfThisWebpage = await extractCategoriesFromWebpage(webpage);
+  const categoriesOfThisWebpage = await extractCategoriesFromWebpage(webpage, content);
 
   const categoryConnectOrCreateInput = categoriesOfThisWebpage.map(
     (x): CategoryCreateOrConnectWithoutWebpagesInput => ({
@@ -98,6 +84,6 @@ if (require.main === module) {
       webpage.website.user.id,
       webpage.categories
     );
-    await createCategories(webpage);
+    await createCategories(webpage, webpage.content!, webpage.website.user);
   })();
 }

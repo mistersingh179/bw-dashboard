@@ -1,50 +1,39 @@
-import { Webpage } from "@prisma/client";
+import {Setting, Webpage} from "@prisma/client";
 import fetchContentOfWebpage from "@/services/helpers/fetchContentOfWebpage";
 import prisma from "@/lib/prisma";
+import {Content, User} from ".prisma/client";
 
-type CreateContent = (webpage: Webpage) => Promise<Webpage>;
-const createContent: CreateContent = async (webpage) => {
-  const existingWebpage = await prisma.webpage.findFirstOrThrow({
+type CreateContent = (webpage: Webpage, settings: Setting, user: User) => Promise<Content | null>;
+const createContent: CreateContent = async (webpage, settings, user) => {
+
+  const existingContent = await prisma.content.findFirst({
     where: {
-      id: webpage.id,
-    },
-    include: {
-      content: true,
-    },
-  });
-
-  if (existingWebpage.content !== null) {
-    console.log("aborting as content already exists");
-    return existingWebpage;
-  }
-
-  let htmlContent = '';
-  try{
-    htmlContent = await fetchContentOfWebpage(webpage.url, "text/html");
-  }catch(err){
-    console.log("aborting as got error while fetching content of webpage: ", err);
-    return existingWebpage;
-  }
-
-  const updatedWebpage = await prisma.webpage.update({
-    where: {
-      id: webpage.id,
-    },
-    data: {
-      content: {
-        upsert: {
-          create: {
-            desktopHtml: htmlContent
-          },
-          update: {
-            desktopHtml: htmlContent
-          }
-        }
-      }
+      webpageId: webpage.id
     }
-  });
+  })
 
-  return updatedWebpage;
+  // todo - allow updating webpage content when data is outdated or some other rule
+  if (existingContent !== null) {
+    console.log("aborting as content already exists");
+    return existingContent;
+  }
+
+  let htmlContent = "";
+  try {
+    htmlContent = await fetchContentOfWebpage(webpage.url, "text/html");
+  } catch (err) {
+    console.log("aborting as got error while fetching webpage content: ", err);
+    return null;
+  }
+
+  const content = await prisma.content.create({
+    data: {
+      webpageId: webpage.id,
+      desktopHtml: htmlContent,
+    }
+  })
+
+  return content;
 };
 
 export default createContent;
@@ -55,8 +44,27 @@ if (require.main === module) {
       where: {
         id: "cli38233j000098m9ug7e78m7",
       },
+      include: {
+        website: {
+          include: {
+            user: {
+              include: {
+                setting: true,
+              },
+            },
+          },
+        },
+        content: true,
+        _count: {
+          select: {
+            categories: true,
+            advertisementSpots: true,
+            scoredCampaigns: true,
+          },
+        },
+      },
     });
-    const updatedWebpage = await createContent(webpage);
+    const updatedWebpage = await createContent(webpage, webpage.website.user.setting!, webpage.website.user);
     console.log(updatedWebpage);
   })();
 }

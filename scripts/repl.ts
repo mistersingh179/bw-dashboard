@@ -1,4 +1,5 @@
 import getScalarFieldsOfModel from "@/lib/getScalarFieldsOfModel";
+import prisma from "@/lib/prisma";
 
 const foo = () => {
   return new Promise((resolve, reject) => {
@@ -13,10 +14,39 @@ const bar = () => {
 };
 
 (async () => {
-  console.log("starting");
-  const allowedAttributes = getScalarFieldsOfModel("Setting");
-  console.log(allowedAttributes);
-  console.log("finished");
+  const webpage = await prisma.webpage.findFirstOrThrow({
+    where: {
+      id: "clhuouuc4000098p20fvjm1if",
+    },
+    include: {
+      website: {
+        include: {
+          user: {
+            include: {
+              setting: true,
+              campaigns: true,
+              _count: {
+                select: {
+                  campaigns: true
+                }
+              }
+            },
+          },
+        },
+      },
+      // content: true,
+      _count: {
+        select: {
+          categories: true,
+          advertisementSpots: true,
+          scoredCampaigns: true,
+        },
+      },
+    },
+  });
+
+  console.log("*** webpage: ");
+  console.log(webpage.website.user._count.campaigns)
 })();
 
 export {};

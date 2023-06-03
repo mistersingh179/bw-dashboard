@@ -1,32 +1,55 @@
-import {Prisma, Setting, Webpage} from "@prisma/client";
+import { Prisma, Setting, Webpage } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import getAdSpotsForWebpage from "@/services/helpers/getAdSpotsForWebpage";
 import AdvertisementSpotCreateManyWebpageInput = Prisma.AdvertisementSpotCreateManyWebpageInput;
+import { Content, User } from ".prisma/client";
 
-const enoughAdSpotsExist = async (webpage: Webpage, settings: Setting): Promise<boolean> => {
-  const result = await prisma.advertisementSpot.findMany({
+// const enoughAdSpotsExist = async (webpage: Webpage, settings: Setting): Promise<boolean> => {
+//   const result = await prisma.advertisementSpot.findMany({
+//     where: {
+//       webpageId: webpage.id,
+//     },
+//     select: {
+//       id: true,
+//     },
+//     take:  settings.desiredAdvertisementSpotCount,
+//   });
+//   return result.length === settings.desiredAdvertisementSpotCount;
+// };
+
+type CreateAdvertisementSpots = (
+  webpage: Webpage,
+  content: Content,
+  settings: Setting,
+) => Promise<void>;
+
+const createAdvertisementSpots: CreateAdvertisementSpots = async (
+  webpage,
+  content,
+  settings,
+) => {
+  console.log("in createAdvertisementSpots for: ", webpage.url);
+
+  // if (await enoughAdSpotsExist(webpage)) {
+  //   console.log(`Aborting createAdvertisementSpots as we already enough`);
+  //   return;
+  // }
+
+  const existingAdSpotCount = await prisma.advertisementSpot.count({
     where: {
       webpageId: webpage.id,
     },
-    select: {
-      id: true,
-    },
-    take:  settings.desiredAdvertisementSpotCount,
   });
-  return result.length === settings.desiredAdvertisementSpotCount;
-};
 
-type CreateAdvertisementSpots = (webpage: Webpage, settings: Setting) => Promise<void>;
-
-const createAdvertisementSpots: CreateAdvertisementSpots = async (webpage, settings) => {
-  console.log("in createAdvertisementSpots for: ", webpage.url);
-
-  if (await enoughAdSpotsExist(webpage, settings)) {
-    console.log(`Aborting createAdvertisementSpots as we already enough`);
+  if (existingAdSpotCount >= settings.desiredAdvertisementSpotCount) {
+    console.log(
+      `Aborting createAdvertisementSpots as we already enough: `,
+      existingAdSpotCount
+    );
     return;
   }
 
-  const adSpotTextArr = await getAdSpotsForWebpage(webpage, settings);
+  const adSpotTextArr = await getAdSpotsForWebpage(webpage, content, settings);
 
   if (adSpotTextArr.length === 0) {
     console.log("Aborting createAdvertisementSpots as unable to get ad spots");
@@ -67,13 +90,25 @@ if (require.main === module) {
           include: {
             user: {
               include: {
-                setting: true
-              }
-            }
-          }
-        }
-      }
+                setting: true,
+              },
+            },
+          },
+        },
+        content: true,
+        _count: {
+          select: {
+            categories: true,
+            advertisementSpots: true,
+            scoredCampaigns: true,
+          },
+        },
+      },
     });
-    await createAdvertisementSpots(wp, wp.website.user.setting!);
+    await createAdvertisementSpots(
+      wp,
+      wp.content!,
+      wp.website.user.setting!,
+    );
   })();
 }

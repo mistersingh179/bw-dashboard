@@ -1,45 +1,32 @@
-import { Webpage } from ".prisma/client";
+import { Content, Webpage } from ".prisma/client";
 import prisma from "@/lib/prisma";
 // import { JSDOM } from "jsdom";
-import { parse, HTMLElement } from 'node-html-parser';
-
-type ExtractCategoriesFromWebpage = (webpage: Webpage) => Promise<string[]>;
+import { parse, HTMLElement } from "node-html-parser";
 
 function cleanArray(arr: (string | null | undefined)[]): string[] {
   const trimmedArray = arr.map((str) => {
-    if (typeof str === 'string') {
+    if (typeof str === "string") {
       return str.trim();
     }
-    return '';
+    return "";
   });
 
   const cleanedArray = [...new Set(trimmedArray)];
-  const filteredArray = cleanedArray.filter((str) => str !== '');
+  const filteredArray = cleanedArray.filter((str) => str !== "");
 
   return filteredArray;
 }
 
+type ExtractCategoriesFromWebpage = (
+  webpage: Webpage,
+  content: Content
+) => Promise<string[]>;
+
 const extractCategoriesFromWebpage: ExtractCategoriesFromWebpage = async (
-  webpage
+  webpage,
+  content
 ) => {
   console.log("inside service: extractCategoriesFromWebpage: ", webpage.url);
-  const webpageWithContent = await prisma.webpage.findFirstOrThrow({
-    where: {
-      id: webpage.id,
-      content: {
-        isNot: null,
-      },
-    },
-    include: {
-      content: true,
-    },
-  });
-  if (webpageWithContent.content === null) {
-    console.log(
-      "aborting extractCategoriesFromWebpage as webpage has no content"
-    );
-    return [];
-  }
 
   let cumulativeValues: string[] = [];
 
@@ -47,7 +34,8 @@ const extractCategoriesFromWebpage: ExtractCategoriesFromWebpage = async (
   // const {
   //   window: { document },
   // } = dom;
-  const document = parse(webpageWithContent.content.desktopHtml);
+
+  const document = parse(content.desktopHtml);
 
   const metaContentValues = [
     ...document.querySelectorAll(
@@ -88,8 +76,11 @@ if (require.main === module) {
       where: {
         id: "cli3v2cbk000098q7nqb4mryo",
       },
+      include: {
+        content: true
+      }
     });
-    const ans = await extractCategoriesFromWebpage(webpage);
+    const ans = await extractCategoriesFromWebpage(webpage, webpage.content!);
     console.log("*** ans: ", ans);
   })();
 }

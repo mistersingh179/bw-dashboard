@@ -1,12 +1,12 @@
 import { Campaign, Webpage } from "@prisma/client";
 import prisma from "@/lib/prisma";
-import { JSDOM } from "jsdom";
 import Papa from "papaparse";
 import AnyObject from "@/types/AnyObject";
 import fetch from "node-fetch";
 import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageText";
 import { CreateChatCompletionResponse } from "openai/api";
 import { CHAT_GPT_FETCH_TIMEOUT } from "@/constants";
+import { Content } from ".prisma/client";
 
 export type CampaignProductWithScore = {
   id: string;
@@ -18,51 +18,25 @@ export type CampaignProductWithScore = {
 };
 
 type GetCampaignsWithTheirScores = (
-  webpage: Webpage
+  webpage: Webpage,
+  campaigns: Campaign[],
+  content: Content
 ) => Promise<CampaignProductWithScore[]>;
 
 const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
-  webpage
+  webpage,
+  campaigns,
+  content
 ) => {
-  const webpageWithDetails = await prisma.webpage.findFirstOrThrow({
-    where: {
-      id: webpage.id,
-      content: {
-        isNot: null,
-      },
-    },
-    include: {
-      content: true,
-      website: {
-        include: {
-          user: {
-            include: {
-              campaigns: true,
-            },
-          },
-        },
-      },
-    },
-  });
-  if (!webpageWithDetails.content) {
-    console.log("aborting as webpage has no content");
-    return [];
-  }
+  const webpageText = extractCleanedWebpageText(content.desktopHtml);
 
-  const webpageText = extractCleanedWebpageText(
-    webpageWithDetails.content.desktopHtml
-  );
-
-  // console.log("webpageText: ", webpageText);
-
-  const campaignsWithScore: CampaignProductWithScore[] =
-    webpageWithDetails.website.user.campaigns.map((c) => ({
-      id: c.id,
-      name: c.productName,
-      description: c.productDescription,
-      score: "?",
-      reason: "?",
-    }));
+  const campaignsWithScore: CampaignProductWithScore[] = campaigns.map((c) => ({
+    id: c.id,
+    name: c.productName,
+    description: c.productDescription,
+    score: "?",
+    reason: "?",
+  }));
 
   if (process.env.NODE_ENV === "development") {
     return campaignsWithScore.map(
@@ -166,7 +140,19 @@ if (require.main === module) {
         id: "clh9d58tw000198c0g5kfluac",
       },
     });
-    const ans = await getCampaignsWithTheirScores(webpage);
+    const campaigns = await prisma.campaign.findMany({
+      where: {
+        userId: "clhtwckif000098wp207rs2fg",
+      },
+    });
+
+    const content = await prisma.content.findFirst({
+      where: {
+        webpageId: webpage.id,
+      },
+    });
+
+    const ans = await getCampaignsWithTheirScores(webpage, campaigns, content!);
 
     console.log("ans: ", ans);
   })();
