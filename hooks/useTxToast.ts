@@ -1,10 +1,10 @@
 import { ToastId, useToast } from "@chakra-ui/react";
-import { useRef } from "react";
+import {ReactNode, useRef} from "react";
 
 const useTxToast = () => {
   const toast = useToast();
   const toastIdRef = useRef<ToastId>();
-  const success = (title: string, description: string) => {
+  const success = (title: string, description: string | ReactNode) => {
     toastIdRef.current = toast({
       title,
       description,

@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import { User } from ".prisma/client";
-import createWebpages from "@/services/createWebpages";
+import downloadWebpages from "@/services/downloadWebpages";
 import createAdvertisementSpots from "@/services/createAdvertisementSpots";
 import { subDays } from "date-fns";
 import createCategories from "@/services/createCategories";
@@ -8,164 +8,27 @@ import createContentJob from "@/defer/createContentJob";
 import { awaitResult } from "@defer/client";
 import createScoredCampaignJob from "@/defer/createScoredCampaignJob";
 import createAdvertisementJob from "@/defer/createAdvertisementJob";
+import {Setting} from "@prisma/client";
+import processWebsiteJob from "@/defer/processWebsiteJob";
 
-type ProcessUser = (user: User) => Promise<void>;
+type ProcessUser = (user: User, settings: Setting) => Promise<void>;
 
-const processUser: ProcessUser = async (user) => {
-  console.log("started processUser with: ", user.id, user.email);
-  const settings = await prisma.setting.findFirstOrThrow({
+const processUser: ProcessUser = async (user, settings) => {
+  console.log("started processUser with: ", user.email);
+
+  const websites = await prisma.website.findMany({
     where: {
-      userId: user.id,
-      status: true,
-    },
-  });
-
-  const websitesWhichNeedProcessing = await prisma.website.findMany({
-    where: {
-      userId: user.id,
-      status: true,
-      OR: [
-        {
-          processedOn: {
-            lte: subDays(new Date(), 1),
-          },
-        },
-        {
-          processedOn: null,
-        },
-      ],
-    },
-  });
-
-  for (const website of websitesWhichNeedProcessing) {
-    await createWebpages(website.id, settings);
-  }
-
-  const webpagesWithoutContent = await prisma.webpage.findMany({
-    where: {
-      website: {
-        userId: user.id,
-        status: true,
-      },
-      status: true,
-      content: {
-        is: null,
-      },
-    },
-  });
-
-  const createContentJobWithResult = awaitResult(createContentJob);
-  const createContentResult = await Promise.allSettled(
-    webpagesWithoutContent.map(async (webpage) => {
-      return createContentJobWithResult(webpage);
-    })
-  );
-  console.log(
-    "createContentResult: ",
-    createContentResult.map((r) => r.status)
-  );
-
-  // todo - better to fetch pages without required number of ad spots
-
-  // const webpagesWithContentWithoutAdvertisementSpots =
-  //   await prisma.webpage.findMany({
-  //     where: {
-  //       website: {
-  //         userId: user.id,
-  //         status: true,
-  //       },
-  //       content: {
-  //         isNot: null,
-  //       },
-  //       status: true,
-  //       advertisementSpots: {
-  //         none: {},
-  //       },
-  //     },
-  //   });
-
-  const webpagesWithContent = await prisma.webpage.findMany({
-    where: {
-      website: {
-        userId: user.id,
-        status: true,
-      },
-      status: true,
-      content: {
-        isNot: null,
-      },
-    },
-    include: {
-      content: true,
-    },
-  });
-
-  for (const webpage of webpagesWithContent) {
-    await createAdvertisementSpots(webpage, settings);
-  }
-
-  const createScoredCampaignJobWithResult = awaitResult(
-    createScoredCampaignJob
-  );
-
-  const createScoreCampaignResult = await Promise.allSettled(
-    webpagesWithContent.map((webpage) => {
-      createScoredCampaignJobWithResult(webpage);
-    })
-  );
-
-  console.log(
-    "createScoreCampaignResult: ",
-    createScoreCampaignResult.map((r) => r.status)
-  );
-
-  for (const webpage of webpagesWithContent) {
-    await createCategories(webpage);
-  }
-
-  // todo - extract only those webpages which dont have have enough advertisements for each spot & campaign combination
-  const webpagesWithAdSpotsAndScoredCamps = await prisma.webpage.findMany({
-    where: {
-      website: {
-        userId: user.id,
-        status: true,
-      },
-      advertisementSpots: {
-        some: {},
-      },
-      scoredCampaigns: {
-        some: {},
-      },
-    },
-    include: {
-      advertisementSpots: true,
-      scoredCampaigns: true,
-    },
-  });
-
-  const createAdvertisementJobWithResult = awaitResult(createAdvertisementJob);
-  // todo - better if it only creates the delta number of advertisements that are needed
-  const createAdvertisementResultPromises: Promise<void>[] = [];
-  for (const wp of webpagesWithAdSpotsAndScoredCamps) {
-    for (const advertisementSpot of wp.advertisementSpots) {
-      for (const scoredCampaign of wp.scoredCampaigns) {
-        const promiseResult = createAdvertisementJobWithResult(
-          advertisementSpot,
-          scoredCampaign,
-          settings
-        );
-        createAdvertisementResultPromises.push(promiseResult);
-      }
+      userId: user.id
     }
-  }
+  })
 
-  const createAdvertisementResult = await Promise.allSettled(
-    createAdvertisementResultPromises
-  );
-  console.log(
-    "createAdvertisementResult:",
-    createAdvertisementResult.map((r) => r.status)
-  );
+  console.log("count of websites to process: ", websites.length);
+
+  for (const ws of websites){
+    console.log("at ws: ", ws.topLevelDomainUrl);
+    const job = await processWebsiteJob(ws, settings);
+    console.log(`scheduled job to process website: `, job.id);
+  }
 
   console.log("finished processUser with: ", user.id, user.email);
 };
@@ -178,7 +41,10 @@ if (require.main === module) {
       where: {
         id: "clhtwckif000098wp207rs2fg",
       },
+      include: {
+        setting: true
+      }
     });
-    await processUser(user);
+    await processUser(user, user.setting!);
   })();
 }

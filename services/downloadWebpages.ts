@@ -1,4 +1,4 @@
-import { Prisma } from ".prisma/client";
+import { Prisma, Website } from ".prisma/client";
 import prisma from "@/lib/prisma";
 import { XMLParser } from "fast-xml-parser";
 import fetchContentOfWebpage from "@/services/helpers/fetchContentOfWebpage";
@@ -6,6 +6,8 @@ import WebpageCreateManyWebsiteInput = Prisma.WebpageCreateManyWebsiteInput;
 import { isAfter, parseISO, subDays } from "date-fns";
 import { getUrlProperties } from "@/pages/api/auctions/generate";
 import { Setting } from "@prisma/client";
+import { awaitResult } from "@defer/client";
+import downloadWebpagesJob from "@/defer/downloadWebpagesJob";
 
 export type UrlsetUrl = {
   loc: string;
@@ -31,25 +33,27 @@ export const getCleanUrl = (url: string): string => {
   return "";
 };
 
-type CreateWebpages = (
-  website: string,
+type DownloadWebpages = (
+  website: Website,
   settings: Setting,
   sitemapUrl?: string
 ) => Promise<void>;
 
-const createWebpages: CreateWebpages = async (
-  websiteId: string,
-  settings: Setting,
+const downloadWebpages: DownloadWebpages = async (
+  website,
+  settings,
   sitemapUrl
 ) => {
-  const website = await prisma.website.findFirstOrThrow({
-    where: {
-      id: websiteId,
-    },
-  });
-
   if (sitemapUrl === undefined) {
     sitemapUrl = website.sitemapUrl;
+  }
+
+  const lookBackDate = subDays(new Date(), settings.webpageLookbackDays);
+  console.log("lookBackDate is: ", lookBackDate);
+
+  if (settings.webpageLookbackDays === 0) {
+    console.log("aborting as webpageLookbackDays is set to 0");
+    return;
   }
 
   let sitemapXML = "";
@@ -82,12 +86,9 @@ const createWebpages: CreateWebpages = async (
   if (Array.isArray(jsonObj?.urlset?.url)) {
     const urlArray = jsonObj.urlset.url as UrlsetUrl[];
     console.log("we have a sitemap with urlset: ", urlArray.length);
-    const lookBackDate = subDays(new Date(), settings.webpageLookbackDays);
-    console.log("lookBackDate is: ", lookBackDate);
 
     let webpageInputs: WebpageCreateManyWebsiteInput[] = [];
     webpageInputs = urlArray.reduce((accumulator, currentValue) => {
-      // todo - is this working
       if (isAfter(parseISO(currentValue.lastmod), lookBackDate)) {
         console.log("taking as recent: ", currentValue.lastmod);
         return [
@@ -107,7 +108,7 @@ const createWebpages: CreateWebpages = async (
 
     await prisma.website.update({
       where: {
-        id: websiteId,
+        id: website.id,
       },
       data: {
         webpages: {
@@ -121,19 +122,25 @@ const createWebpages: CreateWebpages = async (
   } else if (Array.isArray(jsonObj?.sitemapindex?.sitemap)) {
     const sitemapArray = jsonObj.sitemapindex.sitemap as SitemapIndexSitemap[];
     console.log("we have a sitemap of sitemaps");
-    for (const item of sitemapArray) {
-      await createWebpages(websiteId, settings, item.loc);
-    }
+    const downloadWebpagesJobWithResult = awaitResult(downloadWebpagesJob);
+    await Promise.allSettled(
+      sitemapArray.map((item) =>
+        downloadWebpagesJobWithResult(website, settings, item.loc)
+      )
+    );
   } else {
     console.log("unable to process sitemap");
   }
 };
 
-export default createWebpages;
+export default downloadWebpages;
 
 if (require.main === module) {
   (async () => {
-    const websites = await prisma.website.findMany({
+    const ws = await prisma.website.findFirstOrThrow({
+      where: {
+        id: "cliezg4oz008x98f1anu7ip24",
+      },
       include: {
         user: {
           include: {
@@ -142,21 +149,10 @@ if (require.main === module) {
         },
       },
     });
-    for (const website of websites) {
-      try {
-        await createWebpages(website.id, website.user.setting!);
-      } catch (e) {
-        console.error("there was an issue creating webpages for: ", website.id);
-      }
-    }
-    // const website = await prisma.website.findFirstOrThrow({
-    //   orderBy: {
-    //     id: "asc",
-    //   },
-    //   where: {
-    //     id: "clh58j7rl000z98kwx3diilzx",
-    //   },
-    // });
-    // await createWebpages(website.id);
+    await downloadWebpages(
+      ws,
+      ws.user.setting!,
+      "https://citydogmagazine.com/post-sitemap.xml"
+    );
   })();
 }

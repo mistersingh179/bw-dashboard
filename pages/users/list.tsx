@@ -35,9 +35,40 @@ import {
   StarIcon,
 } from "@chakra-ui/icons";
 import { signIn } from "next-auth/react";
+import superjson from "superjson";
+import useTxToast from "@/hooks/useTxToast";
 
 const Users = () => {
   const { users, isLoading, error } = useUsers();
+  const { success, failure } = useTxToast();
+  const processUserHandler = async (id: string) => {
+    const payload = {
+      userIdToProcess: id,
+    };
+    const res = await fetch("/api/users/processUser", {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("processUserHandler result: ", res.status, res.statusText);
+    const text = await res.text();
+    const data = superjson.parse<any>(text);
+    if (res.status === 202) {
+      success(
+        "Process User",
+        <Box>
+          Job has been scheduled.
+          <br />
+          Job Id: {data.id}
+        </Box>
+      );
+    } else {
+      failure("Process User", `Job Scheduling Failed`);
+    }
+  };
+
   const impresonateHandler = async (id: string) => {
     const payload = {
       userIdToImpersonate: id,
@@ -98,9 +129,9 @@ const Users = () => {
                       <Button
                         onClick={() => {
                           const ans = confirm(
-                            `Are you sure you want to impersonate: ${user.email}`
+                            `Are you sure you want to IMPERSONATE this user: ${user.email}`
                           );
-                          if(ans) {
+                          if (ans) {
                             impresonateHandler(user.id);
                           }
                         }}
@@ -112,10 +143,18 @@ const Users = () => {
                           Actions
                         </MenuButton>
                         <MenuList>
-                          <MenuItem>foo bar baaz</MenuItem>
-                          <MenuItem>lorem</MenuItem>
-                          <MenuItem>lorem lipsum</MenuItem>
-                          <MenuItem>foo bar</MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              const ans = confirm(
+                                `Are you sure you want to PROCESS this user: ${user.email}`
+                              );
+                              if (ans) {
+                                processUserHandler(user.id);
+                              }
+                            }}
+                          >
+                            Process User
+                          </MenuItem>
                         </MenuList>
                       </Menu>
                     </ButtonGroup>

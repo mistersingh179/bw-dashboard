@@ -14,39 +14,31 @@ const bar = () => {
 };
 
 (async () => {
-  const webpage = await prisma.webpage.findFirstOrThrow({
-    where: {
-      id: "clhuouuc4000098p20fvjm1if",
-    },
-    include: {
-      website: {
-        include: {
-          user: {
-            include: {
-              setting: true,
-              campaigns: true,
-              _count: {
-                select: {
-                  campaigns: true
-                }
-              }
-            },
-          },
-        },
+  const result = await prisma.website.createMany({
+    data: [
+      {
+        userId: "clhtwckif000098wp207rs2fg",
+        topLevelDomainUrl: "http://localhost:8003",
+        sitemapUrl: "http://localhost:8000/sitemap.xml",
+        status: true,
       },
-      // content: true,
-      _count: {
-        select: {
-          categories: true,
-          advertisementSpots: true,
-          scoredCampaigns: true,
-        },
+      {
+        userId: "clhtwckif000098wp207rs2fg",
+        topLevelDomainUrl: "http://localhost:8000",
+        sitemapUrl: "http://localhost:8000/sitemap.xml",
+        status: true,
       },
-    },
+      {
+        userId: "clhtwckif000098wp207rs2fg",
+        topLevelDomainUrl: "http://localhost:8001",
+        sitemapUrl: "http://localhost:8000/sitemap.xml",
+        status: true,
+      },
+    ],
+    skipDuplicates: true,
   });
-
+  console.log("result: ", result);
   console.log("*** webpage: ");
-  console.log(webpage.website.user._count.campaigns)
 })();
 
 export {};

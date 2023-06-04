@@ -17,5 +17,5 @@ const createAdvertisementJob = async (
 
 export default defer(createAdvertisementJob, {
   retry: 1,
-  concurrency: 20,
+  concurrency: 10,
 });

@@ -81,7 +81,7 @@ model Setting {
   addSponsoredWording           Boolean  @default(false)
   desiredAdvertisementSpotCount Int      @default(1)
   desiredAdvertisementCount     Int      @default(1)
-  webpageLookbackDays           Int      @default(5)
+  webpageLookbackDays           Int      @default(0)
   contentSelector               String   @default("body p:nth-child(3n)")
   minCharLimit                  Int      @default(20)
   sameTypeElemWithTextToFollow  Boolean  @default(true)
@@ -89,6 +89,7 @@ model Setting {
   updatedAt                     DateTime @updatedAt
 
   @@index([userId, status])
+  @@index([userId, webpageLookbackDays])
 }
 
 model Auction {
