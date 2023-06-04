@@ -124,9 +124,10 @@ const downloadWebpages: DownloadWebpages = async (
     console.log("we have a sitemap of sitemaps");
     const downloadWebpagesJobWithResult = awaitResult(downloadWebpagesJob);
     await Promise.allSettled(
-      sitemapArray.map((item) =>
-        downloadWebpagesJobWithResult(website, settings, item.loc)
-      )
+      sitemapArray.map((item) => {
+        console.log("calling downloadWebpages Job again with the nested sitemap url: ", item.loc)
+        return downloadWebpagesJobWithResult(website, settings, item.loc);
+      })
     );
   } else {
     console.log("unable to process sitemap");
