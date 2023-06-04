@@ -2,9 +2,7 @@ import { Content, Webpage } from ".prisma/client";
 import prisma from "@/lib/prisma";
 import createContent from "@/services/createContent";
 import createAdvertisementSpots from "@/services/createAdvertisementSpots";
-import createScoredCampaigns from "@/services/createScoredCampaigns";
 import createCategories from "@/services/createCategories";
-import createAdvertisement from "@/services/createAdvertisement";
 import createAdvertisementJob from "@/defer/createAdvertisementJob";
 import { awaitResult } from "@defer/client";
 import createScoredCampaignJob from "@/defer/createScoredCampaignJob";
@@ -56,7 +54,13 @@ const processWebpage: ProcessWebpage = async (webpage) => {
   const createScoredCampaignsJobWithResult = awaitResult(
     createScoredCampaignJob
   );
-  await createScoredCampaignsJobWithResult(webpage, content, settings, user, campaigns);
+  await createScoredCampaignsJobWithResult(
+    webpage,
+    content,
+    settings,
+    user,
+    campaigns
+  );
 
   await createAdvertisementSpots(webpage, content, settings);
 
