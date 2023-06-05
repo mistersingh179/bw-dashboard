@@ -87,7 +87,7 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
           ],
         },
         score: {
-          gt: userScoreThreshold,
+          gte: userScoreThreshold,
         },
       },
       status: true,
@@ -125,16 +125,16 @@ export default getAdvertisementsForUrl;
 if (require.main === module) {
   (async () => {
     const ans = await getAdvertisementsForUrl({
-      origin: "http://localhost:8000",
-      originWithPathName: "http://localhost:8000/simplyrecipes.html",
-      categoriesOfWebpage: ["sr_table-talk"],
-      userScoreThreshold: 0,
-      userId: "clhtwckif000098wp207rs2fg",
+      origin: "https://brandweaver.ai",
+      originWithPathName: "https://brandweaver.ai/blog/intro-to-solidity-a-simple-hello-world-smart-contract-ethereum-developer-tutorial-for-beginners",
+      categoriesOfWebpage: [""],
+      userScoreThreshold: 1,
+      userId: "clij1cjb60000mb08uzganxdq",
       campIdsWhoHaveNotMetImpCap: [
-        "clhtx8jj2000i98wp09vkdc1i",
-        "clhxf3s28000098s7816uadue",
-        "cli4mmxdg0002982qp1tnkzs2",
-      ],
+        'clij1mvw40000mt08img8o3i0',
+        'clij1k23i0000mf08trz34qst',
+        'clij1la530002mf08vusrtoul'
+      ]
     });
     console.log("ans: ", ans.length);
     console.log(ans.map((a) => a.scoredCampaign.campaign.name));
