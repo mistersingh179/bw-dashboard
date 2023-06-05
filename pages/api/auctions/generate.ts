@@ -35,12 +35,12 @@ export const getUrlProperties = (url: string): UrlProperties => {
 
 // todo - remove this and make a pattern
 
-const approvedIds = [
-  "clhtwckif000098wp207rs2fg", // me in Dev
-  "clhw27z37000098xy1ylsnlu3", // me also in Dev
-  "clgf6zqrb000098o4yf9pd6hp", // me in Prod
-  "clgfp3m6m0000k4084zse2n02", // rod in Prod
-];
+// const approvedIds = [
+//   "clhtwckif000098wp207rs2fg", // me in Dev
+//   "clhw27z37000098xy1ylsnlu3", // me also in Dev
+//   "clgf6zqrb000098o4yf9pd6hp", // me in Prod
+//   "clgfp3m6m0000k4084zse2n02", // rod in Prod
+// ];
 
 type WebpageWithCategories = Webpage & { categories: Category[] };
 
@@ -76,11 +76,11 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
   const { userId, url, fp } = req.body;
   const settings = req.settings!;
 
-  if(approvedIds.includes(userId) === false){
-    console.log("not an approved user. failing silently");
-    res.status(204).end();
-    return;
-  }
+  // if(approvedIds.includes(userId) === false){
+  //   console.log("not an approved user. failing silently");
+  //   res.status(204).end();
+  //   return;
+  // }
 
   const { origin, originWithPathName } = getUrlProperties(url);
   const webpage = await getWebpageWithCategories(userId, originWithPathName);
