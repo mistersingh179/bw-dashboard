@@ -6,6 +6,7 @@ import createCategories from "@/services/createCategories";
 import createAdvertisementJob from "@/defer/createAdvertisementJob";
 import { awaitResult } from "@defer/client";
 import createScoredCampaignJob from "@/defer/createScoredCampaignJob";
+import createScoredCampaigns from "@/services/createScoredCampaigns";
 
 export type WebpageWithContent = Webpage & { content: Content | null };
 
@@ -51,16 +52,18 @@ const processWebpage: ProcessWebpage = async (webpage) => {
     return;
   }
 
-  const createScoredCampaignsJobWithResult = awaitResult(
-    createScoredCampaignJob
-  );
-  await createScoredCampaignsJobWithResult(
-    webpage,
-    content,
-    settings,
-    user,
-    campaigns
-  );
+  await createScoredCampaigns(webpage, content, settings, user, campaigns);
+
+  // const createScoredCampaignsJobWithResult = awaitResult(
+  //   createScoredCampaignJob
+  // );
+  // await createScoredCampaignsJobWithResult(
+  //   webpage,
+  //   content,
+  //   settings,
+  //   user,
+  //   campaigns
+  // );
 
   await createAdvertisementSpots(webpage, content, settings);
 
