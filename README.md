@@ -87,7 +87,6 @@ drop database bw;
 ## Pending issues
 - give better error when 204 on front end
 - why not work with figure after p
-- why does url have a back slash in the db
 - swap https://server with localhost
 - category not showing up of latest webpage which was added manually 
 

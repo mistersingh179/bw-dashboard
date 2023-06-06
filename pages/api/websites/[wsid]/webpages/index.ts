@@ -52,6 +52,11 @@ const handleCreateWebpage = async (
   res: NextApiResponse
 ) => {
   const { wsid } = req.query as QueryParams;
+
+  if(req.body["url"]?.endsWith("/")){
+    req.body["url"] = req.body["url"].slice(0, -1);
+  }
+
   const webpage: Webpage = await prisma.webpage.create({
     data: {
       ...req.body,
