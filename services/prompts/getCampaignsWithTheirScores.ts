@@ -97,7 +97,7 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
         model: "gpt-3.5-turbo-0301",
         temperature: 1,
         n: 1,
-        max_tokens: 2000,
+        max_tokens: 1000,
         messages: messages,
       }),
       signal: controller.signal,
