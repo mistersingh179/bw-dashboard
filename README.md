@@ -88,7 +88,7 @@ drop database bw;
 - give better error when 204 on front end
 - why not work with figure after p
 - swap https://server with localhost
-- category not showing up of latest webpage which was added manually 
+- category not showing up of latest webpage which was added manually
 
 ## Pending backlog
 - create all webpages as OFF
@@ -99,6 +99,7 @@ drop database bw;
 - re-run process webpage
 - function to turn on all webpages (internal function)
 - look at not cascading deletes to auction & impression
+- owner dark/light theme from the os
 
 ## Pending callback
 - when a campaign is added, we need to build scores & then advertisements

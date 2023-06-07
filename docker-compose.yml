@@ -18,3 +18,9 @@ services:
       - POSTGRES_PASSWORD=wonderland
       - POSTGRES_USER=alice
       - POSTGRES_DB=bw_shadow
+  redis:
+    image: redis:7.0-alpine3.17
+    ports:
+      - 63790:6379
+    volumes:
+      - ./redisdata:/data:rw

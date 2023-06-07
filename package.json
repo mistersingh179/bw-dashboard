@@ -12,7 +12,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:console": "prisma-repl --verbose",
-    "lint": "next lint"
+    "lint": "next lint",
+    "worker": "tsx workers/fooWorker.ts"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.18",
@@ -29,6 +30,7 @@
     "@types/react": "18.0.29",
     "@types/react-dom": "18.0.11",
     "@vercel/analytics": "^1.0.0",
+    "bullmq": "^3.15.1",
     "chakra-react-select": "^4.6.0",
     "cookie": "^0.5.0",
     "cors": "^2.8.5",
@@ -37,6 +39,7 @@
     "eslint-config-next": "13.2.4",
     "fast-xml-parser": "^4.2.2",
     "framer-motion": "^10.9.1",
+    "ioredis": "^5.3.2",
     "isbot": "^3.6.10",
     "jsdom": "^21.1.1",
     "lodash": "^4.17.21",

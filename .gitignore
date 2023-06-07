@@ -3,6 +3,7 @@
 .idea/
 .env
 pgdata
+redisdata
 
 # dependencies
 /node_modules
