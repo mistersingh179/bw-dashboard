@@ -1,20 +1,8 @@
 import { Job, Worker } from "bullmq";
-import Redis from "ioredis";
-import { config } from "dotenv";
 import { User } from ".prisma/client";
 import prisma from "@/lib/prisma";
+import redisClient from "@/lib/redisClient";
 
-config();
-
-const { REDIS_HOST } = process.env;
-const REDIS_PORT = Number(process.env.REDIS_PORT) || 0;
-const REDIS_URL = String(process.env.REDIS_URL) ?? "";
-console.log("REDIS_URL: ", REDIS_URL);
-
-let client = new Redis(REDIS_URL, {
-  maxRetriesPerRequest: null,
-  enableReadyCheck: false,
-});
 
 const worker = new Worker(
   "foo",
@@ -28,9 +16,13 @@ const worker = new Worker(
     return "a thanks from the foo worker.";
   },
   {
-    connection: client,
+    connection: redisClient,
   }
 );
+
+worker.on("error", (err) => {
+  console.log("worker has an error: ", err);
+})
 
 process.on("SIGINT", async () => {
   console.log("started graceful shutdown");

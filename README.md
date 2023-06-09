@@ -89,6 +89,11 @@ drop database bw;
 - why not work with figure after p
 - swap https://server with localhost
 - category not showing up of latest webpage which was added manually
+- job does not pickup old webpages which crashed in the middle
+- see content for debugging on the webpage show
+- why does parse not work when "body" is there?
+- show progress on webpage
+- make links bold
 
 ## Pending backlog
 - create all webpages as OFF
@@ -100,6 +105,7 @@ drop database bw;
 - function to turn on all webpages (internal function)
 - look at not cascading deletes to auction & impression
 - owner dark/light theme from the os
+- 
 
 ## Pending callback
 - when a campaign is added, we need to build scores & then advertisements
