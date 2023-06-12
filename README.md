@@ -106,7 +106,8 @@ drop database bw;
 - function to turn on all webpages (internal function)
 - look at not cascading deletes to auction & impression
 - owner dark/light theme from the os
-- 
+- organize logs so they can be seen better in betterstack logging tool
+
 
 ## Pending callback
 - when a campaign is added, we need to build scores & then advertisements
