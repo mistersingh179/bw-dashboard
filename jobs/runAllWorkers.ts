@@ -1,7 +1,3 @@
-import { config } from "dotenv";
-config();
-console.log("NODE_ENV: ", process.env.NODE_ENV);
-
 import createAdvertisementWorker from "./workers/createAdvertisementWorker";
 import createScoredCampaignWorker from "./workers/createScoredCampaignWorker";
 import downloadWebpagesWorker from "./workers/downloadWebpagesWorker";
@@ -11,8 +7,6 @@ import processUserWorker from "./workers/processUserWorker";
 import processWebpageWorker from "./workers/processWebpageWorker";
 import processWebsiteWorker from "./workers/processWebsiteWorker";
 import setupCronJobs from "./setupCronJobs";
-
-import processAllUsersQueue from "@/jobs/queues/processAllUsersQueue";
 
 (async () => {
   console.log("starting workers");

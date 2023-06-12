@@ -13,7 +13,7 @@
 - `tsx scripts/foo.ts`
 - `tsx watch scripts/foo.ts` for quicker iterations in dev
 - or `npx ts-node scripts/foo.ts` but also requires `"module": "CommonJS"` set in tsconfig.json. this can be set just for `ts-node` by putting it in `"ts-node"` block.
-- to run from webstorm create a new config called `tsx` and setup Node parameters to be `--loader tsx` and javascript file to `$FilePathRelativeToProjectRoot$`. this will basically do `node --loader ts ./currentFile.ts` which runs the file.  `Ctrl + r` will get the same.
+- to run from webstorm create a new config called `tsx` and setup Node parameters to be `--loader tsx` and javascript file to `$FilePathRelativeToProjectRoot$`. this will basically do `node --loader tsx ./currentFile.ts` which runs the file.  `Ctrl + r` will get the same.
 - to run in watch mode from repl we can use node v19 and then the `--watch option` along with the `--loader tsx` option. 
 
 ## Webstorm

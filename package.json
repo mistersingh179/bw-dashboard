@@ -14,7 +14,7 @@
     "prisma:console": "prisma-repl --verbose",
     "lint": "next lint",
     "worker": "tsx jobs/runAllWorkers.ts",
-    "dev_worker": "tsx watch jobs/runAllWorkers.ts"
+    "dev-worker": "tsx jobs/runAllWorkers.ts"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.18",
@@ -35,6 +35,7 @@
     "cookie": "^0.5.0",
     "cors": "^2.8.5",
     "date-fns": "^2.29.3",
+    "dotenv": "^16.1.4",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
     "fast-xml-parser": "^4.2.2",
@@ -62,6 +63,7 @@
     "superjson": "^1.12.3",
     "swr": "^2.1.2",
     "ts-node": "^10.9.1",
+    "tsx": "^3.12.7",
     "typescript": "^4.9.5",
     "unique-names-generator": "^4.7.1",
     "user-agents": "^1.0.1361"
@@ -74,7 +76,6 @@
     "@types/numeral": "^2.0.2",
     "@types/request-ip": "^0.0.37",
     "@types/user-agents": "^1.0.2",
-    "prisma-erd-generator": "^1.5.4",
-    "tsx": "^3.12.6"
+    "prisma-erd-generator": "^1.5.4"
   }
 }
