@@ -1,12 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth";
+import type { NextApiHandler } from "next";
 import prisma from "@/lib/prisma";
-import { Setting } from "@prisma/client";
 import superjson from "superjson";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import withMiddleware from "@/middlewares/withMiddleware";
-import processUserJob from "@/defer/processUserJob";
+import processUserQueue from "@/jobs/queues/processUserQueue";
 
 const processUser: NextApiHandler = async (req, res) => {
   const { userIdToProcess } = req.body;
@@ -15,15 +12,19 @@ const processUser: NextApiHandler = async (req, res) => {
     where: {
       id: userIdToProcess ?? "",
       setting: {
-        isNot: null
-      }
+        isNot: null,
+      },
     },
     include: {
       setting: true,
-    }
-  })
+    },
+  });
 
-  const job = await processUserJob(user, user.setting!);
+  const job = await processUserQueue.add("processUser", {
+    user,
+    settings: user.setting!,
+  });
+  console.log("schedule job: ", job.id);
 
   res
     .setHeader("Content-Type", "application/json")

@@ -94,6 +94,7 @@ drop database bw;
 - why does parse not work when "body" is there?
 - show progress on webpage
 - make links bold
+- how do we recover from failed chatgpt calls, or content fetch calls
 
 ## Pending backlog
 - create all webpages as OFF

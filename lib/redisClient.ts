@@ -16,7 +16,10 @@ export const redisClient = new Redis(REDIS_URL, {
   enableReadyCheck: false,
   retryStrategy: function (times: number) {
     return Math.max(Math.min(Math.exp(times), 20000), 1000);
-  }
+  },
 });
 
-export default redisClient
+// this prevents node warning which comes from many workers adding listeners to the same redis connection
+redisClient.setMaxListeners(100);
+
+export default redisClient;

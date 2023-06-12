@@ -3,10 +3,8 @@ import prisma from "@/lib/prisma";
 import createContent from "@/services/createContent";
 import createAdvertisementSpots from "@/services/createAdvertisementSpots";
 import createCategories from "@/services/createCategories";
-import createAdvertisementJob from "@/defer/createAdvertisementJob";
-import { awaitResult } from "@defer/client";
-import createScoredCampaignJob from "@/defer/createScoredCampaignJob";
 import createScoredCampaigns from "@/services/createScoredCampaigns";
+import createAdvertisementQueue from "@/jobs/queues/createAdvertisementQueue";
 
 export type WebpageWithContent = Webpage & { content: Content | null };
 
@@ -54,6 +52,7 @@ const processWebpage: ProcessWebpage = async (webpage) => {
 
   await createScoredCampaigns(webpage, content, settings, user, campaigns);
 
+  // todo - doing this async can speed this up a bit
   // const createScoredCampaignsJobWithResult = awaitResult(
   //   createScoredCampaignJob
   // );
@@ -83,7 +82,11 @@ const processWebpage: ProcessWebpage = async (webpage) => {
 
   for (const adSpot of adSpots) {
     for (const scoredCamp of scoredCamps) {
-      const job = await createAdvertisementJob(adSpot, scoredCamp, settings);
+      const job = await createAdvertisementQueue.add("createAdvertisement", {
+        advertisementSpot: adSpot,
+        scoredCampaign: scoredCamp,
+        settings: settings,
+      });
       console.log(`scheduled job to create advertisement: ${job.id}`);
     }
   }

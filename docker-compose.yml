@@ -24,3 +24,10 @@ services:
       - 63790:6379
     volumes:
       - ./redisdata:/data:rw
+#  taskforce-connector:
+#    build: https://github.com/taskforcesh/taskforce-connector.git#master
+#    environment:
+#      TASKFORCE_CONNECTION: "local taskforce provisioner"
+#      TASKFORCE_TEAM: "Taskforce"
+#      TASKFORCE_TOKEN: "90dc31ff-b522-4406-b8c3-7191e2da1534"
+#      REDIS_HOST: redis
