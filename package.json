@@ -13,6 +13,7 @@
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:console": "prisma-repl --verbose",
     "lint": "next lint",
+    "worker-build": "npm ci && prisma generate",
     "worker": "tsx jobs/runAllWorkers.ts",
     "dev-worker": "tsx jobs/runAllWorkers.ts"
   },
