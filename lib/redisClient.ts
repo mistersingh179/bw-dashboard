@@ -1,7 +1,11 @@
 import { config } from "dotenv";
 import Redis from "ioredis";
 
-config();
+const result = config({ debug: true });
+if (result.error) {
+  throw result.error;
+}
+console.log(result.parsed);
 
 const { REDIS_HOST } = process.env;
 const REDIS_PORT = Number(process.env.REDIS_PORT) || 0;
