@@ -4,7 +4,7 @@ import { Job, Queue, QueueEvents } from "bullmq";
 
 const ping: NextApiHandler = async (req, res) => {
   res.setHeader("Content-Type", "text/html");
-  res.send("pong");
+  res.status(200).send("pong");
 };
 
-export default withMiddleware("rejectBots")(ping);
+export default withMiddleware()(ping);
