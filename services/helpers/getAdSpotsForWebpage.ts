@@ -69,14 +69,21 @@ const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (
   const document = parse(content.desktopHtml);
   let elements = document.querySelectorAll(settings.contentSelector);
   let elementsArr = [...elements];
+  console.log("possible ad spots to start with: ", elementsArr.length);
+
   elementsArr = elementsArr.filter(
     minCharFilter.bind(this, settings.minCharLimit)
   );
+  console.log("ad spots after minCharLimit filter: ", elementsArr.length);
+
   elementsArr = settings.sameTypeElemWithTextToFollow
     ? elementsArr.filter(nextElementWithTextOfSameTypeFilter)
     : elementsArr;
+  console.log("ad spots after same type element to follow filter: ", elementsArr.length);
+
   elementsArr = elementsArr.slice(0, settings.desiredAdvertisementSpotCount);
-  console.log(`here are the possible ${elementsArr.length} ad spots: `);
+  console.log(`ad spots after desired count option: `, elementsArr.length);
+
   const adSpots: AdSpotText[] = elementsArr.map((elem) => ({
     beforeText: elem.textContent?.trim() ?? "",
     afterText: nextWithText(elem)?.textContent?.trim() ?? "",
