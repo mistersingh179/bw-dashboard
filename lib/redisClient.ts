@@ -3,7 +3,8 @@ import Redis from "ioredis";
 
 const result = config({ debug: true });
 if (result.error) {
-  throw result.error;
+  console.error("UNABLE to parse .ENV file!!!")
+  console.error(result.error)
 }
 
 const { REDIS_HOST } = process.env;
