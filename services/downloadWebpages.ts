@@ -2,12 +2,13 @@ import { Prisma, Website } from ".prisma/client";
 import prisma from "@/lib/prisma";
 import { XMLParser } from "fast-xml-parser";
 import fetchContentOfWebpage from "@/services/helpers/fetchContentOfWebpage";
-import WebpageCreateManyWebsiteInput = Prisma.WebpageCreateManyWebsiteInput;
 import { isAfter, parseISO, subDays } from "date-fns";
 import { getUrlProperties } from "@/pages/api/auctions/generate";
 import { Setting } from "@prisma/client";
-import { awaitResult } from "@defer/client";
-import downloadWebpagesJob from "@/defer/downloadWebpagesJob";
+import downloadWebpagesQueue, {
+  queueEvents as downloadWebpagesQueueEvents,
+} from "@/jobs/queues/downloadWebpagesQueue";
+import WebpageCreateManyWebsiteInput = Prisma.WebpageCreateManyWebsiteInput;
 
 export type UrlsetUrl = {
   loc: string;
@@ -122,13 +123,25 @@ const downloadWebpages: DownloadWebpages = async (
   } else if (Array.isArray(jsonObj?.sitemapindex?.sitemap)) {
     const sitemapArray = jsonObj.sitemapindex.sitemap as SitemapIndexSitemap[];
     console.log("we have a sitemap of sitemaps");
-    const downloadWebpagesJobWithResult = awaitResult(downloadWebpagesJob);
-    await Promise.allSettled(
-      sitemapArray.map((item) => {
-        console.log("calling downloadWebpages Job again with the nested sitemap url: ", item.loc)
-        return downloadWebpagesJobWithResult(website, settings, item.loc);
-      })
-    );
+
+    const downloadPromises = [];
+    for (const sitemapItem of sitemapArray) {
+      console.log(
+        "scheduling downloadWebpages with nested sitemap url: ",
+        sitemapItem.loc
+      );
+      const job = await downloadWebpagesQueue.add("downloadWebpages", {
+        website,
+        settings,
+        sitemapUrl: sitemapItem.loc,
+      });
+      const downloadPromise = job.waitUntilFinished(
+        downloadWebpagesQueueEvents,
+        1 * 24 * 60 * 60 * 1000
+      );
+      downloadPromises.push(downloadPromise);
+    }
+    await Promise.allSettled(downloadPromises);
   } else {
     console.log("unable to process sitemap");
   }

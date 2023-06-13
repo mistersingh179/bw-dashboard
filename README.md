@@ -13,7 +13,7 @@
 - `tsx scripts/foo.ts`
 - `tsx watch scripts/foo.ts` for quicker iterations in dev
 - or `npx ts-node scripts/foo.ts` but also requires `"module": "CommonJS"` set in tsconfig.json. this can be set just for `ts-node` by putting it in `"ts-node"` block.
-- to run from webstorm create a new config called `tsx` and setup Node parameters to be `--loader tsx` and javascript file to `$FilePathRelativeToProjectRoot$`. this will basically do `node --loader ts ./currentFile.ts` which runs the file.  `Ctrl + r` will get the same.
+- to run from webstorm create a new config called `tsx` and setup Node parameters to be `--loader tsx` and javascript file to `$FilePathRelativeToProjectRoot$`. this will basically do `node --loader tsx ./currentFile.ts` which runs the file.  `Ctrl + r` will get the same.
 - to run in watch mode from repl we can use node v19 and then the `--watch option` along with the `--loader tsx` option. 
 
 ## Webstorm
@@ -88,7 +88,14 @@ drop database bw;
 - give better error when 204 on front end
 - why not work with figure after p
 - swap https://server with localhost
-- category not showing up of latest webpage which was added manually 
+- category not showing up of latest webpage which was added manually
+- job does not pickup old webpages which crashed in the middle
+- see content for debugging on the webpage show
+- why does parse not work when "body" is there?
+- show progress on webpage
+- make links bold
+- how do we recover from failed chatgpt calls, or content fetch calls
+- when ads pay the same then order by score 
 
 ## Pending backlog
 - create all webpages as OFF
@@ -99,6 +106,9 @@ drop database bw;
 - re-run process webpage
 - function to turn on all webpages (internal function)
 - look at not cascading deletes to auction & impression
+- owner dark/light theme from the os
+- organize logs so they can be seen better in betterstack logging tool
+
 
 ## Pending callback
 - when a campaign is added, we need to build scores & then advertisements

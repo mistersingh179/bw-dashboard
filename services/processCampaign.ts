@@ -1,6 +1,6 @@
 import { Campaign } from "@prisma/client";
 import prisma from "@/lib/prisma";
-import processWebpageJob from "@/defer/processWebpageJob";
+import processWebpageQueue from "@/jobs/queues/processWebpageQueue";
 
 type ProcessCampaign = (campaign: Campaign) => Promise<void>;
 
@@ -12,16 +12,18 @@ const processCampaign: ProcessCampaign = async (campaign) => {
         user: {
           campaigns: {
             some: {
-              id: campaign.id
-            }
-          }
-        }
-      }
-    }
-  })
-  for(const wp of webpages){
-    const job = await processWebpageJob(wp);
-    console.log(`schedule job: ${job.id} for wp: ${wp.url}`)
+              id: campaign.id,
+            },
+          },
+        },
+      },
+    },
+  });
+  for (const wp of webpages) {
+    const job = await processWebpageQueue.add("processWebpage", {
+      webpage: wp,
+    });
+    console.log(`schedule job: ${job.id} for wp: ${wp.url}`);
   }
 };
 
@@ -31,9 +33,9 @@ if (require.main === module) {
   (async () => {
     const campaign = await prisma.campaign.findFirstOrThrow({
       where: {
-        id: "clig8qup0001w98twqrylwu82"
-      }
-    })
+        id: "clig8qup0001w98twqrylwu82",
+      },
+    });
     await processCampaign(campaign);
   })();
 }

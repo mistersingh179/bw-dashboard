@@ -4,7 +4,7 @@ import withMiddleware from "@/middlewares/withMiddleware";
 import { QueryParams } from "@/types/QueryParams";
 import superjson from "superjson";
 import { Webpage } from ".prisma/client";
-import processWebpageJob from "@/defer/processWebpageJob";
+import processWebpageQueue from "@/jobs/queues/processWebpageQueue";
 
 const webpagesHandler: NextApiHandler = async (req, res) => {
   switch (req.method) {
@@ -53,7 +53,7 @@ const handleCreateWebpage = async (
 ) => {
   const { wsid } = req.query as QueryParams;
 
-  if(req.body["url"]?.endsWith("/")){
+  if (req.body["url"]?.endsWith("/")) {
     req.body["url"] = req.body["url"].slice(0, -1);
   }
 
@@ -70,8 +70,10 @@ const handleCreateWebpage = async (
       },
     },
   });
-  const job = await processWebpageJob(webpage);
-  console.log("job id for processWebpageJob: ", job.id);
+
+  const job = await processWebpageQueue.add("processWebpage", { webpage });
+  console.log("schedule job: ", job.id);
+
   res
     .setHeader("Content-Type", "application/json")
     .status(200)

@@ -1,10 +1,9 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
-import { Campaign } from "@prisma/client";
 import { formatISO, parseISO } from "date-fns";
 import withMiddleware from "@/middlewares/withMiddleware";
 import superjson from "superjson";
-import processCampaignJob from "@/defer/processCampaignJob";
+import processCampaignQueue from "@/jobs/queues/processCampaignQueue";
 
 type AuctionResponseData = {
   message: string;
@@ -39,13 +38,12 @@ const handleCreateCampaign = async (
         connect: {
           id: req.authenticatedUserId,
         },
-      }
+      },
     },
   });
 
   // todo - we should also call a similar job when campaign's product is updated.
-
-  const job = await processCampaignJob(campaign);
+  const job = await processCampaignQueue.add("processCampaign", { campaign });
   console.log("job id for processCampaignJob: ", job.id);
   res
     .setHeader("Content-Type", "application/json")

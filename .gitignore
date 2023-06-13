@@ -2,7 +2,9 @@
 
 .idea/
 .env
+.env.production
 pgdata
+redisdata
 
 # dependencies
 /node_modules
