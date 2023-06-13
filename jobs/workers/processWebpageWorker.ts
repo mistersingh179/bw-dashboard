@@ -1,19 +1,23 @@
-import {Job, MetricsTime, Worker} from "bullmq";
+import { Job, MetricsTime, Worker } from "bullmq";
 import redisClient from "@/lib/redisClient";
-import { Webpage } from ".prisma/client";
-import processWebpage from "@/services/processWebpage";
-import {ProcessWebpageDataType, queueName} from "@/jobs/queues/processWebpageQueue";
-import {DEFAULT_WORKER_CONCURRENCY} from "@/constants";
+import { queueName } from "@/jobs/queues/processWebpageQueue";
+import { DEFAULT_WORKER_CONCURRENCY } from "@/constants";
+import path from "path";
+import { ProcessWebpageDataType } from "@/jobs/dataTypes";
 
 console.log("setting up worker for: ", queueName);
 
+const processorFile = path.join(
+  __dirname,
+  "..",
+  "sandboxedProcessors",
+  "processWebpageSandboxProcessor.ts"
+);
+console.log("processorFile: ", processorFile);
+
 const worker: Worker<ProcessWebpageDataType, void> = new Worker(
   queueName,
-  async (job) => {
-    console.log("processWebpageWorker", job.name, job.id, job.queueName);
-    const { webpage } = job.data;
-    await processWebpage(webpage);
-  },
+  processorFile,
   {
     connection: redisClient,
     limiter: {
@@ -25,6 +29,7 @@ const worker: Worker<ProcessWebpageDataType, void> = new Worker(
     metrics: {
       maxDataPoints: MetricsTime.TWO_WEEKS,
     },
+    useWorkerThreads: true,
   }
 );
 
@@ -33,7 +38,7 @@ worker.on("drained", () => {
 });
 
 worker.on("active", (job) => {
-  console.log("worker actve: ", job.queueName, job.name, job.id );
+  console.log("worker actve: ", job.queueName, job.name, job.id);
 });
 
 worker.on("completed", (job: Job) => {

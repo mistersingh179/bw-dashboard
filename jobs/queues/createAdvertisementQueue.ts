@@ -1,17 +1,10 @@
 import { Job, Queue, QueueEvents } from "bullmq";
 import redisClient from "@/lib/redisClient";
-import { Website } from ".prisma/client";
-import { AdvertisementSpot, ScoredCampaign, Setting } from "@prisma/client";
+import { CreateAdvertisementDataType } from "@/jobs/dataTypes";
 
 export const queueName = "createAdvertisement";
 
 console.log("setting up queue: ", queueName);
-
-export type CreateAdvertisementDataType = {
-  advertisementSpot: AdvertisementSpot;
-  scoredCampaign: ScoredCampaign;
-  settings: Setting;
-};
 
 const queue: Queue<CreateAdvertisementDataType, void> = new Queue(queueName, {
   connection: redisClient,

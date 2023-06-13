@@ -95,6 +95,7 @@ drop database bw;
 - show progress on webpage
 - make links bold
 - how do we recover from failed chatgpt calls, or content fetch calls
+- when ads pay the same then order by score 
 
 ## Pending backlog
 - create all webpages as OFF

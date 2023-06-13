@@ -1,41 +1,44 @@
-import {Job, MetricsTime, Worker} from "bullmq";
+import { Job, MetricsTime, Worker } from "bullmq";
 import redisClient from "@/lib/redisClient";
-import { Website } from ".prisma/client";
-import processWebsite from "@/services/processWebsite";
-import {ProcessWebsiteDataType, queueName} from "@/jobs/queues/processWebsiteQueue";
-import { Setting } from "@prisma/client";
-import {DEFAULT_WORKER_CONCURRENCY} from "@/constants";
+import { queueName } from "@/jobs/queues/processWebsiteQueue";
+import { DEFAULT_WORKER_CONCURRENCY } from "@/constants";
+import path from "path";
+import { ProcessWebsiteDataType } from "@/jobs/dataTypes";
 
 console.log("setting up worker for: ", queueName);
 
-const worker: Worker<ProcessWebsiteDataType, void> =
-  new Worker(
-    queueName,
-    async (job) => {
-      console.log("processWebsiteWorker", job.name, job.id, job.queueName);
-      const { website, settings } = job.data;
-      await processWebsite(website, settings);
+const processorFile = path.join(
+  __dirname,
+  "..",
+  "sandboxedProcessors",
+  "processWebsiteSandboxProcessor.ts"
+);
+console.log("processorFile: ", processorFile);
+
+const worker: Worker<ProcessWebsiteDataType, void> = new Worker(
+  queueName,
+  processorFile,
+  {
+    connection: redisClient,
+    limiter: {
+      max: 10,
+      duration: 1000,
     },
-    {
-      connection: redisClient,
-      limiter: {
-        max: 10,
-        duration: 1000,
-      },
-      concurrency: DEFAULT_WORKER_CONCURRENCY,
-      autorun: false,
-      metrics: {
-        maxDataPoints: MetricsTime.TWO_WEEKS,
-      },
-    }
-  );
+    concurrency: DEFAULT_WORKER_CONCURRENCY,
+    autorun: false,
+    metrics: {
+      maxDataPoints: MetricsTime.TWO_WEEKS,
+    },
+    useWorkerThreads: true,
+  }
+);
 
 worker.on("drained", () => {
   console.log("worker drained: ", queueName);
 });
 
 worker.on("active", (job) => {
-  console.log("worker actve: ", job.queueName, job.name, job.id );
+  console.log("worker actve: ", job.queueName, job.name, job.id);
 });
 
 worker.on("completed", (job: Job) => {

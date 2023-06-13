@@ -1,12 +1,12 @@
 import {Job, Queue, QueueEvents} from "bullmq";
 import redisClient from "@/lib/redisClient";
 import { Webpage } from ".prisma/client";
+import {ProcessWebpageDataType} from "@/jobs/dataTypes";
 
 export const queueName = "processWebpage";
 
 console.log("setting up queue: ", queueName);
 
-export type ProcessWebpageDataType = {webpage: Webpage};
 
 const queue: Queue<ProcessWebpageDataType, void> = new Queue(queueName, {
   connection: redisClient,

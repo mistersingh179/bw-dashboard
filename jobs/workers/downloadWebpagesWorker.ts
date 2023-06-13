@@ -1,21 +1,23 @@
 import { Job, MetricsTime, Worker } from "bullmq";
 import redisClient from "@/lib/redisClient";
-import downloadWebpages from "@/services/downloadWebpages";
-import {
-  DownloadWebpagesDataType,
-  queueName,
-} from "@/jobs/queues/downloadWebpagesQueue";
+import { queueName } from "@/jobs/queues/downloadWebpagesQueue";
 import { DEFAULT_WORKER_CONCURRENCY } from "@/constants";
+import path from "path";
+import { DownloadWebpagesDataType } from "@/jobs/dataTypes";
 
 console.log("setting up worker for: ", queueName);
 
+const processorFile = path.join(
+  __dirname,
+  "..",
+  "sandboxedProcessors",
+  "downloadWebpagesSandboxProcessor.ts"
+);
+console.log("processorFile: ", processorFile);
+
 const worker: Worker<DownloadWebpagesDataType, void> = new Worker(
   queueName,
-  async (job) => {
-    console.log("downloadWebpagesWorker", job.name, job.id, job.queueName);
-    const { website, settings, sitemapUrl } = job.data;
-    await downloadWebpages(website, settings, sitemapUrl);
-  },
+  processorFile,
   {
     connection: redisClient,
     limiter: {
@@ -27,6 +29,7 @@ const worker: Worker<DownloadWebpagesDataType, void> = new Worker(
     metrics: {
       maxDataPoints: MetricsTime.TWO_WEEKS,
     },
+    useWorkerThreads: true,
   }
 );
 
@@ -35,7 +38,7 @@ worker.on("drained", () => {
 });
 
 worker.on("active", (job) => {
-  console.log("worker actve: ", job.queueName, job.name, job.id );
+  console.log("worker actve: ", job.queueName, job.name, job.id);
 });
 
 worker.on("completed", (job: Job) => {

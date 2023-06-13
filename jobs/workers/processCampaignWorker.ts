@@ -1,22 +1,23 @@
 import { Job, MetricsTime, Worker } from "bullmq";
 import redisClient from "@/lib/redisClient";
-import { Campaign } from ".prisma/client";
-import processCampaign from "@/services/processCampaign";
-import {
-  ProcessCampaignDataType,
-  queueName,
-} from "@/jobs/queues/processCampaignQueue";
+import { queueName } from "@/jobs/queues/processCampaignQueue";
 import { DEFAULT_WORKER_CONCURRENCY } from "@/constants";
+import path from "path";
+import { ProcessCampaignDataType } from "@/jobs/dataTypes";
 
 console.log("setting up worker for: ", queueName);
 
+const processorFile = path.join(
+  __dirname,
+  "..",
+  "sandboxedProcessors",
+  "processCampaignSandboxProcessor.ts"
+);
+console.log("processorFile: ", processorFile);
+
 const worker: Worker<ProcessCampaignDataType, void> = new Worker(
   queueName,
-  async (job) => {
-    console.log("processCampaignWorker", job.name, job.id, job.queueName);
-    const { campaign } = job.data;
-    await processCampaign(campaign);
-  },
+  processorFile,
   {
     connection: redisClient,
     limiter: {
@@ -28,6 +29,7 @@ const worker: Worker<ProcessCampaignDataType, void> = new Worker(
     metrics: {
       maxDataPoints: MetricsTime.TWO_WEEKS,
     },
+    useWorkerThreads: true,
   }
 );
 
@@ -36,7 +38,7 @@ worker.on("drained", () => {
 });
 
 worker.on("active", (job) => {
-  console.log("worker actve: ", job.queueName, job.name, job.id );
+  console.log("worker actve: ", job.queueName, job.name, job.id);
 });
 
 worker.on("completed", (job: Job) => {

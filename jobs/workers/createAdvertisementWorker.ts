@@ -1,21 +1,23 @@
 import { Job, MetricsTime, Worker } from "bullmq";
 import redisClient from "@/lib/redisClient";
-import createAdvertisement from "@/services/createAdvertisement";
-import {
-  CreateAdvertisementDataType,
-  queueName,
-} from "@/jobs/queues/createAdvertisementQueue";
-import {DEFAULT_WORKER_CONCURRENCY} from "@/constants";
+import { queueName } from "@/jobs/queues/createAdvertisementQueue";
+import { DEFAULT_WORKER_CONCURRENCY } from "@/constants";
+import path from "path";
+import { CreateAdvertisementDataType } from "@/jobs/dataTypes";
 
 console.log("setting up worker for: ", queueName);
 
+const processorFile = path.join(
+  __dirname,
+  "..",
+  "sandboxedProcessors",
+  "createAdvertisementSandboxProcessor.ts"
+);
+console.log("processorFile: ", processorFile);
+
 const worker: Worker<CreateAdvertisementDataType, void> = new Worker(
   queueName,
-  async (job) => {
-    console.log("createAdvertisementWorker", job.name, job.id, job.queueName);
-    const { advertisementSpot, scoredCampaign, settings } = job.data;
-    await createAdvertisement(advertisementSpot, scoredCampaign, settings);
-  },
+  processorFile,
   {
     connection: redisClient,
     limiter: {
@@ -27,6 +29,7 @@ const worker: Worker<CreateAdvertisementDataType, void> = new Worker(
     metrics: {
       maxDataPoints: MetricsTime.TWO_WEEKS,
     },
+    useWorkerThreads: true,
   }
 );
 
@@ -35,7 +38,7 @@ worker.on("drained", () => {
 });
 
 worker.on("active", (job) => {
-  console.log("worker actve: ", job.queueName, job.name, job.id );
+  console.log("worker actve: ", job.queueName, job.name, job.id);
 });
 
 worker.on("completed", (job: Job) => {
