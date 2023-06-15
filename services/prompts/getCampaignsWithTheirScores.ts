@@ -103,7 +103,7 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo-0301",
+        model: "gpt-3.5-turbo-0613",
         temperature: 1,
         n: 1,
         max_tokens: 1000,
@@ -143,7 +143,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clh9d58tw000198c0g5kfluac",
+        id: "clix8twnc000a98prn167qb4c",
       },
     });
     const campaigns = await prisma.campaign.findMany({

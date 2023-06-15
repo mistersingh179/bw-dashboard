@@ -83,7 +83,7 @@ In your reply, just provide the new paragraph.`,
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo-0301",
+        model: "gpt-3.5-turbo-0613",
         temperature: 1,
         n: desiredAdvertisementCount,
         max_tokens: 1000,
@@ -113,7 +113,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clhuouuc4000798p2c5fr1xbt",
+        id: "clix8twnc000a98prn167qb4c",
         content: {
           isNot: null,
         },
