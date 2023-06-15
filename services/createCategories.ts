@@ -1,16 +1,19 @@
-import {Content, Prisma, User, Webpage} from ".prisma/client";
+import { Content, Prisma, User, Webpage } from ".prisma/client";
 import prisma from "@/lib/prisma";
 import extractCategoriesFromWebpage from "@/services/helpers/extractCategoriesFromWebpage";
 import CategoryCreateOrConnectWithoutWebpagesInput = Prisma.CategoryCreateOrConnectWithoutWebpagesInput;
+import logger from "@/lib/logger";
+
+const myLogger = logger.child({ name: "createCategories" });
 
 type CreateCategories = (
-  webpage:  Webpage,
+  webpage: Webpage,
   content: Content,
   user: User
 ) => Promise<void>;
 
 const createCategories: CreateCategories = async (webpage, content, user) => {
-  console.log("started createCategories with: ", webpage.url);
+  myLogger.info({ url: webpage.url, email: user.email }, "started service");
 
   const existingCategoryCount = await prisma.category.count({
     where: {
@@ -21,15 +24,20 @@ const createCategories: CreateCategories = async (webpage, content, user) => {
       },
     },
   });
-  console.log("my existing existingCategoryCount: ", existingCategoryCount);
 
   // todo - consider rebuilding categories when webpage content has changed.
   if (existingCategoryCount > 0) {
-    console.log("aborting createCategories as i already have them");
+    myLogger.info(
+      { existingCategoryCount },
+      "aborting as already have categories"
+    );
     return;
   }
 
-  const categoriesOfThisWebpage = await extractCategoriesFromWebpage(webpage, content);
+  const categoriesOfThisWebpage = await extractCategoriesFromWebpage(
+    webpage,
+    content
+  );
 
   const categoryConnectOrCreateInput = categoriesOfThisWebpage.map(
     (x): CategoryCreateOrConnectWithoutWebpagesInput => ({
@@ -74,7 +82,7 @@ if (require.main === module) {
           },
         },
         categories: true,
-        content: true
+        content: true,
       },
     });
     console.log(

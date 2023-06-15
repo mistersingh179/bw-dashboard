@@ -5,6 +5,7 @@ import {
   Campaign,
   ScoredCampaign,
 } from "@prisma/client";
+import logger from "@/lib/logger";
 
 type AdWithDetail = Advertisement & {
   advertisementSpot: AdvertisementSpot;
@@ -20,6 +21,9 @@ type AdLookupParamsForUrl = {
   categoriesOfWebpage: string[];
   campIdsWhoHaveNotMetImpCap: string[];
 };
+
+const myLogger = logger.child({ name: "getAdvertisementsForUrl" });
+
 type GetAdvertisementsForUrl = (
   lookupParams: AdLookupParamsForUrl
 ) => Promise<AdWithDetail[]>;
@@ -37,7 +41,7 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
     campIdsWhoHaveNotMetImpCap,
   } = lookupParams;
 
-  console.dir({ ...lookupParams, now });
+  myLogger.info({ ...lookupParams, now }, "stared service");
 
   const advertisements = await prisma.advertisement.findMany({
     where: {
@@ -81,9 +85,9 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
             },
             {
               categories: {
-                none: {}
-              }
-            }
+                none: {},
+              },
+            },
           ],
         },
         score: {
@@ -116,6 +120,7 @@ const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
     ],
     distinct: ["advertisementSpotId"],
   });
+  myLogger.info({ length: advertisements.length }, "got advertisements");
 
   return advertisements;
 };
@@ -126,17 +131,18 @@ if (require.main === module) {
   (async () => {
     const ans = await getAdvertisementsForUrl({
       origin: "https://brandweaver.ai",
-      originWithPathName: "https://brandweaver.ai/blog/intro-to-solidity-a-simple-hello-world-smart-contract-ethereum-developer-tutorial-for-beginners",
+      originWithPathName:
+        "https://brandweaver.ai/blog/intro-to-solidity-a-simple-hello-world-smart-contract-ethereum-developer-tutorial-for-beginners",
       categoriesOfWebpage: [""],
       userScoreThreshold: 1,
       userId: "clij1cjb60000mb08uzganxdq",
       campIdsWhoHaveNotMetImpCap: [
-        'clij1mvw40000mt08img8o3i0',
-        'clij1k23i0000mf08trz34qst',
-        'clij1la530002mf08vusrtoul'
-      ]
+        "clij1mvw40000mt08img8o3i0",
+        "clij1k23i0000mf08trz34qst",
+        "clij1la530002mf08vusrtoul",
+      ],
     });
-    console.log("ans: ", ans.length);
+    console.log("***ans: ", ans.length);
     console.log(ans.map((a) => a.scoredCampaign.campaign.name));
   })();
 }

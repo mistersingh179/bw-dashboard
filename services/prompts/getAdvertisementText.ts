@@ -4,6 +4,9 @@ import fetch from "node-fetch";
 import prisma from "@/lib/prisma";
 import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageText";
 import { CreateChatCompletionResponse } from "openai/api";
+import logger from "@/lib/logger";
+
+const myLogger = logger.child({ name: "getAdvertisementText" });
 
 type GetAdvertisementText = (
   html: string,
@@ -24,6 +27,8 @@ const getAdvertisementText: GetAdvertisementText = async (
   addSponsoredWording,
   desiredAdvertisementCount
 ) => {
+  myLogger.info("starting service");
+
   if (process.env.NODE_ENV === "development") {
     return [
       `Ad Copy 1 for ${productName}, ${productDescription}`,
@@ -66,6 +71,7 @@ Never portray the brand in a negative context. \
 In your reply, just provide the new paragraph.`,
     },
   ];
+  myLogger.info(messages, "messages being sent to chatGpt");
   let response;
   const controller = new AbortController();
   const timeoutId = setTimeout(controller.abort, CHAT_GPT_FETCH_TIMEOUT);
@@ -86,16 +92,18 @@ In your reply, just provide the new paragraph.`,
       signal: controller.signal,
     });
   } catch (err) {
-    console.log("got error while get advertisemenet from chatGpt: ", err);
+    myLogger.error(
+      { err },
+      "got error while get advertisemenet from chatGpt: "
+    );
     return [];
   }
   clearTimeout(timeoutId);
 
   let data = (await response.json()) as CreateChatCompletionResponse;
-  console.log("api returned: ");
-  console.dir(data, { depth: null, colors: true });
+  myLogger.info({ data }, "api returned");
   const output = data.choices.map((c) => c.message?.content || "");
-  console.log("output is: ", output);
+  myLogger.info({ output }, "api output is");
   return output;
 };
 

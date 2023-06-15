@@ -1,12 +1,7 @@
 import prisma from "@/lib/prisma";
 import { Webpage } from ".prisma/client";
 import { AdvertisementSpot } from "@prisma/client";
-
-type GetWebpageWithAdSpotsAndOtherCounts = (
-  wpid: string,
-  wsid: string,
-  userId: string
-) => Promise<WebpageWithAdSpotsAndOtherCounts>;
+import logger from "@/lib/logger";
 
 type AdSpotWithAdsCount = AdvertisementSpot & {
   _count: { advertisements: number };
@@ -17,9 +12,17 @@ export type WebpageWithAdSpotsAndOtherCounts = Webpage & {
   _count: { scoredCampaigns: number; advertisementSpots: number };
 };
 
+const myLogger = logger.child({ name: "getWebpageWithAdSpotsAndOtherCounts" });
+
+type GetWebpageWithAdSpotsAndOtherCounts = (
+  wpid: string,
+  wsid: string,
+  userId: string
+) => Promise<WebpageWithAdSpotsAndOtherCounts>;
+
 const getWebpageWithAdSpotsAndOtherCounts: GetWebpageWithAdSpotsAndOtherCounts =
   async (wpid, wsid, userId) => {
-    console.log("inside service: getWebpageWithAdSpotsAndAdsCount");
+    myLogger.info({ wpid, wsid, userId }, "stared service");
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
         id: wpid,

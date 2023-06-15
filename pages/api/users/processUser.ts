@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import superjson from "superjson";
 import withMiddleware from "@/middlewares/withMiddleware";
 import processUserQueue from "@/jobs/queues/processUserQueue";
+import logger from "@/lib/logger";
 
 const processUser: NextApiHandler = async (req, res) => {
   const { userIdToProcess } = req.body;
@@ -24,7 +25,7 @@ const processUser: NextApiHandler = async (req, res) => {
     user,
     settings: user.setting!,
   });
-  console.log("schedule job: ", job.id);
+  logger.info({id: job.id, user}, "scheduled job to process user")
 
   res
     .setHeader("Content-Type", "application/json")

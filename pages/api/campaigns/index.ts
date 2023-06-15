@@ -4,6 +4,7 @@ import { formatISO, parseISO } from "date-fns";
 import withMiddleware from "@/middlewares/withMiddleware";
 import superjson from "superjson";
 import processCampaignQueue from "@/jobs/queues/processCampaignQueue";
+import logger from "@/lib/logger";
 
 type AuctionResponseData = {
   message: string;
@@ -44,7 +45,8 @@ const handleCreateCampaign = async (
 
   // todo - we should also call a similar job when campaign's product is updated.
   const job = await processCampaignQueue.add("processCampaign", { campaign });
-  console.log("job id for processCampaignJob: ", job.id);
+  logger.info({ campaign, job }, "schedule job to process campaign");
+
   res
     .setHeader("Content-Type", "application/json")
     .status(200)

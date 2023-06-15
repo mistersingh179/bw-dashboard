@@ -1,8 +1,11 @@
 import { Campaign, Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { User } from ".prisma/client";
+import logger from "@/lib/logger";
 
 type CampaignWithJustId = Pick<User, "id">;
+
+const myLogger = logger.child({ name: "getCampaignsWhoHaveNotMetImpCap" });
 
 type GetCampaignsWhoHaveNotMetImpCap = (
   userId: string
@@ -11,7 +14,7 @@ type GetCampaignsWhoHaveNotMetImpCap = (
 const getCampaignsWhoHaveNotMetImpCap: GetCampaignsWhoHaveNotMetImpCap = async (
   userId
 ) => {
-  console.log("inside service: getCampaignsWhoHaveNotMetImpCap");
+  myLogger.info({ userId }, "started service");
   const sql = Prisma.sql`\
 select c.id  \
 from "public"."Campaign" c \

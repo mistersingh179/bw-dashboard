@@ -2,6 +2,7 @@ import { Middleware } from "next-api-middleware";
 import exp from "constants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import logger from "@/lib/logger";
 
 const authCheckMiddleware: Middleware = async (req, res, next) => {
   const session = await getServerSession(req, res, authOptions);
@@ -9,6 +10,7 @@ const authCheckMiddleware: Middleware = async (req, res, next) => {
     req.authenticatedUserId = session.user.id;
     await next();
   } else {
+    logger.info({statusCode: 401}, "user not logged in");
     res.status(401).end();
   }
 };

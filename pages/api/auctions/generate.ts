@@ -10,12 +10,13 @@ import Cors from "cors";
 import getCampaignsWhoHaveNotMetImpCap from "@/services/queries/getCamapignsWhoHaveNotMetImpCap";
 import cookie from "cookie";
 import { createId } from "@paralleldrive/cuid2";
+import logger from "@/lib/logger";
 
 const cors = Cors({
   credentials: true,
   origin: (requestOrigin, callback) => {
     callback(null, requestOrigin);
-  }
+  },
 });
 
 type UrlProperties = {
@@ -51,7 +52,7 @@ const getWebpageWithCategories = async (userId: string, url: string) => {
         userId: userId,
       },
       url: url,
-      status: true
+      status: true,
     },
     include: {
       categories: true,
@@ -64,15 +65,17 @@ export const END_USER_COOKIE_NAME: string = "bw-endUserCuid";
 
 const getEndUserCuid = (req: NextApiRequest): string | null => {
   if (req.cookies[END_USER_COOKIE_NAME]) {
-    console.log("got cookies: ", req.cookies[END_USER_COOKIE_NAME]);
+    logger.info(
+      { END_USER_COOKIE_NAME: req.cookies[END_USER_COOKIE_NAME] },
+      "request object has end user cookie"
+    );
     return req.cookies[END_USER_COOKIE_NAME];
-  }else{
+  } else {
     return null;
   }
-}
+};
 
 const generate = async (req: NextApiRequest, res: NextApiResponse) => {
-
   const { userId, url, fp } = req.body;
   const settings = req.settings!;
 
@@ -124,7 +127,7 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
       path: "/",
       // secure: process.env.NODE_ENV === "development" ? false : true,
       sameSite: "none",
-      secure: true
+      secure: true,
     }
   );
   res.setHeader("Set-Cookie", cookieHeaderString);

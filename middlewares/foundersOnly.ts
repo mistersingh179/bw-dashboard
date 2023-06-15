@@ -1,10 +1,12 @@
 import { Middleware } from "next-api-middleware";
 import prisma from "@/lib/prisma";
 import exp from "constants";
+import logger from "@/lib/logger";
 
 const foundersOnly: Middleware = async (req, res, next) => {
-  console.log("in Only Founder Middleware with: ", req.authenticatedUserId);
-  try{
+  const { authenticatedUserId } = req;
+  logger.info({ authenticatedUserId }, "in Only Founder Middleware");
+  try {
     await prisma.user.findFirstOrThrow({
       where: {
         id: req.authenticatedUserId,
@@ -14,10 +16,16 @@ const foundersOnly: Middleware = async (req, res, next) => {
       },
     });
     await next();
-  }catch(err){
-    console.log('error when trying to find this user. silently failing');
-    res.status(204).end();
+  } catch (err) {
+    const statusCode = 204;
+    logger.info(
+      { statusCode },
+      "unable to verify user as founder. ending response"
+    );
+
+    console.log("error when trying to find this user. silently failing");
+    res.status(statusCode).end();
   }
 };
 
-export default foundersOnly
+export default foundersOnly;

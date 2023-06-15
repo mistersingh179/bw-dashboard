@@ -1,7 +1,8 @@
 import { Content, Webpage } from ".prisma/client";
 import prisma from "@/lib/prisma";
 // import { JSDOM } from "jsdom";
-import { parse, HTMLElement } from "node-html-parser";
+import { HTMLElement, parse } from "node-html-parser";
+import logger from "@/lib/logger";
 
 function cleanArray(arr: (string | null | undefined)[]): string[] {
   const trimmedArray = arr.map((str) => {
@@ -17,6 +18,8 @@ function cleanArray(arr: (string | null | undefined)[]): string[] {
   return filteredArray;
 }
 
+const myLogger = logger.child({ name: "extractCategoriesFromWebpage" });
+
 type ExtractCategoriesFromWebpage = (
   webpage: Webpage,
   content: Content
@@ -26,7 +29,7 @@ const extractCategoriesFromWebpage: ExtractCategoriesFromWebpage = async (
   webpage,
   content
 ) => {
-  console.log("inside service: extractCategoriesFromWebpage: ", webpage.url);
+  myLogger.info({url: webpage.url}, "starting service");
 
   let cumulativeValues: string[] = [];
 
@@ -42,7 +45,7 @@ const extractCategoriesFromWebpage: ExtractCategoriesFromWebpage = async (
       `meta[property='article:tag'], meta[property='article:section'], meta[property^="og:tax"]`
     ),
   ].map((x) => x.getAttribute("content") || "");
-  console.log("metaContentValues: ", metaContentValues);
+  myLogger.info({metaContentValues}, "got metaContentValues");
   cumulativeValues = cumulativeValues.concat(metaContentValues);
 
   var allClasses = [];
@@ -55,16 +58,16 @@ const extractCategoriesFromWebpage: ExtractCategoriesFromWebpage = async (
     }
   }
   const categoryClasses = allClasses.filter((x) => x.startsWith("category-"));
-  console.log("categoryClasses: ", categoryClasses);
+  logger.info({categoryClasses}, "got categoryClasses");
   cumulativeValues = cumulativeValues.concat(categoryClasses);
 
   const entryCategoryValues =
     document.querySelector(".entry-category")?.textContent?.split(",") || [];
-  console.log("entryCategoryValues: ", entryCategoryValues);
+  logger.info({entryCategoryValues}, "got entryCategoryValues");
 
   cumulativeValues = cumulativeValues.concat(entryCategoryValues);
 
-  console.log("cumulativeValues: ", cumulativeValues);
+  logger.info({cumulativeValues}, "got cumulativeValues");
   return cleanArray(cumulativeValues);
 };
 
@@ -74,11 +77,11 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clij4e738007i98lsu1e4rmqn",
+        id: "cliuttkba003598suxjdzu1f3",
       },
       include: {
-        content: true
-      }
+        content: true,
+      },
     });
     const ans = await extractCategoriesFromWebpage(webpage, webpage.content!);
     console.log("*** ans: ", ans);

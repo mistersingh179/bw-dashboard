@@ -2,8 +2,9 @@ import { Middleware } from "next-api-middleware";
 import exp from "constants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import {Setting} from "@prisma/client";
+import { Setting } from "@prisma/client";
 import prisma from "@/lib/prisma";
+import logger from "@/lib/logger";
 
 export const getSettings = async (userId: string): Promise<Setting> => {
   const settings = await prisma.setting.findFirstOrThrow({
@@ -16,19 +17,27 @@ export const getSettings = async (userId: string): Promise<Setting> => {
 
 const statusCheckMiddleware: Middleware = async (req, res, next) => {
   const { userId } = req.body;
-  try{
+  try {
     const settings = await getSettings(userId);
     if (settings.status === false) {
-      console.log("Aborting as user setting status is off.");
+      const statusCode = 204;
+      logger.info(
+        { userId, statusCode },
+        "Aborting request as user setting is off"
+      );
       res.status(204).end();
       return;
     } else {
       req.settings = settings;
       await next();
     }
-  }catch(err){
-    console.log("not settings found: ", userId, err);
-    res.status(204).end();
+  } catch (err) {
+    const statusCode = 204;
+    logger.error(
+      { userId, statusCode, err },
+      "ending response as settings not found for user"
+    );
+    res.status(statusCode).end();
     return;
   }
 };

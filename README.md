@@ -96,6 +96,7 @@ drop database bw;
 - make links bold
 - how do we recover from failed chatgpt calls, or content fetch calls
 - when ads pay the same then order by score 
+- use chatgpt to grade the campaign's production description or make an alternate version of it which is toned down.
 
 ## Pending backlog
 - create all webpages as OFF

@@ -48,7 +48,6 @@ const handleUpdateWebpage = async (
       ...req.body,
     },
   });
-  console.log("updated webpage is: ", webpage);
 
   res
     .setHeader("Content-Type", "application/json")

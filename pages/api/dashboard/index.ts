@@ -12,8 +12,6 @@ const dashboard: NextApiHandler = async (req, res) => {
     },
   })
 
-  console.log("auctionsCount: ", auctionsCount);
-
   res
     .setHeader("Content-Type", "application/json")
     .status(200)

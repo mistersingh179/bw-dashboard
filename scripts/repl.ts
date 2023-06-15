@@ -1,9 +1,11 @@
+import getLogger from "../lib/logger";
 import prisma from "@/lib/prisma";
-import createAdvertisementQueue from "@/jobs/queues/createAdvertisementQueue";
-import redisClient from "@/lib/redisClient";
+import logger from "../lib/logger";
 
 (async () => {
-  console.log(Object.keys(redisClient));
+  const user = await prisma.user.findFirstOrThrow();
+  const user2 = await prisma.user.findFirstOrThrow();
+  logger.info({}, "bar");
 })();
 
 export {};

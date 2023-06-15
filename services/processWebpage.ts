@@ -5,8 +5,11 @@ import createAdvertisementSpots from "@/services/createAdvertisementSpots";
 import createCategories from "@/services/createCategories";
 import createScoredCampaigns from "@/services/createScoredCampaigns";
 import createAdvertisementQueue from "@/jobs/queues/createAdvertisementQueue";
+import logger from "@/lib/logger";
 
 export type WebpageWithContent = Webpage & { content: Content | null };
+
+const myLogger = logger.child({ name: "processWebpage" });
 
 type ProcessWebpage = (webpage: Webpage) => Promise<void>;
 
@@ -17,7 +20,7 @@ type ProcessWebpage = (webpage: Webpage) => Promise<void>;
 // todo - which has that info and it is same for all webpages it call its on
 
 const processWebpage: ProcessWebpage = async (webpage) => {
-  console.log("started processWebpage with: ", webpage.url);
+  myLogger.info({ url: webpage.url }, "started service");
 
   const settings = await prisma.setting.findFirstOrThrow({
     where: {
@@ -46,7 +49,7 @@ const processWebpage: ProcessWebpage = async (webpage) => {
 
   const content = await createContent(webpage, settings, user);
   if (content === null) {
-    console.log("aborting as unable to generate content");
+    myLogger.info({}, "aborting as unable to generate content");
     return;
   }
 
@@ -87,10 +90,13 @@ const processWebpage: ProcessWebpage = async (webpage) => {
         scoredCampaign: scoredCamp,
         settings: settings,
       });
-      console.log(`scheduled job to create advertisement: ${job.id}`);
+      myLogger.info(
+        { id: job.id, adSpot, scoredCamp },
+        "scheduled job to create advertisement"
+      );
     }
   }
-  console.log("finished processWebpage with: ", webpage.url);
+  myLogger.info({ url: webpage.url }, "finished service");
 };
 
 export default processWebpage;

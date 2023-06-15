@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 // import { JSDOM } from "jsdom";
 import { parse, HTMLElement } from "node-html-parser";
 import { Content } from ".prisma/client";
+import logger from "@/lib/logger";
 
 type AdSpotText = {
   beforeText: string;
@@ -31,23 +32,34 @@ const minCharFilter = (minCharLimit: number, elem: HTMLElement | Element) => {
   }
   const ans = elem.textContent.length >= minCharLimit;
   if (ans) {
-    console.log("keeping: ", elem.textContent.length, minCharLimit);
+    myLogger.info({ length: elem.textContent.length, minCharLimit }, "keeping");
   } else {
-    console.log("rejecting: ", elem.textContent.length, minCharLimit);
+    myLogger.info(
+      { length: elem.textContent.length, minCharLimit },
+      "rejecting"
+    );
   }
   return ans;
 };
 
 const nextElementWithTextOfSameTypeFilter: ElementFilter = (elem) => {
-  const followingElement = nextWithText(elem);
-  const ans = followingElement?.tagName === elem.tagName;
+  const fElem = nextWithText(elem);
+  const ans = fElem?.tagName === elem.tagName;
   if (ans) {
-    console.log("keeping: ", elem.tagName, followingElement?.tagName);
+    myLogger.info(
+      { tagName: elem.tagName, fTagName: fElem?.tagName },
+      "keeping"
+    );
   } else {
-    console.log("rejecting: ", elem.tagName, followingElement?.tagName);
+    myLogger.info(
+      { tagName: elem.tagName, fTagName: fElem?.tagName },
+      "rejecting"
+    );
   }
   return ans;
 };
+
+const myLogger = logger.child({ name: "getAdSpotsForWebpage" });
 
 type GetAdSpotsTextForWebpage = (
   webpage: Webpage,
@@ -60,6 +72,7 @@ const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (
   content,
   settings
 ) => {
+  myLogger.info({ url: webpage.url }, "starting service");
 
   // const dom = new JSDOM(webpageWithContent.content.desktopHtml);
   // const {
@@ -69,20 +82,20 @@ const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (
   const document = parse(content.desktopHtml);
   let elements = document.querySelectorAll(settings.contentSelector);
   let elementsArr = [...elements];
-  console.log("possible ad spots to start with: ", elementsArr.length);
+  myLogger.info({ length: elementsArr.length }, "possible ad spots at start");
 
   elementsArr = elementsArr.filter(
     minCharFilter.bind(this, settings.minCharLimit)
   );
-  console.log("ad spots after minCharLimit filter: ", elementsArr.length);
+  myLogger.info({ length: elementsArr.length }, "ad spots after minCharLimit");
 
   elementsArr = settings.sameTypeElemWithTextToFollow
     ? elementsArr.filter(nextElementWithTextOfSameTypeFilter)
     : elementsArr;
-  console.log("ad spots after same type element to follow filter: ", elementsArr.length);
+  myLogger.info({ length: elementsArr.length }, "ad spots after sameTypeElem");
 
   elementsArr = elementsArr.slice(0, settings.desiredAdvertisementSpotCount);
-  console.log(`ad spots after desired count option: `, elementsArr.length);
+  myLogger.info({ length: elementsArr.length }, "ad spots after desired count");
 
   const adSpots: AdSpotText[] = elementsArr.map((elem) => ({
     beforeText: elem.textContent?.trim() ?? "",
@@ -90,10 +103,10 @@ const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (
   }));
 
   adSpots.forEach((elem, index, array) => {
-    console.group(`Ad ${index}`);
-    console.log("Before Elem: ", elem.beforeText);
-    console.log("After Elem: ", elem.afterText);
-    console.groupEnd();
+    myLogger.info(
+      { index, before: elem.beforeText, after: elem.afterText },
+      "generated ad spot"
+    );
   });
 
   return adSpots;
@@ -105,7 +118,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "cli3v2cbk000098q7nqb4mryo",
+        id: "cliuttkba003598suxjdzu1f3",
         content: {
           isNot: null,
         },
@@ -130,6 +143,10 @@ if (require.main === module) {
         },
       },
     });
-    await getAdSpotsForWebpage(webpage, webpage.content!, webpage.website.user.setting!);
+    await getAdSpotsForWebpage(
+      webpage,
+      webpage.content!,
+      webpage.website.user.setting!
+    );
   })();
 }

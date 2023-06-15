@@ -1,10 +1,13 @@
 import prisma from "@/lib/prisma";
 import processUserQueue from "@/jobs/queues/processUserQueue";
+import logger from "@/lib/logger";
+
+const myLogger = logger.child({ name: "ProcessAllUsers" });
 
 type ProcessAllUsers = () => Promise<void>;
 
 const processAllUsers: ProcessAllUsers = async () => {
-  console.log("started processAllUsers");
+  myLogger.info({}, "started processAllUsers");
 
   const users = await prisma.user.findMany({
     where: {
@@ -19,22 +22,21 @@ const processAllUsers: ProcessAllUsers = async () => {
     },
   });
 
-  console.log("we have user count: ", users.length, " to process");
+  myLogger.info({ length: users.length }, "user count to process");
 
   for (const user of users) {
     if (!user.setting) {
-      console.log("skipping no settings user: ", user.email);
+      logger.error({ user }, "skipping as user has no settings");
       continue;
     }
-    console.log("at user: ", user.email);
     const job = await processUserQueue.add("processUser", {
       user,
       settings: user.setting,
     });
-    console.log("schedule job to process user: ", user.email, job.id);
+    myLogger.info({ email: user.email, job }, "schedule job to process user");
   }
 
-  console.log("finished processAllUsers");
+  myLogger.info({}, "finished processAllUsers");
 };
 
 export default processAllUsers;

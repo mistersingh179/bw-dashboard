@@ -1,11 +1,10 @@
 import { Job, MetricsTime, Worker } from "bullmq";
 import redisClient from "@/lib/redisClient";
-import { queueName } from "@/jobs/queues/createAdvertisementQueue";
 import { DEFAULT_WORKER_CONCURRENCY } from "@/constants";
 import path from "path";
 import { CreateAdvertisementDataType } from "@/jobs/dataTypes";
-
-console.log("setting up worker for: ", queueName);
+import logger from "@/lib/logger";
+import { pick } from "lodash";
 
 const processorFile = path.join(
   __dirname,
@@ -13,7 +12,10 @@ const processorFile = path.join(
   "sandboxedProcessors",
   "createAdvertisementSandboxProcessor.ts"
 );
-console.log("processorFile: ", processorFile);
+
+const queueName = "createAdvertisement";
+
+logger.info({ queueName, processorFile }, "setting up worker");
 
 const worker: Worker<CreateAdvertisementDataType, void> = new Worker(
   queueName,
@@ -34,23 +36,30 @@ const worker: Worker<CreateAdvertisementDataType, void> = new Worker(
 );
 
 worker.on("drained", () => {
-  console.log("worker drained: ", queueName);
+  logger.info({ queueName }, "worker drained");
 });
 
 worker.on("active", (job) => {
-  console.log("worker actve: ", job.queueName, job.name, job.id);
+  const jobItems = pick(job, ["queueName", "name", "id"]);
+  logger.info({ jobItems }, "worker active");
 });
 
 worker.on("completed", (job: Job) => {
-  console.log("worker completed: ", job.queueName, job.name, job.id);
+  const jobItems = pick(job, ["queueName", "name", "id"]);
+  logger.info({ jobItems }, "worker completed");
 });
 
 worker.on("failed", (job: Job | undefined, err) => {
-  console.log("worker failed: ", job?.queueName, job?.name, job?.id);
+  const jobItems = pick(job, ["queueName", "name", "id"]);
+  logger.error({ jobItems, err }, "worker failed");
 });
 
 worker.on("error", (err) => {
-  console.log("worker error: ", err);
+  logger.error({ err }, "worker error");
+});
+
+worker.on("error", (err) => {
+  logger.error({ err }, "worker error");
 });
 
 export default worker;

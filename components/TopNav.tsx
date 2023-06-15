@@ -16,7 +16,6 @@ import useUser from "@/hooks/useUser";
 
 const TopNav: React.FC = () => {
   const { data: session, status } = useSession();
-  console.log("session: ", session);
   const router = useRouter();
   const currentRoute = router.pathname;
   const { user } = useUser();

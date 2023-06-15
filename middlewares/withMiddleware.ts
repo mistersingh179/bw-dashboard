@@ -16,7 +16,7 @@ import botRejectingMiddleware from "@/middlewares/botRejectingMiddleware";
 import statusCheckMiddleware from "@/middlewares/statusCheckMiddleware";
 import canManageUsersMiddleware from "@/middlewares/canManageUsersMiddleware";
 
-const defaults: string[] = ["reqId", "delay", "logging", "headers", "errors"];
+const defaults: string[] = ["delay", "logging", "errors"];
 
 const middleware: LabeledMiddleware = {
   logging: loggingMiddleware,

@@ -1,10 +1,12 @@
 import { Job, Queue, QueueEvents } from "bullmq";
 import redisClient from "@/lib/redisClient";
 import { CreateScoredCampaignDataType } from "@/jobs/dataTypes";
+import logger from "@/lib/logger";
+import { pick } from "lodash";
 
-export const queueName = "createScoredCampaign";
+const queueName = "createScoredCampaign";
 
-console.log("setting up queue: ", queueName);
+logger.info({ queueName }, "setting up queue");
 
 const queue: Queue<CreateScoredCampaignDataType, void> = new Queue(queueName, {
   connection: redisClient,
@@ -15,23 +17,24 @@ const queue: Queue<CreateScoredCampaignDataType, void> = new Queue(queueName, {
 });
 
 queue.on("error", (err) => {
-  console.log("queue error: ", err);
+  logger.error({ err }, "queue error");
 });
 
 queue.on("waiting", (job: Job) => {
-  console.log("queue waiting: ", job.queueName, job.name, job.id);
+  const jobItems = pick(job, ["queueName", "name", "id"]);
+  logger.info({ jobItems }, "queue waiting");
 });
 
 export const queueEvents = new QueueEvents(queueName, {
   connection: redisClient,
 });
 
-queueEvents.on("added", async ({ jobId }) => {
-  console.log("queue added: ", queueName, " added jobId: ", jobId);
+queueEvents.on("added", ({ jobId }) => {
+  logger.info({ queueName, jobId }, "added job");
 });
 
 queueEvents.on("completed", async ({ jobId }) => {
-  console.log("queue completed ", queueName, " completed jobId: ", jobId);
+  logger.info({ queueName, jobId }, "queue completed");
 });
 
 export default queue;

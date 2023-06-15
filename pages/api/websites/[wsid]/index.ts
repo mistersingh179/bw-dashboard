@@ -31,7 +31,6 @@ const handleWebsiteUpdate = async (
       ...req.body
     }
   });
-  console.log("updated website is: ", website);
   res
     .setHeader("Content-Type", "application/json")
     .status(200)

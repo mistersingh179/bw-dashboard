@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import getAdSpotsForWebpage from "@/services/helpers/getAdSpotsForWebpage";
 import AdvertisementSpotCreateManyWebpageInput = Prisma.AdvertisementSpotCreateManyWebpageInput;
 import { Content, User } from ".prisma/client";
+import logger from "@/lib/logger";
 
 // const enoughAdSpotsExist = async (webpage: Webpage, settings: Setting): Promise<boolean> => {
 //   const result = await prisma.advertisementSpot.findMany({
@@ -17,18 +18,20 @@ import { Content, User } from ".prisma/client";
 //   return result.length === settings.desiredAdvertisementSpotCount;
 // };
 
+const myLogger = logger.child({ name: "createAdvertisementSpots" });
+
 type CreateAdvertisementSpots = (
   webpage: Webpage,
   content: Content,
-  settings: Setting,
+  settings: Setting
 ) => Promise<void>;
 
 const createAdvertisementSpots: CreateAdvertisementSpots = async (
   webpage,
   content,
-  settings,
+  settings
 ) => {
-  console.log("in createAdvertisementSpots for: ", webpage.url);
+  myLogger.info({ url: webpage.url }, "started service");
 
   // if (await enoughAdSpotsExist(webpage)) {
   //   console.log(`Aborting createAdvertisementSpots as we already enough`);
@@ -44,10 +47,12 @@ const createAdvertisementSpots: CreateAdvertisementSpots = async (
   // todo - need to also not process webpages for which we have processed in past and were unable to create the spots
   // todo - this will not stop & thus we will re-process a webpage which just doesnt have enough spots
 
-  if (existingAdSpotCount >= settings.desiredAdvertisementSpotCount) {
-    console.log(
-      `Aborting createAdvertisementSpots as we already enough: `,
-      existingAdSpotCount
+  const { desiredAdvertisementSpotCount } = settings;
+
+  if (existingAdSpotCount >= desiredAdvertisementSpotCount) {
+    myLogger.info(
+      { existingAdSpotCount, desiredAdvertisementSpotCount },
+      "Aborting as we already enough spots"
     );
     return;
   }
@@ -55,7 +60,7 @@ const createAdvertisementSpots: CreateAdvertisementSpots = async (
   const adSpotTextArr = await getAdSpotsForWebpage(webpage, content, settings);
 
   if (adSpotTextArr.length === 0) {
-    console.log("Aborting createAdvertisementSpots as unable to get ad spots");
+    myLogger.info({}, "Aborting as unable to get ad spots")
     return;
   }
 
@@ -108,10 +113,6 @@ if (require.main === module) {
         },
       },
     });
-    await createAdvertisementSpots(
-      wp,
-      wp.content!,
-      wp.website.user.setting!,
-    );
+    await createAdvertisementSpots(wp, wp.content!, wp.website.user.setting!);
   })();
 }

@@ -6,29 +6,39 @@ import downloadWebpagesQueue, {
   queueEvents as downloadWebpagesQueueEvent,
 } from "@/jobs/queues/downloadWebpagesQueue";
 import processWebpageQueue from "@/jobs/queues/processWebpageQueue";
+import logger from "@/lib/logger";
+
+const myLogger = logger.child({ name: "processWebsite" });
 
 type ProcessWebsite = (website: Website, settings: Setting) => Promise<void>;
 
 const processWebsite: ProcessWebsite = async (website, settings) => {
-  console.log("inside service: processWebsite");
+  myLogger.info(
+    { topLevelDomainUrl: website.topLevelDomainUrl },
+    "started service"
+  );
 
   const timeWhenDownloadingStarted = new Date();
-  console.log("downloading started at: ", timeWhenDownloadingStarted);
+  myLogger.info({ timeWhenDownloadingStarted }, "downloading started");
 
   const job = await downloadWebpagesQueue.add("downloadWebpages", {
     website,
     settings,
   });
+  myLogger.info(
+    { topLevelDomainUrl: website.topLevelDomainUrl, id: job.id },
+    "scheduled job to download webpages & waiting for it to finish"
+  );
   await job.waitUntilFinished(downloadWebpagesQueueEvent, 1 * 60 * 60 * 1000);
 
   const timeWhenDownloadingFinished = new Date();
-  console.log("downloading finished at: ", timeWhenDownloadingFinished);
+  myLogger.info({ timeWhenDownloadingFinished }, "downloading finished");
 
   const downloadingTook = differenceInSeconds(
     timeWhenDownloadingFinished,
     timeWhenDownloadingStarted
   );
-  console.log("downloading took: ", downloadingTook);
+  myLogger.info({ downloadingTook }, "downloading took");
 
   const newlyAddedWebpages = await prisma.webpage.findMany({
     where: {
@@ -38,7 +48,10 @@ const processWebsite: ProcessWebsite = async (website, settings) => {
     },
   });
 
-  console.log("newly added webpages count: ", newlyAddedWebpages.length);
+  myLogger.info(
+    { length: newlyAddedWebpages.length },
+    "newly added webpages count"
+  );
 
   // todo - will build over only what was just inserted
   // todo - will not insert what was just updated
@@ -47,7 +60,10 @@ const processWebsite: ProcessWebsite = async (website, settings) => {
     const job = await processWebpageQueue.add("processWebpage", {
       webpage: wp,
     });
-    console.log(`scheduled job: ${job.id} for wp: ${wp.url}`);
+    myLogger.info(
+      { id: job.id, url: wp.url },
+      "scheduled job to process Webpage"
+    );
   }
 };
 

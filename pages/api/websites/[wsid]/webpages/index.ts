@@ -5,6 +5,7 @@ import { QueryParams } from "@/types/QueryParams";
 import superjson from "superjson";
 import { Webpage } from ".prisma/client";
 import processWebpageQueue from "@/jobs/queues/processWebpageQueue";
+import logger from "@/lib/logger";
 
 const webpagesHandler: NextApiHandler = async (req, res) => {
   switch (req.method) {
@@ -40,7 +41,6 @@ const handleListWebpages = async (
     take,
     skip,
   });
-  console.log("webpages: ", webpages);
   res
     .setHeader("Content-Type", "application/json")
     .status(200)
@@ -72,7 +72,7 @@ const handleCreateWebpage = async (
   });
 
   const job = await processWebpageQueue.add("processWebpage", { webpage });
-  console.log("schedule job: ", job.id);
+  logger.info({ webpage, id: job.id }, "scheduled job to process webpage");
 
   res
     .setHeader("Content-Type", "application/json")

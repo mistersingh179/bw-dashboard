@@ -6,6 +6,7 @@ import {
   ScoredCampaign,
 } from "@prisma/client";
 import { Category, Webpage } from ".prisma/client";
+import logger from "@/lib/logger";
 
 export type AdvertisementWithDetail = Advertisement & {
   advertisementSpot: AdvertisementSpot & {
@@ -15,6 +16,8 @@ export type AdvertisementWithDetail = Advertisement & {
     campaign: Campaign & { categories: Category[] };
   };
 };
+
+const myLogger = logger.child({ name: "getAdvertisementsForWebpage" });
 
 type GetAdvertisementsForWebpage = (
   websiteId: string,
@@ -27,7 +30,7 @@ const getAdvertisementsForWebpage: GetAdvertisementsForWebpage = async (
   webpageId,
   userId
 ) => {
-  console.log("inside service: getAdvertisementsForWebpage");
+  myLogger.info({ websiteId, webpageId, userId }, "started service");
   const advertisements = await prisma.advertisement.findMany({
     where: {
       scoredCampaign: {
@@ -61,6 +64,7 @@ const getAdvertisementsForWebpage: GetAdvertisementsForWebpage = async (
       },
     },
   });
+  myLogger.info({ length: advertisements.length }, "got advertisements");
   return advertisements;
 };
 
@@ -80,7 +84,6 @@ if (require.main === module) {
         },
       },
     });
-    console.log(webpage.id, webpage.website.id, webpage.website.user.id);
     const ans = await getAdvertisementsForWebpage(
       webpage.id,
       webpage.website.id,

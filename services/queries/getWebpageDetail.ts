@@ -6,8 +6,7 @@ import {
   Campaign,
   ScoredCampaign,
 } from "@prisma/client";
-
-type GetWebpageDetail = (webpageId: string) => Promise<WebpageWithDetail>;
+import logger from "@/lib/logger";
 
 export type WebpageWithDetail = Webpage & {
   scoredCampaigns: (ScoredCampaign & {
@@ -18,9 +17,13 @@ export type WebpageWithDetail = Webpage & {
   })[];
 };
 
+const myLogger = logger.child({ name: "getWebpageDetail" });
+
+type GetWebpageDetail = (webpageId: string) => Promise<WebpageWithDetail>;
 
 const getWebpageDetail: GetWebpageDetail = async (webpageId) => {
-  console.log("inside service: getWebpageDetail");
+  myLogger.info({ webpageId }, "started service");
+
   const webpage = await prisma.webpage.findFirstOrThrow({
     where: {
       id: webpageId,

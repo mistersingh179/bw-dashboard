@@ -9,6 +9,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "../../../lib/prisma";
 import { DEFAULT_SCORE_THRESHOLD } from "@/constants";
 import findOrCreateSettings from "@/services/findOrCreateSettings";
+import logger from "@/lib/logger";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -18,18 +19,17 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async signIn({ user, account, profile, email, credentials }) {
-      console.log("in signIn with: ", user);
       return true;
     },
   },
   events: {
     signIn: async (message) => {
       const { user, account, profile, isNewUser } = message;
-      console.log("got signIn event with: ", message);
+      logger.info({message}, "got sign in event");
     },
     createUser: async (message) => {
       const { user } = message;
-      console.log("got createUser event with: ", message);
+      logger.info({message}, "got create user event");
       await findOrCreateSettings(user);
     },
   },

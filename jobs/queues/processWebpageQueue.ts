@@ -1,12 +1,12 @@
-import {Job, Queue, QueueEvents} from "bullmq";
+import { Job, Queue, QueueEvents } from "bullmq";
 import redisClient from "@/lib/redisClient";
-import { Webpage } from ".prisma/client";
-import {ProcessWebpageDataType} from "@/jobs/dataTypes";
+import { ProcessWebpageDataType } from "@/jobs/dataTypes";
+import logger from "@/lib/logger";
+import { pick } from "lodash";
 
-export const queueName = "processWebpage";
+const queueName = "processWebpage";
 
-console.log("setting up queue: ", queueName);
-
+logger.info({ queueName }, "setting up queue");
 
 const queue: Queue<ProcessWebpageDataType, void> = new Queue(queueName, {
   connection: redisClient,
@@ -17,27 +17,24 @@ const queue: Queue<ProcessWebpageDataType, void> = new Queue(queueName, {
 });
 
 queue.on("waiting", (job: Job) => {
-  console.log("queue waiting: ", job.queueName, job.name, job.id);
+  const jobItems = pick(job, ["queueName", "name", "id"]);
+  logger.info({ jobItems }, "queue waiting");
 });
 
 queue.on("error", (err) => {
-  console.log("there is an error on processWebpageQueue: ", err);
+  logger.error({ err }, "queue error");
 });
 
 export const queueEvents = new QueueEvents(queueName, {
   connection: redisClient,
 });
 
-queueEvents.on("added", async ({ jobId }) => {
-  console.log("on queue ", queueName, " added jobId: ", jobId);
+queueEvents.on("added", ({ jobId }) => {
+  logger.info({ queueName, jobId }, "added job");
 });
 
 queueEvents.on("completed", async ({ jobId }) => {
-  console.log("on queue ", queueName, " completed jobId: ", jobId);
-  // const job = await Job.fromId(processingQueue, jobId);
-  // if (job?.returnvalue) {
-  //   console.log("and got back: ", job.returnvalue);
-  // }
+  logger.info({ queueName, jobId }, "queue completed");
 });
 
 export default queue;

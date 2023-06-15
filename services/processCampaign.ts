@@ -1,11 +1,14 @@
 import { Campaign } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import processWebpageQueue from "@/jobs/queues/processWebpageQueue";
+import logger from "@/lib/logger";
+
+const myLogger = logger.child({ name: "processCampaign" });
 
 type ProcessCampaign = (campaign: Campaign) => Promise<void>;
 
 const processCampaign: ProcessCampaign = async (campaign) => {
-  console.log("inside service: processCampaign");
+  myLogger.info({ name: campaign.name }, "started service");
   const webpages = await prisma.webpage.findMany({
     where: {
       website: {
@@ -23,7 +26,7 @@ const processCampaign: ProcessCampaign = async (campaign) => {
     const job = await processWebpageQueue.add("processWebpage", {
       webpage: wp,
     });
-    console.log(`schedule job: ${job.id} for wp: ${wp.url}`);
+    myLogger.info({id: job.id, url: wp.url}, "scheduled job to process webpage")
   }
 };
 

@@ -34,7 +34,6 @@ const handleListCategories = async (
       }
     }
   });
-  console.log("categories: ", categories);
   res
     .setHeader("Content-Type", "application/json")
     .status(200)

@@ -69,7 +69,6 @@ const handleUpdateAdvertisement = async (
     },
     data: data,
   });
-  console.log("updated advertisement is: ", advertisement);
   res
     .setHeader("Content-Type", "application/json")
     .status(200)

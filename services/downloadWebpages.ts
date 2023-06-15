@@ -9,6 +9,7 @@ import downloadWebpagesQueue, {
   queueEvents as downloadWebpagesQueueEvents,
 } from "@/jobs/queues/downloadWebpagesQueue";
 import WebpageCreateManyWebsiteInput = Prisma.WebpageCreateManyWebsiteInput;
+import logger from "@/lib/logger";
 
 export type UrlsetUrl = {
   loc: string;
@@ -34,6 +35,8 @@ export const getCleanUrl = (url: string): string => {
   return "";
 };
 
+const myLogger = logger.child({ name: "downloadWebpages" });
+
 type DownloadWebpages = (
   website: Website,
   settings: Setting,
@@ -45,15 +48,24 @@ const downloadWebpages: DownloadWebpages = async (
   settings,
   sitemapUrl
 ) => {
+  myLogger.info(
+    { url: website.topLevelDomainUrl, sitemapUrl },
+    "started service"
+  );
+
   if (sitemapUrl === undefined) {
     sitemapUrl = website.sitemapUrl;
+    myLogger.info(
+      { sitemapUrl },
+      "using sitemap url of website as started at top with undefined"
+    );
   }
 
   const lookBackDate = subDays(new Date(), settings.webpageLookbackDays);
-  console.log("lookBackDate is: ", lookBackDate);
+  myLogger.info({ lookBackDate }, "lookBackDate is");
 
   if (settings.webpageLookbackDays === 0) {
-    console.log("aborting as webpageLookbackDays is set to 0");
+    myLogger.info({}, "aborting as webpageLookbackDays is set to 0");
     return;
   }
 
@@ -61,7 +73,7 @@ const downloadWebpages: DownloadWebpages = async (
   try {
     sitemapXML = await fetchContentOfWebpage(sitemapUrl, "application/xml");
   } catch (err) {
-    console.log("aborting as unable to fetch sitemap: ", err);
+    myLogger.error({ err }, "aborting as unable to fetch sitemap");
     return;
   }
 
@@ -86,12 +98,12 @@ const downloadWebpages: DownloadWebpages = async (
 
   if (Array.isArray(jsonObj?.urlset?.url)) {
     const urlArray = jsonObj.urlset.url as UrlsetUrl[];
-    console.log("we have a sitemap with urlset: ", urlArray.length);
+    myLogger.info({ length: urlArray.length }, "we have a sitemap with urlset");
 
     let webpageInputs: WebpageCreateManyWebsiteInput[] = [];
     webpageInputs = urlArray.reduce((accumulator, currentValue) => {
       if (isAfter(parseISO(currentValue.lastmod), lookBackDate)) {
-        console.log("taking as recent: ", currentValue.lastmod);
+        myLogger.info({ lastmod: currentValue.lastmod }, "taking as recent");
         return [
           ...accumulator,
           {
@@ -101,11 +113,15 @@ const downloadWebpages: DownloadWebpages = async (
           },
         ];
       } else {
-        console.log("skipping as not recent: ", currentValue.lastmod);
+        myLogger.info(
+          { lastmod: currentValue.lastmod },
+          "skipping as not recent"
+        );
         return accumulator;
       }
     }, webpageInputs);
-    console.log("we have webpageInputs: ", webpageInputs.length);
+
+    myLogger.info({ length: webpageInputs.length }, "we have webpageInputs");
 
     await prisma.website.update({
       where: {
@@ -122,19 +138,23 @@ const downloadWebpages: DownloadWebpages = async (
     });
   } else if (Array.isArray(jsonObj?.sitemapindex?.sitemap)) {
     const sitemapArray = jsonObj.sitemapindex.sitemap as SitemapIndexSitemap[];
-    console.log("we have a sitemap of sitemaps");
+    myLogger.info({}, "we have a sitemap of sitemaps");
 
     const downloadPromises = [];
     for (const sitemapItem of sitemapArray) {
-      console.log(
-        "scheduling downloadWebpages with nested sitemap url: ",
-        sitemapItem.loc
+      myLogger.info(
+        { sitemapUrl: sitemapItem.loc },
+        "scheduling downloadWebpages with nested sitemap url: "
       );
       const job = await downloadWebpagesQueue.add("downloadWebpages", {
         website,
         settings,
         sitemapUrl: sitemapItem.loc,
       });
+      myLogger.info(
+        { job, url: website.topLevelDomainUrl, sitemapUrl: sitemapItem.loc },
+        "scheduled job to download webpages from nested sitemap"
+      );
       const downloadPromise = job.waitUntilFinished(
         downloadWebpagesQueueEvents,
         1 * 24 * 60 * 60 * 1000
@@ -143,7 +163,7 @@ const downloadWebpages: DownloadWebpages = async (
     }
     await Promise.allSettled(downloadPromises);
   } else {
-    console.log("unable to process sitemap");
+    myLogger.error({}, "unable to process sitemap")
   }
 };
 

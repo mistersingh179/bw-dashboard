@@ -19,7 +19,6 @@ export default async function handler(
       accounts: true,
     },
   });
-  console.log(user);
   res
     .setHeader("Content-Type", "application/json")
     .status(200)

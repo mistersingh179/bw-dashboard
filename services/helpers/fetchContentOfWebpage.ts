@@ -3,6 +3,9 @@ import fetch from "node-fetch";
 import { parse, HTMLElement } from "node-html-parser";
 import UserAgent from "user-agents";
 import { FETCH_TIMEOUT } from "@/constants";
+import logger from "@/lib/logger";
+
+const myLogger = logger.child({ name: "fetchContentOfWebpage" });
 
 type FetchContentOfWebpage = (
   url: string,
@@ -15,7 +18,8 @@ const fetchContentOfWebpage: FetchContentOfWebpage = async (
   accept = "*/*",
   deviceCategory = "desktop"
 ) => {
-  console.log("in fetchContentOfWebpage with: ", url);
+  myLogger.info({url}, "starting service");
+
   const userAgent = new UserAgent({ deviceCategory });
   const controller = new AbortController();
   const timeoutId = setTimeout(controller.abort, FETCH_TIMEOUT);
@@ -40,7 +44,7 @@ if (require.main === module) {
     const ans = await fetchContentOfWebpage(
       "https://www.simplyrecipes.com/recipes/homemade_pizza/"
     );
-    console.log("ans: ", ans.substring(0, 100));
+    console.log("***ans: ", ans.substring(0, 100));
 
     // const dom = new (ans);
     // const items = dom.window.document.querySelectorAll("p:nth-child(3n)");

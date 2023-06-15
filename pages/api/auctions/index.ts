@@ -14,12 +14,7 @@ const handleCreateAuction = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  console.log("in handleAuctionPost");
-  console.log("req.query: ", req.query);
-  console.log("req.body: ", typeof req.body, req.body);
   const { userId, url } = req.body;
-  console.log(userId);
-  console.log(url);
 
   const approvedIds = [
     "clhtwckif000098wp207rs2fg", // me in Dev
@@ -40,7 +35,6 @@ const handleCreateAuction = async (
       .status(201)
       .send(superjson.stringify({ message: "creating an auction" }));
   } else {
-    console.log("not an approved user. failing silently");
     res.status(204).end();
   }
 };

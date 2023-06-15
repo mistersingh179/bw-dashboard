@@ -1,14 +1,17 @@
 import processAllUsersQueue from "@/jobs/queues/processAllUsersQueue";
+import logger from "@/lib/logger";
+import { pick } from "lodash";
 
 const setupCronJobs = async () => {
-  console.log("starting scheduling cron jobs");
+  logger.info({}, "starting scheduling cron jobs");
   const job = await processAllUsersQueue.add("processAllUsers", undefined, {
     repeat: {
       pattern: "0 18 * * *",
     },
   });
-  console.log("scheduled job: ", job.queueName, job.name, job.id);
-  console.log("finished scheduling cron jobs");
+  const jobItems = pick(job, ["qeueuName", "name", "id"]);
+  logger.info({ jobItems }, "scheduled job");
+  logger.info("finished scheduling cron jobs");
 };
 
 export default setupCronJobs;

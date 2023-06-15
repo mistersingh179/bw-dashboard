@@ -56,8 +56,6 @@ const handleUpdateCampaign = async (
     },
   });
 
-  console.log("sending back campaign: ", campaign);
-
   res
     .setHeader("Content-Type", "application/json")
     .status(200)
@@ -77,8 +75,6 @@ const handleShowCampaign = async (
       userId: req.authenticatedUserId || "",
     },
   });
-
-  console.log("sending back campaign: ", campaign);
 
   res
     .setHeader("Content-Type", "application/json")

@@ -5,6 +5,9 @@ import getCampaignsWithTheirScores, {
 } from "@/services/prompts/getCampaignsWithTheirScores";
 import { Content, User, Webpage } from ".prisma/client";
 import ScoredCampaignCreateManyWebpageInput = Prisma.ScoredCampaignCreateManyWebpageInput;
+import logger from "@/lib/logger";
+
+const myLogger = logger.child({ name: "createScoredCampaigns" });
 
 type CreateScoredCampaigns = (
   webpage: Webpage,
@@ -21,7 +24,10 @@ const createScoredCampaigns: CreateScoredCampaigns = async (
   user,
   campaigns
 ) => {
-  console.log("started createScoredCampaigns with: ", webpage.url);
+  myLogger.info(
+    { url: webpage.url, email: user.email, length: campaigns.length },
+    "started service"
+  );
 
   // const campaignsWhichNeedScore =
   //   await getCampaignsWithoutScoredCampaignsForWebpage(webpage.id);
@@ -39,7 +45,7 @@ const createScoredCampaigns: CreateScoredCampaigns = async (
   });
 
   if (existingScoredCampaignsCount >= campaigns.length) {
-    console.log("aborting createScoredCampaigns as all are already scored");
+    myLogger.info({}, "aborting as all campaitns are already scored");
     return;
   }
 
@@ -51,7 +57,7 @@ const createScoredCampaigns: CreateScoredCampaigns = async (
       content
     );
   } catch (err) {
-    console.log("aborting as unable to get campaign scores");
+    myLogger.error({ err }, "aborting as unable to get campaign scores");
     return;
   }
 
@@ -63,7 +69,7 @@ const createScoredCampaigns: CreateScoredCampaigns = async (
         reason: c.reason ?? "",
       };
     });
-  console.log("input to create scored campaigns: ", scoredCampaignInput);
+  myLogger.info({scoredCampaignInput}, "input to create scored campaigns")
 
   await prisma.webpage.update({
     where: {

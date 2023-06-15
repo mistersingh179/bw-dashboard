@@ -1,10 +1,15 @@
 import prisma from "@/lib/prisma";
-import {Campaign, Webpage} from "@prisma/client";
+import { Campaign, Webpage } from "@prisma/client";
+import logger from "@/lib/logger";
+
+const myLogger = logger.child({ name: "getCampaignsWhichNeedScore" });
 
 type GetCampaignsWhichNeedScore = (webpage: Webpage) => Promise<Campaign[]>;
 
-const getCampaignsWhichNeedScore: GetCampaignsWhichNeedScore = async (webpage) => {
-  console.log("in getCampaignsWhichNeedScore with webpage: ", webpage.id);
+const getCampaignsWhichNeedScore: GetCampaignsWhichNeedScore = async (
+  webpage
+) => {
+  myLogger.info({ url: webpage.url }, "starting service");
 
   const user = await prisma.user.findFirstOrThrow({
     where: {
@@ -12,26 +17,26 @@ const getCampaignsWhichNeedScore: GetCampaignsWhichNeedScore = async (webpage) =
         some: {
           webpages: {
             some: {
-              id: webpage.id
-            }
-          }
-        }
-      }
+              id: webpage.id,
+            },
+          },
+        },
+      },
     },
   });
-  console.log("user: ", user);
+  myLogger.info({ user }, "got user");
 
   const existingScoredCampaigns = await prisma.scoredCampaign.findMany({
     where: {
       webpageId: webpage.id,
     },
   });
-  console.log("existingScoredCampaigns: ", existingScoredCampaigns);
+  myLogger.info({ existingScoredCampaigns }, "existingScoredCampaigns");
 
   const existingScoredCampaignsIds = existingScoredCampaigns.map(
     (c) => c.campaignId
   );
-  console.log("existingScoredCampaignsIds: ", existingScoredCampaignsIds);
+  myLogger.info({ existingScoredCampaignsIds }, "existingScoredCampaignsIds");
 
   const campaignsWhichNeedScore = await prisma.campaign.findMany({
     where: {
@@ -41,7 +46,7 @@ const getCampaignsWhichNeedScore: GetCampaignsWhichNeedScore = async (webpage) =
       },
     },
   });
-  console.log("campaignsWhichNeedScore: ", campaignsWhichNeedScore);
+  myLogger.info({ campaignsWhichNeedScore }, "campaignsWhichNeedScore");
   return campaignsWhichNeedScore;
 };
 

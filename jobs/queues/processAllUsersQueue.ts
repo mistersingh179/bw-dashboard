@@ -1,9 +1,11 @@
-import {Job, Queue, QueueEvents} from "bullmq";
+import { Job, Queue, QueueEvents } from "bullmq";
 import redisClient from "@/lib/redisClient";
+import logger from "@/lib/logger";
+import { pick } from "lodash";
 
-export const queueName = "processAllUsers";
+const queueName = "processAllUsers";
 
-console.log("setting up queue: ", queueName);
+logger.info({ queueName }, "setting up queue");
 
 const queue: Queue<void, void> = new Queue(queueName, {
   connection: redisClient,
@@ -18,19 +20,20 @@ queue.on("error", (err) => {
 });
 
 queue.on("waiting", (job: Job) => {
-  console.log("queue waiting: ", job.queueName, job.name, job.id);
+  const jobItems = pick(job, ["queueName", "name", "id"]);
+  logger.info({ jobItems }, "queue waiting");
 });
 
 export const queueEvents = new QueueEvents(queueName, {
   connection: redisClient,
 });
 
-queueEvents.on("added", async ({ jobId }) => {
-  console.log("on queue ", queueName, " added jobId: ", jobId);
+queueEvents.on("added", ({ jobId }) => {
+  logger.info({ queueName, jobId }, "added job");
 });
 
 queueEvents.on("completed", async ({ jobId }) => {
-  console.log("on queue ", queueName, " completed jobId: ", jobId);
+  logger.info({ queueName, jobId }, "queue completed");
 });
 
 export default queue;

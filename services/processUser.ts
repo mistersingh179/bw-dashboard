@@ -2,11 +2,14 @@ import prisma from "@/lib/prisma";
 import { User } from ".prisma/client";
 import { Setting } from "@prisma/client";
 import processWebsiteQueue from "@/jobs/queues/processWebsiteQueue";
+import logger from "@/lib/logger";
+
+const myLogger = logger.child({ name: "processUser" });
 
 type ProcessUser = (user: User, settings: Setting) => Promise<void>;
 
 const processUser: ProcessUser = async (user, settings) => {
-  console.log("started processUser with: ", user.email);
+  myLogger.info({ user }, "started service");
 
   const websites = await prisma.website.findMany({
     where: {
@@ -14,18 +17,20 @@ const processUser: ProcessUser = async (user, settings) => {
     },
   });
 
-  console.log("count of websites to process: ", websites.length);
+  myLogger.info({ length: websites.length }, "count of websites to process");
 
   for (const website of websites) {
-    console.log("at website: ", website.topLevelDomainUrl);
     const job = await processWebsiteQueue.add("processWebsite", {
       website,
       settings,
     });
-    console.log(`scheduled job to process website: `, job.id);
+    myLogger.info(
+      { job, topLevelDomainUrl: website.topLevelDomainUrl },
+      "scheduled job to process website"
+    );
   }
 
-  console.log("finished processUser with: ", user.id, user.email);
+  myLogger.info({ user }, "finished processUser");
 };
 
 export default processUser;

@@ -7,9 +7,10 @@ import processUserWorker from "./workers/processUserWorker";
 import processWebpageWorker from "./workers/processWebpageWorker";
 import processWebsiteWorker from "./workers/processWebsiteWorker";
 import setupCronJobs from "./setupCronJobs";
+import logger from "@/lib/logger";
 
 (async () => {
-  console.log("starting workers");
+  logger.info({}, "starting workers");
   createAdvertisementWorker.run();
   createScoredCampaignWorker.run();
   downloadWebpagesWorker.run();
@@ -18,46 +19,49 @@ import setupCronJobs from "./setupCronJobs";
   processUserWorker.run();
   processWebpageWorker.run();
   processWebsiteWorker.run();
-  console.log("finished starting workers");
+  logger.info({}, "finished starting workers");
 
-  console.log("starting to add cron jobs")
+  logger.info({}, "starting to add cron jobs");
   await setupCronJobs();
-  console.log("finished to add cron jobs")
+  logger.info({}, "finished to add cron jobs");
 })();
 
 process.on("SIGINT", async () => {
-  console.log("started graceful shutdown");
+  logger.info({}, "started graceful shutdown");
 
   setTimeout(() => {
-    console.log("exiting abruptly as workers wont shutdown")
+    logger.error({}, "exiting abruptly as workers wont shutdown");
     process.exit(0);
   }, 2000);
 
   await createAdvertisementWorker.close();
-  console.log("closed – createAdvertisementWorker");
+  logger.info({}, "closed – createAdvertisementWorker");
   await createScoredCampaignWorker.close();
-  console.log("closed – createScoredCampaignWorker");
+  logger.info({}, "closed – createScoredCampaignWorker");
   await downloadWebpagesWorker.close();
-  console.log("closed – downloadWebpagesWorker");
+  logger.info({}, "closed – downloadWebpagesWorker");
   await processAllUsersWorker.close();
-  console.log("closed – processAllUsersWorker");
+  logger.info({}, "closed – processAllUsersWorker");
   await processCampaignWorker.close();
-  console.log("closed – processCampaignWorker");
+  logger.info({}, "closed – processCampaignWorker");
   await processUserWorker.close();
-  console.log("closed – processUserWorker");
+  logger.info({}, "closed – processUserWorker");
   await processWebpageWorker.close();
-  console.log("closed – processWebpageWorker");
+  logger.info({}, "closed – processWebpageWorker");
   await processWebsiteWorker.close();
-  console.log("closed – processWebsiteWorker");
+  logger.info({}, "closed – processWebsiteWorker");
 
-  console.log("finished doing graceful shutdown");
+  logger.info({}, "finished doing graceful shutdown");
   process.exit(0);
 });
 
 process.on("uncaughtException", function (err) {
-  console.log("Uncaught exception: ", err);
+  logger.error({ err }, "runAllWorkers process got uncaughtException");
 });
 
 process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled Rejection at: Promise: ", { promise, reason });
+  logger.error(
+    { promise, reason },
+    "runAllWorkers process got Unhandled Rejection"
+  );
 });

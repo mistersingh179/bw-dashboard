@@ -1,6 +1,11 @@
 import prisma from "@/lib/prisma";
 import AnyObject from "@/types/AnyObject";
-import {Campaign} from "@prisma/client";
+import { Campaign } from "@prisma/client";
+import logger from "@/lib/logger";
+
+const myLogger = logger.child({
+  name: "getCampaignsWithoutScoredCampaignsForWebpage",
+});
 
 type GetCampaignsWithoutScoredCampaignsForWebpage = (
   wpid: string
@@ -8,7 +13,7 @@ type GetCampaignsWithoutScoredCampaignsForWebpage = (
 
 const getCampaignsWithoutScoredCampaignsForWebpage: GetCampaignsWithoutScoredCampaignsForWebpage =
   async (wpid) => {
-    console.log("started getCampaignsWithoutScoredCampaignsForWebpage with: ", wpid);
+    myLogger.info({ wpid }, "started service");
     const campaigns = await prisma.campaign.findMany({
       where: {
         user: {
@@ -24,9 +29,9 @@ const getCampaignsWithoutScoredCampaignsForWebpage: GetCampaignsWithoutScoredCam
         },
         scoredCampaigns: {
           none: {
-            webpageId: wpid
-          }
-        }
+            webpageId: wpid,
+          },
+        },
       },
     });
     return campaigns;

@@ -1,22 +1,17 @@
 import { config } from "dotenv";
 import Redis from "ioredis";
+import logger from "@/lib/logger";
 
 const result = config({ debug: true });
 if (result.error) {
-  console.error("UNABLE to parse .ENV file!!!")
-  console.error(result.error)
+  logger.error({ err: result.error }, "UNABLE to parse .ENV file!!!");
 }
 
 const { REDIS_HOST } = process.env;
 const REDIS_PORT = Number(process.env.REDIS_PORT) || 0;
 const REDIS_URL = String(process.env.REDIS_URL) ?? "";
 
-console.log("REDIS_URL: ", REDIS_URL);
-console.log("REDIS_HOST: ", REDIS_HOST);
-console.log("REDIS_PORT: ", REDIS_PORT);
-
-const DATABASE_URL = String(process.env.DATABASE_URL) ?? "";
-console.log("DATABASE_URL: ", DATABASE_URL);
+logger.info({REDIS_URL, REDIS_HOST, REDIS_PORT}, "Redis ENV variables")
 
 export const redisClient = new Redis(REDIS_URL, {
   maxRetriesPerRequest: null,

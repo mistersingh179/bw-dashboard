@@ -8,6 +8,7 @@ import prisma from "@/lib/prisma";
 import AdvertisementCreateManyAdvertisementSpotInput = Prisma.AdvertisementCreateManyAdvertisementSpotInput;
 import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageText";
 import getAdvertisementText from "@/services/prompts/getAdvertisementText";
+import logger from "@/lib/logger";
 
 const enoughActiveAdsExist = async (
   advertisementSpot: AdvertisementSpot,
@@ -28,6 +29,8 @@ const enoughActiveAdsExist = async (
   return result.length === settings.desiredAdvertisementCount;
 };
 
+const myLogger = logger.child({ name: "createAdvertisement" });
+
 type CreateAdvertisement = (
   advertisementSpot: AdvertisementSpot,
   scoredCampaign: ScoredCampaign,
@@ -39,15 +42,16 @@ const createAdvertisement: CreateAdvertisement = async (
   scoredCampaign,
   settings
 ) => {
-  console.log(
-    "started createAdvertisement with adSpot: ",
-    advertisementSpot.id,
-    " and scored campaign ",
-    scoredCampaign.id
+  myLogger.info(
+    {
+      scoredCampaignId: scoredCampaign.id,
+      advertisementSpotId: advertisementSpot.id,
+    },
+    "started service"
   );
 
   if (await enoughActiveAdsExist(advertisementSpot, scoredCampaign, settings)) {
-    console.log("Aborting as we have enough advertisements");
+    myLogger.info({}, "Aborting as we have enough advertisements");
     return;
   }
 
@@ -64,7 +68,7 @@ const createAdvertisement: CreateAdvertisement = async (
   });
 
   if (webpage.content === null) {
-    console.log("Aborting as we dont have any content for the website");
+    myLogger.info({}, "Aborting as we dont have any content for the website");
     return;
   }
 
@@ -94,7 +98,7 @@ const createAdvertisement: CreateAdvertisement = async (
       desiredAdvertisementCount
     );
   } catch (err) {
-    console.log("aborting as unable to get advertisement text: ", err);
+    myLogger.error(err, "aborting as unable to get advertisement text");
     return;
   }
 

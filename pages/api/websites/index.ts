@@ -28,7 +28,6 @@ const handleListWebsites = async (
       id: "asc"
     }
   });
-  console.log("websites: ", websites);
   res
     .setHeader("Content-Type", "application/json")
     .status(200)

@@ -59,7 +59,6 @@ const handleShowSettings = async (
       },
     },
   });
-  console.log("setting: ", setting);
   res
     .setHeader("Content-Type", "application/json")
     .status(200)

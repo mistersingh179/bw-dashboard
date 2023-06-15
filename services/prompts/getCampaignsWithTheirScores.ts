@@ -7,6 +7,7 @@ import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageT
 import { CreateChatCompletionResponse } from "openai/api";
 import { CHAT_GPT_FETCH_TIMEOUT } from "@/constants";
 import { Content } from ".prisma/client";
+import logger from "@/lib/logger";
 
 export type CampaignProductWithScore = {
   id: string;
@@ -16,6 +17,8 @@ export type CampaignProductWithScore = {
   scoreAsNum?: number;
   reason?: string;
 };
+
+const myLogger = logger.child({ name: "getCampaignsWithTheirScores" });
 
 type GetCampaignsWithTheirScores = (
   webpage: Webpage,
@@ -28,6 +31,11 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
   campaigns,
   content
 ) => {
+  myLogger.info(
+    { url: webpage.url, len: campaigns.length },
+    "starting service"
+  );
+
   const webpageText = extractCleanedWebpageText(content.desktopHtml);
 
   const campaignsWithScore: CampaignProductWithScore[] = campaigns.map((c) => ({
@@ -82,6 +90,7 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
         `Put the reason in quotes so it does not break csv format.`,
     },
   ];
+  myLogger.info({ messages }, "sending messages to chatGpt");
 
   const controller = new AbortController();
   const timeoutId = setTimeout(controller.abort, CHAT_GPT_FETCH_TIMEOUT);
@@ -103,24 +112,21 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
       signal: controller.signal,
     });
   } catch (err) {
-    console.log("got error while getting data from chatGpt: ", err);
+    myLogger.error({ err }, "got error while getting data from chatGpt");
     return [];
   }
   clearTimeout(timeoutId);
 
   let data = (await response.json()) as CreateChatCompletionResponse;
-  console.log("api returned: ");
-  console.dir(data, { depth: null, colors: true });
+  myLogger.info({ data }, "api returned");
 
   const output = data.choices[0]?.message?.content || "";
-  console.log("output is: ", output);
+  myLogger.info({ output }, "api output is ");
 
   const outputObj = Papa.parse<CampaignProductWithScore>(output, {
     header: true,
   });
-  console.log("outputObj is: ", outputObj.data);
-
-  console.log("return with campaigns with scores: ", outputObj.data);
+  myLogger.info({ data: outputObj.data }, "campaigns with scores");
 
   const ans: CampaignProductWithScore[] = outputObj.data.map((c) => {
     let scoreAsNum = parseInt(c.score || "");
@@ -154,7 +160,7 @@ if (require.main === module) {
 
     const ans = await getCampaignsWithTheirScores(webpage, campaigns, content!);
 
-    console.log("ans: ", ans);
+    console.log("***ans: ", ans);
   })();
 }
 
