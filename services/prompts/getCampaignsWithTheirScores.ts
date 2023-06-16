@@ -103,7 +103,7 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo-0613",
+        model: "gpt-3.5-turbo-0301",
         temperature: 1,
         n: 1,
         max_tokens: 1000,

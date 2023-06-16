@@ -83,7 +83,7 @@ In your reply, just provide the new paragraph.`,
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo-0613",
+        model: "gpt-3.5-turbo-0301",
         temperature: 1,
         n: desiredAdvertisementCount,
         max_tokens: 1000,
