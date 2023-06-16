@@ -2,11 +2,37 @@ import getLogger from "../lib/logger";
 import prisma from "@/lib/prisma";
 import logger from "../lib/logger";
 import { stripHtml } from "string-strip-html";
+import createAdvertisementQueue, {
+  queueEvents,
+} from "@/jobs/queues/createAdvertisementQueue";
 
 (async () => {
-  const content = '\n            \n              0 seconds of 2 minutes, 4 secondsVolume 90%Press shift question mark to access a list of keyboard shortcutsKeyboard ShortcutsEnabledDisabledPlay/PauseSPACEIncrease Volume↑Decrease Volume↓Seek Forward→Seek Backward←Captions On/OffcFullscreen/Exit FullscreenfMute/UnmutemSeek %0-9SettingsOffEnglishFont ColorWhiteFont Opacity100%Font Size100%Font FamilyArialCharacter EdgeNoneBackground ColorBlackBackground Opacity50%Window ColorBlackWindow Opacity0%ResetWhiteBlackRedGreenBlueYellowMagentaCyan100%75%50%25%200%175%150%125%100%75%50%ArialCourierGeorgiaImpactLucida ConsoleTahomaTimes New RomanTrebuchet MSVerdanaNoneRaisedDepressedUniformDrop ShadowWhiteBlackRedGreenBlueYellowMagentaCyan100%75%50%25%0%WhiteBlackRedGreenBlueYellowMagentaCyan100%75%50%25%0%Auto1080p720p406p270p180p\n            \n                \n                    \n                    \n                    \n                \n            \n        Live00:0000:0002:04 \n              \n                \n                  2:04\n              \n            \n            \n              Watch How to Make Homemade Pizza\n            \n              \n            \n          '
-  const output = stripHtml(content);
-  console.log(output.result);
+  const adSpots = await prisma.advertisementSpot.findMany({
+    where: {
+      webpageId: "cliywitpj0004989og13txyko",
+    },
+  });
+
+  const scoredCamps = await prisma.scoredCampaign.findMany({
+    where: {
+      webpageId: "cliywitpj0004989og13txyko",
+    },
+  });
+
+  const settings = await prisma.setting.findMany({
+    where: {
+      id: "cli3wxalx000098gd2vzqh8if"
+    },
+  });
+
+  const job = await createAdvertisementQueue.add("createAdvertisement", {
+    advertisementSpot: adSpots[0],
+    scoredCampaign: scoredCamps[0],
+    settings: settings[0]
+  });
+  console.log("job: ", job.id);
+  const result = await job.waitUntilFinished(queueEvents);
+  console.log("***ans: ", result);
 })();
 
 export {};

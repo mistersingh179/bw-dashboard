@@ -8,6 +8,8 @@
 - `npx ts-node sample.ts` Prints users in Database
 - `npx ts-node --transpile-only` the `--transpile-only` makes it so that it doesn't complain on TS issues
 - for production / non dev usage we do `npm run build` & then use `npm start` to serve it 
+- run taskforce locally so taskforce UI can see our local redis
+- `TASKFORCE_TOKEN=xxx taskforce -n "Local Docker Redis" -p 63790`
 
 ## running arbitrary script
 - `tsx scripts/foo.ts`
