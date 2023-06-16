@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
-// import { JSDOM } from "jsdom";
-import { parse, HTMLElement } from "node-html-parser";
+import { JSDOM } from "jsdom";
+// import { parse, HTMLElement } from "node-html-parser";
 import UserAgent from "user-agents";
 import { FETCH_TIMEOUT } from "@/constants";
 import logger from "@/lib/logger";
@@ -46,9 +46,12 @@ if (require.main === module) {
     );
     console.log("***ans: ", ans.substring(0, 100));
 
-    // const dom = new (ans);
-    // const items = dom.window.document.querySelectorAll("p:nth-child(3n)");
-    const document = parse(ans);
+    const dom = new JSDOM(ans);
+    const {
+      window: { document },
+    } = dom;
+
+    // const document = parse(ans);
     const items = document.querySelectorAll("p:nth-child(3n)");
     for (let i = 0; i < items.length; i++) {
       console.log(items[i].textContent);

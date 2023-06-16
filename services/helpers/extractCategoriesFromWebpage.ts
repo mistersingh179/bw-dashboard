@@ -1,7 +1,7 @@
 import { Content, Webpage } from ".prisma/client";
 import prisma from "@/lib/prisma";
-// import { JSDOM } from "jsdom";
-import { HTMLElement, parse } from "node-html-parser";
+import { JSDOM } from "jsdom";
+// import { HTMLElement, parse } from "node-html-parser";
 import logger from "@/lib/logger";
 
 function cleanArray(arr: (string | null | undefined)[]): string[] {
@@ -33,12 +33,12 @@ const extractCategoriesFromWebpage: ExtractCategoriesFromWebpage = async (
 
   let cumulativeValues: string[] = [];
 
-  // const dom = new JSDOM(webpageWithContent.content.desktopHtml);
-  // const {
-  //   window: { document },
-  // } = dom;
+  const dom = new JSDOM(content.desktopHtml);
+  const {
+    window: { document },
+  } = dom;
 
-  const document = parse(content.desktopHtml);
+  // const document = parse(content.desktopHtml);
 
   const metaContentValues = [
     ...document.querySelectorAll(
@@ -49,9 +49,11 @@ const extractCategoriesFromWebpage: ExtractCategoriesFromWebpage = async (
   cumulativeValues = cumulativeValues.concat(metaContentValues);
 
   var allClasses = [];
-  var allElements: HTMLElement[] = document.querySelectorAll("*");
+  var allElements = document.querySelectorAll("*");
+  // var allElements: HTMLElement[] = document.querySelectorAll("*");
   for (var i = 0; i < allElements.length; i++) {
-    var classes = allElements[i].classNames.toString().split(/\s+/);
+    var classes = allElements[i].className.toString().split(/\s+/);
+    // var classes = allElements[i].classNames.toString().split(/\s+/);
     for (var j = 0; j < classes.length; j++) {
       var cls = classes[j];
       if (cls && allClasses.indexOf(cls) === -1) allClasses.push(cls);
@@ -77,7 +79,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "cliuttkba003598suxjdzu1f3",
+        id: "clix8twnc000a98prn167qb4c",
       },
       include: {
         content: true,

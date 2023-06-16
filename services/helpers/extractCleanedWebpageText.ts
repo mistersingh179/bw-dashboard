@@ -1,6 +1,5 @@
-// import { JSDOM } from "jsdom";
-import { parse, HTMLElement } from "node-html-parser";
-
+import { JSDOM } from "jsdom";
+// import { parse, HTMLElement } from "node-html-parser";
 import prisma from "@/lib/prisma";
 import logger from "@/lib/logger";
 
@@ -10,7 +9,7 @@ so 500 words will be 650 tokens
 and chatGpt's limit is ~ 4096 tokens
  */
 
-const myLogger = logger.child({ name: "extractCategoriesFromWebpage" });
+const myLogger = logger.child({ name: "extractCleanedWebpageText" });
 
 type ExtractCleanedWebpageText = (
   html: string,
@@ -23,14 +22,16 @@ const extractCleanedWebpageText: ExtractCleanedWebpageText = (
 ) => {
   myLogger.info({ length: html.length, maxWordCount }, "starting service");
 
-  const document = parse(html);
-  const body = document.querySelector("body");
-  // const dom = new JSDOM(html);
-  // const {
-  //   window: {
-  //     document: { body },
-  //   },
-  // } = dom;
+  const dom = new JSDOM(html);
+  const {
+    window: {
+      document: { body },
+    },
+  } = dom;
+
+  // const document = parse(html);
+  // const body = document.querySelector("body");
+
   const cleanedContent =
     body?.textContent?.replaceAll(/[\n]+/g, " ").replaceAll(/[\s]+/g, " ") ??
     "";
@@ -52,10 +53,10 @@ if (require.main === module) {
     // console.log("*** ans: ", ans);
     const content = await prisma.content.findFirstOrThrow({
       where: {
-        webpageId: "cli3v2cbk000098q7nqb4mryo",
+        webpageId: "cliuhtnri000y98ulyifcv8q7",
       },
     });
-    const ans2 = await extractCleanedWebpageText(content.desktopHtml, 5);
+    const ans2 = await extractCleanedWebpageText(content.desktopHtml, 500);
     console.log("*** ans2: ", ans2);
   })();
 }

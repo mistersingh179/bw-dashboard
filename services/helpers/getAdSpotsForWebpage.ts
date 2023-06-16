@@ -1,9 +1,10 @@
 import { Setting, Webpage } from "@prisma/client";
 import prisma from "@/lib/prisma";
-// import { JSDOM } from "jsdom";
-import { parse, HTMLElement } from "node-html-parser";
+import { JSDOM } from "jsdom";
+// import { parse, HTMLElement } from "node-html-parser";
 import { Content } from ".prisma/client";
 import logger from "@/lib/logger";
+import getWordCount from "@/lib/getWordCount";
 
 type AdSpotText = {
   beforeText: string;
@@ -11,6 +12,38 @@ type AdSpotText = {
 };
 
 type ElementFilter = (elem: HTMLElement | Element) => Boolean;
+
+const siblingTextLogger = logger.child({ name: "siblingText" });
+const siblingTextMaxWordCount = 150;
+const siblingText = (el: HTMLElement | Element, totalText = "", direction: string): string => {
+  if (getWordCount(totalText) >= siblingTextMaxWordCount) {
+    siblingTextLogger.info(
+      { length: totalText.length },
+      "stopping as reached size limit"
+    );
+    return totalText;
+  }
+
+  const siblingElem = direction === "next" ? el.nextElementSibling : el.previousElementSibling;
+  if (siblingElem == null) {
+    siblingTextLogger.info("stopping as sibling element is null");
+    return totalText;
+  } else {
+    if (siblingElem.textContent) {
+      let siblingText = siblingElem.textContent.trim();
+      siblingText =
+        siblingText.replaceAll(/[\n]+/g, " ").replaceAll(/[\s]+/g, " ") ?? "";
+      if (siblingText.length > 0) {
+        if(direction === "next"){
+          totalText = totalText + " \n " + siblingText;
+        }else{
+          totalText = siblingText + " \n " + totalText;
+        }
+      }
+    }
+    return siblingText(siblingElem, totalText, direction);
+  }
+};
 
 export const nextWithText = (
   el: HTMLElement | Element
@@ -74,12 +107,12 @@ const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (
 ) => {
   myLogger.info({ url: webpage.url }, "starting service");
 
-  // const dom = new JSDOM(webpageWithContent.content.desktopHtml);
-  // const {
-  //   window: { document },
-  // } = dom;
+  const dom = new JSDOM(content.desktopHtml);
+  const {
+    window: { document },
+  } = dom;
 
-  const document = parse(content.desktopHtml);
+  // const document = parse(content.desktopHtml);
   let elements = document.querySelectorAll(settings.contentSelector);
   let elementsArr = [...elements];
   myLogger.info({ length: elementsArr.length }, "possible ad spots at start");
@@ -89,6 +122,11 @@ const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (
   );
   myLogger.info({ length: elementsArr.length }, "ad spots after minCharLimit");
 
+  myLogger.info(
+    { sameTypeElemWithTextToFollow: settings.sameTypeElemWithTextToFollow },
+    "sameTypeElemWithTextToFollow"
+  );
+
   elementsArr = settings.sameTypeElemWithTextToFollow
     ? elementsArr.filter(nextElementWithTextOfSameTypeFilter)
     : elementsArr;
@@ -97,10 +135,15 @@ const getAdSpotsForWebpage: GetAdSpotsTextForWebpage = async (
   elementsArr = elementsArr.slice(0, settings.desiredAdvertisementSpotCount);
   myLogger.info({ length: elementsArr.length }, "ad spots after desired count");
 
-  const adSpots: AdSpotText[] = elementsArr.map((elem) => ({
-    beforeText: elem.textContent?.trim() ?? "",
-    afterText: nextWithText(elem)?.textContent?.trim() ?? "",
-  }));
+  const adSpots: AdSpotText[] = elementsArr.map((elem) => {
+    const beforeText = siblingText(elem, "", "previous") ?? "";
+    const afterText = siblingText(elem, "", "next") ?? "";
+
+    return {
+      beforeText,
+      afterText,
+    };
+  });
 
   adSpots.forEach((elem, index, array) => {
     myLogger.info(
@@ -118,7 +161,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "cliuttkba003598suxjdzu1f3",
+        id: "clix8twnc000a98prn167qb4c",
         content: {
           isNot: null,
         },

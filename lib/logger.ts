@@ -1,19 +1,13 @@
 import pino from "pino";
 
-export default pino({
+const pinoOptions:pino.LoggerOptions = {
   level: process.env.PINO_LOG_LEVEL || "info",
-  // transport: {
-  //   targets: [
-  //     {
-  //       level: process.env.PINO_LOG_LEVEL || "info",
-  //       target: "pino-pretty",
-  //       options: {},
-  //     },
-  //     {
-  //       level: process.env.PINO_LOG_LEVEL || "info",
-  //       target: "pino-file",
-  //       options: { destination: `${__dirname}/app.log` },
-  //     },
-  //   ],
-  // },
-});
+};
+
+if(process.env.NODE_ENV === "development"){
+  pinoOptions.transport = {
+    target: "pino-pretty",
+  };
+}
+
+export default pino(pinoOptions);

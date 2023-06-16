@@ -7,19 +7,18 @@ import {
   HStack,
   Spacer,
   Spinner,
-  Switch,
   Table,
   TableCaption,
   TableContainer,
   Tag,
   Tbody,
   Td,
+  Text,
   Tfoot,
   Th,
   Thead,
   Tr,
   VStack,
-  Text,
 } from "@chakra-ui/react";
 import React from "react";
 import useWebpage from "@/hooks/useWepage";
@@ -33,14 +32,12 @@ import {
 import { formatISO } from "date-fns";
 import StatusBadge from "@/components/StatusBadge";
 import { Link } from "@chakra-ui/next-js";
-import { ArrowForwardIcon } from "@chakra-ui/icons";
+import {ArrowForwardIcon, ExternalLinkIcon} from "@chakra-ui/icons";
 import { preload } from "swr";
 import fetcher from "@/helpers/fetcher";
 import { WebpageWithAdSpotsAndOtherCounts } from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
 import useCategoriesOfWebpage from "@/hooks/useCategoriesOfWebpage";
 import useScoredCampaignsOfWebpage from "@/hooks/useScoredCampaignsOfWebpage";
-import { WebpageType } from "@/types/my-types";
-import { ScoredCampaign } from "@prisma/client";
 import usePagination from "@/hooks/usePagination";
 import PaginationRow from "@/components/PaginationRow";
 import { ScoredCampaignWithCampaign } from "@/pages/api/websites/[wsid]/webpages/[wpid]/scoredCampaigns";
@@ -61,7 +58,9 @@ const ScoredCampaigns = () => {
       <TableContainer whiteSpace={"normal"}>
         <Table variant={"simple"} size={"sm"}>
           <TableCaption placement={"top"} m={0}>
-            <Text fontSize={"xl"} color={'blue.500'}>Scored Campaigns</Text>
+            <Text fontSize={"xl"} color={"blue.500"}>
+              Scored Campaigns
+            </Text>
           </TableCaption>
           <Thead>
             <Tr>
@@ -97,7 +96,7 @@ const ScoredCampaigns = () => {
               pageSize={pageSize}
               setPageSize={setPageSize}
               colSpan={4}
-              size={'xs'}
+              size={"xs"}
               onMouseOverFn={() =>
                 preload(
                   `/api/websites/${wsid}/webpages/${wpid}/scoredCampaigns?page=${
@@ -159,7 +158,9 @@ const WebpageBox = ({
       </HStack>
       <HStack>
         <Box minW={"3xs"}>Name: </Box>
-        <Box>{webpage.url}</Box>
+        <Box><Link href={webpage.url} target={"_blank"} >
+          {webpage.url} <ExternalLinkIcon mx='2px' mb={'2px'} />
+        </Link></Box>
       </HStack>
       <HStack>
         <Box minW={"3xs"}>last Modified At: </Box>
@@ -230,11 +231,7 @@ const Show = () => {
       <Box mt={2}>
         <Categories />
       </Box>
-      <Box mt={5}
-        border={"1px"}
-        borderColor={"gray.200"}
-        borderRadius={"md"}
-      >
+      <Box mt={5} border={"1px"} borderColor={"gray.200"} borderRadius={"md"}>
         <ScoredCampaigns />
       </Box>
       <HStack mt={5} spacing={5}>
