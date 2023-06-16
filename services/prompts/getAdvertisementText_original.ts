@@ -29,50 +29,46 @@ const getAdvertisementText: GetAdvertisementText = async (
 ) => {
   myLogger.info("starting service");
 
-  if (process.env.NODE_ENV === "development") {
-    return [
-      `Ad Copy 1 for ${productName}, ${productDescription}`,
-      `Ad Copy 2 for ${productName}, ${productDescription}`,
-      `Ad Copy 3 for ${productName}, ${productDescription}`,
-    ].splice(0, desiredAdvertisementCount);
-  }
+  // if (process.env.NODE_ENV === "development") {
+  //   return [
+  //     `Ad Copy 1 for ${productName}, ${productDescription}`,
+  //     `Ad Copy 2 for ${productName}, ${productDescription}`,
+  //     `Ad Copy 3 for ${productName}, ${productDescription}`,
+  //   ].splice(0, desiredAdvertisementCount);
+  // }
 
   const sponsoredWordingInstruction: string = addSponsoredWording
-    ? "• Let the reader know that this sponsored content is brought to you by PRODUCT_INFO.\n\ "
+    ? "Inside the new paragraph also subtly let the reader know that this paragraph is sponsored content. "
     : "";
 
   const messages: AnyObject[] = [
     {
       role: "system",
-      content: `You are a content commerce editor, and your job is to place \
-products into articles such that readers will feel positively about the product. \
-You must write a new paragraph in between existing content of an article. \ 
-To accomplish your task, you will receive \
-content that goes before your new paragraph (labeled BEFORE_CONTENT), \
-content that goes after your new paragraph (labeled AFTER_CONTENT), \
-a product name and description (labeled PRODUCT_INFO), and \
-important rules that you must follow. `,
+      content: `You are a blog's advertisement editor whose job is to naturally include \
+branded product placements into blog posts.`,
     },
     {
       role: "user",
-      content: `BEFORE_CONTENT:\n${beforeText} \n\
-~~~\n\
-AFTER_CONTENT:\n${afterText} \n\
-~~~\n\
-PRODUCT_INFO:\n${productDescription} \n\
-~~~\n\
-Follow these important rules:\n\
-• Review the BEFORE_CONTENT and AFTER_CONTENT to understand the flow of the article. \n\
-• Use a bridge sentence that introduces new information related to the BEFORE_CONTENT without repeating phrases therefrom. \n\
-• Utilize a transition sentence to smoothly connect your paragraph to the AFTER_CONTENT, maintaining coherence without duplicating phrases therefrom. \n\
-• Use language that is distinct and different from BEFORE_CONTENT and AFTER_CONTENT to maintain a unique perspective.\n\
-• Provide speculative statements when referencing people, places, or things from the BEFORE_CONTENT or AFTER_CONTENT, using hedge words (like possibly, perhaps, probably, could, would, etc.) to avoid factual assertions.\n\
-• Ensure that the product placement is subtle and integrates naturally into the article, avoiding advertising or sales-oriented language.\n\
-• Keep your paragraph concise and restrict it to no more than 2 sentences.\n\
-• Your answer must include the new paragraph only. Stop generating if you output two consecutive newlines, such as '\\n\\n'. \n\
-• Maintain a clear separation between the author's viewpoint and the product, ensuring there is no implication of endorsement in either direction.\n\
-• Present the product in a positive light, highlighting its beneficial aspects without any negative portrayal.\n\
-${sponsoredWordingInstruction}`,
+      content: `For context here is the blog which you will be working on: ${html} \n\n\
+Write a new paragraph which subtly includes the brand, ${productName}. \
+${sponsoredWordingInstruction} \
+Here is the brands description: ${productDescription} \
+You can use the brands description for inspiration on making the advertisement for the brand. \
+This new advertisement paragraph which you create will be inserted between 2 existing paragraphs of the blog. \
+You must make sure that the new advertisement paragraph you create seamlessly connects to the paragraph before and after it. \
+Here is the paragraph which will come before the advertisement you create: ${beforeText} \
+and here is the paragraph which will come after the advertisement you create: ${afterText} \
+Remember these important rules: \
+Your new advertisement paragraph must follow the same writing style as the blog post. \
+Your new advertisement paragraph should feel like the author of the blog post wrote it. \
+Importantly, do not make factual assertions about the brand. \
+Limit the advertisement paragraph you create to a maximum of 4 sentences. \
+You cannot make factual assertions about the brand. \
+Do not change the intent or meaning of the blog post. \
+Do not make it seem like the author is endorsing the brand. \
+Do not make it seem like the brand is endorsing the content of the article. \
+Never portray the brand in a negative context. \
+In your reply, just provide the new paragraph.`,
     },
   ];
   myLogger.info(messages, "messages being sent to chatGpt");
