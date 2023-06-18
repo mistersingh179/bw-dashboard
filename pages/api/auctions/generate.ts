@@ -66,7 +66,10 @@ export const END_USER_COOKIE_NAME: string = "bw-endUserCuid";
 const getEndUserCuid = (req: NextApiRequest): string | null => {
   if (req.cookies[END_USER_COOKIE_NAME]) {
     logger.info(
-      { END_USER_COOKIE_NAME: req.cookies[END_USER_COOKIE_NAME] },
+      {
+        END_USER_COOKIE_NAME: req.cookies[END_USER_COOKIE_NAME],
+        reqId: req.reqId,
+      },
       "request object has end user cookie"
     );
     return req.cookies[END_USER_COOKIE_NAME];

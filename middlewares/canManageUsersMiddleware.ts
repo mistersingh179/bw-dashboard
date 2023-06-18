@@ -17,7 +17,10 @@ const canManageUsersMiddleware: Middleware = async (req, res, next) => {
   try {
     const user = await getUser(authenticatedUserId ?? "");
     if (user.canManageUsers === false) {
-      console.log("Aborting as user is not allowed to manage users");
+      logger.info(
+        { reqId: req.reqId },
+        "Aborting as user is not allowed to manage users"
+      );
       res.status(403).end();
       return;
     } else {
@@ -26,8 +29,8 @@ const canManageUsersMiddleware: Middleware = async (req, res, next) => {
   } catch (err) {
     const statusCode = 401;
     logger.error(
-      { authenticatedUserId, statusCode, err },
-      "ending response as authenticated user is not allowed to manage other users"
+      { authenticatedUserId, statusCode, err, reqId: req.reqId },
+      "Aborting response as authenticated user is not allowed to manage other users"
     );
     res.status(statusCode).end();
     return;

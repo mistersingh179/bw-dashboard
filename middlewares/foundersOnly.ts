@@ -5,7 +5,10 @@ import logger from "@/lib/logger";
 
 const foundersOnly: Middleware = async (req, res, next) => {
   const { authenticatedUserId } = req;
-  logger.info({ authenticatedUserId }, "in Only Founder Middleware");
+  logger.info(
+    { authenticatedUserId, reqId: req.reqId },
+    "in Only Founder Middleware"
+  );
   try {
     await prisma.user.findFirstOrThrow({
       where: {
@@ -19,7 +22,7 @@ const foundersOnly: Middleware = async (req, res, next) => {
   } catch (err) {
     const statusCode = 200;
     const message = "Aborting request as unable to verify user as founder";
-    logger.info({ statusCode }, message);
+    logger.info({ statusCode, reqId: req.reqId }, message);
     res.status(statusCode).send(message);
   }
 };

@@ -3,9 +3,7 @@ import { nanoid } from "nanoid";
 import logger from "@/lib/logger";
 
 const requestIdMiddleware: Middleware = async (req, res, next) => {
-  const requestId = nanoid(5);
-  logger.info({ requestId }, "setting up request Id");
-  req.requestId = requestId;
+  req.reqId = nanoid(5);
   await next();
 };
 

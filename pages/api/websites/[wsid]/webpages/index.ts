@@ -72,7 +72,7 @@ const handleCreateWebpage = async (
   });
 
   const job = await processWebpageQueue.add("processWebpage", { webpage });
-  logger.info({ webpage, id: job.id }, "scheduled job to process webpage");
+  logger.info({ webpage, id: job.id, reqId: req.reqId }, "scheduled job to process webpage");
 
   res
     .setHeader("Content-Type", "application/json")

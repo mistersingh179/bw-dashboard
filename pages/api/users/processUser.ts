@@ -25,7 +25,7 @@ const processUser: NextApiHandler = async (req, res) => {
     user,
     settings: user.setting!,
   });
-  logger.info({id: job.id, user}, "scheduled job to process user")
+  logger.info({id: job.id, user, reqId: req.reqId}, "scheduled job to process user")
 
   res
     .setHeader("Content-Type", "application/json")

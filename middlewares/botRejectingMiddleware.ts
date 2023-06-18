@@ -8,7 +8,7 @@ const botRejectingMiddleware: Middleware = async (req, res, next) => {
     await next();
   }else{
     const statusCode = 403;
-    logger.info({statusCode, userAgent}, "stopping request as bot detected")
+    logger.info({statusCode, userAgent, reqId: req.reqId}, "stopping request as bot detected")
     res.status(statusCode).end();
   }
 };

@@ -22,7 +22,7 @@ const statusCheckMiddleware: Middleware = async (req, res, next) => {
     if (settings.status === false) {
       const statusCode = 200;
       const message = "Aborting request as user setting is off";
-      logger.info({ userId, statusCode }, message);
+      logger.info({ userId, statusCode, reqId: req.reqId }, message);
       res.status(statusCode).send(message);
       return;
     } else {
@@ -32,7 +32,7 @@ const statusCheckMiddleware: Middleware = async (req, res, next) => {
   } catch (err) {
     const statusCode = 200;
     const message = "Aborting request as settings not found for user";
-    logger.error({ userId, statusCode, err }, message);
+    logger.error({ userId, statusCode, err, reqId: req.reqId }, message);
     res.status(statusCode).send(message);
     return;
   }

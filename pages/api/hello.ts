@@ -1,26 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./auth/[...nextauth]";
-import prisma from "@/lib/prisma";
-import superjson from "superjson";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { sleep } from "@/middlewares/delayMiddleware";
+import logger from "@/lib/logger";
+import withMiddleware from "@/middlewares/withMiddleware";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const session = await getServerSession(req, res, authOptions);
-  if (!session) {
-    res.status(403).send("sorry access denied");
-  }
-  const user = await prisma.user.findFirst({
-    select: {
-      email: true,
-      accounts: true,
-    },
-  });
-  res
-    .setHeader("Content-Type", "application/json")
-    .status(200)
-    .send(superjson.stringify(user));
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+  res.setHeader("Content-Type", "text/html");
+  logger.info({ reqId: req.reqId }, "staring hello");
+  await sleep(0);
+  logger.info({ reqId: req.reqId }, "finishing hello");
+  res.status(200).send("hello to you too");
 }
+
+export default withMiddleware()(handler);

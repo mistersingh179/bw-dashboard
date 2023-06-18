@@ -11,7 +11,7 @@ const captureErrors: Middleware = async (req, res, next) => {
       .setHeader("Content-Type", "application/json")
       .status(500)
       .send(superjson.stringify({ message: (err as Error)?.message }));
-    logger.error(err, "caught an error in the api request");
+    logger.error({err, reqId: req.reqId}, "caught an error in the api request");
   }
 };
 

@@ -10,7 +10,7 @@ const authCheckMiddleware: Middleware = async (req, res, next) => {
     req.authenticatedUserId = session.user.id;
     await next();
   } else {
-    logger.info({statusCode: 401}, "user not logged in");
+    logger.info({statusCode: 401, reqId: req.reqId}, "user not logged in");
     res.status(401).end();
   }
 };
