@@ -81,7 +81,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Pending issues
-- give better error when 204 on front end
 - why not work with figure after p
 - swap https://server with localhost
 - category not showing up of latest webpage which was added manually

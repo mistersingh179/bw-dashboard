@@ -1,4 +1,4 @@
-import {NextApiHandler, NextApiRequest, NextApiResponse} from "next";
+import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
 import withMiddleware from "@/middlewares/withMiddleware";
 import superjson from "superjson";
@@ -35,7 +35,7 @@ const handleCreateAuction = async (
       .status(201)
       .send(superjson.stringify({ message: "creating an auction" }));
   } else {
-    res.status(204).end();
+    res.status(200).send("aborting request as user id is not in approve list");
   }
 };
 

@@ -17,14 +17,10 @@ const foundersOnly: Middleware = async (req, res, next) => {
     });
     await next();
   } catch (err) {
-    const statusCode = 204;
-    logger.info(
-      { statusCode },
-      "unable to verify user as founder. ending response"
-    );
-
-    console.log("error when trying to find this user. silently failing");
-    res.status(statusCode).end();
+    const statusCode = 200;
+    const message = "Aborting request as unable to verify user as founder";
+    logger.info({ statusCode }, message);
+    res.status(statusCode).send(message);
   }
 };
 
