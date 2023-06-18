@@ -80,12 +80,6 @@ drop database bw;
 - value can be taken from the browser
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
-## Pending - background job strategy
-- add bullmq and deploy app to aws
-- ass sqs consumer and deploy app to aws
-- use defer.run
-- render, heroku etc.
-
 ## Pending issues
 - give better error when 204 on front end
 - why not work with figure after p
@@ -99,6 +93,9 @@ drop database bw;
 - how do we recover from failed chatgpt calls, or content fetch calls
 - when ads pay the same then order by score 
 - use chatgpt to grade the campaign's production description or make an alternate version of it which is toned down.
+- campaign date breaks when typing starts with a 0.
+- paginate call for scoring
+- lazy build cache
 
 ## Pending backlog
 - create all webpages as OFF
