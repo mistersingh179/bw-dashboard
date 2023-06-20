@@ -80,10 +80,13 @@ drop database bw;
 - value can be taken from the browser
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
+## Notes
+- daily job downloads latest pages & only processes them
+- so if something failed downstrea yesterday, but was added yesterday, then it won't be processed today 
+
 ## Pending issues
-- swap https://server with localhost
-- category not showing up of latest webpage which was added manually
 - job does not pickup old webpages which crashed in the middle
+- rebuild all existing ads to help with onboarding
 - see content for debugging on the webpage show
 - why does parse not work when "body" is there?
 - show progress on webpage
@@ -94,6 +97,12 @@ drop database bw;
 - campaign date breaks when typing starts with a 0.
 - paginate call for scoring
 - lazy build cache
+- remove \n from advertisments
+- this webpage failes to buil – clj3gzd8r9mmms91qrw6q9q0b
+- sibling text has cdata
+- add ip address to logs
+  - add child logger to request object
+  - use middleware to add it
 
 ## Pending backlog
 - create all webpages as OFF

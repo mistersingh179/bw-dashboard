@@ -7,32 +7,29 @@ import createAdvertisementQueue, {
 } from "@/jobs/queues/createAdvertisementQueue";
 
 (async () => {
-  const adSpots = await prisma.advertisementSpot.findMany({
+  const webpages = await prisma.webpage.findMany({
     where: {
-      webpageId: "cliywitpj0004989og13txyko",
+      websiteId: "cliuhtdc4000v98ul85yvnzm5",
     },
-  });
-
-  const scoredCamps = await prisma.scoredCampaign.findMany({
+    include: {
+      _count: {
+        select: {
+          advertisementSpots: true
+        }
+      }
+    }
+  })
+  console.log("webpages.length: ", webpages.length)
+  console.log(webpages)
+  const advertisementCount = await prisma.advertisement.count({
     where: {
-      webpageId: "cliywitpj0004989og13txyko",
-    },
-  });
+      advertisementSpot: {
+        webpage: {
 
-  const settings = await prisma.setting.findMany({
-    where: {
-      id: "cli3wxalx000098gd2vzqh8if"
-    },
-  });
-
-  const job = await createAdvertisementQueue.add("createAdvertisement", {
-    advertisementSpot: adSpots[0],
-    scoredCampaign: scoredCamps[0],
-    settings: settings[0]
-  });
-  console.log("job: ", job.id);
-  const result = await job.waitUntilFinished(queueEvents);
-  console.log("***ans: ", result);
+        }
+      }
+    }
+  })
 })();
 
 export {};

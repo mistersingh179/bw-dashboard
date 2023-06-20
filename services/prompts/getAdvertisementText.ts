@@ -88,7 +88,7 @@ ${sponsoredWordingInstruction}`,
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo-0301",
-        temperature: 1,
+        temperature: 0.7,
         n: desiredAdvertisementCount,
         max_tokens: 1000,
         messages: messages,

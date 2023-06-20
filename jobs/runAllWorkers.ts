@@ -6,6 +6,7 @@ import processCampaignWorker from "./workers/processCampaignWorker";
 import processUserWorker from "./workers/processUserWorker";
 import processWebpageWorker from "./workers/processWebpageWorker";
 import processWebsiteWorker from "./workers/processWebsiteWorker";
+import processWebpagesWithZeroAdsWorker from "./workers/processWebpagesWithZeroAdsWorker";
 import setupCronJobs from "./setupCronJobs";
 import logger from "@/lib/logger";
 
@@ -19,6 +20,7 @@ import logger from "@/lib/logger";
   processUserWorker.run();
   processWebpageWorker.run();
   processWebsiteWorker.run();
+  processWebpagesWithZeroAdsWorker.run();
   logger.info({}, "finished starting workers");
 
   logger.info({}, "starting to add cron jobs");
@@ -50,6 +52,8 @@ process.on("SIGINT", async () => {
   logger.info({}, "closed – processWebpageWorker");
   await processWebsiteWorker.close();
   logger.info({}, "closed – processWebsiteWorker");
+  await processWebpagesWithZeroAdsWorker.close();
+  logger.info({}, "closed – processWebpagesWithZeroAdsWorker");
 
   logger.info({}, "finished doing graceful shutdown");
   process.exit(0);

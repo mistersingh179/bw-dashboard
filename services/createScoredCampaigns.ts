@@ -45,7 +45,7 @@ const createScoredCampaigns: CreateScoredCampaigns = async (
   });
 
   if (existingScoredCampaignsCount >= campaigns.length) {
-    myLogger.info({}, "aborting as all campaitns are already scored");
+    myLogger.info({}, "aborting as all campaigns are already scored");
     return;
   }
 

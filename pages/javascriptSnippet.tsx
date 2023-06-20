@@ -1,22 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import {
-  Text,
-  Box,
-  Heading,
-  VStack,
-  Code,
-  Stack,
-  Button,
-  OrderedList,
-  ListItem,
-  Spinner,
-} from "@chakra-ui/react";
+import React from "react";
+import {Box, Heading, ListItem, OrderedList, Spinner, Text, VStack,} from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
 import MyCode from "@/components/MyCode";
-import superjson from "superjson";
 import useUser from "@/hooks/useUser";
-import { ErrorAlert } from "@/components/genericMessages";
+import {ErrorAlert} from "@/components/genericMessages";
 
 const BW_SCRIPT_BASE_URL = process.env.NEXT_PUBLIC_BW_SCRIPT_BASE_URL;
 

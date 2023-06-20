@@ -42,6 +42,7 @@ const processWebsite: ProcessWebsite = async (website, settings) => {
 
   const newlyAddedWebpages = await prisma.webpage.findMany({
     where: {
+      websiteId: website.id,
       createdAt: {
         gte: timeWhenDownloadingStarted,
       },
