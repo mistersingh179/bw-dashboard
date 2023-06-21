@@ -1,45 +1,70 @@
 import { JSDOM } from "jsdom";
-// import { parse, HTMLElement } from "node-html-parser";
+import { parse, HTMLElement } from "node-html-parser";
 import prisma from "@/lib/prisma";
 import logger from "@/lib/logger";
+import { stripHtml } from "string-strip-html";
 
 /*
 On average 1 word === 1.3 tokens
 so 500 words will be 650 tokens
 and chatGpt's limit is ~ 4096 tokens
- */
+d */
 
 const myLogger = logger.child({ name: "extractCleanedWebpageText" });
 
 type ExtractCleanedWebpageText = (
   html: string,
-  maxWordCount?: number
+  maxWordCount: number,
+  mainPostBodySelector: string
 ) => string;
 
 const extractCleanedWebpageText: ExtractCleanedWebpageText = (
   html,
-  maxWordCount = 500
+  maxWordCount = 200,
+  mainPostBodySelector = "body"
 ) => {
   myLogger.info({ length: html.length, maxWordCount }, "starting service");
 
   const dom = new JSDOM(html);
   const {
-    window: {
-      document: { body },
-    },
+    window: { document },
   } = dom;
 
   // const document = parse(html);
-  // const body = document.querySelector("body");
+  // const mainElement = document.querySelector(mainPostBodySelector);
+
+  let mainElement =
+    document.querySelector(mainPostBodySelector) ??
+    document.querySelector("body");
+  if (!mainElement) {
+    myLogger.info(
+      { mainPostBodySelector },
+      "Aborting as body element also not found!"
+    );
+    return "";
+  }
+
+  // const mainElementText = mainElement.textContent ?? ""
+  const mainElementText = stripHtml(mainElement.innerHTML).result ?? "";
+  myLogger.info({ mainElementText }, "main element text");
 
   const cleanedContent =
-    body?.textContent?.replaceAll(/[\n]+/g, " ").replaceAll(/[\s]+/g, " ") ??
-    "";
+    mainElementText.replaceAll(/[\n]+/g, " ").replaceAll(/[\s]+/g, " ") ?? "";
+
+  myLogger.info(
+    { cleanedContent, length: cleanedContent.length },
+    "cleanedContent"
+  );
 
   const words = cleanedContent.split(" ");
-  const subsetContent = words.slice(0, maxWordCount).join(" ");
+  const subsetWords = words.slice(0, maxWordCount);
+  const subsetContent = subsetWords.join(" ");
 
-  myLogger.info({ length: subsetContent.length }, "cleaned webpage text");
+  myLogger.info(
+    { subsetContent, length: subsetContent.length },
+    "subsetContent"
+  );
+
   return subsetContent || "";
 };
 
@@ -51,12 +76,30 @@ if (require.main === module) {
     //   "<body></body><div>foo<br/>\n\nbar\n\n   <br/>\n\nfoobar</div></body>"
     // );
     // console.log("*** ans: ", ans);
-    const content = await prisma.content.findFirstOrThrow({
+
+    const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        webpageId: "cliuhtnri000y98ulyifcv8q7",
+        id: "clj4mbowc0002982oo9xkjujr",
+        // id: "clint6o2n001ymd08q6wl7xlh",
+        // id: "clj4l8mbc0tx0ny1qthfjl55y",
+        // id: "clim0ldkj029wmq08t01qppn4",
       },
     });
-    const ans2 = await extractCleanedWebpageText(content.desktopHtml, 500);
-    console.log("*** ans2: ", ans2);
+    console.log(webpage);
+
+    const content = await prisma.content.findFirstOrThrow({
+      where: {
+        webpageId: webpage.id
+      },
+    });
+    console.log("got content: ", content.id);
+
+    const ans = await extractCleanedWebpageText(
+      content.desktopHtml,
+      200,
+      "main"
+    );
+    console.log("*** ans: ", ans);
+    // console.log("***length: ", ans2.length);
   })();
 }

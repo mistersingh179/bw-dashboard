@@ -95,7 +95,9 @@ drop database bw;
 - when ads pay the same then order by score 
 - use chatgpt to grade the campaign's production description or make an alternate version of it which is toned down.
 - campaign date breaks when typing starts with a 0.
-- paginate call for scoring
+- paginate call for scoring campaigns. 
+  - if too many campaigns this will currently fail
+  - if html input is too large this will currently fail 
 - lazy build cache
 - remove \n from advertisments
 - this webpage failes to buil – clj3gzd8r9mmms91qrw6q9q0b
@@ -103,6 +105,12 @@ drop database bw;
 - add ip address to logs
   - add child logger to request object
   - use middleware to add it
+- beforeText matching broke because now the before has many paragraphs in it
+- create view to see job server logs only, app server logs only
+- catch all chatgpt failures errors and bring them to notice
+  - response size too large
+- scores campaigns build fails when payload size is too large
+- ensure that product name is in advertisement.
 
 ## Pending backlog
 - create all webpages as OFF

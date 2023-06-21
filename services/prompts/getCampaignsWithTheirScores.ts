@@ -1,4 +1,4 @@
-import { Campaign, Webpage } from "@prisma/client";
+import { Campaign, Setting, Webpage } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import Papa from "papaparse";
 import AnyObject from "@/types/AnyObject";
@@ -23,20 +23,26 @@ const myLogger = logger.child({ name: "getCampaignsWithTheirScores" });
 type GetCampaignsWithTheirScores = (
   webpage: Webpage,
   campaigns: Campaign[],
-  content: Content
+  content: Content,
+  setting: Setting
 ) => Promise<CampaignProductWithScore[]>;
 
 const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
   webpage,
   campaigns,
-  content
+  content,
+  settings
 ) => {
   myLogger.info(
     { url: webpage.url, len: campaigns.length },
     "starting service"
   );
 
-  const webpageText = extractCleanedWebpageText(content.desktopHtml);
+  const webpageText = extractCleanedWebpageText(
+    content.desktopHtml,
+    200,
+    settings.mainPostBodySelector
+  );
 
   const campaignsWithScore: CampaignProductWithScore[] = campaigns.map((c) => ({
     id: c.id,
@@ -106,7 +112,6 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
         model: "gpt-3.5-turbo-0301",
         temperature: 1,
         n: 1,
-        max_tokens: 1000,
         messages: messages,
       }),
       signal: controller.signal,
@@ -151,14 +156,23 @@ if (require.main === module) {
         userId: "clhtwckif000098wp207rs2fg",
       },
     });
-
+    const settings = await prisma.setting.findFirstOrThrow({
+      where: {
+        userId: "clhtwckif000098wp207rs2fg",
+      },
+    });
     const content = await prisma.content.findFirst({
       where: {
         webpageId: webpage.id,
       },
     });
 
-    const ans = await getCampaignsWithTheirScores(webpage, campaigns, content!);
+    const ans = await getCampaignsWithTheirScores(
+      webpage,
+      campaigns,
+      content!,
+      settings
+    );
 
     console.log("***ans: ", ans);
   })();

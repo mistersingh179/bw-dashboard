@@ -132,7 +132,7 @@ if (require.main === module) {
       },
     });
     const ans = await getAdvertisementText(
-      extractCleanedWebpageText(webpage.content?.desktopHtml || ""),
+      extractCleanedWebpageText(webpage.content?.desktopHtml || "", 200, "body"),
       webpage.advertisementSpots[0].beforeText,
       webpage.advertisementSpots[0].afterText,
       campaign.productName,

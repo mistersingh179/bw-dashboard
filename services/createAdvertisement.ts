@@ -72,7 +72,11 @@ const createAdvertisement: CreateAdvertisement = async (
     return;
   }
 
-  const webpageText = extractCleanedWebpageText(webpage.content.desktopHtml);
+  const webpageText = extractCleanedWebpageText(
+    webpage.content.desktopHtml,
+    200,
+    settings.mainPostBodySelector
+  );
 
   const { beforeText, afterText } = advertisementSpot;
 

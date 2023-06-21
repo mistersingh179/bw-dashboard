@@ -54,7 +54,8 @@ const createScoredCampaigns: CreateScoredCampaigns = async (
     campaignsWithScore = await getCampaignsWithTheirScores(
       webpage,
       campaigns,
-      content
+      content,
+      settings,
     );
   } catch (err) {
     myLogger.error({ err }, "aborting as unable to get campaign scores");

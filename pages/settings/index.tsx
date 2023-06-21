@@ -22,7 +22,7 @@ import React, { useEffect, useState } from "react";
 import SliderThumbWithTooltip from "@/components/SliderThumbWithTooltip";
 import useSettings from "@/hooks/useSettings";
 import { ErrorAlert, ErrorRow, NoDataRow } from "@/components/genericMessages";
-import {SettingType} from "@/types/my-types";
+import { SettingType } from "@/types/my-types";
 
 const Settings: FCWithAuth = () => {
   const { settings, error, isLoading, onSave } = useSettings();
@@ -36,7 +36,8 @@ const Settings: FCWithAuth = () => {
     webpageLookbackDays: 0,
     scoreThreshold: 0,
     status: false,
-    addSponsoredWording: false
+    addSponsoredWording: false,
+    mainPostBodySelector: "",
   };
 
   const [items, setItems] = useState(defaultValues);
@@ -46,7 +47,8 @@ const Settings: FCWithAuth = () => {
       [itemName]: itemValue,
     }));
   };
-  const { scoreThreshold, status, addSponsoredWording } = items;
+  const { scoreThreshold, status, addSponsoredWording, mainPostBodySelector } =
+    items;
 
   useEffect(() => {
     if (settings) {
@@ -137,6 +139,34 @@ const Settings: FCWithAuth = () => {
                   Note: The sponsored content toggle provides transparency and
                   helps readers distinguish between regular and sponsored
                   messages.
+                </Text>
+              </FormHelperText>
+              <FormHelperText></FormHelperText>
+            </FormControl>
+            <FormControl>
+              <HStack>
+                <FormLabel w={'2xs'} mb={0}>Main Post Body Selector</FormLabel>
+                <Input
+                  value={mainPostBodySelector}
+                  onChange={(evt) => {
+                    updateItem("mainPostBodySelector", evt.target.value);
+                  }}
+                />
+              </HStack>
+              <FormHelperText my={7} lineHeight={1.5}>
+                <Text>
+                  Instructions: Provide the CSS selector which identifies where
+                  the post is on your page.
+                </Text>
+                <Text my={1}>
+                  By default the AI model reads the whole body of your post to
+                  understand it. By providing a CSS Selector, you can tell the
+                  model to focus only on the content in this tag.
+                </Text>
+                <Text my={1}>
+                  This can be useful as then the model is not reading the
+                  heading, footers & other content which is not relevant to the
+                  post on this page.
                 </Text>
               </FormHelperText>
               <FormHelperText></FormHelperText>

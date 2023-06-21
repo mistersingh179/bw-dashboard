@@ -90,7 +90,6 @@ ${sponsoredWordingInstruction}`,
         model: "gpt-3.5-turbo-0301",
         temperature: 0.7,
         n: desiredAdvertisementCount,
-        max_tokens: 1000,
         messages: messages,
       }),
       signal: controller.signal,
@@ -136,7 +135,7 @@ if (require.main === module) {
       },
     });
     const ans = await getAdvertisementText(
-      extractCleanedWebpageText(webpage.content?.desktopHtml || ""),
+      extractCleanedWebpageText(webpage.content?.desktopHtml || "", 200, "body"),
       webpage.advertisementSpots[0].beforeText,
       webpage.advertisementSpots[0].afterText,
       campaign.productName,
