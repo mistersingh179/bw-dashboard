@@ -106,10 +106,6 @@ drop database bw;
   - add child logger to request object
   - use middleware to add it
 - beforeText matching broke because now the before has many paragraphs in it
-- create view to see job server logs only, app server logs only
-- catch all chatgpt failures errors and bring them to notice
-  - response size too large
-- scores campaigns build fails when payload size is too large
 - ensure that product name is in advertisement.
 
 ## Pending backlog

@@ -96,8 +96,8 @@ ${sponsoredWordingInstruction}`,
     });
   } catch (err) {
     myLogger.error(
-      { err },
-      "got error while get advertisemenet from chatGpt: "
+      { messages, err },
+      "got error while getting advertisement data from chatGpt"
     );
     return [];
   }

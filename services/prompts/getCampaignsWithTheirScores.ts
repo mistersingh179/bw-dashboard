@@ -117,7 +117,7 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
       signal: controller.signal,
     });
   } catch (err) {
-    myLogger.error({ err }, "got error while getting data from chatGpt");
+    myLogger.error({messages, err }, "got error while getting scored campaigns from chatGpt");
     return [];
   }
   clearTimeout(timeoutId);
