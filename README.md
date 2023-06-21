@@ -101,12 +101,13 @@ drop database bw;
 - lazy build cache
 - remove \n from advertisments
 - this webpage failes to buil – clj3gzd8r9mmms91qrw6q9q0b
-- sibling text has cdata
 - add ip address to logs
   - add child logger to request object
   - use middleware to add it
-- beforeText matching broke because now the before has many paragraphs in it
 - ensure that product name is in advertisement.
+- adSpot maker is using user provided css selector get beforeText elements but front end is only checking paras.
+  - this means if ad spot was latching on divs, we would not get it.
+  - we should scan all or exactly the same as backend.
 
 ## Pending backlog
 - create all webpages as OFF

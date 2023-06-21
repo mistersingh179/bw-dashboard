@@ -15,7 +15,11 @@ type ElementFilter = (elem: HTMLElement | Element) => Boolean;
 
 const siblingTextLogger = logger.child({ name: "siblingText" });
 const siblingTextMaxWordCount = 150;
-const siblingText = (el: HTMLElement | Element, totalText = "", direction: string): string => {
+const siblingText = (
+  el: HTMLElement | Element,
+  totalText = "",
+  direction: string
+): string => {
   if (getWordCount(totalText) >= siblingTextMaxWordCount) {
     siblingTextLogger.info(
       { length: totalText.length },
@@ -24,20 +28,36 @@ const siblingText = (el: HTMLElement | Element, totalText = "", direction: strin
     return totalText;
   }
 
-  const siblingElem = direction === "next" ? el.nextElementSibling : el.previousElementSibling;
+  if (totalText == "" && direction == "previous") {
+    let elemText = el.textContent?.trim() ?? "";
+    elemText = elemText.replaceAll(/[\n]+/g, " ");
+    elemText = elemText.replaceAll(/[\s]+/g, " ");
+    totalText = elemText;
+  }
+
+  const siblingElem =
+    direction === "next" ? el.nextElementSibling : el.previousElementSibling;
   if (siblingElem == null) {
     siblingTextLogger.info("stopping as sibling element is null");
     return totalText;
   } else {
     if (siblingElem.textContent) {
-      let siblingText = siblingElem.textContent.trim();
-      siblingText =
-        siblingText.replaceAll(/[\n]+/g, " ").replaceAll(/[\s]+/g, " ") ?? "";
+      let siblingText = siblingElem.textContent.trim() ?? "";
+      siblingText = siblingText.replaceAll(/[\n]+/g, " ");
+      siblingText = siblingText.replaceAll(/[\s]+/g, " ");
       if (siblingText.length > 0) {
-        if(direction === "next"){
-          totalText = totalText + " \n " + siblingText;
-        }else{
-          totalText = siblingText + " \n " + totalText;
+        if (direction === "next") {
+          if (totalText == "") {
+            totalText = siblingText;
+          } else {
+            totalText = totalText + " \n " + siblingText;
+          }
+        } else {
+          if (totalText == "") {
+            totalText = siblingText;
+          } else {
+            totalText = siblingText + " \n " + totalText;
+          }
         }
       }
     }
@@ -161,7 +181,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clix8twnc000a98prn167qb4c",
+        id: "clj5zaujd000m98mtwq6vq69r",
         content: {
           isNot: null,
         },
