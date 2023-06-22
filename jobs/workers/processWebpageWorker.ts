@@ -30,8 +30,7 @@ const worker: Worker<ProcessWebpageDataType, void> = new Worker(
     autorun: false,
     metrics: {
       maxDataPoints: MetricsTime.TWO_WEEKS,
-    },
-    useWorkerThreads: true,
+    }
   }
 );
 

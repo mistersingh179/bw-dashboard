@@ -27,7 +27,7 @@ const worker: Worker<void, void> = new Worker(queueName, processorFile, {
   metrics: {
     maxDataPoints: MetricsTime.TWO_WEEKS,
   },
-  useWorkerThreads: true,
+  
 });
 
 worker.on("drained", () => {

@@ -31,7 +31,7 @@ const worker: Worker<CreateAdvertisementDataType, void> = new Worker(
     metrics: {
       maxDataPoints: MetricsTime.TWO_WEEKS,
     },
-    useWorkerThreads: true,
+
   }
 );
 

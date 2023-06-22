@@ -31,7 +31,7 @@ const worker: Worker<CreateScoredCampaignDataType, void> = new Worker(
     metrics: {
       maxDataPoints: MetricsTime.TWO_WEEKS,
     },
-    useWorkerThreads: true,
+    
   }
 );
 
