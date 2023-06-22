@@ -59,7 +59,7 @@ important rules that you must follow. `,
 ~~~\n\
 AFTER_CONTENT:\n${afterText} \n\
 ~~~\n\
-PRODUCT_INFO:\n${productDescription} \n\
+PRODUCT_INFO:\n\nName: ${productName}\n\n Description: ${productDescription} \n\
 ~~~\n\
 Follow these important rules:\n\
 • Review the BEFORE_CONTENT and AFTER_CONTENT to understand the flow of the article. \n\
