@@ -21,6 +21,12 @@ const siblingText = (
   direction: string
 ): string => {
   if (getWordCount(totalText) >= siblingTextMaxWordCount) {
+    if(direction === "previous"){
+      totalText = totalText.split(" ").slice(-siblingTextMaxWordCount).join(" ");
+    }else{
+      totalText = totalText.split(" ").slice(0,siblingTextMaxWordCount).join(" ");
+    }
+
     siblingTextLogger.info(
       { length: totalText.length },
       "stopping as reached size limit"
@@ -181,7 +187,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clj5zaujd000m98mtwq6vq69r",
+        id: "clj75tm7a000098koa8bhduex",
         content: {
           isNot: null,
         },

@@ -108,6 +108,14 @@ drop database bw;
 - adSpot maker is using user provided css selector get beforeText elements but front end is only checking paras.
   - this means if ad spot was latching on divs, we would not get it.
   - we should scan all or exactly the same as backend.
+- fix dev worker to auto reload when any jobs or services change
+- show ad spots on the webpage & content. this would help us debug it.
+- front end way to re-process a webpage
+  - should get content again
+  - get ad spots again
+  - score campaigns again
+  - and the build ads again
+- make jobs like createAdvertisement return the advertisement content so we can see in UI
 
 ## Pending backlog
 - create all webpages as OFF

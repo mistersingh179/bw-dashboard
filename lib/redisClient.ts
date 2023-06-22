@@ -7,11 +7,9 @@ if (result.error) {
   logger.error({ err: result.error }, "UNABLE to parse .ENV file!!!");
 }
 
-const { REDIS_HOST } = process.env;
-const REDIS_PORT = Number(process.env.REDIS_PORT) || 0;
 const REDIS_URL = String(process.env.REDIS_URL) ?? "";
 
-logger.info({REDIS_URL, REDIS_HOST, REDIS_PORT}, "Redis ENV variables")
+logger.info({ REDIS_URL }, "Redis ENV variables");
 
 export const redisClient = new Redis(REDIS_URL, {
   maxRetriesPerRequest: null,

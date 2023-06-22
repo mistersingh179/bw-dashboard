@@ -7,11 +7,14 @@ import createAdvertisementQueue, {
 } from "@/jobs/queues/createAdvertisementQueue";
 
 (async () => {
-  const ans =
-    "14 Homemade Pizza Recipes for Family Movie Night FEATURED IN: \n What to do when your 8-year old nephew comes to visit? Make pizza, of course! \n Well, not of course, actually. I didn't think of it until we exhausted Sorry, Monopoly, and gin rummy. But it did turn out to be a brilliant idea as my father had just received a baking stone for Christmas, and my nephew loves pizza. \n I told him if he helped me make it I would talk about him on my website and he would be famous. That seemed to get his attention. He thought the dough was \"slimy and gross\" but he loved picking his own toppings, and the finished product was \"awesome\". \n Simply Recipes / Annika Panikker \n My Favorite Pizza Dough Recipe \n ";
+  const ans = "the cameras. And that’s okay. That’s no problem. I respect him as a fighter, but on Saturday night, I will be champion.”Bob Arum“It’s been a great run with Mick. He’s a terrific young man. He is a really good fighter, and he’s stepping to the plate against a really tough world champion in Luis Alberto Lopez, who doesn’t hesitate to go into his opponent’s hometown and perform spectacularly. Mick knows it’s not going to be an easy fight. It’s going to be a very tough fight. All the people here in Belfast will have the opportunity to watch a classic, competitive championship fight. It may end up being the fight of the year.” \n try { top.udm_inpage_sid = 19345; } catch (e) { console.warn(\"Error initializing udm inpage. Please verify you are not using an unfriendly iframe\"); } \n Luis Alberto Lopez and Michael Conlan (ESPN+ (1:30 p.m. ET/10:30 a.m. PT):";
   const paras = ans.split(" \n ");
-  console.log(paras.length);
-  console.log(paras)
+  for(const para of paras){
+    const words = para.split(" ");
+    console.log("words.length: ", words.length);
+  }
+  console.log("sadf asfsderwq axc f fsad ".slice(-10));
+
 })();
 
 export {};
