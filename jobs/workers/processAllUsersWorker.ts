@@ -4,31 +4,30 @@ import { DEFAULT_WORKER_CONCURRENCY } from "@/constants";
 import path from "path";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
+import processAllUsers from "@/services/processAllUsers";
 
 const queueName = "processAllUsers";
 
-const processorFile = path.join(
-  __dirname,
-  "..",
-  "sandboxedProcessors",
-  "processAllUsersSandboxProcessor.ts"
+logger.info({ queueName }, "setting up worker");
+
+const worker: Worker<void, void> = new Worker(
+  queueName,
+  async (job) => {
+    await processAllUsers();
+  },
+  {
+    connection: redisClient,
+    limiter: {
+      max: 10,
+      duration: 1000,
+    },
+    concurrency: DEFAULT_WORKER_CONCURRENCY,
+    autorun: false,
+    metrics: {
+      maxDataPoints: MetricsTime.TWO_WEEKS,
+    },
+  }
 );
-
-logger.info({ queueName, processorFile }, "setting up worker");
-
-const worker: Worker<void, void> = new Worker(queueName, processorFile, {
-  connection: redisClient,
-  limiter: {
-    max: 10,
-    duration: 1000,
-  },
-  concurrency: DEFAULT_WORKER_CONCURRENCY,
-  autorun: false,
-  metrics: {
-    maxDataPoints: MetricsTime.TWO_WEEKS,
-  },
-  
-});
 
 worker.on("drained", () => {
   logger.info({ queueName }, "worker drained");

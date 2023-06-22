@@ -116,7 +116,8 @@ drop database bw;
   - score campaigns again
   - and the build ads again
 - make jobs like createAdvertisement return the advertisement content so we can see in UI
-
+- grant users computer super-power so we can show buttons inside other accounts which require super access
+- 
 ## Pending backlog
 - create all webpages as OFF
 - search filter on webpages page

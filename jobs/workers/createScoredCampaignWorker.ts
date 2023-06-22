@@ -5,21 +5,18 @@ import path from "path";
 import { CreateScoredCampaignDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
+import createScoredCampaigns from "@/services/createScoredCampaigns";
 
 const queueName = "createScoredCampaign";
 
-const processorFile = path.join(
-  __dirname,
-  "..",
-  "sandboxedProcessors",
-  "createScoredCampaignSandboxProcessor.ts"
-);
-
-logger.info({ queueName, processorFile }, "setting up worker");
+logger.info({ queueName }, "setting up worker");
 
 const worker: Worker<CreateScoredCampaignDataType, void> = new Worker(
   queueName,
-  processorFile,
+  async (job) => {
+    const { webpage, content, settings, user, campaigns } = job.data;
+    await createScoredCampaigns(webpage, content, settings, user, campaigns);
+  },
   {
     connection: redisClient,
     limiter: {

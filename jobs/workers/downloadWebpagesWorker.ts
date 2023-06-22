@@ -5,21 +5,18 @@ import path from "path";
 import { DownloadWebpagesDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
+import downloadWebpages from "@/services/downloadWebpages";
 
 const queueName = "downloadWebpages";
 
-const processorFile = path.join(
-  __dirname,
-  "..",
-  "sandboxedProcessors",
-  "downloadWebpagesSandboxProcessor.ts"
-);
-
-logger.info({ queueName, processorFile }, "setting up worker");
+logger.info({ queueName }, "setting up worker");
 
 const worker: Worker<DownloadWebpagesDataType, void> = new Worker(
   queueName,
-  processorFile,
+  async (job) => {
+    const { website, settings, sitemapUrl } = job.data;
+    await downloadWebpages(website, settings, sitemapUrl);
+  },
   {
     connection: redisClient,
     limiter: {

@@ -5,21 +5,18 @@ import path from "path";
 import { ProcessWebpageDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
+import processWebpage from "@/services/processWebpage";
 
 const queueName = "processWebpage";
 
-const processorFile = path.join(
-  __dirname,
-  "..",
-  "sandboxedProcessors",
-  "processWebpageSandboxProcessor.ts"
-);
-
-logger.info({ queueName, processorFile }, "setting up worker");
+logger.info({ queueName }, "setting up worker");
 
 const worker: Worker<ProcessWebpageDataType, void> = new Worker(
   queueName,
-  processorFile,
+  async (job) => {
+    const { webpage } = job.data;
+    await processWebpage(webpage);
+  },
   {
     connection: redisClient,
     limiter: {
@@ -30,7 +27,7 @@ const worker: Worker<ProcessWebpageDataType, void> = new Worker(
     autorun: false,
     metrics: {
       maxDataPoints: MetricsTime.TWO_WEEKS,
-    }
+    },
   }
 );
 

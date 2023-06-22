@@ -5,21 +5,18 @@ import path from "path";
 import { ProcessUserDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
+import processUser from "@/services/processUser";
 
 const queueName = "processUser";
 
-const processorFile = path.join(
-  __dirname,
-  "..",
-  "sandboxedProcessors",
-  "processUserSandboxProcessor.ts"
-);
-
-logger.info({ queueName, processorFile }, "setting up worker");
+logger.info({ queueName }, "setting up worker");
 
 const worker: Worker<ProcessUserDataType, void> = new Worker(
   queueName,
-  processorFile,
+  async (job) => {
+    const { user, settings } = job.data;
+    await processUser(user, settings);
+  },
   {
     connection: redisClient,
     limiter: {

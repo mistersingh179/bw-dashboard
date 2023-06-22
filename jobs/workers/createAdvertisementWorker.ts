@@ -5,21 +5,18 @@ import path from "path";
 import { CreateAdvertisementDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
-
-const processorFile = path.join(
-  __dirname,
-  "..",
-  "sandboxedProcessors",
-  "createAdvertisementSandboxProcessor.ts"
-);
+import createAdvertisement from "@/services/createAdvertisement";
 
 const queueName = "createAdvertisement";
 
-logger.info({ queueName, processorFile }, "setting up worker");
+logger.info({ queueName }, "setting up worker");
 
 const worker: Worker<CreateAdvertisementDataType, void> = new Worker(
   queueName,
-  processorFile,
+  async (job) => {
+    const { advertisementSpot, scoredCampaign, settings } = job.data;
+    await createAdvertisement(advertisementSpot, scoredCampaign, settings);
+  },
   {
     connection: redisClient,
     limiter: {
@@ -30,8 +27,7 @@ const worker: Worker<CreateAdvertisementDataType, void> = new Worker(
     autorun: false,
     metrics: {
       maxDataPoints: MetricsTime.TWO_WEEKS,
-    },
-
+    }
   }
 );
 
