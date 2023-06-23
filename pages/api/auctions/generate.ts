@@ -11,6 +11,7 @@ import getCampaignsWhoHaveNotMetImpCap from "@/services/queries/getCamapignsWhoH
 import cookie from "cookie";
 import { createId } from "@paralleldrive/cuid2";
 import logger from "@/lib/logger";
+import { pick } from "lodash";
 
 const cors = Cors({
   credentials: true,
@@ -135,10 +136,20 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
   );
   res.setHeader("Set-Cookie", cookieHeaderString);
 
+  const settingsToReturn = pick(settings, [
+    "sponsoredWording",
+  ]);
+
   res
     .setHeader("Content-Type", "application/json")
     .status(200)
-    .send(superjson.stringify({ auction, adsWithDetail }));
+    .send(
+      superjson.stringify({
+        auction,
+        adsWithDetail,
+        settings: settingsToReturn,
+      })
+    );
 };
 
 export default withMiddleware(
