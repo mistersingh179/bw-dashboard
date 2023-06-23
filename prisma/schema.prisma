@@ -79,6 +79,7 @@ model Setting {
   scoreThreshold                Int
   status                        Boolean
   addSponsoredWording           Boolean  @default(false)
+  sponsoredWording              String   @default("")
   desiredAdvertisementSpotCount Int      @default(1)
   desiredAdvertisementCount     Int      @default(1)
   webpageLookbackDays           Int      @default(0)
