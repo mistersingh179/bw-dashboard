@@ -88,7 +88,7 @@ const createAdvertisement: CreateAdvertisement = async (
 
   const { productName, productDescription } = campaign;
 
-  const { addSponsoredWording, desiredAdvertisementCount } = settings;
+  const { desiredAdvertisementCount } = settings;
 
   let adTextCopies: string[] = [];
   try {
@@ -98,7 +98,6 @@ const createAdvertisement: CreateAdvertisement = async (
       afterText,
       productName,
       productDescription,
-      addSponsoredWording,
       desiredAdvertisementCount
     );
   } catch (err) {

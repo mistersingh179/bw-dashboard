@@ -88,7 +88,6 @@ const Settings: FCWithAuth = () => {
     webpageLookbackDays: 0,
     scoreThreshold: 0,
     status: false,
-    addSponsoredWording: false,
     sponsoredWording: "",
     mainPostBodySelector: "",
   };
@@ -103,7 +102,6 @@ const Settings: FCWithAuth = () => {
   const {
     scoreThreshold,
     status,
-    addSponsoredWording,
     sponsoredWording,
     mainPostBodySelector,
   } = items;
@@ -198,7 +196,6 @@ const Settings: FCWithAuth = () => {
                 </Box>
               </HStack>
               <FormHelperText my={3} lineHeight={1.5}>
-                <Text>{sponsoredWording}</Text>
                 <Text>
                   Optionally provide text you want to show after each
                   advertisement.

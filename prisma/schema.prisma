@@ -78,7 +78,6 @@ model Setting {
   user                          User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   scoreThreshold                Int
   status                        Boolean
-  addSponsoredWording           Boolean  @default(false)
   sponsoredWording              String   @default("")
   desiredAdvertisementSpotCount Int      @default(1)
   desiredAdvertisementCount     Int      @default(1)

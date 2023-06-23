@@ -46,12 +46,12 @@ const extractCleanedWebpageText: ExtractCleanedWebpageText = (
 
   // const mainElementText = mainElement.textContent ?? ""
   const mainElementText = stripHtml(mainElement.innerHTML).result ?? "";
-  myLogger.info({ mainElementText }, "main element text");
+  myLogger.debug({ mainElementText }, "main element text");
 
   const cleanedContent =
     mainElementText.replaceAll(/[\n]+/g, " ").replaceAll(/[\s]+/g, " ") ?? "";
 
-  myLogger.info(
+  myLogger.debug(
     { cleanedContent, length: cleanedContent.length },
     "cleanedContent"
   );

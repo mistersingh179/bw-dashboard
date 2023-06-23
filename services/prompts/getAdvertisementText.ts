@@ -14,7 +14,6 @@ type GetAdvertisementText = (
   afterText: string,
   productName: string,
   productDescription: string,
-  addSponsoredWording: boolean,
   desiredAdvertisementCount: number
 ) => Promise<string[]>;
 
@@ -24,7 +23,6 @@ const getAdvertisementText: GetAdvertisementText = async (
   afterText,
   productName,
   productDescription,
-  addSponsoredWording,
   desiredAdvertisementCount
 ) => {
   myLogger.info("starting service");
@@ -36,10 +34,6 @@ const getAdvertisementText: GetAdvertisementText = async (
       `Ad Copy 3 for ${productName}, ${productDescription}`,
     ].splice(0, desiredAdvertisementCount);
   }
-
-  const sponsoredWordingInstruction: string = addSponsoredWording
-    ? "• Let the reader know that this sponsored content is brought to you by PRODUCT_INFO.\n\ "
-    : "";
 
   const messages: AnyObject[] = [
     {
@@ -72,7 +66,7 @@ Follow these important rules:\n\
 • Your answer must include the new paragraph only. Stop generating if you output two consecutive newlines, such as '\\n\\n'. \n\
 • Maintain a clear separation between the author's viewpoint and the product, ensuring there is no implication of endorsement in either direction.\n\
 • Present the product in a positive light, highlighting its beneficial aspects without any negative portrayal.\n\
-${sponsoredWordingInstruction}`,
+`,
     },
   ];
   myLogger.info(messages, "messages being sent to chatGpt");
@@ -140,8 +134,7 @@ if (require.main === module) {
       webpage.advertisementSpots[0].afterText,
       campaign.productName,
       campaign.productDescription,
-      false,
-      2
+      2,
     );
     console.log("ans: ", ans);
   })();
