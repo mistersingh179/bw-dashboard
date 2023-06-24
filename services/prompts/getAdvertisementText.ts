@@ -129,12 +129,16 @@ if (require.main === module) {
       },
     });
     const ans = await getAdvertisementText(
-      extractCleanedWebpageText(webpage.content?.desktopHtml || "", 200, "body"),
+      extractCleanedWebpageText(
+        webpage.content?.desktopHtml || "",
+        200,
+        "body"
+      ),
       webpage.advertisementSpots[0].beforeText,
       webpage.advertisementSpots[0].afterText,
       campaign.productName,
       campaign.productDescription,
-      2,
+      2
     );
     console.log("ans: ", ans);
   })();

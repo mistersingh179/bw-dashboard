@@ -107,7 +107,7 @@ const createAdvertisement: CreateAdvertisement = async (
 
   const advertisementInputArr: AdvertisementCreateManyAdvertisementSpotInput[] =
     adTextCopies.map((adTextCopy) => ({
-      advertText: adTextCopy,
+      advertText: adTextCopy.split("\n")[0].trim(),
       scoredCampaignId: scoredCampaign.id,
       status: true,
     }));
@@ -130,7 +130,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "cli38233j000098m9ug7e78m7",
+        id: "clj7ay3i3000398fsim918uh7",
       },
       include: {
         advertisementSpots: true,

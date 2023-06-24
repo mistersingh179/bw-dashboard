@@ -117,7 +117,17 @@ drop database bw;
   - and the build ads again
 - make jobs like createAdvertisement return the advertisement content so we can see in UI
 - grant users computer super-power so we can show buttons inside other accounts which require super access
-- 
+- should bail out on showing many ads if the content matches more than once
+- bot gets 204, and then JSON parse error. same error on any 204 response.
+- improve linkin to have "Visit XYZ" at the end.
+- ```TypeError [ERR_INVALID_THIS]: Value of \"this\" must be of type AbortController
+  at __node_internal_captureLargerStackTrace (node:internal/errors:465:5)
+  at new NodeError (node:internal/errors:372:5)
+  at validateAbortController (node:internal/abort_controller:294:11)
+  at Timeout.abort [as _onTimeout] (node:internal/abort_controller:314:5)
+  at listOnTimeout (node:internal/timers:559:17)
+  at processTimers (node:internal/timers:502:7)```
+  
 ## Pending backlog
 - create all webpages as OFF
 - search filter on webpages page
