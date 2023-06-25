@@ -30,7 +30,7 @@ const createContent: CreateContent = async (webpage, settings, user) => {
   try {
     htmlContent = await fetchContentOfWebpage(webpage.url, "text/html");
   } catch (err) {
-    myLogger.error({err}, "aborting as got error while fetching webpage content")
+    myLogger.error({err, url: webpage.url}, "aborting as got error while fetching webpage content")
     return null;
   }
 

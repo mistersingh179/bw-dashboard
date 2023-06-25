@@ -73,7 +73,7 @@ const downloadWebpages: DownloadWebpages = async (
   try {
     sitemapXML = await fetchContentOfWebpage(sitemapUrl, "application/xml");
   } catch (err) {
-    myLogger.error({ err }, "aborting as unable to fetch sitemap");
+    myLogger.error({ err, sitemapUrl }, "aborting as unable to fetch sitemap");
     return;
   }
   myLogger.info({ sitemapXML }, "got sitemap XML");
@@ -196,7 +196,7 @@ if (require.main === module) {
   (async () => {
     const ws = await prisma.website.findFirstOrThrow({
       where: {
-        id: "cliezg4oz008x98f1anu7ip24",
+        id: "cljahkmbn003p98kclricdbpm",
       },
       include: {
         user: {
@@ -206,10 +206,6 @@ if (require.main === module) {
         },
       },
     });
-    await downloadWebpages(
-      ws,
-      ws.user.setting!,
-      "https://citydogmagazine.com/post-sitemap.xml"
-    );
+    await downloadWebpages(ws, ws.user.setting!);
   })();
 }

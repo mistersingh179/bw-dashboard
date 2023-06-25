@@ -18,11 +18,13 @@ const fetchContentOfWebpage: FetchContentOfWebpage = async (
   accept = "*/*",
   deviceCategory = "desktop"
 ) => {
-  myLogger.info({url}, "starting service");
+  myLogger.info({ url }, "starting service");
 
   const userAgent = new UserAgent({ deviceCategory });
   const controller = new AbortController();
-  const timeoutId = setTimeout(controller.abort, FETCH_TIMEOUT);
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, FETCH_TIMEOUT);
   const res = await fetch(url, {
     method: "GET",
     headers: {
@@ -42,20 +44,21 @@ export default fetchContentOfWebpage;
 if (require.main === module) {
   (async () => {
     const ans = await fetchContentOfWebpage(
-      "https://www.simplyrecipes.com/recipes/homemade_pizza/"
+      // "https://www.simplyrecipes.com/recipes/homemade_pizza/"
+      "http://localhost:3000/api/hello"
     );
     console.log("***ans: ", ans.substring(0, 100));
 
-    const dom = new JSDOM(ans);
-    const {
-      window: { document },
-    } = dom;
-
-    // const document = parse(ans);
-    const items = document.querySelectorAll("p:nth-child(3n)");
-    for (let i = 0; i < items.length; i++) {
-      console.log(items[i].textContent);
-      console.log(`\n--${i}--\n`);
-    }
+    // const dom = new JSDOM(ans);
+    // const {
+    //   window: { document },
+    // } = dom;
+    //
+    // // const document = parse(ans);
+    // const items = document.querySelectorAll("p:nth-child(3n)");
+    // for (let i = 0; i < items.length; i++) {
+    //   console.log(items[i].textContent);
+    //   console.log(`\n--${i}--\n`);
+    // }
   })();
 }
