@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Content" ALTER COLUMN "description" DROP NOT NULL,
+ALTER COLUMN "description" DROP DEFAULT,
+ALTER COLUMN "title" DROP NOT NULL,
+ALTER COLUMN "title" DROP DEFAULT;

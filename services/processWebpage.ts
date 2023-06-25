@@ -6,6 +6,7 @@ import createCategories from "@/services/createCategories";
 import createScoredCampaigns from "@/services/createScoredCampaigns";
 import createAdvertisementQueue from "@/jobs/queues/createAdvertisementQueue";
 import logger from "@/lib/logger";
+import setTitleAndDescription from "@/services/setTitleAndDescription";
 
 export type WebpageWithContent = Webpage & { content: Content | null };
 
@@ -71,6 +72,8 @@ const processWebpage: ProcessWebpage = async (webpage) => {
 
   await createCategories(webpage, content, user);
 
+  await setTitleAndDescription(webpage, content, user);
+
   const adSpots = await prisma.advertisementSpot.findMany({
     where: {
       webpageId: webpage.id,
@@ -105,7 +108,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clj7ay3i3000398fsim918uh7",
+        id: "clj7p8hyf000098xf2r5saq46",
       },
     });
     await processWebpage(webpage);

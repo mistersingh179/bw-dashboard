@@ -160,6 +160,8 @@ model Content {
   desktopHtml String
   mobileHtml  String?
   tabletHtml  String?
+  title       String?
+  description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
