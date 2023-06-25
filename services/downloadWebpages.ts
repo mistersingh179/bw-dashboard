@@ -76,6 +76,7 @@ const downloadWebpages: DownloadWebpages = async (
     myLogger.error({ err }, "aborting as unable to fetch sitemap");
     return;
   }
+  myLogger.info({ sitemapXML }, "got sitemap XML");
 
   const options = {
     ignoreDeclaration: true,
