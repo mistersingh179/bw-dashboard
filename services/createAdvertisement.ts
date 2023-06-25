@@ -110,11 +110,17 @@ const createAdvertisement: CreateAdvertisement = async (
   }
 
   const advertisementInputArr: AdvertisementCreateManyAdvertisementSpotInput[] =
-    adTextCopies.map((adTextCopy) => ({
-      advertText: adTextCopy.split("\n")[0].trim(),
-      scoredCampaignId: scoredCampaign.id,
-      status: true,
-    }));
+    adTextCopies.map((adTextCopy) => {
+      adTextCopy = adTextCopy.split("\n")[0].trim();
+      if (!adTextCopy.includes(productName)) {
+        adTextCopy = adTextCopy + ` Visit ${productName}`;
+      }
+      return {
+        advertText: adTextCopy,
+        scoredCampaignId: scoredCampaign.id,
+        status: true,
+      };
+    });
 
   await prisma.advertisementSpot.update({
     where: {

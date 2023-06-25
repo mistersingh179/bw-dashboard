@@ -33,7 +33,7 @@ const getAdvertisementText: GetAdvertisementText = async (
 
   if (process.env.NODE_ENV === "development") {
     return [
-      `Ad Copy 1 for ${productName}, ${productDescription}`,
+      `Ad Copy 1 Lorem Lipsum. \n\n Foo Bar. I should not show`,
       `Ad Copy 2 for ${productName}, ${productDescription}`,
       `Ad Copy 3 for ${productName}, ${productDescription}`,
     ].splice(0, desiredAdvertisementCount);
