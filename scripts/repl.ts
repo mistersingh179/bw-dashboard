@@ -7,21 +7,15 @@ import createAdvertisementQueue, {
 } from "@/jobs/queues/createAdvertisementQueue";
 
 (async () => {
-  const contentExists = await prisma.content.count({
+  const foo = await prisma.content.findFirstOrThrow({
     where: {
-      title: {
-        not: {
-          equals: ""
-        }
-      },
-      description: {
-        not: {
-          equals: ""
-        }
-      }
+      webpageId: "clj7p8hyf000098xf2r5saq46"
     }
   })
-
+  console.log(foo.title === null);
+  console.log(foo.title === undefined);
+  console.log(foo.title === "");
+  console.log(foo.title);
 })();
 
 export {};

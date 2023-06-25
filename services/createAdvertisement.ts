@@ -78,6 +78,8 @@ const createAdvertisement: CreateAdvertisement = async (
     settings.mainPostBodySelector
   );
 
+  const { title, description } = webpage.content;
+
   const { beforeText, afterText } = advertisementSpot;
 
   const campaign = await prisma.campaign.findFirstOrThrow({
@@ -94,6 +96,8 @@ const createAdvertisement: CreateAdvertisement = async (
   try {
     adTextCopies = await getAdvertisementText(
       webpageText,
+      title,
+      description,
       beforeText,
       afterText,
       productName,

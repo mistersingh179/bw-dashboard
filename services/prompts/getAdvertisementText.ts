@@ -10,6 +10,8 @@ const myLogger = logger.child({ name: "getAdvertisementText" });
 
 type GetAdvertisementText = (
   html: string,
+  title: string | null ,
+  description: string | null ,
   beforeText: string,
   afterText: string,
   productName: string,
@@ -19,6 +21,8 @@ type GetAdvertisementText = (
 
 const getAdvertisementText: GetAdvertisementText = async (
   html,
+  title,
+  description,
   beforeText,
   afterText,
   productName,
@@ -110,7 +114,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clix8twnc000a98prn167qb4c",
+        id: "clj7p8hyf000098xf2r5saq46",
         content: {
           isNot: null,
         },
@@ -130,10 +134,12 @@ if (require.main === module) {
     });
     const ans = await getAdvertisementText(
       extractCleanedWebpageText(
-        webpage.content?.desktopHtml || "",
+        webpage.content!.desktopHtml || "",
         200,
         "body"
       ),
+      webpage.content!.title,
+      webpage.content!.description,
       webpage.advertisementSpots[0].beforeText,
       webpage.advertisementSpots[0].afterText,
       campaign.productName,
