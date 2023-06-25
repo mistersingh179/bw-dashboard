@@ -105,23 +105,39 @@ const downloadWebpages: DownloadWebpages = async (
 
     let webpageInputs: WebpageCreateManyWebsiteInput[] = [];
     webpageInputs = urlArray.reduce((accumulator, currentValue) => {
-      if (isAfter(parseISO(currentValue.lastmod), lookBackDate)) {
-        myLogger.info(
-          { lastmod: currentValue.lastmod, url: getCleanUrl(currentValue.loc) },
-          "taking as recent"
-        );
-        return [
-          ...accumulator,
-          {
-            url: getCleanUrl(currentValue.loc),
-            lastModifiedAt: currentValue.lastmod,
-            status: true,
-          },
-        ];
+      if (currentValue.lastmod) {
+        if (isAfter(parseISO(currentValue.lastmod), lookBackDate)) {
+          myLogger.info(
+            {
+              sitemapUrl,
+              lastmod: currentValue.lastmod,
+              url: getCleanUrl(currentValue.loc),
+            },
+            "taking as recent"
+          );
+          return [
+            ...accumulator,
+            {
+              url: getCleanUrl(currentValue.loc),
+              lastModifiedAt: currentValue.lastmod,
+              status: true,
+            },
+          ];
+        } else {
+          myLogger.info(
+            {
+              sitemapUrl,
+              lastmod: currentValue.lastmod,
+              url: getCleanUrl(currentValue.loc),
+            },
+            "skipping as lastmod is not recent"
+          );
+          return accumulator;
+        }
       } else {
         myLogger.info(
-          { lastmod: currentValue.lastmod, url: getCleanUrl(currentValue.loc) },
-          "skipping as not recent"
+          { url: getCleanUrl(currentValue.loc), sitemapUrl },
+          "skipping as lastmod date NOT present"
         );
         return accumulator;
       }
