@@ -98,12 +98,18 @@ const downloadWebpages: DownloadWebpages = async (
 
   if (Array.isArray(jsonObj?.urlset?.url)) {
     const urlArray = jsonObj.urlset.url as UrlsetUrl[];
-    myLogger.info({ length: urlArray.length }, "we have a sitemap with urlset");
+    myLogger.info(
+      { length: urlArray.length, sitemapUrl },
+      "we have a sitemap with urlset"
+    );
 
     let webpageInputs: WebpageCreateManyWebsiteInput[] = [];
     webpageInputs = urlArray.reduce((accumulator, currentValue) => {
       if (isAfter(parseISO(currentValue.lastmod), lookBackDate)) {
-        myLogger.info({ lastmod: currentValue.lastmod }, "taking as recent");
+        myLogger.info(
+          { lastmod: currentValue.lastmod, url: getCleanUrl(currentValue.loc) },
+          "taking as recent"
+        );
         return [
           ...accumulator,
           {
@@ -114,7 +120,7 @@ const downloadWebpages: DownloadWebpages = async (
         ];
       } else {
         myLogger.info(
-          { lastmod: currentValue.lastmod },
+          { lastmod: currentValue.lastmod, url: getCleanUrl(currentValue.loc) },
           "skipping as not recent"
         );
         return accumulator;
@@ -163,7 +169,7 @@ const downloadWebpages: DownloadWebpages = async (
     }
     await Promise.allSettled(downloadPromises);
   } else {
-    myLogger.error({}, "unable to process sitemap")
+    myLogger.error({}, "unable to process sitemap");
   }
 };
 

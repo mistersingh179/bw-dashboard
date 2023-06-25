@@ -127,6 +127,13 @@ drop database bw;
   at Timeout.abort [as _onTimeout] (node:internal/abort_controller:314:5)
   at listOnTimeout (node:internal/timers:559:17)
   at processTimers (node:internal/timers:502:7)```
+- ad spot content is being repeated.
+- create an ignore list for sitemap - /tag/*, /bwg_gallery/*
+- create an accept list for sitemap which takes pattern regardless of date
+- function to manually upload urls
+- sitemaps to ignore
+- sitemaps to accept
+- for viewability lets store all the sub sitemaps
   
 ## Pending backlog
 - create all webpages as OFF
