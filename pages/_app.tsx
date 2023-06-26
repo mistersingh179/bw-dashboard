@@ -84,7 +84,9 @@ const App = ({
         <Analytics />
       </ChakraProvider>
       <Script id="chaport" strategy="afterInteractive">
-        {process.env.NODE_ENV !== "development" && `
+        {process.env.NEXT_PUBLIC_BW_SCRIPT_BASE_URL !==
+          "http://localhost:8000" &&
+          `
           (function(w,d,v3){
           w.chaportConfig = {
           appId : '64999a630d8b6b3074ce8d8c'
