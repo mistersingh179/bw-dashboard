@@ -6,16 +6,17 @@ import { CreateScoredCampaignDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
 import createScoredCampaigns from "@/services/createScoredCampaigns";
+import {CampaignProductWithScore} from "@/services/prompts/getCampaignsWithTheirScores";
 
 const queueName = "createScoredCampaign";
 
 logger.info({ queueName }, "setting up worker");
 
-const worker: Worker<CreateScoredCampaignDataType, void> = new Worker(
+const worker: Worker<CreateScoredCampaignDataType, CampaignProductWithScore[]> = new Worker(
   queueName,
   async (job) => {
     const { webpage, content, settings, user, campaigns } = job.data;
-    await createScoredCampaigns(webpage, content, settings, user, campaigns);
+    return await createScoredCampaigns(webpage, content, settings, user, campaigns);
   },
   {
     connection: redisClient,

@@ -11,11 +11,11 @@ const queueName = "downloadWebpages";
 
 logger.info({ queueName }, "setting up worker");
 
-const worker: Worker<DownloadWebpagesDataType, void> = new Worker(
+const worker: Worker<DownloadWebpagesDataType, object> = new Worker(
   queueName,
   async (job) => {
     const { website, settings, sitemapUrl } = job.data;
-    await downloadWebpages(website, settings, sitemapUrl);
+    return await downloadWebpages(website, settings, sitemapUrl);
   },
   {
     connection: redisClient,

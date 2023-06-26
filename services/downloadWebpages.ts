@@ -41,7 +41,7 @@ type DownloadWebpages = (
   website: Website,
   settings: Setting,
   sitemapUrl?: string
-) => Promise<void>;
+) => Promise<object>;
 
 const downloadWebpages: DownloadWebpages = async (
   website,
@@ -66,7 +66,7 @@ const downloadWebpages: DownloadWebpages = async (
 
   if (settings.webpageLookbackDays === 0) {
     myLogger.info({}, "aborting as webpageLookbackDays is set to 0");
-    return;
+    return {};
   }
 
   let sitemapXML = "";
@@ -74,7 +74,7 @@ const downloadWebpages: DownloadWebpages = async (
     sitemapXML = await fetchContentOfWebpage(sitemapUrl, "application/xml");
   } catch (err) {
     myLogger.error({ err, sitemapUrl }, "aborting as unable to fetch sitemap");
-    return;
+    return {};
   }
   myLogger.info({ sitemapXML }, "got sitemap XML");
 
@@ -188,6 +188,8 @@ const downloadWebpages: DownloadWebpages = async (
   } else {
     myLogger.error({}, "unable to process sitemap");
   }
+
+  return jsonObj;
 };
 
 export default downloadWebpages;
@@ -196,7 +198,7 @@ if (require.main === module) {
   (async () => {
     const ws = await prisma.website.findFirstOrThrow({
       where: {
-        id: "cljahkmbn003p98kclricdbpm",
+        id: "cliuhtdc4000v98ul85yvnzm5",
       },
       include: {
         user: {

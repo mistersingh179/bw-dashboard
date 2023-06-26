@@ -35,7 +35,7 @@ type CreateAdvertisement = (
   advertisementSpot: AdvertisementSpot,
   scoredCampaign: ScoredCampaign,
   settings: Setting
-) => Promise<void>;
+) => Promise<string[]>;
 
 const createAdvertisement: CreateAdvertisement = async (
   advertisementSpot,
@@ -52,7 +52,7 @@ const createAdvertisement: CreateAdvertisement = async (
 
   if (await enoughActiveAdsExist(advertisementSpot, scoredCampaign, settings)) {
     myLogger.info({}, "Aborting as we have enough advertisements");
-    return;
+    return [];
   }
 
   const webpage = await prisma.webpage.findFirstOrThrow({
@@ -69,7 +69,7 @@ const createAdvertisement: CreateAdvertisement = async (
 
   if (webpage.content === null) {
     myLogger.info({}, "Aborting as we dont have any content for the website");
-    return;
+    return [];
   }
 
   const webpageText = extractCleanedWebpageText(
@@ -106,7 +106,7 @@ const createAdvertisement: CreateAdvertisement = async (
     );
   } catch (err) {
     myLogger.error(err, "aborting as unable to get advertisement text");
-    return;
+      return [];
   }
 
   const advertisementInputArr: AdvertisementCreateManyAdvertisementSpotInput[] =
@@ -132,6 +132,8 @@ const createAdvertisement: CreateAdvertisement = async (
       },
     },
   });
+
+  return adTextCopies;
 };
 
 export default createAdvertisement;

@@ -11,11 +11,11 @@ const queueName = "createAdvertisement";
 
 logger.info({ queueName }, "setting up worker");
 
-const worker: Worker<CreateAdvertisementDataType, void> = new Worker(
+const worker: Worker<CreateAdvertisementDataType, string[]> = new Worker(
   queueName,
   async (job) => {
     const { advertisementSpot, scoredCampaign, settings } = job.data;
-    await createAdvertisement(advertisementSpot, scoredCampaign, settings);
+    return await createAdvertisement(advertisementSpot, scoredCampaign, settings);
   },
   {
     connection: redisClient,

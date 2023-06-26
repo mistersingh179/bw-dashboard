@@ -15,7 +15,7 @@ type CreateScoredCampaigns = (
   settings: Setting,
   user: User,
   campaigns: Campaign[]
-) => Promise<void>;
+) => Promise<CampaignProductWithScore[]>;
 
 const createScoredCampaigns: CreateScoredCampaigns = async (
   webpage,
@@ -46,7 +46,7 @@ const createScoredCampaigns: CreateScoredCampaigns = async (
 
   if (existingScoredCampaignsCount >= campaigns.length) {
     myLogger.info({}, "aborting as all campaigns are already scored");
-    return;
+    return [];
   }
 
   let campaignsWithScore: CampaignProductWithScore[] = [];
@@ -55,11 +55,11 @@ const createScoredCampaigns: CreateScoredCampaigns = async (
       webpage,
       campaigns,
       content,
-      settings,
+      settings
     );
   } catch (err) {
     myLogger.error({ err }, "aborting as unable to get campaign scores");
-    return;
+    return [];
   }
 
   const scoredCampaignInput: ScoredCampaignCreateManyWebpageInput[] =
@@ -70,7 +70,7 @@ const createScoredCampaigns: CreateScoredCampaigns = async (
         reason: c.reason ?? "",
       };
     });
-  myLogger.info({scoredCampaignInput}, "input to create scored campaigns")
+  myLogger.info({ scoredCampaignInput }, "input to create scored campaigns");
 
   await prisma.webpage.update({
     where: {
@@ -85,6 +85,8 @@ const createScoredCampaigns: CreateScoredCampaigns = async (
       },
     },
   });
+
+  return campaignsWithScore;
 };
 
 if (require.main === module) {
