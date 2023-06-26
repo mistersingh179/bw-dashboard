@@ -74,6 +74,10 @@ const sponsoredOptions: { value: string; label: string }[] = [
     value: "Generative AI inserted this paragraph.",
     label: "Generative AI inserted this paragraph.",
   },
+  {
+    value: "*",
+    label: "*",
+  },
 ];
 
 const Settings: FCWithAuth = () => {

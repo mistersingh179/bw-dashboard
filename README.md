@@ -117,8 +117,6 @@ drop database bw;
   - and the build ads again
 - make jobs like createAdvertisement return the advertisement content so we can see in UI
 - grant users computer super-power so we can show buttons inside other accounts which require super access
-- should bail out on showing many ads if the content matches more than once
-- ad spot content is being repeated.
 - create an ignore list for sitemap - /tag/*, /bwg_gallery/*
 - create an accept list for sitemap which takes pattern regardless of date
 - function to manually upload urls
