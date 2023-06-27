@@ -4,16 +4,16 @@ import { DEFAULT_WORKER_CONCURRENCY } from "@/constants";
 import path from "path";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
-import processWebpagesWithZeroAds from "@/services/processWebpagesWithZeroAds";
+import processWebpagesWithZeroAds, {WebsiteUrlToCount} from "@/services/processWebpagesWithZeroAds";
 
 const queueName = "processWebpagesWithZeroAdsQueue";
 
 logger.info({ queueName }, "setting up worker");
 
-const worker: Worker<void, void> = new Worker(
+const worker: Worker<void, WebsiteUrlToCount> = new Worker(
   queueName,
   async (job) => {
-    await processWebpagesWithZeroAds();
+    return await processWebpagesWithZeroAds();
   },
   {
     connection: redisClient,

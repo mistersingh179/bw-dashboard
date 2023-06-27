@@ -99,7 +99,9 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
   myLogger.info({ messages }, "sending messages to chatGpt");
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(controller.abort, CHAT_GPT_FETCH_TIMEOUT);
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, CHAT_GPT_FETCH_TIMEOUT);
   let response;
   try {
     response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -117,7 +119,10 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
       signal: controller.signal,
     });
   } catch (err) {
-    myLogger.error({messages, err }, "got error while getting scored campaigns from chatGpt");
+    myLogger.error(
+      { messages, err },
+      "got error while getting scored campaigns from chatGpt"
+    );
     return [];
   }
   clearTimeout(timeoutId);

@@ -10,8 +10,8 @@ const myLogger = logger.child({ name: "getAdvertisementText" });
 
 type GetAdvertisementText = (
   html: string,
-  title: string | null ,
-  description: string | null ,
+  title: string | null,
+  description: string | null,
   beforeText: string,
   afterText: string,
   productName: string,
@@ -76,7 +76,9 @@ Follow these important rules:\n\
   myLogger.info(messages, "messages being sent to chatGpt");
   let response;
   const controller = new AbortController();
-  const timeoutId = setTimeout(controller.abort, CHAT_GPT_FETCH_TIMEOUT);
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, CHAT_GPT_FETCH_TIMEOUT);
   try {
     response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",

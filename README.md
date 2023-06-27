@@ -99,12 +99,9 @@ drop database bw;
   - if too many campaigns this will currently fail
   - if html input is too large this will currently fail 
 - lazy build cache
-- remove \n from advertisments
-- this webpage failes to buil – clj3gzd8r9mmms91qrw6q9q0b
 - add ip address to logs
   - add child logger to request object
   - use middleware to add it
-- ensure that product name is in advertisement.
 - adSpot maker is using user provided css selector get beforeText elements but front end is only checking paras.
   - this means if ad spot was latching on divs, we would not get it.
   - we should scan all or exactly the same as backend.
@@ -115,14 +112,17 @@ drop database bw;
   - get ad spots again
   - score campaigns again
   - and the build ads again
-- make jobs like createAdvertisement return the advertisement content so we can see in UI
 - grant users computer super-power so we can show buttons inside other accounts which require super access
+- get prisma cloud going
 - create an ignore list for sitemap - /tag/*, /bwg_gallery/*
 - create an accept list for sitemap which takes pattern regardless of date
-- function to manually upload urls
-- sitemaps to ignore
-- sitemaps to accept
-- for viewability lets store all the sub sitemaps
+- url page patterns to ignore - `*/bwg_gallery/*`
+- triage why `https://newyorkstyleguide.com/rossinavi-launches-70m-ice-class-superyacht-polaris/` is not printing when it is not taken
+- update placeholder value post-sitemap1.xml
+- implement   `webpageLookbackCapCount       Int?     @default(100)`
+- ability to add multiple sitemaps like post-1, gallery-1
+  - no need to autopopulate this from main sitemap
+- make sure that when restarting render puts current workers to retry
   
 ## Pending backlog
 - create all webpages as OFF

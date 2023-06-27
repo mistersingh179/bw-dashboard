@@ -5,10 +5,15 @@ import processWebpageQueue from "@/jobs/queues/processWebpageQueue";
 
 const myLogger = logger.child({ name: "processWebpagesWithZeroAds" });
 
-type ProcessWebpagesWithZeroAds = () => Promise<void>;
+export type WebsiteUrlToCount = {
+  [key: string]: number;
+};
+type ProcessWebpagesWithZeroAds = () => Promise<WebsiteUrlToCount>;
 
 const processWebpagesWithZeroAds: ProcessWebpagesWithZeroAds = async () => {
   myLogger.info({}, "inside service");
+  let result: WebsiteUrlToCount = {};
+
   const users = await prisma.user.findMany({
     where: {
       setting: {
@@ -33,6 +38,9 @@ const processWebpagesWithZeroAds: ProcessWebpagesWithZeroAds = async () => {
         },
         "number of webpages with zero ads"
       );
+      if(webpages.length > 0){
+        result[website.topLevelDomainUrl] = webpages.length;
+      }
       for (const webpage of webpages) {
         const job = await processWebpageQueue.add("processWebpage", {
           webpage: webpage,
@@ -44,6 +52,7 @@ const processWebpagesWithZeroAds: ProcessWebpagesWithZeroAds = async () => {
       }
     }
   }
+  return result;
 };
 
 export default processWebpagesWithZeroAds;
