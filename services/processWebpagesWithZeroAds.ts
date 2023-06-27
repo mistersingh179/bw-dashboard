@@ -2,6 +2,7 @@ import logger from "@/lib/logger";
 import prisma from "@/lib/prisma";
 import getWebpagesWithZeroAds from "@/services/queries/getWebpagesWithZeroAds";
 import processWebpageQueue from "@/jobs/queues/processWebpageQueue";
+import postOnSlack from "@/lib/postOnSlack";
 
 const myLogger = logger.child({ name: "processWebpagesWithZeroAds" });
 
@@ -52,6 +53,7 @@ const processWebpagesWithZeroAds: ProcessWebpagesWithZeroAds = async () => {
       }
     }
   }
+  await postOnSlack("Webpages With Zero Ads", result);
   return result;
 };
 
