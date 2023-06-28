@@ -2,3 +2,4 @@ export const DEFAULT_SCORE_THRESHOLD = 1;
 export const FETCH_TIMEOUT = 15_000;
 export const CHAT_GPT_FETCH_TIMEOUT = 20_000;
 export const DEFAULT_WORKER_CONCURRENCY = 10;
+export const WEBPAGE_INSERT_CHUNK_COUNT = 100;

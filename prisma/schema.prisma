@@ -82,6 +82,7 @@ model Setting {
   desiredAdvertisementSpotCount Int      @default(1)
   desiredAdvertisementCount     Int      @default(1)
   webpageLookbackDays           Int      @default(0)
+  webpageInsertCap              Int      @default(1000)
   mainPostBodySelector          String   @default("body")
   contentSelector               String   @default("body p:nth-child(3n)")
   minCharLimit                  Int      @default(20)

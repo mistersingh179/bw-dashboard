@@ -2,14 +2,21 @@ import { Prisma, Website } from ".prisma/client";
 import prisma from "@/lib/prisma";
 import { XMLParser } from "fast-xml-parser";
 import fetchContentOfWebpage from "@/services/helpers/fetchContentOfWebpage";
-import { isAfter, parseISO, subDays } from "date-fns";
+import { hoursToMilliseconds, isAfter, parseISO, subDays } from "date-fns";
 import { getUrlProperties } from "@/pages/api/auctions/generate";
 import { Setting } from "@prisma/client";
 import downloadWebpagesQueue, {
   queueEvents as downloadWebpagesQueueEvents,
 } from "@/jobs/queues/downloadWebpagesQueue";
-import WebpageCreateManyWebsiteInput = Prisma.WebpageCreateManyWebsiteInput;
 import logger from "@/lib/logger";
+import { chunk } from "lodash";
+import { WEBPAGE_INSERT_CHUNK_COUNT } from "@/constants";
+import {
+  getWebsiteInsertCount,
+  incrementWebsiteInsertCount,
+  setWebsiteInsertCount,
+} from "@/lib/websiteInsertCount";
+import WebpageCreateManyInput = Prisma.WebpageCreateManyInput;
 
 export type UrlsetUrl = {
   loc: string;
@@ -35,6 +42,8 @@ export const getCleanUrl = (url: string): string => {
   return "";
 };
 
+const oneHour = hoursToMilliseconds(1);
+
 const myLogger = logger.child({ name: "downloadWebpages" });
 
 type DownloadWebpages = (
@@ -48,17 +57,17 @@ const downloadWebpages: DownloadWebpages = async (
   settings,
   sitemapUrl
 ) => {
-  myLogger.info(
-    { url: website.topLevelDomainUrl, sitemapUrl },
-    "started service"
-  );
+  const { topLevelDomainUrl } = website;
+  myLogger.info({ url: topLevelDomainUrl, sitemapUrl }, "started service");
+
+  const { webpageInsertCap: insertCap } = settings;
 
   if (sitemapUrl === undefined) {
+    myLogger.info("in first call to downloadWebpages as sitemap is undefined");
     sitemapUrl = website.sitemapUrl;
-    myLogger.info(
-      { sitemapUrl },
-      "using sitemap url of website as started at top with undefined"
-    );
+    myLogger.info({ sitemapUrl }, "will use sitemap from website");
+    await setWebsiteInsertCount(website, 0);
+    myLogger.info("will set website insert count in redis to 0");
   }
 
   const lookBackDate = subDays(new Date(), settings.webpageLookbackDays);
@@ -97,94 +106,89 @@ const downloadWebpages: DownloadWebpages = async (
   const parser = new XMLParser(options);
   let jsonObj = parser.parse(sitemapXML);
 
+  const latestUrlsReducer = (
+    accumulator: WebpageCreateManyInput[],
+    currentValue: UrlsetUrl
+  ): WebpageCreateManyInput[] => {
+    const url = getCleanUrl(currentValue.loc);
+    const lastmod = currentValue.lastmod;
+    if (currentValue.lastmod) {
+      if (isAfter(parseISO(currentValue.lastmod), lookBackDate)) {
+        myLogger.info({ sitemapUrl, lastmod, url }, "taking: lastmod recent");
+        return [
+          ...accumulator,
+          {
+            websiteId: website.id,
+            url,
+            status: true,
+            lastModifiedAt: lastmod,
+          },
+        ];
+      } else {
+        myLogger.info({ sitemapUrl, lastmod, url }, "skip: lastmod not recent");
+        return accumulator;
+      }
+    } else {
+      myLogger.info({ url, sitemapUrl }, "skip: lastmod not present");
+      return accumulator;
+    }
+  };
+
   if (Array.isArray(jsonObj?.urlset?.url)) {
     const urlArray = jsonObj.urlset.url as UrlsetUrl[];
     myLogger.info(
       { length: urlArray.length, sitemapUrl },
-      "we have a sitemap with urlset"
+      "we have a sitemap with urlset. time to take new urls & insert them"
     );
 
-    let webpageInputs: WebpageCreateManyWebsiteInput[] = [];
-    webpageInputs = urlArray.reduce((accumulator, currentValue) => {
-      if (currentValue.lastmod) {
-        if (isAfter(parseISO(currentValue.lastmod), lookBackDate)) {
-          myLogger.info(
-            {
-              sitemapUrl,
-              lastmod: currentValue.lastmod,
-              url: getCleanUrl(currentValue.loc),
-            },
-            "taking as recent"
-          );
-          return [
-            ...accumulator,
-            {
-              url: getCleanUrl(currentValue.loc),
-              lastModifiedAt: currentValue.lastmod,
-              status: true,
-            },
-          ];
-        } else {
-          myLogger.info(
-            {
-              sitemapUrl,
-              lastmod: currentValue.lastmod,
-              url: getCleanUrl(currentValue.loc),
-            },
-            "skipping as lastmod is not recent"
-          );
-          return accumulator;
-        }
-      } else {
-        myLogger.info(
-          { url: getCleanUrl(currentValue.loc), sitemapUrl },
-          "skipping as lastmod date NOT present"
-        );
-        return accumulator;
+    const webpageInputs = urlArray.reduce(latestUrlsReducer, []);
+    const length = webpageInputs.length;
+    myLogger.info({ length }, "webpageInputs after lastmod filter");
+
+    const webpageInputsChunked = chunk(
+      webpageInputs,
+      WEBPAGE_INSERT_CHUNK_COUNT
+    );
+
+    for (const chunk of webpageInputsChunked) {
+      const alreadyInsertedCount = await getWebsiteInsertCount(website);
+      if (alreadyInsertedCount >= insertCap) {
+        myLogger.info({ alreadyInsertedCount, insertCap }, "aborting cap met");
+        return;
       }
-    }, webpageInputs);
 
-    myLogger.info({ length: webpageInputs.length }, "we have webpageInputs");
+      const { count: dbInsertedCount } = await prisma.webpage.createMany({
+        data: chunk,
+        skipDuplicates: true,
+      });
 
-    await prisma.website.update({
-      where: {
-        id: website.id,
-      },
-      data: {
-        webpages: {
-          createMany: {
-            data: webpageInputs,
-            skipDuplicates: true,
-          },
-        },
-      },
-    });
+      const chunkCount = chunk.length;
+      myLogger.info({ dbInsertedCount, chunkCount }, "webpages chunk inserted");
+
+      await incrementWebsiteInsertCount(website, chunkCount);
+    }
   } else if (Array.isArray(jsonObj?.sitemapindex?.sitemap)) {
     const sitemapArray = jsonObj.sitemapindex.sitemap as SitemapIndexSitemap[];
     myLogger.info({}, "we have a sitemap of sitemaps");
 
-    const downloadPromises = [];
     for (const sitemapItem of sitemapArray) {
-      myLogger.info(
-        { sitemapUrl: sitemapItem.loc },
-        "scheduling downloadWebpages with nested sitemap url: "
-      );
       const job = await downloadWebpagesQueue.add("downloadWebpages", {
         website,
         settings,
         sitemapUrl: sitemapItem.loc,
       });
+      const { id } = job;
       myLogger.info(
-        { job, url: website.topLevelDomainUrl, sitemapUrl: sitemapItem.loc },
-        "scheduled job to download webpages from nested sitemap"
+        { id, url: website.topLevelDomainUrl, sitemapUrl: sitemapItem.loc },
+        "scheduled downloadWebpages with sitemapUrl & waiting for it to finish"
       );
-      const downloadPromise = job.waitUntilFinished(
-        downloadWebpagesQueueEvents,
-        1 * 24 * 60 * 60 * 1000
+      await job.waitUntilFinished(downloadWebpagesQueueEvents, oneHour);
+      myLogger.info(
+        { id, url: website.topLevelDomainUrl, sitemapUrl: sitemapItem.loc },
+        "finished downloadWebpages with sitemapUrl. moving to next sitemapUrl"
       );
-      downloadPromises.push(downloadPromise);
     }
-    await Promise.allSettled(downloadPromises);
+    myLogger.info("finished downloading all nested sitemaps");
   } else {
     myLogger.error({}, "unable to process sitemap");
   }

@@ -123,7 +123,7 @@ drop database bw;
 - ability to add multiple sitemaps like post-1, gallery-1
   - no need to autopopulate this from main sitemap
 - make sure that when restarting render puts current workers to retry
-  
+
 ## Pending backlog
 - create all webpages as OFF
 - search filter on webpages page
@@ -135,7 +135,7 @@ drop database bw;
 - look at not cascading deletes to auction & impression
 - owner dark/light theme from the os
 - organize logs so they can be seen better in betterstack logging tool
-
+- look at affaliate ads in email
 
 ## Pending callback
 - when a campaign is added, we need to build scores & then advertisements
