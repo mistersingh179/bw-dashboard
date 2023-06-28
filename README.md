@@ -85,7 +85,6 @@ drop database bw;
 - so if something failed downstrea yesterday, but was added yesterday, then it won't be processed today 
 
 ## Pending issues
-- job does not pickup old webpages which crashed in the middle
 - rebuild all existing ads to help with onboarding
 - see content for debugging on the webpage show
 - why does parse not work when "body" is there?
@@ -159,6 +158,7 @@ drop database bw;
 - write top level job which spits out other jobs for smaller things
 - should we do mass insert of webpages rather than 1 at a time
 - if we design onboarding insertion to happen together then we don't need to insert & then read and thus don't need indexes fo this read as they are not the same as when we do impressions
+- download all webpages with lastMod, then process only the ones which are recent.
 
 ## Pending later things
 - refresh data

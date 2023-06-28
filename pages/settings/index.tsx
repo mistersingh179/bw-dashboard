@@ -90,6 +90,7 @@ const Settings: FCWithAuth = () => {
     minCharLimit: 0,
     sameTypeElemWithTextToFollow: false,
     webpageLookbackDays: 0,
+    webpageInsertCap: 1000,
     scoreThreshold: 0,
     status: false,
     sponsoredWording: "",
