@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "zippy-haiku-387802",
+  "private_key_id": "04455ac6f9762bf62dfbb114e1f5d6c8aec17cc9",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCRolW0oDY7lw9H\noimqI8oxYLbhSkAKMBUth3bmnNm2JhBResMGHOoQPe75zhLk77cM+AncNcRrts7e\nxAjOnx0haVDByWSkxWzAF+/H52URYdriXN0eyAb3QXb5WtHjIM8Dm0nJzqkuD9H6\ne8KbV+Xwa6nIbYNf1yoxGaBwgfoP4fCdrwZPPi7JVEtlyjUrArgRbySs7CY+3XK2\nCX+F06bJFD1apwulLczlpQYcLQ5Oc76hvYGYlAz3YCOAKlEPQG1jRt6Lz+GWNpBY\ndk6hV639fVWT9A4O5Y0AhnVi+cZAESslQ3TayN3IatJgBcPu/9b8xjMyaG7ryAA6\nfqS33R85AgMBAAECggEAB2SNDZBtIFpF5suBv5wgfqAxDb+wqjO6/NGEb3wlMHIU\nivunMcS+/FhrLK18LQ30JgmN/+qPetj6qGPy1ID5lWwcstxP1RjGhqZ7FWlBf//j\n1huDsrUnEV8hNH2alk6LOQd61+6QjQDgQQ247nIoVIDf9geFJJTYv0mp6NGC9FJe\nw3Y5ShnaO4Ya4uSOk19hztDR8lBxl07jb4ovov/9acDh9a6pSJu3fBO/0XWTQF3T\n+fCGpF3eozw5p8Cc3xfmUauXN1Mh3LdTCfiTPCDQSYu59/GQQFXwLgSQaxfVJDwg\nAkqBLwBvD+57EuPtRAtRJDWgArj0Ld1yaGxctyoLDwKBgQDCRWU8p9AVSUvguALN\nV9qGbjDOPObiS4MDewjQJgQDX25nFOLLqM66oJWkWoCYK5ZLg2HlvsZd2swElIIe\nal3GpQ923OOY/V7m16y29DEwwPzFZfvgV8L71403/s/bGx4WgK5YMheyao1btsaG\nuekXgo5iUNOEGtSotDqCf0IaLwKBgQC/6KkLnRub8KLZfLBs8osFuPJHKl0Snnqb\nQ6ZykcSABchICcZUiVF09hQYwNxvuml8N3GB89mi+JooLpHzIbC3rfLMyhKGtRgq\nROLKZX5Ia8LknoGlzb5nC823dd5cdf7zXlN2ckQ6lmT43tsDMHPht9jraj9rpQCb\ni6UKpY9LFwKBgA8gdiyN6I7vwR/DVDyG/bX/+H7mkRfHx3DK8Lm8bA2TLbaLEsnG\n4Cn5/QzqGx8+LZq9pS7Ndwax1bb5lVQm9hxUl+qqcnJkMDKLUqCATSA9trDsKvuh\n+cXAV/enOKoX53TbGjg11lCHKXCdv8GX0kWJXerb3kxoBm0Ic5HbtNrzAoGBAI5/\nXN5xxylwcguaCYqsQkx6evQa4cdMg++8OODDmiwRnxjWoTzuRdzaSCvlMQmJWoBQ\nzujWv5jCjf0eL2Ngdc69zBcCSOVbnNjuE5SD7lQqKCoIBG6wKhxr6FG8pOL0/t2J\nAeJmkIEMYWdmWyuwE6vcDqcnWnY8rAnTlDYmnxL7AoGBAJ3EFft5RHJMQpnVGP+7\noS9GvwVp+batPrk9f3xOpYSqEPhRqRme341tz2Up4+auRXFN1ggNHFMhN+WIinyX\nPfSDpnkOBCjSjRXDMaQZB3mKJBD2GwGglEN8g4gMA7AUKyUZkGED8wFsaLuXH6wX\n2fx6M2q9RT0QI+TushImJ4lP\n-----END PRIVATE KEY-----\n",
+  "client_email": "jupyter-and-sheets@zippy-haiku-387802.iam.gserviceaccount.com",
+  "client_id": "107036215770817706037",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/jupyter-and-sheets%40zippy-haiku-387802.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

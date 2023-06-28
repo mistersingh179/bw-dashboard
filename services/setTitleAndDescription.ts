@@ -27,7 +27,7 @@ const setTitleAndDescription: setTitleAndDescription = async (
   });
 
   // todo - consider rebuilding title & description when webpage content has changed.
-  if (content.title !== null || content.description !== null) {
+  if (content.title !== "" || content.description !== "") {
     const { id, title, description } = content;
     const { url } = webpage;
     myLogger.info(
@@ -60,7 +60,7 @@ if (require.main === module) {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
         // id: "clh9d58tw000098c05nhdmbql",
-        id: "clj7p8hyf000098xf2r5saq46",
+        id: process.argv[2],
       },
       include: {
         website: {

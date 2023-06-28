@@ -6,6 +6,20 @@ import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageT
 import { CreateChatCompletionResponse } from "openai/api";
 import logger from "@/lib/logger";
 
+import { createReadStream } from 'fs';
+import csvParser from 'csv-parser';
+import { createObjectCsvWriter } from 'csv-writer';
+
+import { google } from 'googleapis';
+
+type WebPageCampaignPair = {
+  campaign_id: string;
+  campaign_name: string;
+  webpage_id: string;
+  webpage_url: string;
+};
+
+
 const myLogger = logger.child({ name: "getAdvertisementText" });
 
 type GetAdvertisementText = (
@@ -29,7 +43,7 @@ const getAdvertisementText: GetAdvertisementText = async (
   productDescription,
   desiredAdvertisementCount
 ) => {
-  myLogger.info("starting service");
+  // myLogger.info("starting service");
 
   // if (process.env.NODE_ENV === "development") {
   //   return [
@@ -42,38 +56,45 @@ const getAdvertisementText: GetAdvertisementText = async (
   const messages: AnyObject[] = [
     {
       role: "system",
-      content: `You are a content commerce editor, and your job is to place \
-products into articles such that readers will feel positively about the product. \
-You must write a new paragraph in between existing content of an article. \ 
-To accomplish your task, you will receive \
-content that goes before your new paragraph (labeled BEFORE_CONTENT), \
-content that goes after your new paragraph (labeled AFTER_CONTENT), \
-a product name and description (labeled PRODUCT_INFO), and \
-important rules that you must follow. `,
+      content: `You are an expert article writer.`
     },
     {
       role: "user",
-      content: `BEFORE_CONTENT:\n${beforeText} \n\
-~~~\n\
-AFTER_CONTENT:\n${afterText} \n\
-~~~\n\
-PRODUCT_INFO:\n\nName: ${productName}\n\n Description: ${productDescription} \n\
-~~~\n\
-Follow these important rules:\n\
-• Review the BEFORE_CONTENT and AFTER_CONTENT to understand the flow of the article. \n\
-• Use a bridge sentence that introduces new information related to the BEFORE_CONTENT without repeating phrases therefrom. \n\
-• Utilize a transition sentence to smoothly connect your paragraph to the AFTER_CONTENT, maintaining coherence without duplicating phrases therefrom. \n\
-• Use language that is distinct and different from BEFORE_CONTENT and AFTER_CONTENT to maintain a unique perspective.\n\
-• Provide speculative statements when referencing people, places, or things from the BEFORE_CONTENT or AFTER_CONTENT, using hedge words (like possibly, perhaps, probably, could, would, etc.) to avoid factual assertions.\n\
-• Ensure that the product placement is subtle and integrates naturally into the article, avoiding advertising or sales-oriented language.\n\
-• Write a single paragraph and restrict it to no more than 2 sentences.\n\
-• Your answer must include the new paragraph only. Stop generating if you output two consecutive newlines, such as '\\n\\n'. \n\
-• Maintain a clear separation between the author's viewpoint and the product, ensuring there is no implication of endorsement in either direction.\n\
-• Present the product in a positive light, highlighting its beneficial aspects without any negative portrayal.\n\
-`,
+      content: `Your job is to place \
+      products into articles such that readers will feel positively about the product. \
+      You must write a new sentence in between existing content of an article. \ 
+      To accomplish your task, I will give you \
+      the article's title and description, \
+      content that goes before your new sentence, \
+      content that goes after your new sentence, \
+      a product name and description, and \
+      important rules that you must follow.\n\n\
+      Article Title: ${title} \n\
+      ~~~\n\      
+      Article Description: ${description} \n\
+      ~~~\n\      
+      Article content that goes before your new sentence:\n${beforeText}\n\
+      ~~~\n\
+      Article content that goes after your new sentence:\n${afterText}\n\
+      ~~~\n\
+      Product Name: ${productName}\n\
+      ~~~\n\
+      Product Description: ${productDescription}\n\
+      ~~~\n\
+      Follow these important rules:\n\
+      • Use a bridge sentence that introduces new information related to the content before your new sentence without repeating phrases therefrom. \n\
+      • Utilize a transition sentence to smoothly connect your sentence to the content after your new sentence, maintaining coherence without duplicating phrases therefrom. \n\
+      • Use language that is distinct and different from the content before and after your new sentence to maintain a unique perspective.\n\
+      • Provide speculative statements when referencing people, places, or things from the content before and after your new sentence, using hedge words (like possibly, perhaps, probably, could, would, etc.) to avoid factual assertions.\n\
+      • Ensure that the product placement is subtle and integrates naturally into the article, avoiding advertising or sales-oriented language.\n\
+      • Write concisely and output your new content only, avoiding explanations about your answer.\n\
+      • Maintain a clear separation between the author's viewpoint and the product, ensuring there is no implication of endorsement in either direction.\n\
+      • Present the product in a positive light, highlighting its beneficial aspects without any negative portrayal.\n\
+      `,
     },
   ];
-  myLogger.info(messages, "messages being sent to chatGpt");
+  
+  // myLogger.info(messages, "messages being sent to chatGpt");
   let response;
   const controller = new AbortController();
   const timeoutId = setTimeout(controller.abort, CHAT_GPT_FETCH_TIMEOUT);
@@ -86,7 +107,7 @@ Follow these important rules:\n\
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo-0301",
-        temperature: 0.2,
+        temperature: 0,
         n: desiredAdvertisementCount,
         messages: messages,
       }),

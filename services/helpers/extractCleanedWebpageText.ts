@@ -23,7 +23,7 @@ const extractCleanedWebpageText: ExtractCleanedWebpageText = (
   maxWordCount = 200,
   mainPostBodySelector = "body"
 ) => {
-  myLogger.info({ length: html.length, maxWordCount }, "starting service");
+  // myLogger.info({ length: html.length, maxWordCount }, "starting service");
 
   const dom = new JSDOM(html);
   const {
@@ -46,24 +46,24 @@ const extractCleanedWebpageText: ExtractCleanedWebpageText = (
 
   // const mainElementText = mainElement.textContent ?? ""
   const mainElementText = stripHtml(mainElement.innerHTML).result ?? "";
-  myLogger.debug({ mainElementText }, "main element text");
+  // myLogger.debug({ mainElementText }, "main element text");
 
   const cleanedContent =
     mainElementText.replaceAll(/[\n]+/g, " ").replaceAll(/[\s]+/g, " ") ?? "";
 
-  myLogger.debug(
-    { cleanedContent, length: cleanedContent.length },
-    "cleanedContent"
-  );
+  // myLogger.debug(
+  //   { cleanedContent, length: cleanedContent.length },
+  //   "cleanedContent"
+  // );
 
   const words = cleanedContent.split(" ");
   const subsetWords = words.slice(0, maxWordCount);
   const subsetContent = subsetWords.join(" ");
 
-  myLogger.info(
-    { subsetContent, length: subsetContent.length },
-    "subsetContent"
-  );
+  // myLogger.info(
+  //   { subsetContent, length: subsetContent.length },
+  //   "subsetContent"
+  // );
 
   return subsetContent || "";
 };

@@ -46,6 +46,7 @@ const getAdvertisementText: GetAdvertisementText = async (
 products into articles such that readers will feel positively about the product. \
 You must write a new paragraph in between existing content of an article. \ 
 To accomplish your task, you will receive \
+the article's title and description if available, \
 content that goes before your new paragraph (labeled BEFORE_CONTENT), \
 content that goes after your new paragraph (labeled AFTER_CONTENT), \
 a product name and description (labeled PRODUCT_INFO), and \
@@ -53,7 +54,9 @@ important rules that you must follow. `,
     },
     {
       role: "user",
-      content: `BEFORE_CONTENT:\n${beforeText} \n\
+      content: `Article Title: ${title} \n\
+      Article Description: ${description} \n\
+      BEFORE_CONTENT:\n${beforeText} \n\
 ~~~\n\
 AFTER_CONTENT:\n${afterText} \n\
 ~~~\n\
@@ -86,7 +89,7 @@ Follow these important rules:\n\
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo-0301",
-        temperature: 0.2,
+        temperature: 0,
         n: desiredAdvertisementCount,
         messages: messages,
       }),

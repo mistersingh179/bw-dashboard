@@ -29,7 +29,7 @@ const getAdvertisementText: GetAdvertisementText = async (
   productDescription,
   desiredAdvertisementCount
 ) => {
-  myLogger.info("starting service");
+  // myLogger.info("starting service");
 
   // if (process.env.NODE_ENV === "development") {
   //   return [
@@ -42,38 +42,42 @@ const getAdvertisementText: GetAdvertisementText = async (
   const messages: AnyObject[] = [
     {
       role: "system",
-      content: `You are a content commerce editor, and your job is to place \
-products into articles such that readers will feel positively about the product. \
-You must write a new paragraph in between existing content of an article. \ 
-To accomplish your task, you will receive \
-content that goes before your new paragraph (labeled BEFORE_CONTENT), \
-content that goes after your new paragraph (labeled AFTER_CONTENT), \
-a product name and description (labeled PRODUCT_INFO), and \
-important rules that you must follow. `,
-    },
-    {
-      role: "user",
-      content: `BEFORE_CONTENT:\n${beforeText} \n\
-~~~\n\
-AFTER_CONTENT:\n${afterText} \n\
-~~~\n\
-PRODUCT_INFO:\n\nName: ${productName}\n\n Description: ${productDescription} \n\
-~~~\n\
-Follow these important rules:\n\
-• Review the BEFORE_CONTENT and AFTER_CONTENT to understand the flow of the article. \n\
+      content: `You are an expert editor. Your task is to place \
+      products into articles such that readers will feel positively about the product. \
+      You must write a single, concise paragraph in between existing content of an article. \ 
+      Critique of your past work is that you're a verbose salesman, so aim for subtle brevity. \n\n\
+      To accomplish your task, you will receive \
+      the article's title and description if available, \
+      content that goes before your new paragraph (labeled BEFORE_CONTENT), \
+      content that goes after your new paragraph (labeled AFTER_CONTENT), \
+      a product name and description (labeled PRODUCT_INFO), and \
+      you always follow these important rules:\n\
+• Write a single paragraph that has less than 30 words.\n\
 • Use a bridge sentence that introduces new information related to the BEFORE_CONTENT without repeating phrases therefrom. \n\
 • Utilize a transition sentence to smoothly connect your paragraph to the AFTER_CONTENT, maintaining coherence without duplicating phrases therefrom. \n\
 • Use language that is distinct and different from BEFORE_CONTENT and AFTER_CONTENT to maintain a unique perspective.\n\
 • Provide speculative statements when referencing people, places, or things from the BEFORE_CONTENT or AFTER_CONTENT, using hedge words (like possibly, perhaps, probably, could, would, etc.) to avoid factual assertions.\n\
 • Ensure that the product placement is subtle and integrates naturally into the article, avoiding advertising or sales-oriented language.\n\
-• Write a single paragraph and restrict it to no more than 2 sentences.\n\
-• Your answer must include the new paragraph only. Stop generating if you output two consecutive newlines, such as '\\n\\n'. \n\
+• Your answer must output the new paragraph only. \n\
 • Maintain a clear separation between the author's viewpoint and the product, ensuring there is no implication of endorsement in either direction.\n\
-• Present the product in a positive light, highlighting its beneficial aspects without any negative portrayal.\n\
+• Present the product in a positive light, highlighting its beneficial aspects without any negative portrayal.`,
+    },
+    {
+      role: "user",
+      content: `Article Title: ${title} \n\
+      ~~~\n\      
+      Article Description: ${description} \n\
+      ~~~\n\      
+      BEFORE_CONTENT:\n${beforeText} \n\
+~~~\n\
+AFTER_CONTENT:\n${afterText} \n\
+~~~\n\
+PRODUCT_INFO:\n\nName: ${productName}\n\n Description: ${productDescription} \n\
+~~~\n\
 `,
     },
   ];
-  myLogger.info(messages, "messages being sent to chatGpt");
+  // myLogger.info(messages, "messages being sent to chatGpt");
   let response;
   const controller = new AbortController();
   const timeoutId = setTimeout(controller.abort, CHAT_GPT_FETCH_TIMEOUT);
@@ -85,8 +89,8 @@ Follow these important rules:\n\
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo-0301",
-        temperature: 0.2,
+        model: "gpt-3.5-turbo-0613",
+        temperature: 0,
         n: desiredAdvertisementCount,
         messages: messages,
       }),
@@ -147,11 +151,11 @@ if (require.main === module) {
       campaign.productDescription,
       1
     );
-    console.log("~~~~~~~~~~~~~~~~~~");
+    console.log("\n~~~~~~~~~~~~~~~~~~\n");
     console.log("title: ", webpage.content!.title);
     console.log("BEFORE: ", webpage.advertisementSpots[0].beforeText);
     console.log(ans);
     console.log("AFTER: ", webpage.advertisementSpots[0].afterText);
-    console.log("~~~~~~~~~~~~~~~~~~");
+    console.log("\n~~~~~~~~~~~~~~~~~~\n");
   })();
 }
