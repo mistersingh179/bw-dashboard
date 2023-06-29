@@ -86,6 +86,8 @@ const processWebpage: ProcessWebpage = async (webpage) => {
     },
   });
 
+  myLogger.info({webpage, adSpots, scoredCamps}, "going to build ads for")
+
   for (const adSpot of adSpots) {
     for (const scoredCamp of scoredCamps) {
       const job = await createAdvertisementQueue.add("createAdvertisement", {
