@@ -110,6 +110,7 @@ model Auction {
   updatedAt   DateTime     @updatedAt
 
   @@index([userId])
+  @@index([webpageId])
   @@index([userId, webpageId, createdAt(sort: Asc)])
   @@index([userId, createdAt(sort: Asc)])
 }
