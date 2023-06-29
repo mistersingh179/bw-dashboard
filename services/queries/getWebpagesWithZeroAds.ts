@@ -32,7 +32,7 @@ export default getWebpagesWithZeroAds;
 
 if (require.main === module) {
   (async () => {
-    const ans = await getWebpagesWithZeroAds("cliuhtdc4000v98ul85yvnzm5");
+    const ans = await getWebpagesWithZeroAds("clini5ub0027lkw08lvtrij93");
     console.log("*** ans: ", ans);
   })();
 }

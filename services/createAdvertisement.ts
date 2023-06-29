@@ -50,11 +50,6 @@ const createAdvertisement: CreateAdvertisement = async (
     "started service"
   );
 
-  if (await enoughActiveAdsExist(advertisementSpot, scoredCampaign, settings)) {
-    myLogger.info({}, "Aborting as we have enough advertisements");
-    return [];
-  }
-
   const webpage = await prisma.webpage.findFirstOrThrow({
     where: {
       id: advertisementSpot.webpageId,
@@ -66,6 +61,17 @@ const createAdvertisement: CreateAdvertisement = async (
       content: true,
     },
   });
+
+  myLogger.info(
+    { webpage, scoredCampaign, advertisementSpot },
+    "going to create advertisement"
+  );
+
+  // temporarily moved down after webpage lookup so we can log first
+  if (await enoughActiveAdsExist(advertisementSpot, scoredCampaign, settings)) {
+    myLogger.info({}, "Aborting as we have enough advertisements");
+    return [];
+  }
 
   if (webpage.content === null) {
     myLogger.info({}, "Aborting as we dont have any content for the website");
@@ -106,7 +112,7 @@ const createAdvertisement: CreateAdvertisement = async (
     );
   } catch (err) {
     myLogger.error(err, "aborting as unable to get advertisement text");
-      return [];
+    return [];
   }
 
   const advertisementInputArr: AdvertisementCreateManyAdvertisementSpotInput[] =

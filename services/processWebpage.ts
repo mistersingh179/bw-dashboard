@@ -21,7 +21,7 @@ type ProcessWebpage = (webpage: Webpage) => Promise<void>;
 // todo - which has that info and it is same for all webpages it call its on
 
 const processWebpage: ProcessWebpage = async (webpage) => {
-  myLogger.info({ url: webpage.url }, "started service");
+  myLogger.info({ webpage }, "started service");
 
   const settings = await prisma.setting.findFirstOrThrow({
     where: {
@@ -50,7 +50,7 @@ const processWebpage: ProcessWebpage = async (webpage) => {
 
   const content = await createContent(webpage, settings, user);
   if (content === null) {
-    myLogger.info({}, "aborting as unable to generate content");
+    myLogger.info({ webpage }, "aborting as unable to generate content");
     return;
   }
 
@@ -94,7 +94,7 @@ const processWebpage: ProcessWebpage = async (webpage) => {
         settings: settings,
       });
       myLogger.info(
-        { id: job.id, adSpot, scoredCamp },
+        { webpage, id: job.id, adSpot, scoredCamp },
         "scheduled job to create advertisement"
       );
     }
@@ -108,7 +108,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clj7p8hyf000098xf2r5saq46",
+        id: "cljhmbgdr003ioo21xwik9mm1",
       },
     });
     await processWebpage(webpage);
