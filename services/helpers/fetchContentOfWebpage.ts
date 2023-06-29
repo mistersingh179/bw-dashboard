@@ -4,6 +4,7 @@ import { JSDOM } from "jsdom";
 import UserAgent from "user-agents";
 import { FETCH_TIMEOUT } from "@/constants";
 import logger from "@/lib/logger";
+import { formatDuration, intervalToDuration } from "date-fns";
 
 const myLogger = logger.child({ name: "fetchContentOfWebpage" });
 
@@ -23,8 +24,10 @@ const fetchContentOfWebpage: FetchContentOfWebpage = async (
   const userAgent = new UserAgent({ deviceCategory });
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
+    myLogger.error({ url }, "fetch content request has timed out");
     controller.abort();
   }, FETCH_TIMEOUT);
+  const reqStartedAt = performance.now();
   const res = await fetch(url, {
     method: "GET",
     headers: {
@@ -35,6 +38,13 @@ const fetchContentOfWebpage: FetchContentOfWebpage = async (
     signal: controller.signal,
   });
   clearTimeout(timeoutId);
+  const reqDuration = formatDuration(
+    intervalToDuration({
+      start: reqStartedAt,
+      end: performance.now(),
+    })
+  );
+  myLogger.info({ reqDuration }, "content fetch request finished");
   const data = await res.text();
   return data;
 };
@@ -45,7 +55,7 @@ if (require.main === module) {
   (async () => {
     const ans = await fetchContentOfWebpage(
       // "https://www.simplyrecipes.com/recipes/homemade_pizza/"
-      "http://localhost:3000/api/hello"
+      "https://newyorkstyleguide.com/top-30-sydney-sweeney-sensational-photos"
     );
     console.log("***ans: ", ans.substring(0, 100));
 

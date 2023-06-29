@@ -122,6 +122,10 @@ drop database bw;
 - ability to add multiple sitemaps like post-1, gallery-1
   - no need to autopopulate this from main sitemap
 - make sure that when restarting render puts current workers to retry
+- look in to why are deletes slow
+- why does processUser not build ads on old webpages
+- processUser -> processWebsite -> only calls ProcessWebpage for newly added webpages
+  - it will not call for existing webpages which dont have ads
 
 ## Pending backlog
 - create all webpages as OFF
