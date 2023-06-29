@@ -180,12 +180,7 @@ const downloadWebpages: DownloadWebpages = async (
       const { id } = job;
       myLogger.info(
         { id, url: website.topLevelDomainUrl, sitemapUrl: sitemapItem.loc },
-        "scheduled downloadWebpages with sitemapUrl & waiting for it to finish"
-      );
-      await job.waitUntilFinished(downloadWebpagesQueueEvents, oneHour);
-      myLogger.info(
-        { id, url: website.topLevelDomainUrl, sitemapUrl: sitemapItem.loc },
-        "finished downloadWebpages with sitemapUrl. moving to next sitemapUrl"
+        "scheduled job to downloadWebpages with sitemapUrl"
       );
     }
     myLogger.info("finished downloading all nested sitemaps");
