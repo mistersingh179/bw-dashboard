@@ -32,7 +32,13 @@ const processWebsite: ProcessWebsite = async (website, settings) => {
   await job.waitUntilFinished(downloadWebpagesQueueEvent, 1 * 60 * 60 * 1000);
 
   const timeWhenDownloadingFinished = new Date();
-  myLogger.info({ timeWhenDownloadingFinished }, "downloading finished");
+  myLogger.info(
+    {
+      topLevelDomainUrl: website.topLevelDomainUrl,
+      timeWhenDownloadingFinished,
+    },
+    "downloading finished"
+  );
 
   const downloadingTook = differenceInSeconds(
     timeWhenDownloadingFinished,
@@ -50,7 +56,7 @@ const processWebsite: ProcessWebsite = async (website, settings) => {
   });
 
   myLogger.info(
-    { length: newlyAddedWebpages.length },
+    { website, length: newlyAddedWebpages.length },
     "newly added webpages count"
   );
 

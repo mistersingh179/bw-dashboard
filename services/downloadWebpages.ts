@@ -170,7 +170,7 @@ const downloadWebpages: DownloadWebpages = async (
   } else if (Array.isArray(jsonObj?.sitemapindex?.sitemap)) {
     const sitemapArray = jsonObj.sitemapindex.sitemap as SitemapIndexSitemap[];
     myLogger.info({}, "we have a sitemap of sitemaps");
-
+    const downloadPromises = [];
     for (const sitemapItem of sitemapArray) {
       const job = await downloadWebpagesQueue.add("downloadWebpages", {
         website,
@@ -182,8 +182,21 @@ const downloadWebpages: DownloadWebpages = async (
         { id, url: website.topLevelDomainUrl, sitemapUrl: sitemapItem.loc },
         "scheduled job to downloadWebpages with sitemapUrl"
       );
+      const downloadPromise = job.waitUntilFinished(
+        downloadWebpagesQueueEvents,
+        1 * 24 * 60 * 60 * 1000
+      );
+      downloadPromises.push(downloadPromise);
     }
-    myLogger.info("finished downloading all nested sitemaps");
+    myLogger.info(
+      { length: downloadPromises.length },
+      "waiting for all downloadWebpages to settle"
+    );
+    await Promise.allSettled(downloadPromises);
+    myLogger.info(
+      { length: downloadPromises.length },
+      "all downloadWebpages have finished"
+    );
   } else {
     myLogger.error({}, "unable to process sitemap");
   }
