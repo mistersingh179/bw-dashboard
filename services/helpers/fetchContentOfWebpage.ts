@@ -1,10 +1,9 @@
 import fetch from "node-fetch";
-import { JSDOM } from "jsdom";
 // import { parse, HTMLElement } from "node-html-parser";
 import UserAgent from "user-agents";
 import { FETCH_TIMEOUT } from "@/constants";
 import logger from "@/lib/logger";
-import { formatDuration, intervalToDuration } from "date-fns";
+import { differenceInSeconds } from "date-fns";
 
 const myLogger = logger.child({ name: "fetchContentOfWebpage" });
 
@@ -38,12 +37,7 @@ const fetchContentOfWebpage: FetchContentOfWebpage = async (
     signal: controller.signal,
   });
   clearTimeout(timeoutId);
-  const reqDuration = formatDuration(
-    intervalToDuration({
-      start: reqStartedAt,
-      end: performance.now(),
-    })
-  );
+  const reqDuration = differenceInSeconds(performance.now(), reqStartedAt);
   myLogger.info({ reqDuration }, "content fetch request finished");
   const data = await res.text();
   return data;

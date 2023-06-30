@@ -35,22 +35,14 @@ type CreateAdvertisement = (
   advertisementSpot: AdvertisementSpot,
   scoredCampaign: ScoredCampaign,
   settings: Setting
-) => Promise<string[]>;
+) => Promise<string[] | null>;
 
 const createAdvertisement: CreateAdvertisement = async (
   advertisementSpot,
   scoredCampaign,
   settings
 ) => {
-  myLogger.info(
-    {
-      scoredCampaignId: scoredCampaign.id,
-      advertisementSpotId: advertisementSpot.id,
-    },
-    "started service"
-  );
-
-  const webpage = await prisma.webpage.findFirstOrThrow({
+  const webpage = await prisma.webpage.findFirst({
     where: {
       id: advertisementSpot.webpageId,
       content: {
@@ -63,18 +55,23 @@ const createAdvertisement: CreateAdvertisement = async (
   });
 
   myLogger.info(
-    { webpage, scoredCampaign, advertisementSpot },
-    "going to create advertisement"
+    { scoredCampaign, advertisementSpot, webpage },
+    "started service"
   );
 
-  // temporarily moved down after webpage lookup so we can log first
-  if (await enoughActiveAdsExist(advertisementSpot, scoredCampaign, settings)) {
-    myLogger.info({}, "Aborting as we have enough advertisements");
-    return [];
+  if (webpage === null || webpage.content === null) {
+    myLogger.error(
+      { webpage, scoredCampaign, advertisementSpot },
+      "aborting as webpage content not found"
+    );
+    return null;
   }
 
-  if (webpage.content === null) {
-    myLogger.info({}, "Aborting as we dont have any content for the website");
+  if (await enoughActiveAdsExist(advertisementSpot, scoredCampaign, settings)) {
+    myLogger.info(
+      { webpage, advertisementSpot, scoredCampaign },
+      "Aborting as we already have enough advertisements"
+    );
     return [];
   }
 
@@ -111,8 +108,11 @@ const createAdvertisement: CreateAdvertisement = async (
       desiredAdvertisementCount
     );
   } catch (err) {
-    myLogger.error(err, "aborting as unable to get advertisement text");
-    return [];
+    myLogger.error(
+      { webpage, advertisementSpot, scoredCampaign, err },
+      "aborting as unable to get advertisement text"
+    );
+    return null;
   }
 
   const advertisementInputArr: AdvertisementCreateManyAdvertisementSpotInput[] =

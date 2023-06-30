@@ -8,6 +8,7 @@ import { CreateChatCompletionResponse } from "openai/api";
 import { CHAT_GPT_FETCH_TIMEOUT } from "@/constants";
 import { Content } from ".prisma/client";
 import logger from "@/lib/logger";
+import { differenceInSeconds } from "date-fns";
 
 export type CampaignProductWithScore = {
   id: string;
@@ -33,10 +34,7 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
   content,
   settings
 ) => {
-  myLogger.info(
-    { url: webpage.url, len: campaigns.length },
-    "starting service"
-  );
+  myLogger.info({ webpage, campaigns }, "starting service");
 
   const webpageText = extractCleanedWebpageText(
     content.desktopHtml,
@@ -96,36 +94,37 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
         `Put the reason in quotes so it does not break csv format.`,
     },
   ];
-  myLogger.info({ messages }, "sending messages to chatGpt");
+  myLogger.info({ webpage, messages }, "sending messages to chatGpt");
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
+    myLogger.error(
+      { webpage, messages },
+      "chatgpt fetch campaigns with scores request has timed out"
+    );
     controller.abort();
   }, CHAT_GPT_FETCH_TIMEOUT);
-  let response;
-  try {
-    response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo-0301",
-        temperature: 1,
-        n: 1,
-        messages: messages,
-      }),
-      signal: controller.signal,
-    });
-  } catch (err) {
-    myLogger.error(
-      { messages, err },
-      "got error while getting scored campaigns from chatGpt"
-    );
-    return [];
-  }
+  const reqStartedAt = performance.now();
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "gpt-3.5-turbo-0301",
+      temperature: 1,
+      n: 1,
+      messages: messages,
+    }),
+    signal: controller.signal,
+  });
   clearTimeout(timeoutId);
+  const reqDuration = differenceInSeconds(performance.now(), reqStartedAt);
+  myLogger.info(
+    { webpage, messages, reqDuration },
+    "chatgpt get campaigns score fetch request finished"
+  );
 
   let data = (await response.json()) as CreateChatCompletionResponse;
   myLogger.info({ data }, "api returned");

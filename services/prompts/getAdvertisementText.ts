@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageText";
 import { CreateChatCompletionResponse } from "openai/api";
 import logger from "@/lib/logger";
+import { differenceInSeconds } from "date-fns";
 
 const myLogger = logger.child({ name: "getAdvertisementText" });
 
@@ -77,36 +78,29 @@ Follow these important rules:\n\
     },
   ];
   myLogger.info(messages, "messages being sent to chatGpt");
-  let response;
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
     controller.abort();
   }, CHAT_GPT_FETCH_TIMEOUT);
-  try {
-    response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo-0301",
-        // temperature: 0.7,
-        top_p: 0.2,
-        n: desiredAdvertisementCount,
-        messages: messages,
-      }),
-      signal: controller.signal,
-    });
-  } catch (err) {
-    myLogger.error(
-      { messages, err },
-      "got error while getting advertisement data from chatGpt"
-    );
-    return [];
-  }
+  const reqStartedAt = performance.now();
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "gpt-3.5-turbo-0301",
+      // temperature: 0.7,
+      top_p: 0.2,
+      n: desiredAdvertisementCount,
+      messages: messages,
+    }),
+    signal: controller.signal,
+  });
   clearTimeout(timeoutId);
-
+  const reqDuration = differenceInSeconds(performance.now(), reqStartedAt);
+  myLogger.info({ reqDuration }, "chatgpt get advertisement request finished");
   let data = (await response.json()) as CreateChatCompletionResponse;
   myLogger.info({ data }, "api returned");
   const output = data.choices.map((c) => c.message?.content || "");

@@ -54,19 +54,21 @@ const processWebpage: ProcessWebpage = async (webpage) => {
     return;
   }
 
-  await createScoredCampaigns(webpage, content, settings, user, campaigns);
-
-  // todo - doing this async can speed this up a bit
-  // const createScoredCampaignsJobWithResult = awaitResult(
-  //   createScoredCampaignJob
-  // );
-  // await createScoredCampaignsJobWithResult(
-  //   webpage,
-  //   content,
-  //   settings,
-  //   user,
-  //   campaigns
-  // );
+  // todo - do this async
+  const scoreResult = await createScoredCampaigns(
+    webpage,
+    content,
+    settings,
+    user,
+    campaigns
+  );
+  if (scoreResult === null) {
+    myLogger.info(
+      { webpage },
+      "aborting as unable to generate scored campaigns"
+    );
+    return;
+  }
 
   await createAdvertisementSpots(webpage, content, settings);
 
@@ -86,7 +88,7 @@ const processWebpage: ProcessWebpage = async (webpage) => {
     },
   });
 
-  myLogger.info({webpage, adSpots, scoredCamps}, "going to build ads for")
+  myLogger.info({ webpage, adSpots, scoredCamps }, "going to build ads for");
 
   for (const adSpot of adSpots) {
     for (const scoredCamp of scoredCamps) {

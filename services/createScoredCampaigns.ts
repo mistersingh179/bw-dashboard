@@ -15,7 +15,7 @@ type CreateScoredCampaigns = (
   settings: Setting,
   user: User,
   campaigns: Campaign[]
-) => Promise<CampaignProductWithScore[]>;
+) => Promise<CampaignProductWithScore[] | null>;
 
 const createScoredCampaigns: CreateScoredCampaigns = async (
   webpage,
@@ -45,7 +45,10 @@ const createScoredCampaigns: CreateScoredCampaigns = async (
   });
 
   if (existingScoredCampaignsCount >= campaigns.length) {
-    myLogger.info({}, "aborting as all campaigns are already scored");
+    myLogger.info(
+      { webpage, campaigns, existingScoredCampaignsCount },
+      "aborting as all campaigns are already scored"
+    );
     return [];
   }
 
@@ -58,8 +61,11 @@ const createScoredCampaigns: CreateScoredCampaigns = async (
       settings
     );
   } catch (err) {
-    myLogger.error({ err }, "aborting as unable to get campaign scores");
-    return [];
+    myLogger.error(
+      { webpage, campaigns, content, err },
+      "aborting as unable to get campaign scores"
+    );
+    return null;
   }
 
   const scoredCampaignInput: ScoredCampaignCreateManyWebpageInput[] =
