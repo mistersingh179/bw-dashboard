@@ -12,7 +12,7 @@ const queueName = "createScoredCampaign";
 
 logger.info({ queueName }, "setting up worker");
 
-const worker: Worker<CreateScoredCampaignDataType, CampaignProductWithScore[]> = new Worker(
+const worker: Worker<CreateScoredCampaignDataType, CampaignProductWithScore[] | null> = new Worker(
   queueName,
   async (job) => {
     const { webpage, content, settings, user, campaigns } = job.data;

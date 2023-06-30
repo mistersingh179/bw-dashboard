@@ -11,7 +11,7 @@ const queueName = "createAdvertisement";
 
 logger.info({ queueName }, "setting up worker");
 
-const worker: Worker<CreateAdvertisementDataType, string[]> = new Worker(
+const worker: Worker<CreateAdvertisementDataType, string[] | null> = new Worker(
   queueName,
   async (job) => {
     const { advertisementSpot, scoredCampaign, settings } = job.data;
