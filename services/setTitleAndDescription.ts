@@ -18,7 +18,7 @@ const setTitleAndDescription: setTitleAndDescription = async (
   content,
   user
 ) => {
-  myLogger.info({ url: webpage.url, email: user.email }, "started service");
+  myLogger.info({ webpage, user }, "starting service");
 
   content = await prisma.content.findFirstOrThrow({
     where: {

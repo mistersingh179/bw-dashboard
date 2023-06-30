@@ -9,7 +9,7 @@ const myLogger = logger.child({ name: "processUser" });
 type ProcessUser = (user: User, settings: Setting) => Promise<void>;
 
 const processUser: ProcessUser = async (user, settings) => {
-  myLogger.info({ user }, "started service");
+  myLogger.info({ user }, "starting service");
 
   const websites = await prisma.website.findMany({
     where: {
@@ -30,7 +30,7 @@ const processUser: ProcessUser = async (user, settings) => {
     );
   }
 
-  myLogger.info({ user }, "finished processUser");
+  myLogger.info({ user }, "finished service");
 };
 
 export default processUser;

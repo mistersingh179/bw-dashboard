@@ -58,7 +58,7 @@ const downloadWebpages: DownloadWebpages = async (
   sitemapUrl
 ) => {
   const { topLevelDomainUrl } = website;
-  myLogger.info({ url: topLevelDomainUrl, sitemapUrl }, "started service");
+  myLogger.info({ website, sitemapUrl }, "starting service");
 
   const { webpageInsertCap: insertCap } = settings;
 

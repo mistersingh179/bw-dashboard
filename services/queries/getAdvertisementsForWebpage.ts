@@ -30,7 +30,7 @@ const getAdvertisementsForWebpage: GetAdvertisementsForWebpage = async (
   webpageId,
   userId
 ) => {
-  myLogger.info({ websiteId, webpageId, userId }, "started service");
+  myLogger.info({ websiteId, webpageId, userId }, "starting service");
   const advertisements = await prisma.advertisement.findMany({
     where: {
       scoredCampaign: {

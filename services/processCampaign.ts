@@ -8,7 +8,7 @@ const myLogger = logger.child({ name: "processCampaign" });
 type ProcessCampaign = (campaign: Campaign) => Promise<void>;
 
 const processCampaign: ProcessCampaign = async (campaign) => {
-  myLogger.info({ name: campaign.name }, "started service");
+  myLogger.info({ campaign }, "starting service");
   const webpages = await prisma.webpage.findMany({
     where: {
       website: {

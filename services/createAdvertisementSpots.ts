@@ -31,7 +31,7 @@ const createAdvertisementSpots: CreateAdvertisementSpots = async (
   content,
   settings
 ) => {
-  myLogger.info({ url: webpage.url }, "started service");
+  myLogger.info({ webpage }, "starting service");
 
   // if (await enoughAdSpotsExist(webpage)) {
   //   console.log(`Aborting createAdvertisementSpots as we already enough`);

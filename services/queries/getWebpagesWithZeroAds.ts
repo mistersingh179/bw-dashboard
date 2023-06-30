@@ -9,7 +9,7 @@ const myLogger = logger.child({name: "getWebpagesWithZeroAds"});
 type GetWebpagesWithZeroAds = (websiteId: string) => Webpage[];
 
 const getWebpagesWithZeroAds = async (websiteId: string) => {
-  myLogger.info({websiteId}, "started service");
+  myLogger.info({websiteId}, "starting service");
   const sql = Prisma.sql`\
 with wp_ads_count as (
   select wp.id, count(a.id)
@@ -32,7 +32,7 @@ export default getWebpagesWithZeroAds;
 
 if (require.main === module) {
   (async () => {
-    const ans = await getWebpagesWithZeroAds("clini5ub0027lkw08lvtrij93");
+    const ans = await getWebpagesWithZeroAds("clini999t00jhm708ficnmto0");
     console.log("*** ans: ", ans);
   })();
 }

@@ -12,7 +12,7 @@ type CreateContent = (
   user: User
 ) => Promise<Content | null>;
 const createContent: CreateContent = async (webpage, settings, user) => {
-  myLogger.info({url: webpage.url, email: user.email}, "started service");
+  myLogger.info({webpage, user}, "starting service");
 
   const existingContent = await prisma.content.findFirst({
     where: {

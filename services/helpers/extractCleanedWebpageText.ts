@@ -61,8 +61,13 @@ const extractCleanedWebpageText: ExtractCleanedWebpageText = (
   const subsetContent = subsetWords.join(" ");
 
   myLogger.info(
-    { subsetContent, length: subsetContent.length },
-    "subsetContent"
+    {
+      subsetContent,
+      length: subsetContent.length,
+      wordsCount: subsetWords.length,
+      maxWordCount,
+    },
+    "final webpage text after extraction, filtering and cleaning"
   );
 
   return subsetContent || "";
@@ -89,7 +94,7 @@ if (require.main === module) {
 
     const content = await prisma.content.findFirstOrThrow({
       where: {
-        webpageId: webpage.id
+        webpageId: webpage.id,
       },
     });
     console.log("got content: ", content.id);

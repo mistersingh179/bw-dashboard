@@ -24,10 +24,7 @@ const createScoredCampaigns: CreateScoredCampaigns = async (
   user,
   campaigns
 ) => {
-  myLogger.info(
-    { url: webpage.url, email: user.email, length: campaigns.length },
-    "started service"
-  );
+  myLogger.info({ webpage, user, campaigns }, "starting service");
 
   // const campaignsWhichNeedScore =
   //   await getCampaignsWithoutScoredCampaignsForWebpage(webpage.id);
@@ -62,7 +59,7 @@ const createScoredCampaigns: CreateScoredCampaigns = async (
     );
   } catch (err) {
     myLogger.error(
-      { webpage, campaigns, content, err },
+      { webpage, campaigns, err },
       "aborting as unable to get campaign scores"
     );
     return null;
@@ -76,7 +73,7 @@ const createScoredCampaigns: CreateScoredCampaigns = async (
         reason: c.reason ?? "",
       };
     });
-  myLogger.info({ scoredCampaignInput }, "input to create scored campaigns");
+  myLogger.info({ webpage, scoredCampaignInput }, "input to create scored campaigns");
 
   await prisma.webpage.update({
     where: {
@@ -99,28 +96,33 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "cli38233j000098m9ug7e78m7",
+        id: "cljhmc6mb004doo21i8x5513c",
+      },
+    });
+    const content = await prisma.content.findFirstOrThrow({
+      where: {
+        webpageId: webpage.id,
+      },
+    });
+    const website = await prisma.website.findFirstOrThrow({
+      where: {
+        id: webpage.websiteId,
       },
       include: {
-        website: {
+        user: {
           include: {
-            user: {
-              include: {
-                setting: true,
-                campaigns: true,
-              },
-            },
+            setting: true,
+            campaigns: true,
           },
         },
-        content: true,
       },
     });
     await createScoredCampaigns(
       webpage,
-      webpage.content!,
-      webpage.website.user.setting!,
-      webpage.website.user,
-      webpage.website.user.campaigns
+      content,
+      website.user.setting!,
+      website.user,
+      website.user.campaigns
     );
   })();
 }

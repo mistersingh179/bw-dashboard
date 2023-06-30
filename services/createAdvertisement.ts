@@ -55,8 +55,8 @@ const createAdvertisement: CreateAdvertisement = async (
   });
 
   myLogger.info(
-    { scoredCampaign, advertisementSpot, webpage },
-    "started service"
+    { webpage, scoredCampaign, advertisementSpot },
+    "starting service"
   );
 
   if (webpage === null || webpage.content === null) {

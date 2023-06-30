@@ -14,7 +14,7 @@ type GetCampaignsWhoHaveNotMetImpCap = (
 const getCampaignsWhoHaveNotMetImpCap: GetCampaignsWhoHaveNotMetImpCap = async (
   userId
 ) => {
-  myLogger.info({ userId }, "started service");
+  myLogger.info({ userId }, "starting service");
   const sql = Prisma.sql`\
 select c.id  \
 from "public"."Campaign" c \

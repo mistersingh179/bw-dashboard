@@ -13,10 +13,7 @@ const myLogger = logger.child({ name: "processWebsite" });
 type ProcessWebsite = (website: Website, settings: Setting) => Promise<void>;
 
 const processWebsite: ProcessWebsite = async (website, settings) => {
-  myLogger.info(
-    { topLevelDomainUrl: website.topLevelDomainUrl },
-    "started service"
-  );
+  myLogger.info({ website }, "starting service");
 
   const timeWhenDownloadingStarted = new Date();
   myLogger.info({ timeWhenDownloadingStarted }, "downloading started");

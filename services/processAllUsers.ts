@@ -36,7 +36,7 @@ const processAllUsers: ProcessAllUsers = async () => {
     myLogger.info({ email: user.email, job }, "schedule job to process user");
   }
 
-  myLogger.info({}, "finished processAllUsers");
+  myLogger.info({}, "finished service");
 };
 
 export default processAllUsers;

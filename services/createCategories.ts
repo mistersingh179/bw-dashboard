@@ -13,7 +13,7 @@ type CreateCategories = (
 ) => Promise<void>;
 
 const createCategories: CreateCategories = async (webpage, content, user) => {
-  myLogger.info({ url: webpage.url, email: user.email }, "started service");
+  myLogger.info({ webpage, user }, "starting service");
 
   const existingCategoryCount = await prisma.category.count({
     where: {

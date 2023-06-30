@@ -127,15 +127,15 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
   );
 
   let data = (await response.json()) as CreateChatCompletionResponse;
-  myLogger.info({ data }, "api returned");
+  myLogger.info({ webpage, data }, "api returned");
 
   const output = data.choices[0]?.message?.content || "";
-  myLogger.info({ output }, "api output is ");
+  myLogger.info({ webpage, output }, "api output is ");
 
   const outputObj = Papa.parse<CampaignProductWithScore>(output, {
     header: true,
   });
-  myLogger.info({ data: outputObj.data }, "campaigns with scores");
+  myLogger.info({ webpage, data: outputObj.data }, "campaigns with scores");
 
   const ans: CampaignProductWithScore[] = outputObj.data.map((c) => {
     let scoreAsNum = parseInt(c.score || "");
@@ -152,17 +152,17 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clix8twnc000a98prn167qb4c",
+        id: "cljhmc6mb004doo21i8x5513c",
       },
     });
     const campaigns = await prisma.campaign.findMany({
       where: {
-        userId: "clhtwckif000098wp207rs2fg",
+        userId: "clijbbhzj0002mq08io6zgd9g",
       },
     });
     const settings = await prisma.setting.findFirstOrThrow({
       where: {
-        userId: "clhtwckif000098wp207rs2fg",
+        userId: "clijbbhzj0002mq08io6zgd9g",
       },
     });
     const content = await prisma.content.findFirst({

@@ -22,7 +22,7 @@ const myLogger = logger.child({ name: "getWebpageDetail" });
 type GetWebpageDetail = (webpageId: string) => Promise<WebpageWithDetail>;
 
 const getWebpageDetail: GetWebpageDetail = async (webpageId) => {
-  myLogger.info({ webpageId }, "started service");
+  myLogger.info({ webpageId }, "starting service");
 
   const webpage = await prisma.webpage.findFirstOrThrow({
     where: {

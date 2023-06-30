@@ -21,7 +21,7 @@ type ProcessWebpage = (webpage: Webpage) => Promise<void>;
 // todo - which has that info and it is same for all webpages it call its on
 
 const processWebpage: ProcessWebpage = async (webpage) => {
-  myLogger.info({ webpage }, "started service");
+  myLogger.info({ webpage }, "starting service");
 
   const settings = await prisma.setting.findFirstOrThrow({
     where: {
@@ -88,7 +88,7 @@ const processWebpage: ProcessWebpage = async (webpage) => {
     },
   });
 
-  myLogger.info({ webpage, adSpots, scoredCamps }, "going to build ads for");
+  myLogger.info({ webpage, adSpots, scoredCamps }, "going to build ads");
 
   for (const adSpot of adSpots) {
     for (const scoredCamp of scoredCamps) {
@@ -99,11 +99,11 @@ const processWebpage: ProcessWebpage = async (webpage) => {
       });
       myLogger.info(
         { webpage, id: job.id, adSpot, scoredCamp },
-        "scheduled job to create advertisement"
+        "scheduled job to create ad"
       );
     }
   }
-  myLogger.info({ url: webpage.url }, "finished service");
+  myLogger.info({ webpage }, "finished service");
 };
 
 export default processWebpage;
