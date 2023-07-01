@@ -49,9 +49,10 @@ if (require.main === module) {
   (async () => {
     const ans = await fetchContentOfWebpage(
       // "https://www.simplyrecipes.com/recipes/homemade_pizza/"
-      "https://newyorkstyleguide.com/top-30-sydney-sweeney-sensational-photos"
+      // "https://newyorkstyleguide.com/top-30-sydney-sweeney-sensational-photos"
+      "https://asweatlife.com/post-sitemap5.xml"
     );
-    console.log("***ans: ", ans.substring(0, 100));
+    console.log("***ans: ", ans.substring(0, 1000));
 
     // const dom = new JSDOM(ans);
     // const {

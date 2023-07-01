@@ -126,6 +126,10 @@ drop database bw;
 - why does processUser not build ads on old webpages
 - processUser -> processWebsite -> only calls ProcessWebpage for newly added webpages
   - it will not call for existing webpages which dont have ads
+- remove css selector from campaign
+- pagination size to persist accross pages
+- where should ad go. is it after or before - https://asweatlife.com/2022/11/protein-shake-recipe/
+- ad spot logging should have webpage
 
 ## Pending backlog
 - create all webpages as OFF

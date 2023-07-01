@@ -74,6 +74,7 @@ Follow these important rules:\n\
 • Your answer must include the new paragraph only. Stop generating if you output two consecutive newlines, such as '\\n\\n'. \n\
 • Maintain a clear separation between the author's viewpoint and the product, ensuring there is no implication of endorsement in either direction.\n\
 • Present the product in a positive light, highlighting its beneficial aspects without any negative portrayal.\n\
+• The new paragraph you write must be in the same language used in the before content\n\
 `,
     },
   ];
@@ -114,7 +115,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clj7p8hyf000098xf2r5saq46",
+        id: "cljjg31zu0113pm212037i71g",
         content: {
           isNot: null,
         },
@@ -129,7 +130,7 @@ if (require.main === module) {
     });
     const campaign = await prisma.campaign.findFirstOrThrow({
       where: {
-        id: "clhtx8jj2000i98wp09vkdc1i",
+        id: "clixfl1k30a00r51qe3dtyw6u",
       },
     });
     const ans = await getAdvertisementText(
@@ -144,8 +145,12 @@ if (require.main === module) {
       webpage.advertisementSpots[0].afterText,
       campaign.productName,
       campaign.productDescription,
-      2
+      1
     );
-    console.log("ans: ", ans);
+    console.log("Before: ", webpage.advertisementSpots[0].beforeText);
+    console.log("***");
+    console.log("ans: ", ans[0]);
+    console.log("***");
+    console.log("After: ", webpage.advertisementSpots[0].afterText);
   })();
 }

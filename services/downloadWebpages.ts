@@ -210,7 +210,7 @@ if (require.main === module) {
   (async () => {
     const ws = await prisma.website.findFirstOrThrow({
       where: {
-        id: "cliuhtdc4000v98ul85yvnzm5",
+        id: "cljizmvtz000198t22ka11nkb",
       },
       include: {
         user: {
