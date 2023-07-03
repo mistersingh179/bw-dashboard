@@ -24,7 +24,11 @@ import logger from "@/lib/logger";
   logger.info({}, "finished starting workers");
 
   logger.info({}, "starting to add cron jobs");
-  await setupCronJobs();
+  if(process.env.NODE_ENV !== "development"){
+    await setupCronJobs();
+  }else{
+   logger.info({}, "skipping as we are in development")
+  }
   logger.info({}, "finished to add cron jobs");
 })();
 

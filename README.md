@@ -130,6 +130,16 @@ drop database bw;
 - pagination size to persist accross pages
 - where should ad go. is it after or before - https://asweatlife.com/2022/11/protein-shake-recipe/
 - ad spot logging should have webpage
+- investiage why no ad here – https://studyfinds.org/california-emergency-room-wait/
+- dont schedule cron in dev
+- move job time to early morning so does not conflict with dev deployments
+- make website processing not wait so it does not hang
+- campaign delete in Ui has no feedback
+- take title & description instead of content when scoring campaigns
+- paginate scoring of campaigns
+- build ads only for highest ranked scored campaign and not all campaigns
+- don't build ads in advance, build ads on demand
+- schedule process jobs in bulk
 
 ## Pending backlog
 - create all webpages as OFF
