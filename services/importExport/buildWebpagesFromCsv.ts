@@ -3,9 +3,10 @@ import * as fs from "fs";
 import Papa from "papaparse";
 import prisma from "@/lib/prisma";
 import { Prisma, Website } from ".prisma/client";
-import WebpageCreateManyInput = Prisma.WebpageCreateManyInput;
 import getWebpagesWithZeroAds from "@/services/queries/getWebpagesWithZeroAds";
 import processWebpageQueue from "@/jobs/queues/processWebpageQueue";
+import { getCleanUrl } from "@/services/downloadWebpages";
+import WebpageCreateManyInput = Prisma.WebpageCreateManyInput;
 
 const myLogger = logger.child({ name: "buildWebpagesFromCsv" });
 
@@ -26,7 +27,7 @@ const buildWebpagesFromCsv: BuildWebpagesFromCsv = async (
   const parseResult = Papa.parse(csvString, { header: true });
   const urls = parseResult.data
     .slice(0, maxCount)
-    .map((x: any) => x[urlColumnName] as string);
+    .map((x: any) => getCleanUrl(x[urlColumnName]));
   console.log({ length: urls.length }, "going to insert");
   const today = new Date();
   const webpageInput: WebpageCreateManyInput[] = urls.map((url) => ({
@@ -63,13 +64,13 @@ if (require.main === module) {
   (async () => {
     const website = await prisma.website.findFirstOrThrow({
       where: {
-        id: "clis07uvt01bdmq08xrjs15kf",
+        id: "cljn0po6f0001985siena7cfn",
       },
     });
     const content = await fs.readFileSync(
       "services/importExport/Articles List - StyleCraze [BrandWeaver  + MomJunction] - Trending articles.csv",
       "utf-8"
     );
-    await buildWebpagesFromCsv(content, "Article_url", website, 100);
+    await buildWebpagesFromCsv(content, "Article_url", website, 5);
   })();
 }
