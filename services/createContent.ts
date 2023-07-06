@@ -9,37 +9,54 @@ const myLogger = logger.child({ name: "createContent" });
 type CreateContent = (
   webpage: Webpage,
   settings: Setting,
-  user: User
+  user: User,
+  abortIfExists?: boolean
 ) => Promise<Content | null>;
-const createContent: CreateContent = async (webpage, settings, user) => {
-  myLogger.info({webpage, user}, "starting service");
+const createContent: CreateContent = async (
+  webpage,
+  settings,
+  user,
+  abortIfExists = true
+) => {
+  myLogger.info({ webpage, user }, "starting service");
 
-  const existingContent = await prisma.content.findFirst({
-    where: {
-      webpageId: webpage.id,
-    },
-  });
+  if (abortIfExists) {
+    const existingContent = await prisma.content.findFirst({
+      where: {
+        webpageId: webpage.id,
+      },
+    });
 
-  // todo - allow updating webpage content when data is outdated or some other rule
-  if (existingContent !== null) {
-    myLogger.info({}, "aborting as content already exists");
-    return existingContent;
+    // todo - allow updating webpage content when data is outdated or some other rule
+    if (existingContent !== null) {
+      myLogger.info({}, "aborting as content already exists");
+      return existingContent;
+    }
   }
 
   let htmlContent = "";
   try {
     htmlContent = await fetchContentOfWebpage(webpage.url, "text/html");
   } catch (err) {
-    myLogger.error({err, url: webpage.url}, "aborting as got error while fetching webpage content")
+    myLogger.error(
+      { err, url: webpage.url },
+      "aborting as got error while fetching webpage content"
+    );
     return null;
   }
 
-  const content = await prisma.content.create({
-    data: {
+  const content = await prisma.content.upsert({
+    where: {
+      webpageId: webpage.id
+    },
+    create: {
       webpageId: webpage.id,
       desktopHtml: htmlContent,
     },
-  });
+    update: {
+      desktopHtml: htmlContent,
+    }
+  })
 
   return content;
 };
@@ -50,7 +67,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "cli38233j000098m9ug7e78m7",
+        id: "cljr7yveg005398cicqm09eij",
       },
       include: {
         website: {
@@ -75,7 +92,8 @@ if (require.main === module) {
     const updatedWebpage = await createContent(
       webpage,
       webpage.website.user.setting!,
-      webpage.website.user
+      webpage.website.user,
+      false
     );
     console.log(updatedWebpage);
   })();

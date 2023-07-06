@@ -29,7 +29,7 @@ const extractCategoriesFromWebpage: ExtractCategoriesFromWebpage = async (
   webpage,
   content
 ) => {
-  myLogger.info({url: webpage.url}, "starting service");
+  myLogger.info({ url: webpage.url }, "starting service");
 
   let cumulativeValues: string[] = [];
 
@@ -45,7 +45,7 @@ const extractCategoriesFromWebpage: ExtractCategoriesFromWebpage = async (
       `meta[property='article:tag'], meta[property='article:section'], meta[property^="og:tax"]`
     ),
   ].map((x) => x.getAttribute("content") || "");
-  myLogger.info({metaContentValues}, "got metaContentValues");
+  myLogger.info({ metaContentValues }, "got metaContentValues");
   cumulativeValues = cumulativeValues.concat(metaContentValues);
 
   var allClasses = [];
@@ -60,16 +60,20 @@ const extractCategoriesFromWebpage: ExtractCategoriesFromWebpage = async (
     }
   }
   const categoryClasses = allClasses.filter((x) => x.startsWith("category-"));
-  logger.info({categoryClasses}, "got categoryClasses");
+  logger.info({ categoryClasses }, "got categoryClasses");
   cumulativeValues = cumulativeValues.concat(categoryClasses);
 
-  const entryCategoryValues =
-    document.querySelector(".entry-category")?.textContent?.split(",") || [];
-  logger.info({entryCategoryValues}, "got entryCategoryValues");
-
-  cumulativeValues = cumulativeValues.concat(entryCategoryValues);
-
-  logger.info({cumulativeValues}, "got cumulativeValues");
+  const entryCategoryElements = [
+    ...document.querySelectorAll(".entry-category"),
+  ];
+  for(const entryCategoryElement of entryCategoryElements){
+    let textContent = entryCategoryElement?.textContent ?? "";
+    textContent = textContent.replace(/^Tags:\s/, "");
+    const entryCategoryValues = textContent.split(",")
+    logger.info({ entryCategoryValues }, "got entryCategoryValues");
+    cumulativeValues = cumulativeValues.concat(entryCategoryValues);
+  }
+  logger.info({ cumulativeValues }, "got cumulativeValues");
   return cleanArray(cumulativeValues);
 };
 
@@ -79,13 +83,13 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clix8twnc000a98prn167qb4c",
+        id: "cljq0xqtx08slpv21qfvaf2dt",
       },
       include: {
         content: true,
       },
     });
     const ans = await extractCategoriesFromWebpage(webpage, webpage.content!);
-    console.log("*** ans: ", ans);
+    myLogger.info({ ans }, "*** ans: ");
   })();
 }

@@ -64,13 +64,13 @@ if (require.main === module) {
   (async () => {
     const website = await prisma.website.findFirstOrThrow({
       where: {
-        id: "cljn0po6f0001985siena7cfn",
+        id: "clis07uvt01bdmq08xrjs15kf",
       },
     });
     const content = await fs.readFileSync(
-      "services/importExport/Articles List - StyleCraze [BrandWeaver  + MomJunction] - Trending articles.csv",
+      "services/importExport/top_hundred.csv",
       "utf-8"
     );
-    await buildWebpagesFromCsv(content, "Article_url", website, 5);
+    await buildWebpagesFromCsv(content, "url", website, 100);
   })();
 }

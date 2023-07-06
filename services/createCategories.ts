@@ -9,29 +9,36 @@ const myLogger = logger.child({ name: "createCategories" });
 type CreateCategories = (
   webpage: Webpage,
   content: Content,
-  user: User
+  user: User,
+  abortIfExists?: boolean
 ) => Promise<void>;
 
-const createCategories: CreateCategories = async (webpage, content, user) => {
+const createCategories: CreateCategories = async (
+  webpage,
+  content,
+  user,
+  abortIfExists = true
+) => {
   myLogger.info({ webpage, user }, "starting service");
-
-  const existingCategoryCount = await prisma.category.count({
-    where: {
-      webpages: {
-        some: {
-          id: webpage.id,
+  if (abortIfExists) {
+    const existingCategoryCount = await prisma.category.count({
+      where: {
+        webpages: {
+          some: {
+            id: webpage.id,
+          },
         },
       },
-    },
-  });
+    });
 
-  // todo - consider rebuilding categories when webpage content has changed.
-  if (existingCategoryCount > 0) {
-    myLogger.info(
-      { existingCategoryCount },
-      "aborting as already have categories"
-    );
-    return;
+    // todo - consider rebuilding categories when webpage content has changed.
+    if (existingCategoryCount > 0) {
+      myLogger.info(
+        { url: webpage.url, existingCategoryCount },
+        "aborting as already have categories"
+      );
+      return;
+    }
   }
 
   const categoriesOfThisWebpage = await extractCategoriesFromWebpage(
@@ -72,8 +79,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        // id: "clh9d58tw000098c05nhdmbql",
-        id: "cli38233j000098m9ug7e78m7",
+        id: "cljr7yvea004w98cigf2apjot",
       },
       include: {
         website: {
@@ -82,9 +88,14 @@ if (require.main === module) {
           },
         },
         categories: true,
-        content: true,
       },
     });
+    const content = await prisma.content.findFirstOrThrow({
+      where: {
+        webpageId: webpage.id,
+      },
+    });
+
     console.log(
       "webpage: ",
       webpage.id,
@@ -92,6 +103,6 @@ if (require.main === module) {
       webpage.website.user.id,
       webpage.categories
     );
-    await createCategories(webpage, webpage.content!, webpage.website.user);
+    await createCategories(webpage, content, webpage.website.user, true);
   })();
 }

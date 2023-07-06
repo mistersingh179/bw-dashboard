@@ -5,17 +5,15 @@ import { stripHtml } from "string-strip-html";
 import createAdvertisementQueue, {
   queueEvents,
 } from "@/jobs/queues/createAdvertisementQueue";
+import createCategories from "@/services/createCategories";
 
 (async () => {
-  const foo = await prisma.content.findFirstOrThrow({
+  const content = await prisma.content.findFirstOrThrow({
     where: {
-      webpageId: "clj7p8hyf000098xf2r5saq46"
+      webpageId: "cljr7yveg005398cicqm09eij"
     }
   })
-  console.log(foo.title === null);
-  console.log(foo.title === undefined);
-  console.log(foo.title === "");
-  console.log(foo.title);
+  console.log(content.desktopHtml);
 })();
 
 export {};
