@@ -171,17 +171,18 @@ model Content {
 }
 
 model Category {
-  id        String     @id @default(cuid())
-  userId    String
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  webpages  Webpage[]
-  campaigns Campaign[]
-  name      String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  webpages    Webpage[]
+  campaigns   Campaign[]
+  name        String
+  abortScript Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   @@unique([userId, name])
-  @@index([userId])
+  @@index([userId, abortScript])
 }
 
 model AdvertisementSpot {

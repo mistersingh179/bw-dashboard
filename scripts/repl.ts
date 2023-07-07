@@ -8,12 +8,24 @@ import createAdvertisementQueue, {
 import createCategories from "@/services/createCategories";
 
 (async () => {
-  const content = await prisma.content.findFirstOrThrow({
+  const category = await prisma.category.findFirstOrThrow({
     where: {
-      webpageId: "cljr7yveg005398cicqm09eij"
+      id: "cljr7yybk008998cir7f38kxp"
     }
   })
-  console.log(content.desktopHtml);
+  console.log(category);
+
+  // const updatedCategory = await prisma.category.update({
+  //   where: {
+  //     id: "cljr7yybk008998cir7f38kxp"
+  //   },
+  //   data: {
+  //     abortScript: false
+  //   }
+  // })
+  // console.log(updatedCategory);
+
+
 })();
 
 export {};

@@ -1,22 +1,12 @@
 import { Content, Webpage } from ".prisma/client";
 import prisma from "@/lib/prisma";
 import { JSDOM } from "jsdom";
-// import { HTMLElement, parse } from "node-html-parser";
 import logger from "@/lib/logger";
-
-function cleanArray(arr: (string | null | undefined)[]): string[] {
-  const trimmedArray = arr.map((str) => {
-    if (typeof str === "string") {
-      return str.trim();
-    }
-    return "";
-  });
-
-  const cleanedArray = [...new Set(trimmedArray)];
-  const filteredArray = cleanedArray.filter((str) => str !== "");
-
-  return filteredArray;
-}
+import createContent from "@/services/createContent";
+import getCategoriesFromMetaTags from "@/helpers/getCategoriesFromMetaTags";
+import getCategoriesFromClasses from "@/helpers/getCategoriesFromClasses";
+import getCategoriesFromEntryCategoryElement from "@/helpers/getCategoriesFromEntryCategoryElement";
+import getCleanCategories from "@/helpers/getCleanCategories";
 
 const myLogger = logger.child({ name: "extractCategoriesFromWebpage" });
 
@@ -31,50 +21,26 @@ const extractCategoriesFromWebpage: ExtractCategoriesFromWebpage = async (
 ) => {
   myLogger.info({ url: webpage.url }, "starting service");
 
-  let cumulativeValues: string[] = [];
-
   const dom = new JSDOM(content.desktopHtml);
   const {
     window: { document },
   } = dom;
 
-  // const document = parse(content.desktopHtml);
+  let cumulativeValues: string[] = [];
 
-  const metaContentValues = [
-    ...document.querySelectorAll(
-      `meta[property='article:tag'], meta[property='article:section'], meta[property^="og:tax"]`
-    ),
-  ].map((x) => x.getAttribute("content") || "");
+  const metaContentValues = getCategoriesFromMetaTags(document);
   myLogger.info({ metaContentValues }, "got metaContentValues");
   cumulativeValues = cumulativeValues.concat(metaContentValues);
 
-  var allClasses = [];
-  var allElements = document.querySelectorAll("*");
-  // var allElements: HTMLElement[] = document.querySelectorAll("*");
-  for (var i = 0; i < allElements.length; i++) {
-    var classes = allElements[i].className.toString().split(/\s+/);
-    // var classes = allElements[i].classNames.toString().split(/\s+/);
-    for (var j = 0; j < classes.length; j++) {
-      var cls = classes[j];
-      if (cls && allClasses.indexOf(cls) === -1) allClasses.push(cls);
-    }
-  }
-  const categoryClasses = allClasses.filter((x) => x.startsWith("category-"));
-  logger.info({ categoryClasses }, "got categoryClasses");
+  const categoryClasses = getCategoriesFromClasses(document);
+  myLogger.info({ categoryClasses }, "got categoryClasses");
   cumulativeValues = cumulativeValues.concat(categoryClasses);
 
-  const entryCategoryElements = [
-    ...document.querySelectorAll(".entry-category"),
-  ];
-  for(const entryCategoryElement of entryCategoryElements){
-    let textContent = entryCategoryElement?.textContent ?? "";
-    textContent = textContent.replace(/^Tags:\s/, "");
-    const entryCategoryValues = textContent.split(",")
-    logger.info({ entryCategoryValues }, "got entryCategoryValues");
-    cumulativeValues = cumulativeValues.concat(entryCategoryValues);
-  }
-  logger.info({ cumulativeValues }, "got cumulativeValues");
-  return cleanArray(cumulativeValues);
+  const categoryElementValues = getCategoriesFromEntryCategoryElement(document);
+  myLogger.info({ categoryElementValues }, "got categoryElementValues");
+  cumulativeValues = cumulativeValues.concat(categoryElementValues);
+
+  return getCleanCategories(cumulativeValues);
 };
 
 export default extractCategoriesFromWebpage;
@@ -83,13 +49,39 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "cljq0xqtx08slpv21qfvaf2dt",
+        id: "cljr7yveg005398cicqm09eij",
+      },
+      include: {
+        content: true,
+        website: {
+          include: {
+            user: {
+              include: {
+                setting: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    await createContent(
+      webpage,
+      webpage.website.user.setting!,
+      webpage.website.user,
+      false
+    );
+    const webpageAgain = await prisma.webpage.findFirstOrThrow({
+      where: {
+        id: "cljr7yveg005398cicqm09eij",
       },
       include: {
         content: true,
       },
     });
-    const ans = await extractCategoriesFromWebpage(webpage, webpage.content!);
+    const ans = await extractCategoriesFromWebpage(
+      webpageAgain,
+      webpageAgain.content!
+    );
     myLogger.info({ ans }, "*** ans: ");
   })();
 }

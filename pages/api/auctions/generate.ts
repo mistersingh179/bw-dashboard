@@ -46,6 +46,16 @@ export const getUrlProperties = (url: string): UrlProperties => {
 
 type WebpageWithCategories = Webpage & { categories: Category[] };
 
+const getUserAbortCategories = async (userId: string) => {
+  const abortCategories = await prisma.category.findMany({
+    where: {
+      userId: userId,
+      abortScript: true,
+    }
+  })
+  return abortCategories;
+}
+
 const getWebpageWithCategories = async (userId: string, url: string) => {
   const webpage: WebpageWithCategories | null = await prisma.webpage.findFirst({
     where: {
@@ -104,7 +114,8 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
     },
   });
 
-  const webpageCategoryNames = webpage?.categories.map((c) => c.name) ?? [];
+  const webpageCategories = webpage?.categories ?? [];
+  const webpageCategoryNames = webpageCategories.map((c) => c.name);
 
   const campaignsWhoHaveNotMetImpCap = await getCampaignsWhoHaveNotMetImpCap(
     userId
@@ -140,6 +151,9 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
     "sponsoredWording",
   ]);
 
+  const abortCategories = await getUserAbortCategories(userId);
+  const abortCategoryNames = abortCategories.map(x => x.name);
+
   res
     .setHeader("Content-Type", "application/json")
     .status(200)
@@ -148,6 +162,7 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
         auction,
         adsWithDetail,
         settings: settingsToReturn,
+        abortCategoryNames
       })
     );
 };
