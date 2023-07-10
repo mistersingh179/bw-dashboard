@@ -83,6 +83,8 @@ model Setting {
   desiredAdvertisementCount     Int      @default(1)
   webpageLookbackDays           Int      @default(0)
   webpageInsertCap              Int      @default(1000)
+  allTimeMostVisitedUrlCount    Int      @default(0)
+  recentlyMostVisitedUrlCount   Int      @default(0)
   mainPostBodySelector          String   @default("body")
   contentSelector               String   @default("body p:nth-child(3n)")
   minCharLimit                  Int      @default(20)
@@ -98,6 +100,8 @@ model Auction {
   id          String       @id @default(cuid())
   userId      String
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  websiteId   String?
+  website     Website?     @relation(fields: [websiteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   webpageId   String?
   webpage     Webpage?     @relation(fields: [webpageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   impressions Impression[]
@@ -111,6 +115,9 @@ model Auction {
 
   @@index([userId])
   @@index([webpageId])
+  @@index([websiteId])
+  @@index([createdAt(sort: Asc)])
+  @@index([userId, websiteId, webpageId, createdAt(sort: Asc)])
   @@index([userId, webpageId, createdAt(sort: Asc)])
   @@index([userId, createdAt(sort: Asc)])
 }
@@ -120,6 +127,7 @@ model Website {
   userId            String
   user              User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   webpages          Webpage[]
+  auctions          Auction[]
   topLevelDomainUrl String
   sitemapUrl        String
   status            Boolean

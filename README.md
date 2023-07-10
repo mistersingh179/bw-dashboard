@@ -140,15 +140,9 @@ drop database bw;
 - build ads only for highest ranked scored campaign and not all campaigns
 - don't build ads in advance, build ads on demand
 - schedule process jobs in bulk
-- get catetgories/tags from bottom as well
-```
-  document.querySelectorAll(".entry-category")[1].textContent
- Tags: bills, debt, finances, money management, onepoll, wealth
-```
-- user has block list of tags
 - store website_id at auction level so we can see auctions when webpage id doesn't exist as it has not been processed.
 - nightly job to get top 100 pages and insert them 
-
+- rebuild for dc life as it has old content
 
 ## Pending backlog
 - create all webpages as OFF
