@@ -51,19 +51,26 @@ const getUserAbortCategories = async (userId: string) => {
     where: {
       userId: userId,
       abortScript: true,
-    }
-  })
+    },
+  });
   return abortCategories;
-}
+};
 
-const getWebpageWithCategories = async (userId: string, url: string) => {
+const getWebsite = async (userId: string, origin: string) => {
+  const website = await prisma.website.findFirst({
+    where: {
+      userId,
+      topLevelDomainUrl: origin,
+    },
+  });
+  return website;
+};
+
+const getWebpageWithCategories = async (websiteId: string, url: string) => {
   const webpage: WebpageWithCategories | null = await prisma.webpage.findFirst({
     where: {
-      website: {
-        userId: userId,
-      },
-      url: url,
-      status: true,
+      websiteId,
+      url,
     },
     include: {
       categories: true,
@@ -93,14 +100,14 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
   const { userId, url, fp } = req.body;
   const settings = req.settings!;
 
-  // if(approvedIds.includes(userId) === false){
-  //   console.log("not an approved user. failing silently");
-  //   res.status(204).end();
-  //   return;
-  // }
-
   const { origin, originWithPathName } = getUrlProperties(url);
-  const webpage = await getWebpageWithCategories(userId, originWithPathName);
+  const website = await getWebsite(userId, origin);
+  let webpage;
+  if (website) {
+    webpage = await getWebpageWithCategories(website.id, originWithPathName);
+  }
+  const webpageCategories = webpage?.categories ?? [];
+  const webpageCategoryNames = webpageCategories.map((c) => c.name);
 
   const auction = await prisma.auction.create({
     data: {
@@ -111,11 +118,9 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
       userAgent: req.headers["user-agent"],
       ip: requestIp.getClientIp(req) ?? "0.0.0.0",
       webpageId: webpage?.id,
+      websiteId: website?.id,
     },
   });
-
-  const webpageCategories = webpage?.categories ?? [];
-  const webpageCategoryNames = webpageCategories.map((c) => c.name);
 
   const campaignsWhoHaveNotMetImpCap = await getCampaignsWhoHaveNotMetImpCap(
     userId
@@ -147,12 +152,10 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
   );
   res.setHeader("Set-Cookie", cookieHeaderString);
 
-  const settingsToReturn = pick(settings, [
-    "sponsoredWording",
-  ]);
+  const settingsToReturn = pick(settings, ["sponsoredWording"]);
 
   const abortCategories = await getUserAbortCategories(userId);
-  const abortCategoryNames = abortCategories.map(x => x.name);
+  const abortCategoryNames = abortCategories.map((x) => x.name);
 
   res
     .setHeader("Content-Type", "application/json")
@@ -162,7 +165,7 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
         auction,
         adsWithDetail,
         settings: settingsToReturn,
-        abortCategoryNames
+        abortCategoryNames,
       })
     );
 };

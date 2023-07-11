@@ -143,6 +143,7 @@ drop database bw;
 - store website_id at auction level so we can see auctions when webpage id doesn't exist as it has not been processed.
 - nightly job to get top 100 pages and insert them 
 - rebuild for dc life as it has old content
+- improve ad spots code to be able to build them for categories page
 
 ## Pending backlog
 - create all webpages as OFF
