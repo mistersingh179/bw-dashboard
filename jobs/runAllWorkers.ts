@@ -1,6 +1,7 @@
 import createAdvertisementWorker from "./workers/createAdvertisementWorker";
 import createScoredCampaignWorker from "./workers/createScoredCampaignWorker";
 import downloadWebpagesWorker from "./workers/downloadWebpagesWorker";
+import mediumWorker from "./workers/mediumWorker";
 import processAllUsersWorker from "./workers/processAllUsersWorker";
 import processCampaignWorker from "./workers/processCampaignWorker";
 import processUserWorker from "./workers/processUserWorker";
@@ -15,6 +16,7 @@ import logger from "@/lib/logger";
   createAdvertisementWorker.run();
   createScoredCampaignWorker.run();
   downloadWebpagesWorker.run();
+  mediumWorker.run();
   processAllUsersWorker.run();
   processCampaignWorker.run();
   processUserWorker.run();
@@ -46,6 +48,8 @@ process.on("SIGINT", async () => {
   logger.info({}, "closed – createScoredCampaignWorker");
   await downloadWebpagesWorker.close();
   logger.info({}, "closed – downloadWebpagesWorker");
+  await mediumWorker.close();
+  logger.info({}, "closed – mediumWorker");
   await processAllUsersWorker.close();
   logger.info({}, "closed – processAllUsersWorker");
   await processCampaignWorker.close();

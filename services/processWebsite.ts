@@ -7,6 +7,8 @@ import downloadWebpagesQueue, {
 } from "@/jobs/queues/downloadWebpagesQueue";
 import processWebpageQueue from "@/jobs/queues/processWebpageQueue";
 import logger from "@/lib/logger";
+import mediumQueue, {queueEvents as mediumQueueEvent} from "@/jobs/queues/mediumQueue";
+
 
 const myLogger = logger.child({ name: "processWebsite" });
 
@@ -27,6 +29,15 @@ const processWebsite: ProcessWebsite = async (website, settings) => {
     "scheduled job to download webpages & waiting for it to finish"
   );
   await job.waitUntilFinished(downloadWebpagesQueueEvent, 1 * 60 * 60 * 1000);
+
+  const mostVisitedJob = await mediumQueue.add(
+    "downloadMostVisitedUrls", {website, settings}
+  )
+  myLogger.info(
+    { topLevelDomainUrl: website.topLevelDomainUrl, id: job.id },
+    "scheduled job to download most visited urls & waiting for it to finish"
+  );
+  await mostVisitedJob.waitUntilFinished(mediumQueueEvent, 1 * 60 * 60 * 1000);
 
   const timeWhenDownloadingFinished = new Date();
   myLogger.info(
@@ -77,7 +88,7 @@ if (require.main === module) {
   (async () => {
     const website = await prisma.website.findFirstOrThrow({
       where: {
-        id: "cljahkmbn003p98kclricdbpm",
+        id: "cljztbiak0041981caa3hgdaa",
       },
     });
     const settings = await prisma.setting.findFirstOrThrow({

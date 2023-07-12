@@ -1,5 +1,6 @@
 import {AdvertisementSpot, Campaign, ScoredCampaign, Setting} from "@prisma/client";
 import {Content, User, Webpage, Website} from ".prisma/client";
+import {MostVisitedUrlsResultType} from "@/services/downloadMostVisitedUrls";
 
 export type CreateAdvertisementDataType = {
   advertisementSpot: AdvertisementSpot;
@@ -20,6 +21,16 @@ export type DownloadWebpagesDataType = {
   settings: Setting;
   sitemapUrl?: string;
 };
+
+export type DownloadMostVisitedUrlsDataType = {
+  website: Website;
+  settings: Setting;
+}
+
+export type MediumInputDataType = DownloadMostVisitedUrlsDataType;
+export type MediumOutputDataType = MostVisitedUrlsResultType | undefined;
+
+export type MediumJobNames = "downloadMostVisitedUrls";
 
 export type ProcessCampaignDataType = {
   campaign: Campaign

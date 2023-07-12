@@ -7,31 +7,24 @@ import createAdvertisementQueue, {
 } from "@/jobs/queues/createAdvertisementQueue";
 import createCategories from "@/services/createCategories";
 import {startOfDay} from "date-fns";
-
-const today = new Date()
-const startOfToday = startOfDay(today);
+import mediumQueue from "@/jobs/queues/mediumQueue";
+import mediumWorker from "@/jobs/workers/mediumWorker";
 
 (async () => {
-  const result = await prisma.auction.groupBy({
-    by: ["url"],
+  const ws = await prisma.website.findFirstOrThrow({
     where: {
-      userId: "clijnsj8p01pskz08xjo9cq4g",
-      createdAt: {
-        gte: undefined
-      }
+      id: "cljyf33m3001h981c0luk5pfj",
     },
-    _count: {
-      id: true
+    include: {
+      user: {
+        include: {
+          setting: true,
+        },
+      },
     },
-    orderBy: {
-      _count: {
-        id: 'desc'
-      }
-    },
-    take: 10
   });
-  console.log(result);
-
+  const job = await mediumQueue.add("downloadMostVisitedUrls", {website: ws, settings: ws.user.setting!});
+  console.log("ran job: ", job.id);
 })();
 
 export {};

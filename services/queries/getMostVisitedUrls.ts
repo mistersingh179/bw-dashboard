@@ -5,21 +5,21 @@ import prisma from "@/lib/prisma";
 const myLogger = logger.child({ name: "getMostVisitedUrls" });
 
 type GetMostVisitedUrls = (
-  userId: string,
+  websiteId: string,
   howMany: number,
   since?: Date
 ) => Promise<string[]>;
 
 const getMostVisitedUrls: GetMostVisitedUrls = async (
-  userId,
+  websiteId,
   howMany,
   since
 ) => {
-  myLogger.info({ userId, howMany, since }, "inside service");
+  myLogger.info({ websiteId, howMany, since }, "inside service");
   const result = await prisma.auction.groupBy({
     by: ["url"],
     where: {
-      userId: userId,
+      websiteId: websiteId,
       createdAt: {
         gte: since,
       },
@@ -34,7 +34,7 @@ const getMostVisitedUrls: GetMostVisitedUrls = async (
     },
     take: howMany,
   });
-  myLogger.info({result, userId, howMany, since }, "query result of most visited urls");
+  myLogger.info({result, websiteId, howMany, since }, "query result of most visited urls");
   const urls = result.map((x) => x.url ?? "").filter((x) => x);
   return urls;
 };
@@ -43,15 +43,15 @@ export default getMostVisitedUrls;
 
 if (require.main === module) {
   (async () => {
-    const allTime = await getMostVisitedUrls("clijnsj8p01pskz08xjo9cq4g", 5);
+    const allTime = await getMostVisitedUrls("cljztbiak0041981caa3hgdaa", 5);
     myLogger.info({ allTime }, "all time");
 
-    const yesterday = startOfYesterday();
-    const forYesterday = await getMostVisitedUrls(
-      "clijnsj8p01pskz08xjo9cq4g",
-      2,
-      yesterday
-    );
-    myLogger.info({ forYesterday }, "forYesterday");
+    // const yesterday = startOfYesterday();
+    // const forYesterday = await getMostVisitedUrls(
+    //   "cljyf33m3001h981c0luk5pfj",
+    //   2,
+    //   yesterday
+    // );
+    // myLogger.info({ forYesterday }, "forYesterday");
   })();
 }

@@ -116,10 +116,9 @@ model Auction {
   @@index([userId])
   @@index([webpageId])
   @@index([websiteId])
+  @@index([url])
   @@index([createdAt(sort: Asc)])
-  @@index([userId, websiteId, webpageId, createdAt(sort: Asc)])
-  @@index([userId, webpageId, createdAt(sort: Asc)])
-  @@index([userId, createdAt(sort: Asc)])
+  @@index([websiteId, createdAt(sort: Asc)])
 }
 
 model Website {
