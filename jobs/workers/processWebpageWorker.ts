@@ -1,7 +1,6 @@
 import { Job, MetricsTime, Worker } from "bullmq";
 import redisClient from "@/lib/redisClient";
-import { DEFAULT_WORKER_CONCURRENCY } from "@/constants";
-import path from "path";
+import { PROCESS_WEBPAGE_WORKER_CONCURRENCY } from "@/constants";
 import { ProcessWebpageDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
@@ -23,7 +22,7 @@ const worker: Worker<ProcessWebpageDataType, void> = new Worker(
       max: 10,
       duration: 1000,
     },
-    concurrency: DEFAULT_WORKER_CONCURRENCY,
+    concurrency: PROCESS_WEBPAGE_WORKER_CONCURRENCY,
     autorun: false,
     metrics: {
       maxDataPoints: MetricsTime.TWO_WEEKS,

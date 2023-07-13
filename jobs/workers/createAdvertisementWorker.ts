@@ -1,7 +1,6 @@
 import { Job, MetricsTime, Worker } from "bullmq";
 import redisClient from "@/lib/redisClient";
-import { DEFAULT_WORKER_CONCURRENCY } from "@/constants";
-import path from "path";
+import { CREATE_ADVERTISEMENT_WORKER_CONCURRENCY } from "@/constants";
 import { CreateAdvertisementDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
@@ -15,7 +14,11 @@ const worker: Worker<CreateAdvertisementDataType, string[] | null> = new Worker(
   queueName,
   async (job) => {
     const { advertisementSpot, scoredCampaign, settings } = job.data;
-    return await createAdvertisement(advertisementSpot, scoredCampaign, settings);
+    return await createAdvertisement(
+      advertisementSpot,
+      scoredCampaign,
+      settings
+    );
   },
   {
     connection: redisClient,
@@ -23,11 +26,11 @@ const worker: Worker<CreateAdvertisementDataType, string[] | null> = new Worker(
       max: 10,
       duration: 1000,
     },
-    concurrency: DEFAULT_WORKER_CONCURRENCY,
+    concurrency: CREATE_ADVERTISEMENT_WORKER_CONCURRENCY,
     autorun: false,
     metrics: {
       maxDataPoints: MetricsTime.TWO_WEEKS,
-    }
+    },
   }
 );
 
