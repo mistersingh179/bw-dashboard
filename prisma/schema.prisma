@@ -202,7 +202,6 @@ model AdvertisementSpot {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
-  @@unique([webpageId, beforeText, afterText])
   @@index([webpageId])
 }
 
