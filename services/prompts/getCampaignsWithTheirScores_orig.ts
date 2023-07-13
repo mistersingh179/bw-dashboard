@@ -78,23 +78,20 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
         `products which can be advertised on this page. ` +
         `The csv includes many fields describing each product along with a ` +
         `score field which is unknown and marked with a question mark.` +
-        `Your job is to score each product in the provided csv list ` +
-        `with a number between 0 and 4 where ` +
+        `Your job is to score each product with a number between 0 and 4 where ` +
         `a higher rating is given to products which are highly relevant to the ` +
         `webpage's content, are more likely to be read by the webpage's reader and ` +
         `clicked on by the reader of the webpage. ` +
         `On the hand a lower score is given to products which are less relevant ` +
         `to the webpage's content and more likely to be ignored by the reader, ` +
         `offend the reader or not be clicked on by the reader of the webpage. ` +
-        `For each provided product, along with score, also provide a brief reason ` +
-        `in less than 3 sentences which explains why you think the product is relevant or irrelevant and ` +
-        `which lead to the score you assigned. \n\n` +
-        `Here is the content of the website: ${webpageText} \n\n` +
-        `Here is the csv list of products: ${campaignsCsv} \n\n` +
-        `Your output should be the same csv file which was provided to you ` +
-        `with the score and reason column filled by you and the description column omitted.` +
-        `It should only contain the products which were provided you. ` +
-        `And put the reason in quotes so it does not break csv format.`,
+        `Along with score, also provide a brief reason in less than 3 sentences ` +
+        `which explains why you think the product is relevant or irrelevant and which lead to the score you assigned.` +
+        `Here is the content of the website: ${webpageText}` +
+        ` Here is the csv list of products: ${campaignsCsv} ` +
+        `For your result give me back a csv list similar to what is provided ` +
+        `to you. In the csv only include the product's id, name, score and reason column. ` +
+        `Put the reason in quotes so it does not break csv format.`,
     },
   ];
   myLogger.info({ webpage, messages }, "sending messages to chatGpt");
@@ -148,7 +145,7 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
     return { ...c, scoreAsNum: scoreAsNum };
   });
 
-  return ans.filter((x) => !!x.id);
+  return ans;
 };
 
 if (require.main === module) {

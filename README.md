@@ -10,6 +10,7 @@
 - for production / non dev usage we do `npm run build` & then use `npm start` to serve it 
 - run taskforce locally so taskforce UI can see our local redis
 - `TASKFORCE_TOKEN=xxx taskforce -n "Local Docker Redis" -p 63790`
+- at times we need to run scripts locally and dont want logs so we can turn them off via env variables `PINO_LOG_LEVEL=error node --loader tsx scripts/repl.ts`
 
 ## running arbitrary script
 - `tsx scripts/foo.ts`
@@ -140,10 +141,9 @@ drop database bw;
 - build ads only for highest ranked scored campaign and not all campaigns
 - don't build ads in advance, build ads on demand
 - schedule process jobs in bulk
-- store website_id at auction level so we can see auctions when webpage id doesn't exist as it has not been processed.
-- nightly job to get top 100 pages and insert them 
 - rebuild for dc life as it has old content
-- improve ad spots code to be able to build them for categories page
+- improve ad spots code to be able to build them for categories page & home page
+- updatedAt is not changing on settings model
 
 ## Pending backlog
 - create all webpages as OFF
