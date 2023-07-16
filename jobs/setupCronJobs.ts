@@ -6,7 +6,7 @@ import processWebpagesWithZeroAdsQueue from "@/jobs/queues/processWebpagesWithZe
 const addProcessAllUsers = async () => {
   const job = await processAllUsersQueue.add("processAllUsers", undefined, {
     repeat: {
-      pattern: "0 18 * * *",
+      pattern: "0 4 * * *",
     },
   });
   const jobItems = pick(job, ["qeueuName", "name", "id"]);

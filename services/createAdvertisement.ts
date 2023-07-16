@@ -9,6 +9,7 @@ import AdvertisementCreateManyAdvertisementSpotInput = Prisma.AdvertisementCreat
 import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageText";
 import getAdvertisementText from "@/services/prompts/getAdvertisementText";
 import logger from "@/lib/logger";
+import { omit } from "lodash";
 
 const enoughActiveAdsExist = async (
   advertisementSpot: AdvertisementSpot,
@@ -28,8 +29,6 @@ const enoughActiveAdsExist = async (
   });
   return result.length === settings.desiredAdvertisementCount;
 };
-
-const myLogger = logger.child({ name: "createAdvertisement" });
 
 type CreateAdvertisement = (
   advertisementSpot: AdvertisementSpot,
@@ -54,24 +53,22 @@ const createAdvertisement: CreateAdvertisement = async (
     },
   });
 
-  myLogger.info(
-    { webpage, scoredCampaign, advertisementSpot },
-    "starting service"
-  );
+  const myLogger = logger.child({
+    name: "createAdvertisement",
+    scoredCampaign,
+    advertisementSpot,
+    webpage: omit(webpage, ["content"]),
+  });
+
+  myLogger.info({}, "starting service");
 
   if (webpage === null || webpage.content === null) {
-    myLogger.error(
-      { webpage, scoredCampaign, advertisementSpot },
-      "aborting as webpage content not found"
-    );
+    myLogger.error({}, "aborting as webpage content not found");
     return null;
   }
 
   if (await enoughActiveAdsExist(advertisementSpot, scoredCampaign, settings)) {
-    myLogger.info(
-      { webpage, advertisementSpot, scoredCampaign },
-      "Aborting as we already have enough advertisements"
-    );
+    myLogger.info({}, "Aborting as we already have enough advertisements");
     return [];
   }
 
@@ -108,10 +105,7 @@ const createAdvertisement: CreateAdvertisement = async (
       desiredAdvertisementCount
     );
   } catch (err) {
-    myLogger.error(
-      { webpage, advertisementSpot, scoredCampaign, err },
-      "aborting as unable to get advertisement text"
-    );
+    myLogger.error({ err }, "aborting as unable to get advertisement text");
     return null;
   }
 
@@ -148,7 +142,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clj7ay3i3000398fsim918uh7",
+        id: "cljztqwcp0021989kse957248",
       },
       include: {
         advertisementSpots: true,

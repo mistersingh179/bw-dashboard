@@ -18,8 +18,6 @@ import logger from "@/lib/logger";
 //   return result.length === settings.desiredAdvertisementSpotCount;
 // };
 
-const myLogger = logger.child({ name: "createAdvertisementSpots" });
-
 type CreateAdvertisementSpots = (
   webpage: Webpage,
   content: Content,
@@ -31,7 +29,12 @@ const createAdvertisementSpots: CreateAdvertisementSpots = async (
   content,
   settings
 ) => {
-  myLogger.info({ webpage }, "starting service");
+  const myLogger = logger.child({
+    name: "createAdvertisementSpots",
+    webpage,
+  });
+
+  myLogger.info({}, "starting service");
 
   // if (await enoughAdSpotsExist(webpage)) {
   //   console.log(`Aborting createAdvertisementSpots as we already enough`);
@@ -60,7 +63,7 @@ const createAdvertisementSpots: CreateAdvertisementSpots = async (
   const adSpotTextArr = await getAdSpotsForWebpage(webpage, content, settings);
 
   if (adSpotTextArr.length === 0) {
-    myLogger.info({}, "Aborting as unable to get ad spots")
+    myLogger.info({}, "Aborting as unable to get ad spots");
     return;
   }
 
@@ -91,7 +94,7 @@ if (require.main === module) {
   (async () => {
     const wp = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "cli38233j000098m9ug7e78m7",
+        id: "cljztqwcp0021989kse957248",
       },
       include: {
         website: {
@@ -113,6 +116,11 @@ if (require.main === module) {
         },
       },
     });
-    await createAdvertisementSpots(wp, wp.content!, wp.website.user.setting!);
+    const content = wp.content!;
+    const setting = wp.website.user.setting!;
+    wp.content = null;
+    wp.website = null!;
+
+    await createAdvertisementSpots(wp, content, setting);
   })();
 }

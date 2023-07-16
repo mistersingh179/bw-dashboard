@@ -119,31 +119,19 @@ drop database bw;
 - url page patterns to ignore - `*/bwg_gallery/*`
 - triage why `https://newyorkstyleguide.com/rossinavi-launches-70m-ice-class-superyacht-polaris/` is not printing when it is not taken
 - update placeholder value post-sitemap1.xml
-- implement   `webpageLookbackCapCount       Int?     @default(100)`
 - ability to add multiple sitemaps like post-1, gallery-1
   - no need to autopopulate this from main sitemap
-- make sure that when restarting render puts current workers to retry
-- look in to why are deletes slow
 - why does processUser not build ads on old webpages
 - processUser -> processWebsite -> only calls ProcessWebpage for newly added webpages
   - it will not call for existing webpages which dont have ads
-- remove css selector from campaign
-- pagination size to persist accross pages
+- remove css selector from campaigns
+- pagination size to persist across pages
 - where should ad go. is it after or before - https://asweatlife.com/2022/11/protein-shake-recipe/
-- ad spot logging should have webpage
 - investiage why no ad here – https://studyfinds.org/california-emergency-room-wait/
-- dont schedule cron in dev
-- move job time to early morning so does not conflict with dev deployments
-- make website processing not wait so it does not hang
-- campaign delete in Ui has no feedback
 - take title & description instead of content when scoring campaigns
 - paginate scoring of campaigns
 - build ads only for highest ranked scored campaign and not all campaigns
 - don't build ads in advance, build ads on demand
-- schedule process jobs in bulk
-- rebuild for dc life as it has old content
-- improve ad spots code to be able to build them for categories page & home page
-- updatedAt is not changing on settings model
 
 ## Pending backlog
 - create all webpages as OFF
@@ -193,6 +181,7 @@ drop database bw;
 - add validations to campaign form e.g. requiredCssSelector, url etc.
 - setup wild card for categories on a campaign. this enables a campaign to run on all categories
   - need to also support pages which have no categories
+- improve ad spots code to be able to build them for categories page & home page
 
 ## Pending – improve advertisements page
 - allow editing advertisement text
