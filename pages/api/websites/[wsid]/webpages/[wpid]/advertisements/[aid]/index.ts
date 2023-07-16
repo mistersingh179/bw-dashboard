@@ -4,8 +4,9 @@ import { QueryParams } from "@/types/QueryParams";
 import prisma from "@/lib/prisma";
 import superjson from "superjson";
 import getScalarFieldsOfModel from "@/lib/getScalarFieldsOfModel";
-import { pick } from "lodash";
-import { Advertisement } from "@prisma/client";
+import { omit, pick } from "lodash";
+import { Prisma } from "@prisma/client";
+import AdvertisementUncheckedUpdateInput = Prisma.AdvertisementUncheckedUpdateInput;
 
 const advertisement: NextApiHandler = async (req, res) => {
   switch (req.method) {
@@ -50,8 +51,15 @@ const handleUpdateAdvertisement = async (
   res: NextApiResponse
 ) => {
   const { wsid, wpid, aid } = req.query as QueryParams;
+
+  const notAllowedAttributes = ["userId", "updatedAt", "createdAt"];
   const allowedAttributes = getScalarFieldsOfModel("Advertisement");
-  const data = pick(req.body, allowedAttributes);
+  let data = pick<AdvertisementUncheckedUpdateInput>(
+    req.body,
+    allowedAttributes
+  );
+  data = omit<AdvertisementUncheckedUpdateInput>(data, notAllowedAttributes);
+
   const advertisement = await prisma.advertisement.update({
     where: {
       id: aid,
@@ -67,7 +75,7 @@ const handleUpdateAdvertisement = async (
         },
       },
     },
-    data: data,
+    data,
   });
   res
     .setHeader("Content-Type", "application/json")

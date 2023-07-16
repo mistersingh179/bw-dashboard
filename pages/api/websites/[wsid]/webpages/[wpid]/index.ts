@@ -4,6 +4,7 @@ import { QueryParams } from "@/types/QueryParams";
 import prisma from "@/lib/prisma";
 import superjson from "superjson";
 import getWebpageWithAdSpotsAndAdsCount from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
+import { omit } from "lodash";
 
 const webpage: NextApiHandler = async (req, res) => {
   switch (req.method) {
@@ -34,6 +35,10 @@ const handleUpdateWebpage = async (
   res: NextApiResponse
 ) => {
   const { wpid, wsid } = req.query as QueryParams;
+
+  const notAllowedAttributes = ["websiteId", "updatedAt", "createdAt"];
+  const data = omit(req.body, notAllowedAttributes) as any;
+
   const webpage = await prisma.webpage.update({
     where: {
       id: wpid,
@@ -44,9 +49,7 @@ const handleUpdateWebpage = async (
         },
       },
     },
-    data: {
-      ...req.body,
-    },
+    data,
   });
 
   res

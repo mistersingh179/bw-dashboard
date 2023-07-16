@@ -3,6 +3,7 @@ import withMiddleware from "@/middlewares/withMiddleware";
 import { QueryParams } from "@/types/QueryParams";
 import prisma from "@/lib/prisma";
 import superjson from "superjson";
+import { omit } from "lodash";
 
 const website: NextApiHandler = async (req, res) => {
   switch (req.method) {
@@ -18,18 +19,19 @@ const handleWebsiteUpdate = async (
 ) => {
   const { wsid } = req.query as QueryParams;
 
-  if(req.body["topLevelDomainUrl"]?.endsWith("/")){
+  if (req.body["topLevelDomainUrl"]?.endsWith("/")) {
     req.body["topLevelDomainUrl"] = req.body["topLevelDomainUrl"].slice(0, -1);
   }
+
+  const notAllowedAttributes = ["userId", "updatedAt", "createdAt"];
+  const data = omit(req.body, notAllowedAttributes) as any;
 
   const website = await prisma.website.update({
     where: {
       id: wsid,
       userId: req.authenticatedUserId,
     },
-    data: {
-      ...req.body
-    }
+    data,
   });
   res
     .setHeader("Content-Type", "application/json")

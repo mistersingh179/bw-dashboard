@@ -1,9 +1,9 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
 import { QueryParams } from "@/types/QueryParams";
-import { formatISO, parseISO } from "date-fns";
 import withMiddleware from "@/middlewares/withMiddleware";
 import superjson from "superjson";
+import { omit } from "lodash";
 
 const campaign: NextApiHandler = async (req, res) => {
   if (req.method === "GET") {
@@ -24,23 +24,8 @@ const handleUpdateCampaign = async (
   const query = req.query as QueryParams;
   const cid = query.cid;
 
-  // const {
-  //   name,
-  //   start,
-  //   end,
-  //   impressionCap,
-  //   fixedCpm,
-  //   productName,
-  //   productDescription,
-  //   clickUrl,
-  //   requiredCssSelector,
-  //   pacing,
-  //   status,
-  // } = req.body;
-
-  const { start, end } = req.body;
-  const startWithTime = formatISO(parseISO(start));
-  const endWithTime = formatISO(parseISO(end));
+  const notAllowedAttributes = ["userId", "updatedAt", "createdAt"];
+  const data = omit(req.body, notAllowedAttributes) as any;
 
   const campaign = await prisma.campaign.update({
     where: {
@@ -49,11 +34,7 @@ const handleUpdateCampaign = async (
         id: req.authenticatedUserId,
       },
     },
-    data: {
-      ...req.body,
-      start: startWithTime,
-      end: endWithTime,
-    },
+    data,
   });
 
   res

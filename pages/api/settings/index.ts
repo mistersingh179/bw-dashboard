@@ -23,7 +23,7 @@ const handleCreateOrUpdateSettings = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  const notAllowedAttributes = ["userId"];
+  const notAllowedAttributes = ["userId", "updatedAt", "createdAt"];
   const data = omit(req.body, notAllowedAttributes) as any;
   const userWithSetting = await prisma.user.update({
     where: {
