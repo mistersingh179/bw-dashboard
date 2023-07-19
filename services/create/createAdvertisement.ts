@@ -106,6 +106,16 @@ const createAdvertisement: CreateAdvertisement = async (
     );
   } catch (err) {
     myLogger.error({ err }, "aborting as unable to get advertisement text");
+    await prisma.scoredCampaign.update({
+      where: {
+        id: scoredCampaign.id,
+      },
+      data: {
+        adBuildFailCount: {
+          increment: 1
+        }
+      }
+    })
     return null;
   }
 

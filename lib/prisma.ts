@@ -1,4 +1,4 @@
-import {Prisma, PrismaClient} from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import logger from "@/lib/logger";
 
 // PrismaClient is attached to the `global` object in development to prevent
@@ -10,7 +10,10 @@ import logger from "@/lib/logger";
 const myLogger = logger.child({ name: "prisma" });
 
 const globalForPrisma = global as unknown as {
-  prisma: PrismaClient<Prisma.PrismaClientOptions, "query" | "info" | "warn" | "error">;
+  prisma: PrismaClient<
+    Prisma.PrismaClientOptions,
+    "query" | "info" | "warn" | "error"
+  >;
 };
 
 export const prisma =
@@ -38,7 +41,8 @@ export const prisma =
   });
 
 prisma.$on("query", (e) => {
-  myLogger.debug({ e }, "query");
+  const { timestamp, query, params, duration, target } = e;
+  myLogger.debug({ timestamp, params, duration, target }, query);
 });
 
 prisma.$on("info", (e) => {

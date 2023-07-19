@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import createCategories from "@/services/createCategories";
+import createCategories from "@/services/create/createCategories";
 
 (async () => {
   console.log("in script rebuildCategories");

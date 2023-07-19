@@ -4,7 +4,7 @@ import { PROCESS_WEBPAGE_WORKER_CONCURRENCY } from "@/constants";
 import { ProcessWebpageDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
-import processWebpage from "@/services/processWebpage";
+import processWebpage from "@/services/process/processWebpage";
 
 const queueName = "processWebpage";
 

@@ -7,7 +7,7 @@ import {
 } from "@prisma/client";
 import logger from "@/lib/logger";
 
-type AdWithDetail = Advertisement & {
+export type AdWithDetail = Advertisement & {
   advertisementSpot: AdvertisementSpot;
   scoredCampaign: ScoredCampaign & { campaign: Campaign };
 };
@@ -27,6 +27,9 @@ const myLogger = logger.child({ name: "getAdvertisementsForUrl" });
 type GetAdvertisementsForUrl = (
   lookupParams: AdLookupParamsForUrl
 ) => Promise<AdWithDetail[]>;
+
+// not being used right now as instead first get best campaign
+// and then ads of that campaign
 
 const getAdvertisementsForUrl: GetAdvertisementsForUrl = async (
   lookupParams

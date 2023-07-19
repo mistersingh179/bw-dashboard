@@ -4,7 +4,7 @@ import { DEFAULT_WORKER_CONCURRENCY } from "@/constants";
 import path from "path";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
-import processWebpagesWithZeroAds, {WebsiteUrlToCount} from "@/services/processWebpagesWithZeroAds";
+import processWebpagesWithZeroAds, {WebsiteUrlToCount} from "@/services/process/processWebpagesWithZeroAds";
 
 const queueName = "processWebpagesWithZeroAdsQueue";
 

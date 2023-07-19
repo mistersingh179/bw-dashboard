@@ -4,7 +4,7 @@ import { DEFAULT_WORKER_CONCURRENCY } from "@/constants";
 import path from "path";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
-import processAllUsers from "@/services/processAllUsers";
+import processAllUsers from "@/services/process/processAllUsers";
 
 const queueName = "processAllUsers";
 

@@ -7,30 +7,35 @@
 - `npx prisma migrate dev` to run the migrations & build client
 - `npx ts-node sample.ts` Prints users in Database
 - `npx ts-node --transpile-only` the `--transpile-only` makes it so that it doesn't complain on TS issues
-- for production / non dev usage we do `npm run build` & then use `npm start` to serve it 
+- for production / non dev usage we do `npm run build` & then use `npm start` to serve it
 - run taskforce locally so taskforce UI can see our local redis
 - `TASKFORCE_TOKEN=xxx taskforce -n "Local Docker Redis" -p 63790`
 - at times we need to run scripts locally and dont want logs so we can turn them off via env variables `PINO_LOG_LEVEL=error node --loader tsx scripts/repl.ts`
+- rename iterm2 tab by `command + i` and then typing what we want
 
 ## running arbitrary script
+
 - `tsx scripts/foo.ts`
 - `tsx watch scripts/foo.ts` for quicker iterations in dev
 - or `npx ts-node scripts/foo.ts` but also requires `"module": "CommonJS"` set in tsconfig.json. this can be set just for `ts-node` by putting it in `"ts-node"` block.
-- to run from webstorm create a new config called `tsx` and setup Node parameters to be `--loader tsx` and javascript file to `$FilePathRelativeToProjectRoot$`. this will basically do `node --loader tsx ./currentFile.ts` which runs the file.  `Ctrl + r` will get the same.
-- to run in watch mode from repl we can use node v19 and then the `--watch option` along with the `--loader tsx` option. 
+- to run from webstorm create a new config called `tsx` and setup Node parameters to be `--loader tsx` and javascript file to `$FilePathRelativeToProjectRoot$`. this will basically do `node --loader tsx ./currentFile.ts` which runs the file. `Ctrl + r` will get the same.
+- to run in watch mode from repl we can use node v19 and then the `--watch option` along with the `--loader tsx` option.
 
 ## Webstorm
+
 - run configs can be stored in directory `.run`, but do not exclude this directory or webstorm won't pick it up.
 - also adding it to git will make sure other devs also get the same run configuration.
 
 ## REPL like behavior with Editor
+
 - build .ts file & run it with `ts watch`
 - inside the file use `require.main === module` to detect that it was called directly
 - when called directly run the module or function it exports
 
-## regular generic REPL 
+## regular generic REPL
+
 - use `prisma-repl --verbose`
-- supports top line `await`, auto-complete 
+- supports top line `await`, auto-complete
 - access prisma db object by variable `db` so query is like `await db.user.findMany()`
 
 ## Useful
@@ -54,6 +59,7 @@ drop database bw;
 ```
 
 ## DB prisma & serverless neon setup
+
 - `DATABASE_URL` is the pool url to connect to db
 - `DIRECT_URL` is direct to db & used by migration command
 - `SHADOW_DATABASE_URL` is a seperate db used by migrate command to first deploy there, compare with primary & then wipe out the shadow db
@@ -65,6 +71,7 @@ drop database bw;
 - `prisma migrate` does not work with `pool` connections. so need to use direct db url.
 
 ## Prisma Queries
+
 - it will honor the order in which you specify the `where` keys. this can be helpful to match the indexes
 
 ## Deployments
@@ -77,27 +84,44 @@ drop database bw;
 - `dscacheutil -q host -a name app.brandweaver.ai` checks what ip comes back
 
 ## Postman
+
 - to call authenticated API add cookie `next-auth.session-token` to the request
 - value can be taken from the browser
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Notes
+
 - daily job downloads latest pages & only processes them
-- so if something failed downstrea yesterday, but was added yesterday, then it won't be processed today 
+- so if something failed downstrea yesterday, but was added yesterday, then it won't be processed today
+
+## limiting ads being built
+
+- score all campaigns with pagination
+- nightly job should not build ads for every scored campaign on webpage
+- new nightly job to build ads for webpage without ads for their winning campaign
+- pagesWithZeroAds should check its winning campaign to figure if ads are missing
+- upon auction consistently the best campaign should win
+- build ads only for the winning campaign
+- upon auction, if no ads for winning campaign, then run job to build it
+- build ad only if not already being built, do via temporary redis lock
+- UI to delete webpage
+- UI to see ads on webpage
+- UI to see the winning campaign on webpage
 
 ## Pending issues
+
 - rebuild all existing ads to help with onboarding
 - see content for debugging on the webpage show
 - why does parse not work when "body" is there?
 - show progress on webpage
 - make links bold
 - how do we recover from failed chatgpt calls, or content fetch calls
-- when ads pay the same then order by score 
+- when ads pay the same then order by score
 - use chatgpt to grade the campaign's production description or make an alternate version of it which is toned down.
 - campaign date breaks when typing starts with a 0.
-- paginate call for scoring campaigns. 
+- paginate call for scoring campaigns.
   - if too many campaigns this will currently fail
-  - if html input is too large this will currently fail 
+  - if html input is too large this will currently fail
 - lazy build cache
 - add ip address to logs
   - add child logger to request object
@@ -114,7 +138,7 @@ drop database bw;
   - and the build ads again
 - grant users computer super-power so we can show buttons inside other accounts which require super access
 - get prisma cloud going
-- create an ignore list for sitemap - /tag/*, /bwg_gallery/*
+- create an ignore list for sitemap - /tag/_, /bwg_gallery/_
 - create an accept list for sitemap which takes pattern regardless of date
 - url page patterns to ignore - `*/bwg_gallery/*`
 - triage why `https://newyorkstyleguide.com/rossinavi-launches-70m-ice-class-superyacht-polaris/` is not printing when it is not taken
@@ -132,8 +156,27 @@ drop database bw;
 - paginate scoring of campaigns
 - build ads only for highest ranked scored campaign and not all campaigns
 - don't build ads in advance, build ads on demand
+- campaign listing page should show that the campaign has expired
+- allow pausing/resume campaigns faster from list page. this will also take care of having to show that campaign is not running because it is off.
+- the `WILL SHOW` column on advertisements is not taking into account the impression cap of campaign
+- without pooler getting error
+
+```
+        "message": "\nInvalid `prisma.user.findFirst()` invocation:\n\n\nTimed out fetching a new connection from the connection pool. More info: http://pris.ly/d/connection-pool (Current connection pool timeout: 10, connection limit: 17)"
+```
+
+- run nightly job to show how many pages are matched.
+  - this would change if you add/remove campaigns
+  - also would change if you change user threshold score
+- store bestScoredCamapgin in the db
+- refactor auction to generate to have getAdsToShow which finds best campaign, gets its ads, and build ads if missing.
+
+## Pending dev ops
+
+- auto set title name when cd into appropriate directory
 
 ## Pending backlog
+
 - create all webpages as OFF
 - search filter on webpages page
 - immediate webpage job process them when webpage is toggled on / "Process Webpage"
@@ -147,10 +190,12 @@ drop database bw;
 - look at affaliate ads in email
 
 ## Pending callback
+
 - when a campaign is added, we need to build scores & then advertisements
-- when a webpage is added, we need to get content, build spots & then advertisements 
+- when a webpage is added, we need to get content, build spots & then advertisements
 
 ## Pending – Next Up
+
 - run jobs on cloud
 - dashboard api for auctions, impressions & revenue count
 - dashboard api for auctions, impressions & revenue change over yesterday
@@ -160,8 +205,9 @@ drop database bw;
 - rate limit on ip, fp, userid, enduser-cuid
 
 ## Pending Tasks
+
 - see impact of allowing `{...req.body}` in update. can userId be provided to update wrong user, fix it if so.
-- extend NextAuth user with the date fields 
+- extend NextAuth user with the date fields
 - move constants to be per user in to its own table, add approve to it & onlyFounders middleware
 - show auctions with impressions count
 - show impressions
@@ -171,6 +217,7 @@ drop database bw;
 - download all webpages with lastMod, then process only the ones which are recent.
 
 ## Pending later things
+
 - refresh data
   - fetch html of existing html pages which have changed ??
   - update the lastModifiedAt of Webpage, currently limited as the createMany does not have on conflict update option
@@ -184,6 +231,7 @@ drop database bw;
 - improve ad spots code to be able to build them for categories page & home page
 
 ## Pending – improve advertisements page
+
 - allow editing advertisement text
 - allow linking/disliking advertisement
 - show all advertisements
@@ -192,21 +240,26 @@ drop database bw;
   - add/remove categories on a campaign and see running ads go up/down
 
 ## Pending prompt research
+
 - research if sending campaigns individually or with a group make a difference
 - how many tokens do we need for an average request
 
 ## Pending integration reserach
+
 - scrapeops.io
 - fingerprint.com
 
 ## Pending extension work
+
 - multi select drop down list of advertiser.
 - Brands Ranked by Relevance
 
 ## Pending script
+
 - remove query params before checking url
 
 ## Pending performance
+
 - refactor jobs
   - have 1 onboard job which we run only when onboard a website, i.e. a website is created
   - we can automate 5 days of webpages in onboarding and admin can onboard more
@@ -226,6 +279,7 @@ drop database bw;
 - only send webpages to createAdvertisement service, which don't have enough advertisements
 
 ## Pending - Reduce scored campaigns
+
 - user has categories
 - categories are build as process webpages (upsert)
 - campaign belongs to category or none. no cascade delete
@@ -243,6 +297,7 @@ drop database bw;
 5. Then for each `relevantCampaign` we call `createAdvertisements` so we have advertisement spots that campaign can run with before & after text.
 
 ## Notes on how we handle requests from the script
+
 - Script 1st makes POST call to generate an auction
 - it gives us userId, url, fp & cuid cookie
 - we save the auction & return back auction id

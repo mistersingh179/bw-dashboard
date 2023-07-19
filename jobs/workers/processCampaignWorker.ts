@@ -5,7 +5,7 @@ import path from "path";
 import { ProcessCampaignDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
-import processCampaign from "@/services/processCampaign";
+import processCampaign from "@/services/process/processCampaign";
 
 const queueName = "processCampaign";
 

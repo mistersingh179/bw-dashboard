@@ -4,7 +4,7 @@ import { CREATE_ADVERTISEMENT_WORKER_CONCURRENCY } from "@/constants";
 import { CreateAdvertisementDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
-import createAdvertisement from "@/services/createAdvertisement";
+import createAdvertisement from "@/services/create/createAdvertisement";
 
 const queueName = "createAdvertisement";
 
@@ -51,10 +51,6 @@ worker.on("completed", (job: Job) => {
 worker.on("failed", (job: Job | undefined, err) => {
   const jobItems = pick(job, ["queueName", "name", "id"]);
   logger.error({ jobItems, err }, "worker failed");
-});
-
-worker.on("error", (err) => {
-  logger.error({ err }, "worker error");
 });
 
 worker.on("error", (err) => {

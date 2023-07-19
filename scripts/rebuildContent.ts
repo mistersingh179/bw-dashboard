@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
-import createCategories from "@/services/createCategories";
-import createContent from "@/services/createContent";
+import createCategories from "@/services/create/createCategories";
+import createContent from "@/services/create/createContent";
 
 (async () => {
   console.log("in script rebuildContent");

@@ -1,9 +1,9 @@
 import { Content, Webpage } from ".prisma/client";
 import prisma from "@/lib/prisma";
-import createContent from "@/services/createContent";
-import createAdvertisementSpots from "@/services/createAdvertisementSpots";
-import createCategories from "@/services/createCategories";
-import createScoredCampaigns from "@/services/createScoredCampaigns";
+import createContent from "@/services/create/createContent";
+import createAdvertisementSpots from "@/services/create/createAdvertisementSpots";
+import createCategories from "@/services/create/createCategories";
+import createScoredCampaigns from "@/services/create/createScoredCampaigns";
 import createAdvertisementQueue from "@/jobs/queues/createAdvertisementQueue";
 import logger from "@/lib/logger";
 import setTitleAndDescription from "@/services/setTitleAndDescription";
@@ -88,21 +88,21 @@ const processWebpage: ProcessWebpage = async (webpage) => {
     },
   });
 
-  myLogger.info({ webpage, adSpots, scoredCamps }, "going to build ads");
+  // myLogger.info({ webpage, adSpots, scoredCamps }, "going to build ads");
 
-  for (const adSpot of adSpots) {
-    for (const scoredCamp of scoredCamps) {
-      const job = await createAdvertisementQueue.add("createAdvertisement", {
-        advertisementSpot: adSpot,
-        scoredCampaign: scoredCamp,
-        settings: settings,
-      });
-      myLogger.info(
-        { webpage, id: job.id, adSpot, scoredCamp },
-        "scheduled job to create ad"
-      );
-    }
-  }
+  // for (const adSpot of adSpots) {
+  //   for (const scoredCamp of scoredCamps) {
+  //     const job = await createAdvertisementQueue.add("createAdvertisement", {
+  //       advertisementSpot: adSpot,
+  //       scoredCampaign: scoredCamp,
+  //       settings: settings,
+  //     });
+  //     myLogger.info(
+  //       { webpage, id: job.id, adSpot, scoredCamp },
+  //       "scheduled job to create ad"
+  //     );
+  //   }
+  // }
   myLogger.info({ webpage }, "finished service");
 };
 

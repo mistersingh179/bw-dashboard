@@ -5,7 +5,7 @@ import path from "path";
 import { ProcessUserDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
-import processUser from "@/services/processUser";
+import processUser from "@/services/process/processUser";
 
 const queueName = "processUser";
 

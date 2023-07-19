@@ -1,17 +1,19 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import {NextApiHandler, NextApiRequest, NextApiResponse} from "next";
 import withMiddleware from "@/middlewares/withMiddleware";
 import prisma from "@/lib/prisma";
 import superjson from "superjson";
-import getAdvertisementsForUrl from "@/services/queries/getAdvertisementsForUrl";
+import { AdWithDetail } from "@/services/queries/getAdvertisementsForUrl";
 import requestIp from "request-ip";
 import { Category, Webpage } from ".prisma/client";
-import { Setting } from "@prisma/client";
 import Cors from "cors";
 import getCampaignsWhoHaveNotMetImpCap from "@/services/queries/getCamapignsWhoHaveNotMetImpCap";
 import cookie from "cookie";
 import { createId } from "@paralleldrive/cuid2";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
+import getBestCampaignForWebpage from "@/services/queries/getBestCampaignForWebpage";
+import processWebpageForAdCreation from "@/services/process/processWebpageForAdCreation";
+import getActiveAdsWithDetailForScoredCampaign from "@/services/queries/getActiveAdsWithDetailForScoredCampaign";
 
 const cors = Cors({
   credentials: true,
@@ -34,15 +36,6 @@ export const getUrlProperties = (url: string): UrlProperties => {
   }
   return { origin, originWithPathName };
 };
-
-// todo - remove this and make a pattern
-
-// const approvedIds = [
-//   "clhtwckif000098wp207rs2fg", // me in Dev
-//   "clhw27z37000098xy1ylsnlu3", // me also in Dev
-//   "clgf6zqrb000098o4yf9pd6hp", // me in Prod
-//   "clgfp3m6m0000k4084zse2n02", // rod in Prod
-// ];
 
 type WebpageWithCategories = Webpage & { categories: Category[] };
 
@@ -83,20 +76,13 @@ export const END_USER_COOKIE_NAME: string = "bw-endUserCuid";
 
 const getEndUserCuid = (req: NextApiRequest): string | null => {
   if (req.cookies[END_USER_COOKIE_NAME]) {
-    logger.info(
-      {
-        END_USER_COOKIE_NAME: req.cookies[END_USER_COOKIE_NAME],
-        reqId: req.reqId,
-      },
-      "request object has end user cookie"
-    );
     return req.cookies[END_USER_COOKIE_NAME];
   } else {
     return null;
   }
 };
 
-const generate = async (req: NextApiRequest, res: NextApiResponse) => {
+const generate: NextApiHandler = async (req, res) => {
   const { userId, url, fp } = req.body;
   const settings = req.settings!;
 
@@ -108,6 +94,8 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   const webpageCategories = webpage?.categories ?? [];
   const webpageCategoryNames = webpageCategories.map((c) => c.name);
+
+  let messages: string[] = [];
 
   const auction = await prisma.auction.create({
     data: {
@@ -129,14 +117,45 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
     (c) => c.id
   );
 
-  const adsWithDetail = await getAdvertisementsForUrl({
-    userId: userId,
-    userScoreThreshold: settings.scoreThreshold,
-    categoriesOfWebpage: webpageCategoryNames,
-    originWithPathName: originWithPathName,
-    origin: origin,
-    campIdsWhoHaveNotMetImpCap: campIdsWhoHaveNotMetImpCap,
-  });
+  let adsWithDetail: AdWithDetail[] = [];
+  if (
+    settings.status == true &&
+    website?.status == true &&
+    webpage?.status == true
+  ) {
+    const bestCampaign = await getBestCampaignForWebpage(
+      webpage.id,
+      settings.scoreThreshold,
+      campIdsWhoHaveNotMetImpCap,
+      webpageCategoryNames
+    );
+    if (bestCampaign) {
+      messages.push("found best campaign");
+      adsWithDetail = await getActiveAdsWithDetailForScoredCampaign(
+        bestCampaign.id
+      );
+      if (adsWithDetail.length === 0) {
+        logger.info({}, "no ads found, will try to build it");
+        messages.push("no ads found, will try to build it");
+
+        const jobIds = await processWebpageForAdCreation(
+          webpage,
+          bestCampaign,
+          settings
+        );
+        logger.info({ jobIds }, "scheduled job to create ads");
+        messages.push("scheduled job to create ads: " + jobIds.join(" | ") )
+      }else{
+        messages.push("founds ads on best campaign");
+      }
+    } else {
+      logger.info({}, "best campaign not found");
+      messages.push("best campaign not found");
+    }
+  }else{
+    logger.info({}, "status found to be OFF");
+    messages.push("status found to be OFF");
+  }
 
   const cookieHeaderString = cookie.serialize(
     END_USER_COOKIE_NAME,
@@ -166,6 +185,7 @@ const generate = async (req: NextApiRequest, res: NextApiResponse) => {
         adsWithDetail,
         settings: settingsToReturn,
         abortCategoryNames,
+        messages,
       })
     );
 };

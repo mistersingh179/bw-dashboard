@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import {omit} from "lodash";
-import processWebpage from "@/services/processWebpage";
+import processWebpage from "@/services/process/processWebpage";
 import processWebpageQueue from "@/jobs/queues/processWebpageQueue";
 
 (async () => {

@@ -8,7 +8,7 @@ import { NextApiHandler } from "next";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "../../../lib/prisma";
 import { DEFAULT_SCORE_THRESHOLD } from "@/constants";
-import findOrCreateSettings from "@/services/findOrCreateSettings";
+import findOrCreateSettings from "@/services/create/findOrCreateSettings";
 import logger from "@/lib/logger";
 
 export const authOptions: NextAuthOptions = {

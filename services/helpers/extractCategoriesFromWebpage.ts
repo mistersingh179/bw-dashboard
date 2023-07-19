@@ -2,7 +2,7 @@ import { Content, Webpage } from ".prisma/client";
 import prisma from "@/lib/prisma";
 import { JSDOM } from "jsdom";
 import logger from "@/lib/logger";
-import createContent from "@/services/createContent";
+import createContent from "@/services/create/createContent";
 import getCategoriesFromMetaTags from "@/helpers/getCategoriesFromMetaTags";
 import getCategoriesFromClasses from "@/helpers/getCategoriesFromClasses";
 import getCategoriesFromEntryCategoryElement from "@/helpers/getCategoriesFromEntryCategoryElement";
