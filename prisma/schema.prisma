@@ -212,6 +212,7 @@ model ScoredCampaign {
   campaignId       String
   campaign         Campaign        @relation(fields: [campaignId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   advertisements   Advertisement[]
+  isBest           Boolean         @default(false)
   score            Int
   reason           String
   adBuildFailCount Int             @default(0)

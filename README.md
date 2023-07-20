@@ -170,7 +170,13 @@ drop database bw;
   - also would change if you change user threshold score
 - store bestScoredCamapgin in the db
 - refactor auction to generate to have getAdsToShow which finds best campaign, gets its ads, and build ads if missing.
-
+- no point trying to build ad if page has no ad spots
+- it is trying to build ads when there are no spots. this means it gets a lock, checks if fail count is not high etc.
+- we can stop this while if we knew it has no ad spots
+- also print count along with array in log for adSpots, jobIds etc.
+- on wepage show matched campaign and adds of matched campaign
+- move all scored campaigns out like we have for ads
+- remove product name and descrioption from edit of campaign
 ## Pending dev ops
 
 - auto set title name when cd into appropriate directory

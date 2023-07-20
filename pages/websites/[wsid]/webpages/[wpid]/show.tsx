@@ -17,6 +17,7 @@ import {
   Tfoot,
   Th,
   Thead,
+  Tooltip,
   Tr,
   VStack,
 } from "@chakra-ui/react";
@@ -32,7 +33,7 @@ import {
 import { formatISO } from "date-fns";
 import StatusBadge from "@/components/StatusBadge";
 import { Link } from "@chakra-ui/next-js";
-import {ArrowForwardIcon, ExternalLinkIcon} from "@chakra-ui/icons";
+import { ArrowForwardIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import { preload } from "swr";
 import fetcher from "@/helpers/fetcher";
 import { WebpageWithAdSpotsAndOtherCounts } from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
@@ -45,7 +46,7 @@ import { ScoredCampaignWithCampaign } from "@/pages/api/websites/[wsid]/webpages
 const ScoredCampaigns = () => {
   const router = useRouter();
   const { wsid, wpid } = router.query as QueryParams;
-  const { page, setPage, pageSize, setPageSize } = usePagination(1, 5);
+  const { page, setPage, pageSize, setPageSize } = usePagination(1, 25);
   const { scoredCampaigns, isLoading, error } = useScoredCampaignsOfWebpage(
     wsid,
     wpid,
@@ -80,12 +81,20 @@ const ScoredCampaigns = () => {
               scoredCampaigns.length > 0 &&
               scoredCampaigns.map(
                 (scoredCampaign: ScoredCampaignWithCampaign) => (
-                  <Tr key={scoredCampaign.id ?? JSON.stringify(scoredCampaign)}>
-                    <Td>{scoredCampaign.campaign.name}</Td>
-                    <Td>{scoredCampaign.campaign.productName}</Td>
-                    <Td>{scoredCampaign.score}</Td>
-                    <Td>{scoredCampaign.reason}</Td>
-                  </Tr>
+                  <Tooltip
+                    label={scoredCampaign.isBest ? "Currently Matched Campaign" : ""}
+                    key={scoredCampaign.id ?? JSON.stringify(scoredCampaign)}
+                    hasArrow={true}
+                  >
+                    <Tr
+                      bg={scoredCampaign.isBest ? "green.50" : "gray.50"}
+                    >
+                      <Td>{scoredCampaign.campaign.name}</Td>
+                      <Td>{scoredCampaign.campaign.productName}</Td>
+                      <Td>{scoredCampaign.score}</Td>
+                      <Td>{scoredCampaign.reason}</Td>
+                    </Tr>
+                  </Tooltip>
                 )
               )}
           </Tbody>
@@ -158,9 +167,11 @@ const WebpageBox = ({
       </HStack>
       <HStack>
         <Box minW={"3xs"}>Name: </Box>
-        <Box><Link href={webpage.url} target={"_blank"} >
-          {webpage.url} <ExternalLinkIcon mx='2px' mb={'2px'} />
-        </Link></Box>
+        <Box>
+          <Link href={webpage.url} target={"_blank"}>
+            {webpage.url} <ExternalLinkIcon mx="2px" mb={"2px"} />
+          </Link>
+        </Box>
       </HStack>
       <HStack>
         <Box minW={"3xs"}>last Modified At: </Box>

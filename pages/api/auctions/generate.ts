@@ -1,4 +1,4 @@
-import {NextApiHandler, NextApiRequest, NextApiResponse} from "next";
+import { NextApiHandler, NextApiRequest } from "next";
 import withMiddleware from "@/middlewares/withMiddleware";
 import prisma from "@/lib/prisma";
 import superjson from "superjson";
@@ -14,6 +14,7 @@ import { pick } from "lodash";
 import getBestCampaignForWebpage from "@/services/queries/getBestCampaignForWebpage";
 import processWebpageForAdCreation from "@/services/process/processWebpageForAdCreation";
 import getActiveAdsWithDetailForScoredCampaign from "@/services/queries/getActiveAdsWithDetailForScoredCampaign";
+import updateBestCampaign from "@/services/updateBestCampaign";
 
 const cors = Cors({
   credentials: true,
@@ -129,30 +130,31 @@ const generate: NextApiHandler = async (req, res) => {
       campIdsWhoHaveNotMetImpCap,
       webpageCategoryNames
     );
+    await updateBestCampaign(webpage, bestCampaign);
+
     if (bestCampaign) {
       messages.push("found best campaign");
       adsWithDetail = await getActiveAdsWithDetailForScoredCampaign(
         bestCampaign.id
       );
-      if (adsWithDetail.length === 0) {
+      if (adsWithDetail.length > 0) {
+        messages.push("founds ads on best campaign");
+      } else {
         logger.info({}, "no ads found, will try to build it");
         messages.push("no ads found, will try to build it");
-
         const jobIds = await processWebpageForAdCreation(
           webpage,
           bestCampaign,
           settings
         );
         logger.info({ jobIds }, "scheduled job to create ads");
-        messages.push("scheduled job to create ads: " + jobIds.join(" | ") )
-      }else{
-        messages.push("founds ads on best campaign");
+        messages.push("scheduled job to create ads: " + jobIds.join(" | "));
       }
     } else {
       logger.info({}, "best campaign not found");
       messages.push("best campaign not found");
     }
-  }else{
+  } else {
     logger.info({}, "status found to be OFF");
     messages.push("status found to be OFF");
   }
