@@ -290,6 +290,7 @@ const CampaignForm = (props: CampaignFormProps) => {
           value={productName}
           onChange={setInput.bind(this, "productName")}
           placeholder={"Acme Corp."}
+          disabled={campaign ? true : false }
         />
         {productNameMissing && (
           <FormErrorMessage>
@@ -309,6 +310,7 @@ const CampaignForm = (props: CampaignFormProps) => {
           value={productDescription}
           onChange={setText.bind(this, "productDescription")}
           placeholder={productDescription}
+          disabled={campaign ? true : false }
         />
         {productDescriptionMissing && (
           <FormErrorMessage>

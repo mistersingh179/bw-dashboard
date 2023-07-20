@@ -176,7 +176,7 @@ drop database bw;
 - also print count along with array in log for adSpots, jobIds etc.
 - on wepage show matched campaign and adds of matched campaign
 - move all scored campaigns out like we have for ads
-- remove product name and descrioption from edit of campaign
+
 ## Pending dev ops
 
 - auto set title name when cd into appropriate directory

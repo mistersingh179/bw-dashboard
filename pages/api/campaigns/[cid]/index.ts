@@ -24,7 +24,7 @@ const handleUpdateCampaign = async (
   const query = req.query as QueryParams;
   const cid = query.cid;
 
-  const notAllowedAttributes = ["userId", "updatedAt", "createdAt"];
+  const notAllowedAttributes = ["userId", "updatedAt", "createdAt", "productName", "productDescription"];
   const data = omit(req.body, notAllowedAttributes) as any;
 
   const campaign = await prisma.campaign.update({
