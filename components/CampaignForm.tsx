@@ -270,7 +270,7 @@ const CampaignForm = (props: CampaignFormProps) => {
           min={0}
           max={1_000}
           step={1}
-          value={fixedCpm}
+          value={fixedCpm ? Number(fixedCpm) : 0}
           onChange={setNumberInput.bind(this, "fixedCpm")}
         >
           <NumberInputField />

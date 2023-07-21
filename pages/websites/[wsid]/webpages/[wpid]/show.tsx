@@ -5,6 +5,7 @@ import {
   Button,
   Heading,
   HStack,
+  Skeleton,
   Spacer,
   Spinner,
   Table,
@@ -46,6 +47,8 @@ import useAdsOfBestCampaign from "@/hooks/useAdsOfBestCampaign";
 import numeral from "numeral";
 import { AdvertisementWithSpotAndCampaign } from "@/pages/api/websites/[wsid]/webpages/[wpid]/adsOfBestCampaign";
 import useCampWithImpCount from "@/hooks/useCampWithImpCount";
+import { Campaign } from "@prisma/client";
+import campaigns from "@/pages/api/campaigns";
 
 type AdsBoxProps = {
   ads: AdvertisementWithSpotAndCampaign[];
@@ -128,6 +131,75 @@ const AdsOfBestCampaign = () => {
   );
 };
 
+type InFlightMessagePropsType = { campaign: Campaign };
+export const InFlightMessage = (props: InFlightMessagePropsType) => {
+  const { campaign } = props;
+  const now = new Date();
+  const active = isAfter(campaign.end, now) && isBefore(campaign.start, now);
+
+  return (
+    <Tooltip
+      label={
+        <VStack spacing={0} alignItems={"start"}>
+          <Box>
+            Start:{" "}
+            {formatISO(campaign.start, {
+              representation: "date",
+            })}{" "}
+          </Box>
+          <Box>
+            End:{" "}
+            {formatISO(campaign.end, {
+              representation: "date",
+            })}{" "}
+          </Box>
+        </VStack>
+      }
+    >
+      <span>{active ? "Yes" : "No"}</span>
+    </Tooltip>
+  );
+};
+
+type ImpDeliveryMessagePropsType = {
+  campaign: Campaign;
+  campsWithImpCount: { [key: string]: number };
+};
+
+export const ImpDeliveryMessage = (props: ImpDeliveryMessagePropsType) => {
+  const { campaign, campsWithImpCount } = props;
+
+  return (
+    <>
+      <Skeleton
+        isLoaded={campaign && campsWithImpCount[campaign.id] ? true : false}
+      >
+        <Tooltip
+          label={
+            <VStack spacing={0} alignItems={"start"}>
+              <HStack>
+                <Box>Delivered: </Box>
+                <Box>
+                  {numeral(campsWithImpCount[campaign.id]).format("0,0")}
+                </Box>
+              </HStack>
+              <HStack justifyContent={"start"}>
+                <Box>Cap:</Box>
+                <Box>{numeral(campaign.impressionCap).format("0,0")}</Box>
+              </HStack>
+            </VStack>
+          }
+        >
+          <span>
+            {numeral(campsWithImpCount[campaign.id]).format("0,0")} /{" "}
+            {numeral(campaign.impressionCap).format("0,0")}
+          </span>
+        </Tooltip>
+      </Skeleton>
+    </>
+  );
+};
+
 const ScoredCampaigns = () => {
   const router = useRouter();
   const { wsid, wpid } = router.query as QueryParams;
@@ -154,8 +226,8 @@ const ScoredCampaigns = () => {
             <Tr>
               <Th>Campaign</Th>
               <Th>CPM</Th>
-              <Th>Impressions</Th>
-              <Th>Active</Th>
+              <Th>Delivery</Th>
+              <Th>In-Flight</Th>
               <Th>Product Name</Th>
               <Th>Score</Th>
               <Th>Reason</Th>
@@ -171,11 +243,6 @@ const ScoredCampaigns = () => {
               scoredCampaigns.length > 0 &&
               scoredCampaigns.map(
                 (scoredCampaign: ScoredCampaignWithCampaign) => {
-                  const now = new Date();
-                  const active =
-                    scoredCampaign.campaign.status &&
-                    isAfter(scoredCampaign.campaign.end, now) &&
-                    isBefore(scoredCampaign.campaign.start, now);
                   return (
                     <Tr
                       bg={scoredCampaign.isBest ? "green.50" : "gray.50"}
@@ -198,66 +265,13 @@ const ScoredCampaigns = () => {
                         )}
                       </Td>
                       <Td>
-                        <Tooltip
-                          label={
-                            <VStack spacing={0} alignItems={'start'}>
-                              <HStack>
-                                <Box>Delivered: </Box>
-                                <Box>
-                                  {numeral(
-                                    campsWithImpCount[
-                                      scoredCampaign.campaign.id
-                                    ]
-                                  ).format("0,0")}
-                                </Box>
-                              </HStack>
-                              <HStack justifyContent={'start'}>
-                                <Box>Cap:</Box>
-                                <Box>
-                                  {numeral(
-                                    scoredCampaign.campaign.impressionCap
-                                  ).format("0,0")}
-                                </Box>
-                              </HStack>
-                            </VStack>
-                          }
-                        >
-                          <span>
-                            {numeral(
-                              campsWithImpCount[scoredCampaign.campaign.id]
-                            ).format("0,0")}{" "}
-                            /
-                            {numeral(
-                              scoredCampaign.campaign.impressionCap
-                            ).format("0,0")}
-                          </span>
-                        </Tooltip>
+                        <ImpDeliveryMessage
+                          campaign={scoredCampaign.campaign}
+                          campsWithImpCount={campsWithImpCount}
+                        />
                       </Td>
                       <Td>
-                        <Tooltip
-                          label={
-                            <VStack spacing={0} alignItems={"start"}>
-                              <Box>
-                                Status:{" "}
-                                {scoredCampaign.campaign.status ? "ON" : "OFF"}
-                              </Box>
-                              <Box>
-                                Start:{" "}
-                                {formatISO(scoredCampaign.campaign.start, {
-                                  representation: "date",
-                                })}{" "}
-                              </Box>
-                              <Box>
-                                End:{" "}
-                                {formatISO(scoredCampaign.campaign.end, {
-                                  representation: "date",
-                                })}{" "}
-                              </Box>
-                            </VStack>
-                          }
-                        >
-                          <span>{active ? "Yes" : "No"}</span>
-                        </Tooltip>
+                        <InFlightMessage campaign={scoredCampaign.campaign} />
                       </Td>
                       <Td>{scoredCampaign.campaign.productName}</Td>
                       <Td>{scoredCampaign.score}</Td>

@@ -155,17 +155,17 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "cljzvem3l000jpj216dhg4ua0",
+        id: "clk2rrzwq0e1zlu21eu245qet",
       },
     });
     const campaigns = await prisma.campaign.findMany({
       where: {
-        userId: "cljvgedipcbyqph1qssejc7z5",
+        userId: "climifncr00wgme08z6uyo3bg",
       },
     });
     const settings = await prisma.setting.findFirstOrThrow({
       where: {
-        userId: "cljvgedipcbyqph1qssejc7z5",
+        userId: "climifncr00wgme08z6uyo3bg",
       },
     });
     const content = await prisma.content.findFirst({

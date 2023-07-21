@@ -3,28 +3,27 @@ import {
   Box,
   Button,
   Heading,
-  HStack, Skeleton,
+  HStack,
+  Skeleton,
   Spacer,
-  StackProps, StatNumber,
+  StackProps,
   Switch,
   Table,
   TableCaption,
   TableContainer,
   Tbody,
-  Td, Text,
+  Td,
   Th,
+  Text,
   Thead,
   Tr,
 } from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
 import { Link } from "@chakra-ui/next-js";
 import { preload } from "swr";
-import { format } from "date-fns";
 import fetcher from "@/helpers/fetcher";
 import { useRouter } from "next/router";
 import { AddIcon } from "@chakra-ui/icons";
-import { CampaignType } from "@/types/my-types";
-import StatusBadge from "@/components/StatusBadge";
 import {
   ErrorRow,
   LoadingDataRow,
@@ -33,7 +32,11 @@ import {
 import useCampaigns from "@/hooks/useCampaigns";
 import usePagination from "@/hooks/usePagination";
 import useCampWithImpCount from "@/hooks/useCampWithImpCount";
-import AnyObject from "@/types/AnyObject";
+import {
+  ImpDeliveryMessage,
+  InFlightMessage,
+} from "@/pages/websites/[wsid]/webpages/[wpid]/show";
+import { Campaign } from "@prisma/client";
 import numeral from "numeral";
 
 export const disabledProps: StackProps = {
@@ -72,9 +75,8 @@ const Campaigns: FCWithAuth = () => {
           <Thead>
             <Tr>
               <Th>Name</Th>
-              <Th>Start</Th>
-              <Th>End</Th>
-              <Th>Delivered</Th>
+              <Th>In-Flight</Th>
+              <Th>Delivery</Th>
               <Th>Status</Th>
               <Th>Actions</Th>
             </Tr>
@@ -92,13 +94,14 @@ const Campaigns: FCWithAuth = () => {
                   <Td>
                     {campaign.name} / {campaign.id}
                   </Td>
-                  <Td>{format(campaign.start, "MM/dd/yyyy")}</Td>
-                  <Td>{format(campaign.end, "MM/dd/yyyy")}</Td>
                   <Td>
-                    <Skeleton isLoaded={!isLoading && !isLoadingCampWithImpCount}>
-                        {errorCampWithImpCount && <Text color={"tomato"}>Unavailable</Text>}
-                        {numeral(campsWithImpCount[campaign.id ?? ""]).format("0,0")}
-                    </Skeleton>
+                    <InFlightMessage campaign={campaign as Campaign} />{" "}
+                  </Td>
+                  <Td>
+                    <ImpDeliveryMessage
+                      campaign={campaign as Campaign}
+                      campsWithImpCount={campsWithImpCount}
+                    />
                   </Td>
                   <Td>
                     <Switch

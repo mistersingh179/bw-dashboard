@@ -8,7 +8,7 @@ export type CampaignType = Omit<
 > & {
   id?: string;
   userId?: string;
-  fixedCpm: number;
+  fixedCpm: number | Prisma.Decimal;
   createdAt?: Date;
   updatedAt?: Date;
 };

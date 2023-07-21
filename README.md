@@ -154,10 +154,7 @@ drop database bw;
 - investiage why no ad here – https://studyfinds.org/california-emergency-room-wait/
 - take title & description instead of content when scoring campaigns
 - paginate scoring of campaigns
-- build ads only for highest ranked scored campaign and not all campaigns
-- don't build ads in advance, build ads on demand
-- campaign listing page should show that the campaign has expired
-- campaign list should show impressions delivered
+- amazon affaliates api to get campaigns
 
 ## Pending dev ops
 
