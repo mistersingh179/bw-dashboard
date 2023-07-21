@@ -147,7 +147,6 @@ const generate: NextApiHandler = async (req, res) => {
           bestCampaign,
           settings
         );
-        logger.info({ jobIds }, "scheduled job to create ads");
         messages.push("scheduled job to create ads: " + jobIds.join(" | "));
       }
     } else {

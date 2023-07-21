@@ -157,25 +157,7 @@ drop database bw;
 - build ads only for highest ranked scored campaign and not all campaigns
 - don't build ads in advance, build ads on demand
 - campaign listing page should show that the campaign has expired
-- allow pausing/resume campaigns faster from list page. this will also take care of having to show that campaign is not running because it is off.
-- the `WILL SHOW` column on advertisements is not taking into account the impression cap of campaign
-- without pooler getting error
-
-```
-        "message": "\nInvalid `prisma.user.findFirst()` invocation:\n\n\nTimed out fetching a new connection from the connection pool. More info: http://pris.ly/d/connection-pool (Current connection pool timeout: 10, connection limit: 17)"
-```
-
-- run nightly job to show how many pages are matched.
-  - this would change if you add/remove campaigns
-  - also would change if you change user threshold score
-- store bestScoredCamapgin in the db
-- refactor auction to generate to have getAdsToShow which finds best campaign, gets its ads, and build ads if missing.
-- no point trying to build ad if page has no ad spots
-- it is trying to build ads when there are no spots. this means it gets a lock, checks if fail count is not high etc.
-- we can stop this while if we knew it has no ad spots
-- also print count along with array in log for adSpots, jobIds etc.
-- on wepage show matched campaign and adds of matched campaign
-- move all scored campaigns out like we have for ads
+- campaign list should show impressions delivered
 
 ## Pending dev ops
 
@@ -194,6 +176,11 @@ drop database bw;
 - owner dark/light theme from the os
 - organize logs so they can be seen better in betterstack logging tool
 - look at affaliate ads in email
+- refactor auction generate api endpoint to have getAdsToShow which finds best campaign, gets its ads, and build ads if missing.
+- run nightly job to show how many pages are matched.
+  - this would change if you add/remove campaigns
+  - also would change if you change user threshold score
+- the `WILL SHOW` column on advertisements is not taking into account the impression cap of campaign
 
 ## Pending callback
 

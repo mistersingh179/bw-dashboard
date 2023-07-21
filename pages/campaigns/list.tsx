@@ -6,6 +6,7 @@ import {
   HStack,
   Spacer,
   StackProps,
+  Switch,
   Table,
   TableCaption,
   TableContainer,
@@ -17,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
 import { Link } from "@chakra-ui/next-js";
-import useSWR, { mutate, preload } from "swr";
+import { preload } from "swr";
 import { format } from "date-fns";
 import fetcher from "@/helpers/fetcher";
 import { useRouter } from "next/router";
@@ -29,6 +30,8 @@ import {
   LoadingDataRow,
   NoDataRow,
 } from "@/components/genericMessages";
+import useCampaigns from "@/hooks/useCampaigns";
+import usePagination from "@/hooks/usePagination";
 
 export const disabledProps: StackProps = {
   opacity: 0.4,
@@ -37,28 +40,9 @@ export const disabledProps: StackProps = {
 
 const Campaigns: FCWithAuth = () => {
   const router = useRouter();
-  const { data, error, isLoading } = useSWR<CampaignType[]>(
-    "/api/campaigns",
-    fetcher
-  );
-  const deleteCampaign = async (cid: string) => {
-    const res = await fetch(`/api/campaigns/${cid}`, {
-      method: "DELETE",
-    });
-  };
-  const deleteHandler = async (cid: string) => {
-    const result = await mutate(
-      "/api/campaigns",
-      deleteCampaign.bind(this, cid),
-      {
-        optimisticData: (currentData: CampaignType[]) => {
-          return currentData.filter((x) => x.id != cid);
-        },
-        populateCache: false,
-      }
-    );
-    console.log("result of mutate call: ", result);
-  };
+  const { page, setPage, pageSize, setPageSize } = usePagination();
+  const { campaigns, error, isLoading, onUpdate, onDelete } =
+    useCampaigns(page, pageSize);
 
   return (
     <Box>
@@ -87,18 +71,24 @@ const Campaigns: FCWithAuth = () => {
           <Tbody>
             {error && <ErrorRow colSpan={5} />}
             {isLoading && <LoadingDataRow colSpan={5} />}
-            {!isLoading && data && data.length == 0 && (
+            {!isLoading && campaigns && campaigns.length == 0 && (
               <NoDataRow colSpan={5} />
             )}
-            {data &&
-              data.length > 0 &&
-              data.map((campaign) => (
+            {campaigns &&
+              campaigns.length > 0 &&
+              campaigns.map((campaign) => (
                 <Tr key={campaign.id ?? JSON.stringify(campaign)}>
                   <Td>{campaign.name}</Td>
                   <Td>{format(campaign.start, "MM/dd/yyyy")}</Td>
                   <Td>{format(campaign.end, "MM/dd/yyyy")}</Td>
                   <Td>
-                    <StatusBadge status={campaign.status} />
+                    <Switch
+                      isChecked={campaign.status}
+                      isDisabled={campaign.id ? false : true}
+                      onChange={(evt) =>
+                        onUpdate({ ...campaign, status: evt.target.checked })
+                      }
+                    />
                   </Td>
                   <Td>
                     {
@@ -108,10 +98,7 @@ const Campaigns: FCWithAuth = () => {
                       >
                         <Button
                           size={"sm"}
-                          onClick={deleteHandler.bind(
-                            this,
-                            campaign.id as string
-                          )}
+                          onClick={(evt) => onDelete({ ...campaign })}
                         >
                           Delete
                         </Button>
@@ -132,7 +119,7 @@ const Campaigns: FCWithAuth = () => {
                 </Tr>
               ))}
           </Tbody>
-          {data && data.length > 0 && (
+          {campaigns && campaigns.length > 0 && (
             <TableCaption>These are your sweet campaigns.</TableCaption>
           )}
         </Table>

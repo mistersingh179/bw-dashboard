@@ -39,6 +39,19 @@ const processWebpageForAdCreation: ProcessWebpageForAdCreation = async (
     myLogger.info({}, "will continue as adBuildFailCount is under limit");
   }
 
+  const advertisementSpots = await prisma.advertisementSpot.findMany({
+    where: {
+      webpageId: webpage.id,
+    },
+  });
+
+  if(advertisementSpots.length === 0){
+    myLogger.info({}, "aborting as advertisementSpots count is 0");
+    return [];
+  } else {
+    myLogger.info({}, "will continue as we have ad spots");
+  }
+
   /*
   set the key only if it does not already exist – NX,
   set it with an expiration – EX
@@ -65,13 +78,13 @@ const processWebpageForAdCreation: ProcessWebpageForAdCreation = async (
     myLogger.info({ ans, key, value }, "got redis lock for creating ads");
   }
 
-  const advertisementSpots = await prisma.advertisementSpot.findMany({
-    where: {
-      webpageId: webpage.id,
+  myLogger.info(
+    {
+      advertisementSpots,
+      countOfAdvertisementSpots: advertisementSpots.length,
     },
-  });
-
-  myLogger.info({ advertisementSpots }, "going to build ads for these spots");
+    "going to build ads for these spots"
+  );
 
   const jobIds: string[] = [];
   for (const advertisementSpot of advertisementSpots) {
@@ -89,7 +102,7 @@ const processWebpageForAdCreation: ProcessWebpageForAdCreation = async (
     }
   }
 
-  myLogger.info({ jobIds }, "finished service");
+  myLogger.info({ jobIds, countOfJobIds: jobIds.length }, "finished service");
   return jobIds;
 };
 
