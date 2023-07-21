@@ -42,9 +42,14 @@ const handleListScoredCampaigns = async (
         campaign: true,
       },
       orderBy: [
-        // {
-        //   isBest: "desc",
-        // },
+        {
+          score: 'desc'
+        },
+        {
+          campaign: {
+            fixedCpm: 'desc'
+          }
+        },
         {
           createdAt: "asc",
         },

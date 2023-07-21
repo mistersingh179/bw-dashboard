@@ -30,7 +30,7 @@ import {
   NoDataRow,
   WarningAlert,
 } from "@/components/genericMessages";
-import { formatISO } from "date-fns";
+import { formatISO, isAfter, isBefore } from "date-fns";
 import StatusBadge from "@/components/StatusBadge";
 import { Link } from "@chakra-ui/next-js";
 import { ArrowForwardIcon, ExternalLinkIcon } from "@chakra-ui/icons";
@@ -42,6 +42,93 @@ import useScoredCampaignsOfWebpage from "@/hooks/useScoredCampaignsOfWebpage";
 import usePagination from "@/hooks/usePagination";
 import PaginationRow from "@/components/PaginationRow";
 import { ScoredCampaignWithCampaign } from "@/pages/api/websites/[wsid]/webpages/[wpid]/scoredCampaigns";
+import useAdsOfBestCampaign from "@/hooks/useAdsOfBestCampaign";
+import numeral from "numeral";
+import {AdvertisementWithSpotAndCampaign} from "@/pages/api/websites/[wsid]/webpages/[wpid]/adsOfBestCampaign";
+
+type AdsBoxProps = {
+  ads: AdvertisementWithSpotAndCampaign[];
+};
+const AdsBox = (props: AdsBoxProps) => {
+  const { ads } = props;
+  return (
+    <>
+      {ads.map((ad) => {
+        return (
+          <VStack
+            key={ad.id}
+            alignItems={"start"}
+            mt={5}
+            p={5}
+            border={"1px"}
+            borderColor={"gray.200"}
+            borderRadius={"md"}
+          >
+            <HStack alignItems={"start"}>
+              <Box minW={"3xs"}>Before: </Box>
+              <Box>{ad.advertisementSpot.beforeText}</Box>
+            </HStack>
+            <HStack alignItems={"start"}>
+              <Box minW={"3xs"}>Ad: </Box>
+              <Box>{ad.advertText}</Box>
+            </HStack>
+            <HStack alignItems={"start"}>
+              <Box minW={"3xs"}>After</Box>
+              <Box>{ad.advertisementSpot.afterText}</Box>
+            </HStack>
+            <HStack alignItems={"start"}>
+              <Box minW={"3xs"}>Score</Box>
+              <Box>{ad.scoredCampaign.score}</Box>
+            </HStack>
+            <HStack alignItems={"start"}>
+              <Box minW={"3xs"}>Reason</Box>
+              <Box>{ad.scoredCampaign.reason}</Box>
+            </HStack>
+            <HStack alignItems={"start"}>
+              <Box minW={"3xs"}>Campaign Name</Box>
+              <Box>{ad.scoredCampaign.campaign.name}</Box>
+            </HStack>
+            <HStack alignItems={"start"}>
+              <Box minW={"3xs"}>Product Name</Box>
+              <Box>{ad.scoredCampaign.campaign.productName}</Box>
+            </HStack>
+            <HStack alignItems={"start"}>
+              <Box minW={"3xs"}>CPM</Box>
+              <Box>
+                {numeral(ad.scoredCampaign.campaign.fixedCpm).format(
+                  "$0.0[.]00"
+                )}
+              </Box>
+            </HStack>
+          </VStack>
+        );
+      })}
+    </>
+  );
+};
+
+const AdsOfBestCampaign = () => {
+  const router = useRouter();
+  const { wsid, wpid } = router.query as QueryParams;
+  const { advertisements, isLoading, error } = useAdsOfBestCampaign(
+    wsid,
+    wpid
+  );
+
+  return (
+    <>
+      <Heading size={"md"} mb={4}>
+        Matched Ads
+      </Heading>
+      {isLoading && <Spinner color={"blue.500"} />}
+      {error && <ErrorAlert />}
+      {(!advertisements || advertisements.length == 0) && (
+        <WarningAlert description={"There are no matched ads"} />
+      )}
+      {advertisements && <AdsBox ads={advertisements} />}
+    </>
+  );
+};
 
 const ScoredCampaigns = () => {
   const router = useRouter();
@@ -56,16 +143,17 @@ const ScoredCampaigns = () => {
 
   return (
     <>
+      <Heading size={"md"} my={4} pl={3}>
+        Scored Campaigns
+      </Heading>
       <TableContainer whiteSpace={"normal"}>
         <Table variant={"simple"} size={"sm"}>
-          <TableCaption placement={"top"} m={0}>
-            <Text fontSize={"xl"} color={"blue.500"}>
-              Scored Campaigns
-            </Text>
-          </TableCaption>
           <Thead>
             <Tr>
               <Th>Campaign</Th>
+              <Th>CPM</Th>
+              <Th>Cap</Th>
+              <Th>Active</Th>
               <Th>Product Name</Th>
               <Th>Score</Th>
               <Th>Reason</Th>
@@ -80,22 +168,72 @@ const ScoredCampaigns = () => {
             {scoredCampaigns &&
               scoredCampaigns.length > 0 &&
               scoredCampaigns.map(
-                (scoredCampaign: ScoredCampaignWithCampaign) => (
-                  <Tooltip
-                    label={scoredCampaign.isBest ? "Currently Matched Campaign" : ""}
-                    key={scoredCampaign.id ?? JSON.stringify(scoredCampaign)}
-                    hasArrow={true}
-                  >
+                (scoredCampaign: ScoredCampaignWithCampaign) => {
+                  const now = new Date();
+                  const active =
+                    scoredCampaign.campaign.status &&
+                    isAfter(scoredCampaign.campaign.end, now) &&
+                    isBefore(scoredCampaign.campaign.start, now);
+                  return (
                     <Tr
                       bg={scoredCampaign.isBest ? "green.50" : "gray.50"}
+                      key={scoredCampaign.id ?? JSON.stringify(scoredCampaign)}
                     >
-                      <Td>{scoredCampaign.campaign.name}</Td>
+                      <Td>
+                        <Tooltip
+                          label={
+                            scoredCampaign.isBest
+                              ? "Currently matched Campaign"
+                              : ""
+                          }
+                        >
+                          {scoredCampaign.campaign.name}
+                        </Tooltip>
+                      </Td>
+                      <Td>
+                        {numeral(scoredCampaign.campaign.fixedCpm).format(
+                          "$0.0[.]00"
+                        )}
+                      </Td>
+                      <Td>
+                        {numeral(scoredCampaign.campaign.impressionCap).format(
+                          "0,0"
+                        )}
+                      </Td>
+                      <Td>
+                        <Tooltip
+                          label={
+                            <VStack spacing={0} alignItems={"start"}>
+                              <Box>
+                                Status:{" "}
+                                {scoredCampaign.campaign.status ? "ON" : "OFF"}
+                              </Box>
+                              <Box>
+                                Start:{" "}
+                                {formatISO(scoredCampaign.campaign.start, {
+                                  representation: "date",
+                                })}{" "}
+                              </Box>
+                              <Box>
+                                End:{" "}
+                                {formatISO(scoredCampaign.campaign.end, {
+                                  representation: "date",
+                                })}{" "}
+                              </Box>
+                            </VStack>
+                          }
+                        >
+                          <span>
+                            {active ? "Yes" : "No"}
+                          </span>
+                        </Tooltip>
+                      </Td>
                       <Td>{scoredCampaign.campaign.productName}</Td>
                       <Td>{scoredCampaign.score}</Td>
                       <Td>{scoredCampaign.reason}</Td>
                     </Tr>
-                  </Tooltip>
-                )
+                  );
+                }
               )}
           </Tbody>
           <Tfoot>
@@ -217,24 +355,6 @@ const Show = () => {
       <HStack>
         <Heading my={5}>Webpage Details</Heading>
         <Spacer />
-        <Button
-          onClick={() => {
-            router.push(
-              `/websites/${wsid}/webpages/${wpid}/advertisements/list`
-            );
-          }}
-          onMouseEnter={() => {
-            preload(
-              `/api/websites/${wsid}/webpages/${wpid}/advertisements`,
-              fetcher
-            );
-          }}
-          colorScheme={"blue"}
-          rightIcon={<ArrowForwardIcon />}
-        >
-          {" "}
-          Browse Advertisements
-        </Button>
       </HStack>
       {isLoading && <Spinner color={"blue.500"} />}
       {error && <ErrorAlert />}
@@ -242,12 +362,34 @@ const Show = () => {
       <Box mt={2}>
         <Categories />
       </Box>
+      <Box
+        mt={5}
+        p={5}
+        border={"1px"}
+        borderColor={"gray.200"}
+        borderRadius={"md"}
+      >
+        <AdsOfBestCampaign />
+      </Box>
       <Box mt={5} border={"1px"} borderColor={"gray.200"} borderRadius={"md"}>
         <ScoredCampaigns />
       </Box>
-      <HStack mt={5} spacing={5}>
+      <HStack my={5} spacing={5}>
         <Link href={`/websites/${wsid}/webpages/list`} colorScheme={"green"}>
           Return to the list of all Webpages
+        </Link>
+        <Box>|</Box>
+        <Link
+          href={`/websites/${wsid}/webpages/${wpid}/advertisements/list`}
+          colorScheme={"green"}
+          onMouseEnter={() => {
+            preload(
+              `/api/websites/${wsid}/webpages/${wpid}/advertisements`,
+              fetcher
+            );
+          }}
+        >
+          Browse All Advertisements
         </Link>
       </HStack>
     </Box>

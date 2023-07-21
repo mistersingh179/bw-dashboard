@@ -27,6 +27,7 @@ import {
 } from "recharts";
 import _ from "lodash";
 import fetcher from "@/helpers/fetcher";
+import numeral from "numeral";
 
 const data = [
   { name: "03/01/23", auctions: 400, impressions: 300, revenue: 20 },
@@ -65,7 +66,6 @@ const renderLineChart = (
   </ResponsiveContainer>
 );
 
-
 const Dashboard: FCWithAuth = () => {
   const { data, error, isLoading } = useSWR<any>("/api/dashboard", fetcher);
   return (
@@ -86,8 +86,8 @@ const Dashboard: FCWithAuth = () => {
           <StatLabel>Auctions</StatLabel>
           <Skeleton isLoaded={!isLoading}>
             <StatNumber w={"auto"}>
-              {error && <Text color={'tomato'}>Unavailable</Text>}
-              {data?.auctionsCount}
+              {error && <Text color={"tomato"}>Unavailable</Text>}
+              {numeral(data?.auctionsCount).format("0,0")}
             </StatNumber>
           </Skeleton>
           <StatHelpText>
