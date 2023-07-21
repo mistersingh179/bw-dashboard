@@ -14,6 +14,7 @@ import numeral from "numeral";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { WarningAlert } from "@/components/genericMessages";
 import useCategoriesOfCampaign from "@/hooks/useCategoriesOfCampaign";
+import useCampWithImpCount from "@/hooks/useCampWithImpCount";
 
 const ErrorBox = () => {
   return <Box>There was an error processing your request. Try again?</Box>;
@@ -31,10 +32,14 @@ const CampaignBox = ({
   campaign,
   campaignCategories,
   isLoadingCampaignCategories,
+  campsWithImpCount,
+  isLoadingCampWithImpCount,
 }: {
   campaign: CampaignType;
   campaignCategories?: CategoryType[];
   isLoadingCampaignCategories: boolean;
+  campsWithImpCount: { [key: string]: number };
+  isLoadingCampWithImpCount: boolean;
 }) => {
   console.log("in campaignBox with: ", campaign);
   return (
@@ -58,6 +63,13 @@ const CampaignBox = ({
       <HStack>
         <Box minW={"3xs"}>Impression Cap: </Box>
         <Box>{numeral(campaign.impressionCap).format("0,0")}</Box>
+      </HStack>
+      <HStack>
+        <Box minW={"3xs"}>Impressions Delivered: </Box>
+        {isLoadingCampWithImpCount && <Spinner />}
+        {!isLoadingCampWithImpCount && campaign && campsWithImpCount && (
+          <Box>{numeral(campsWithImpCount[campaign?.id ?? ""]).format("0,0")}</Box>
+        )}
       </HStack>
       <HStack>
         <Box minW={"3xs"}>Fixed CPM: </Box>
@@ -99,20 +111,24 @@ const CampaignBox = ({
         <Box minW={"3xs"}>Categories: </Box>
         <Box>
           {isLoadingCampaignCategories && <Spinner color={"blue.500"} />}
-          {!isLoadingCampaignCategories && campaignCategories && campaignCategories.length == 0 && (
-            <WarningAlert
-              showIcon={false}
-              title={""}
-              description={"None Found"}
-            />
-          )}
-          {!isLoadingCampaignCategories && campaignCategories && campaignCategories.length > 0 && (
-            <HStack>
-              {campaignCategories.map((c) => (
-                <Tag key={c.id}>{c.name}</Tag>
-              ))}
-            </HStack>
-          )}
+          {!isLoadingCampaignCategories &&
+            campaignCategories &&
+            campaignCategories.length == 0 && (
+              <WarningAlert
+                showIcon={false}
+                title={""}
+                description={"None Found"}
+              />
+            )}
+          {!isLoadingCampaignCategories &&
+            campaignCategories &&
+            campaignCategories.length > 0 && (
+              <HStack>
+                {campaignCategories.map((c) => (
+                  <Tag key={c.id}>{c.name}</Tag>
+                ))}
+              </HStack>
+            )}
         </Box>
       </HStack>
     </VStack>
@@ -134,6 +150,12 @@ const ShowCampaign: FCWithAuth = () => {
     isLoading: isLoadingCampaignCategories,
   } = useCategoriesOfCampaign(cid);
 
+  const {
+    campsWithImpCount,
+    isLoading: isLoadingCampWithImpCount,
+    error: errorCampWithImpCount,
+  } = useCampWithImpCount();
+
   return (
     <Box>
       <Heading my={5}>Campaign Details</Heading>
@@ -144,6 +166,8 @@ const ShowCampaign: FCWithAuth = () => {
           campaign={campaign}
           campaignCategories={campaignCategories}
           isLoadingCampaignCategories={isLoadingCampaignCategories}
+          campsWithImpCount={campsWithImpCount}
+          isLoadingCampWithImpCount={isLoadingCampWithImpCount}
         />
       )}
       {!isLoading && !campaign && <WarningAlert />}

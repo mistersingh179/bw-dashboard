@@ -3,15 +3,15 @@ import {
   Box,
   Button,
   Heading,
-  HStack,
+  HStack, Skeleton,
   Spacer,
-  StackProps,
+  StackProps, StatNumber,
   Switch,
   Table,
   TableCaption,
   TableContainer,
   Tbody,
-  Td,
+  Td, Text,
   Th,
   Thead,
   Tr,
@@ -32,6 +32,9 @@ import {
 } from "@/components/genericMessages";
 import useCampaigns from "@/hooks/useCampaigns";
 import usePagination from "@/hooks/usePagination";
+import useCampWithImpCount from "@/hooks/useCampWithImpCount";
+import AnyObject from "@/types/AnyObject";
+import numeral from "numeral";
 
 export const disabledProps: StackProps = {
   opacity: 0.4,
@@ -41,8 +44,15 @@ export const disabledProps: StackProps = {
 const Campaigns: FCWithAuth = () => {
   const router = useRouter();
   const { page, setPage, pageSize, setPageSize } = usePagination();
-  const { campaigns, error, isLoading, onUpdate, onDelete } =
-    useCampaigns(page, pageSize);
+  const { campaigns, error, isLoading, onUpdate, onDelete } = useCampaigns(
+    page,
+    pageSize
+  );
+  const {
+    campsWithImpCount,
+    isLoading: isLoadingCampWithImpCount,
+    error: errorCampWithImpCount,
+  } = useCampWithImpCount();
 
   return (
     <Box>
@@ -64,6 +74,7 @@ const Campaigns: FCWithAuth = () => {
               <Th>Name</Th>
               <Th>Start</Th>
               <Th>End</Th>
+              <Th>Delivered</Th>
               <Th>Status</Th>
               <Th>Actions</Th>
             </Tr>
@@ -78,9 +89,17 @@ const Campaigns: FCWithAuth = () => {
               campaigns.length > 0 &&
               campaigns.map((campaign) => (
                 <Tr key={campaign.id ?? JSON.stringify(campaign)}>
-                  <Td>{campaign.name}</Td>
+                  <Td>
+                    {campaign.name} / {campaign.id}
+                  </Td>
                   <Td>{format(campaign.start, "MM/dd/yyyy")}</Td>
                   <Td>{format(campaign.end, "MM/dd/yyyy")}</Td>
+                  <Td>
+                    <Skeleton isLoaded={!isLoading && !isLoadingCampWithImpCount}>
+                        {errorCampWithImpCount && <Text color={"tomato"}>Unavailable</Text>}
+                        {numeral(campsWithImpCount[campaign.id ?? ""]).format("0,0")}
+                    </Skeleton>
+                  </Td>
                   <Td>
                     <Switch
                       isChecked={campaign.status}

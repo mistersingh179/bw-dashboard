@@ -30,16 +30,16 @@ import fetcher from "@/helpers/fetcher";
 import numeral from "numeral";
 
 const data = [
-  { name: "03/01/23", auctions: 400, impressions: 300, revenue: 20 },
-  { name: "03/02/23", auctions: 500, impressions: 400, revenue: 22 },
-  { name: "03/03/23", auctions: 600, impressions: 500, revenue: 260 },
-  { name: "03/04/23", auctions: 300, impressions: 200, revenue: 50 },
-  { name: "03/05/23", auctions: 500, impressions: 400, revenue: 92 },
-  { name: "03/06/23", auctions: 700, impressions: 400, revenue: 42 },
-  { name: "03/07/23", auctions: 660, impressions: 400, revenue: 30 },
-  { name: "03/08/23", auctions: 200, impressions: 100, revenue: 5 },
-  { name: "03/09/23", auctions: 600, impressions: 550, revenue: 260 },
-  { name: "03/10/23", auctions: 700, impressions: 500, revenue: 42 },
+  { name: "03/01/23", pageLoads: 400, impressions: 300, revenue: 20 },
+  { name: "03/02/23", pageLoads: 500, impressions: 400, revenue: 22 },
+  { name: "03/03/23", pageLoads: 600, impressions: 500, revenue: 260 },
+  { name: "03/04/23", pageLoads: 300, impressions: 200, revenue: 50 },
+  { name: "03/05/23", pageLoads: 500, impressions: 400, revenue: 92 },
+  { name: "03/06/23", pageLoads: 700, impressions: 400, revenue: 42 },
+  { name: "03/07/23", pageLoads: 660, impressions: 400, revenue: 30 },
+  { name: "03/08/23", pageLoads: 200, impressions: 100, revenue: 5 },
+  { name: "03/09/23", pageLoads: 600, impressions: 550, revenue: 260 },
+  { name: "03/10/23", pageLoads: 700, impressions: 500, revenue: 42 },
 ];
 
 const renderLineChart = (
@@ -50,7 +50,7 @@ const renderLineChart = (
       data={data}
       margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
     >
-      <Line type="monotone" dataKey="auctions" stroke="#8884d8" />
+      <Line type="monotone" dataKey="pageLoads" stroke="#8884d8" />
       <Line type="monotone" dataKey="impressions" stroke="#82ca9d" />
       <Line type="monotone" dataKey="revenue" stroke="#ff7300" />
       <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
@@ -60,7 +60,7 @@ const renderLineChart = (
       <Legend
         verticalAlign="bottom"
         height={36}
-        formatter={(val) => _.capitalize(val)}
+        formatter={(val) => (val === "pageLoads" ? "Page Loads" : _.capitalize(val))}
       />
     </LineChart>
   </ResponsiveContainer>
@@ -83,7 +83,7 @@ const Dashboard: FCWithAuth = () => {
         p={5}
       >
         <Stat w={"fit-content"}>
-          <StatLabel>Auctions</StatLabel>
+          <StatLabel>Page Loads</StatLabel>
           <Skeleton isLoaded={!isLoading}>
             <StatNumber w={"auto"}>
               {error && <Text color={"tomato"}>Unavailable</Text>}

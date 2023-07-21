@@ -7,31 +7,10 @@ import createAdvertisementQueue, {
 } from "@/jobs/queues/createAdvertisementQueue";
 import getCampaignsWhoHaveNotMetImpCap from "@/services/queries/getCamapignsWhoHaveNotMetImpCap";
 import redisClient from "@/lib/redisClient";
-import { Prisma } from "@prisma/client";
-
+import { User, Prisma } from "@prisma/client";
 (async () => {
-  await prisma.scoredCampaign.updateMany({
-    where: {
-      id: undefined,
-      isBest: false,
-    },
-    data: {
-      isBest: true,
-    },
-  });
 
-  await prisma.scoredCampaign.updateMany({
-    where: {
-      webpageId: undefined,
-      isBest: true,
-      id: {
-        not: undefined
-      },
-    },
-    data: {
-      isBest: false,
-    },
-  });
+
 })();
 
 export {};

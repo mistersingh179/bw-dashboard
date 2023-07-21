@@ -44,7 +44,8 @@ import PaginationRow from "@/components/PaginationRow";
 import { ScoredCampaignWithCampaign } from "@/pages/api/websites/[wsid]/webpages/[wpid]/scoredCampaigns";
 import useAdsOfBestCampaign from "@/hooks/useAdsOfBestCampaign";
 import numeral from "numeral";
-import {AdvertisementWithSpotAndCampaign} from "@/pages/api/websites/[wsid]/webpages/[wpid]/adsOfBestCampaign";
+import { AdvertisementWithSpotAndCampaign } from "@/pages/api/websites/[wsid]/webpages/[wpid]/adsOfBestCampaign";
+import useCampWithImpCount from "@/hooks/useCampWithImpCount";
 
 type AdsBoxProps = {
   ads: AdvertisementWithSpotAndCampaign[];
@@ -110,10 +111,7 @@ const AdsBox = (props: AdsBoxProps) => {
 const AdsOfBestCampaign = () => {
   const router = useRouter();
   const { wsid, wpid } = router.query as QueryParams;
-  const { advertisements, isLoading, error } = useAdsOfBestCampaign(
-    wsid,
-    wpid
-  );
+  const { advertisements, isLoading, error } = useAdsOfBestCampaign(wsid, wpid);
 
   return (
     <>
@@ -140,7 +138,11 @@ const ScoredCampaigns = () => {
     page,
     pageSize
   );
-
+  const {
+    campsWithImpCount,
+    isLoading: isLoadingCampWithImpCount,
+    error: errorCampWithImpCount,
+  } = useCampWithImpCount();
   return (
     <>
       <Heading size={"md"} my={4} pl={3}>
@@ -152,7 +154,7 @@ const ScoredCampaigns = () => {
             <Tr>
               <Th>Campaign</Th>
               <Th>CPM</Th>
-              <Th>Cap</Th>
+              <Th>Impressions</Th>
               <Th>Active</Th>
               <Th>Product Name</Th>
               <Th>Score</Th>
@@ -196,9 +198,40 @@ const ScoredCampaigns = () => {
                         )}
                       </Td>
                       <Td>
-                        {numeral(scoredCampaign.campaign.impressionCap).format(
-                          "0,0"
-                        )}
+                        <Tooltip
+                          label={
+                            <VStack spacing={0} alignItems={'start'}>
+                              <HStack>
+                                <Box>Delivered: </Box>
+                                <Box>
+                                  {numeral(
+                                    campsWithImpCount[
+                                      scoredCampaign.campaign.id
+                                    ]
+                                  ).format("0,0")}
+                                </Box>
+                              </HStack>
+                              <HStack justifyContent={'start'}>
+                                <Box>Cap:</Box>
+                                <Box>
+                                  {numeral(
+                                    scoredCampaign.campaign.impressionCap
+                                  ).format("0,0")}
+                                </Box>
+                              </HStack>
+                            </VStack>
+                          }
+                        >
+                          <span>
+                            {numeral(
+                              campsWithImpCount[scoredCampaign.campaign.id]
+                            ).format("0,0")}{" "}
+                            /
+                            {numeral(
+                              scoredCampaign.campaign.impressionCap
+                            ).format("0,0")}
+                          </span>
+                        </Tooltip>
                       </Td>
                       <Td>
                         <Tooltip
@@ -223,9 +256,7 @@ const ScoredCampaigns = () => {
                             </VStack>
                           }
                         >
-                          <span>
-                            {active ? "Yes" : "No"}
-                          </span>
+                          <span>{active ? "Yes" : "No"}</span>
                         </Tooltip>
                       </Td>
                       <Td>{scoredCampaign.campaign.productName}</Td>
