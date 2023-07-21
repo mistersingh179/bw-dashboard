@@ -123,7 +123,7 @@ const createAdvertisement: CreateAdvertisement = async (
     adTextCopies.map((adTextCopy) => {
       adTextCopy = adTextCopy.split("\n")[0].trim();
       if (!adTextCopy.includes(productName)) {
-        adTextCopy = adTextCopy + ` Visit ${productName}`;
+        adTextCopy = adTextCopy + ` Visit ${productName}.`;
       }
       return {
         advertText: adTextCopy,
