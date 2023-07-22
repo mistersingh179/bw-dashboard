@@ -111,18 +111,8 @@ drop database bw;
 ## Pending issues
 
 - rebuild all existing ads to help with onboarding
-- see content for debugging on the webpage show
-- why does parse not work when "body" is there?
-- show progress on webpage
 - make links bold
-- how do we recover from failed chatgpt calls, or content fetch calls
-- when ads pay the same then order by score
-- use chatgpt to grade the campaign's production description or make an alternate version of it which is toned down.
 - campaign date breaks when typing starts with a 0.
-- paginate call for scoring campaigns.
-  - if too many campaigns this will currently fail
-  - if html input is too large this will currently fail
-- lazy build cache
 - add ip address to logs
   - add child logger to request object
   - use middleware to add it
@@ -137,6 +127,8 @@ drop database bw;
 - pagination size to persist across pages
 - take title & description instead of content when scoring campaigns
 - paginate scoring of campaigns
+  - if too many campaigns this will currently fail
+  - if html input is too large this will currently fail
 - amazon affaliates api to get campaigns
 
 ## Pending dev ops
