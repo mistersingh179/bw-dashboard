@@ -130,6 +130,10 @@ drop database bw;
   - if too many campaigns this will currently fail
   - if html input is too large this will currently fail
 - amazon affaliates api to get campaigns
+- an easier way to see how the content selector is doing on a bunch of pages
+  - need to see why it is not getting stuff
+  - need to see where it is getting stuff
+- show a preview of what we see of a page with ad spots highlighted and rejection reasons
 
 ## Pending dev ops
 
@@ -137,6 +141,7 @@ drop database bw;
 - try prisma cloud with a new db and then with json schema format
 - grant users computer super-power so we can show buttons inside other accounts which require super access
 - fix dev worker to auto reload when any jobs or services change
+- make database show time in est
 
 ## Pending backlog
 

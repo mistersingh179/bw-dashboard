@@ -210,7 +210,7 @@ const AdSpots = ({
       <Heading size={"md"} my={4} pl={3}>
         Ad Spots
       </Heading>
-      {!adSpots && (
+      {(!adSpots || adSpots.length == 0) && (
         <WarningAlert
           description={"Ad Spots have not been built yet. Try later."}
         />
@@ -276,10 +276,10 @@ const ScoredCampaigns = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {error && <ErrorRow colSpan={4} />}
-            {isLoading && <LoadingDataRow colSpan={4} height={"lg"} />}
+            {error && <ErrorRow colSpan={7} />}
+            {isLoading && <LoadingDataRow colSpan={7} height={"lg"} />}
             {!isLoading && scoredCampaigns && scoredCampaigns.length == 0 && (
-              <NoDataRow colSpan={4} />
+              <NoDataRow colSpan={7} />
             )}
             {scoredCampaigns &&
               scoredCampaigns.length > 0 &&
