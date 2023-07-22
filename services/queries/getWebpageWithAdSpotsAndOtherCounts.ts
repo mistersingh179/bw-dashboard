@@ -9,6 +9,7 @@ type AdSpotWithAdsCount = AdvertisementSpot & {
 
 export type WebpageWithAdSpotsAndOtherCounts = Webpage & {
   advertisementSpots: AdSpotWithAdsCount[];
+  content: { title: string | null; description: string | null } | null;
   _count: { scoredCampaigns: number; advertisementSpots: number };
 };
 
@@ -47,6 +48,12 @@ const getWebpageWithAdSpotsAndOtherCounts: GetWebpageWithAdSpotsAndOtherCounts =
                 advertisements: true,
               },
             },
+          },
+        },
+        content: {
+          select: {
+            title: true,
+            description: true,
           },
         },
       },

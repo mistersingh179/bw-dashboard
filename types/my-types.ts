@@ -1,4 +1,4 @@
-import {Campaign, Webpage, Website, Prisma, Category} from ".prisma/client";
+import { Campaign, Category, Prisma, Webpage, Website } from ".prisma/client";
 import { Setting } from "@prisma/client";
 import { WebpageWithDetail } from "@/services/queries/getWebpageDetail";
 

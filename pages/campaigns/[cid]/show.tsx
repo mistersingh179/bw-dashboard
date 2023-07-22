@@ -98,10 +98,6 @@ const CampaignBox = ({
         </Box>
       </HStack>
       <HStack>
-        <Box minW={"3xs"}>CSS Selector: </Box>
-        <Box>{campaign.requiredCssSelector || "--Not Provided--"}</Box>
-      </HStack>
-      <HStack>
         <Box minW={"3xs"}>Pacing: </Box>
         <Box>
           <StatusBadge status={campaign.pacing} />

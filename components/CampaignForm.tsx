@@ -107,7 +107,6 @@ const CampaignForm = (props: CampaignFormProps) => {
         productDescription:
           "Acme Corporation is a fictional corporation that features prominently in the Road Runner/Wile E. Coyote animated shorts as a running gag. The company manufactures outlandish products.",
         clickUrl: `https://en.wikipedia.org/wiki/Acme_Corporation?utm_campaign=${tempName}&utm_source=brandweaver.ai`,
-        requiredCssSelector: "",
         pacing: false,
         status: true,
       };
@@ -123,7 +122,6 @@ const CampaignForm = (props: CampaignFormProps) => {
     productName,
     productDescription,
     clickUrl,
-    requiredCssSelector,
     status,
     pacing,
   } = inputs;
@@ -341,22 +339,6 @@ const CampaignForm = (props: CampaignFormProps) => {
             This is the click url with your utm params for the campaign.
           </FormHelperText>
         )}
-      </FormControl>
-      <FormControl>
-        <FormLabel>CSS Selector</FormLabel>
-        <Input
-          type={"text"}
-          value={requiredCssSelector}
-          onChange={setInput.bind(this, "requiredCssSelector")}
-        />
-        <FormHelperText>
-          This is an optional field. If provided it will limit the campaign to
-          run only on pages which have the provided css Selector
-        </FormHelperText>
-        <FormHelperText>
-          e.g. {`[meta-category="fashion"]`} will run the campaign only on pages
-          which have been categorized as fashion articles.
-        </FormHelperText>
       </FormControl>
       <FormControl>
         <FormLabel>Categories</FormLabel>

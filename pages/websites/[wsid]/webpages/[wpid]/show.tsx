@@ -47,7 +47,7 @@ import useAdsOfBestCampaign from "@/hooks/useAdsOfBestCampaign";
 import numeral from "numeral";
 import { AdvertisementWithSpotAndCampaign } from "@/pages/api/websites/[wsid]/webpages/[wpid]/adsOfBestCampaign";
 import useCampWithImpCount from "@/hooks/useCampWithImpCount";
-import { Campaign } from "@prisma/client";
+import { AdvertisementSpot, Campaign } from "@prisma/client";
 import campaigns from "@/pages/api/campaigns";
 
 type AdsBoxProps = {
@@ -196,6 +196,48 @@ export const ImpDeliveryMessage = (props: ImpDeliveryMessagePropsType) => {
           </span>
         </Tooltip>
       </Skeleton>
+    </>
+  );
+};
+
+const AdSpots = ({
+  adSpots,
+}: {
+  adSpots: AdvertisementSpot[] | null | undefined;
+}) => {
+  return (
+    <>
+      <Heading size={"md"} my={4} pl={3}>
+        Ad Spots
+      </Heading>
+      {!adSpots && (
+        <WarningAlert
+          description={"Ad Spots have not been built yet. Try later."}
+        />
+      )}
+        {adSpots &&
+          adSpots.map((adSpot) => {
+            return (
+              <VStack
+                key={adSpot.id}
+                alignItems={"start"}
+                mt={5}
+                p={5}
+                border={"1px"}
+                borderColor={"gray.200"}
+                borderRadius={"md"}
+              >
+                <HStack alignItems={"start"} key={adSpot.id}>
+                  <Box minW={"4xs"}>Before: </Box>
+                  <Box>{adSpot.beforeText}</Box>
+                </HStack>
+                <HStack alignItems={"start"}>
+                  <Box minW={"4xs"}>After: </Box>
+                  <Box>{adSpot.afterText}</Box>
+                </HStack>
+              </VStack>
+            );
+          })}
     </>
   );
 };
@@ -371,6 +413,14 @@ const WebpageBox = ({
         </Box>
       </HStack>
       <HStack>
+        <Box minW={"3xs"}>Title: </Box>
+        <Box noOfLines={1}>{webpage.content?.title ?? "-"}</Box>
+      </HStack>
+      <HStack>
+        <Box minW={"3xs"}>Description: </Box>
+        <Box noOfLines={2}>{webpage.content?.description ?? "-"}</Box>
+      </HStack>
+      <HStack>
         <Box minW={"3xs"}># of Ad Spots: </Box>
         <Box>{webpage._count.advertisementSpots}</Box>
       </HStack>
@@ -418,6 +468,9 @@ const Show = () => {
       </Box>
       <Box mt={5} border={"1px"} borderColor={"gray.200"} borderRadius={"md"}>
         <ScoredCampaigns />
+      </Box>
+      <Box mt={5} p={5} border={"1px"} borderColor={"gray.200"} borderRadius={"md"}>
+        <AdSpots adSpots={webpage?.advertisementSpots} />
       </Box>
       <HStack my={5} spacing={5}>
         <Link href={`/websites/${wsid}/webpages/list`} colorScheme={"green"}>

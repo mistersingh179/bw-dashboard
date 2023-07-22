@@ -9,9 +9,9 @@ export const WEBPAGE_INSERT_CHUNK_COUNT = 100;
 export const AD_BUILD_FAIL_COUNT_LIMIT = 3;
 
 let ad_build_lock_time;
-if(process.env.NODE_ENV === 'development'){
+if (process.env.NODE_ENV === "development") {
   ad_build_lock_time = 5;
-}else{
+} else {
   ad_build_lock_time = 1 * 60 * 60;
 }
 export const AD_BUILD_LOCK_TIME = ad_build_lock_time;

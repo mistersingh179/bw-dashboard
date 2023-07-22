@@ -129,29 +129,12 @@ drop database bw;
 - adSpot maker is using user provided css selector get beforeText elements but front end is only checking paras.
   - this means if ad spot was latching on divs, we would not get it.
   - we should scan all or exactly the same as backend.
-- fix dev worker to auto reload when any jobs or services change
-- show ad spots on the webpage & content. this would help us debug it.
 - front end way to re-process a webpage
   - should get content again
   - get ad spots again
   - score campaigns again
   - and the build ads again
-- grant users computer super-power so we can show buttons inside other accounts which require super access
-- get prisma cloud going
-- create an ignore list for sitemap - /tag/_, /bwg_gallery/_
-- create an accept list for sitemap which takes pattern regardless of date
-- url page patterns to ignore - `*/bwg_gallery/*`
-- triage why `https://newyorkstyleguide.com/rossinavi-launches-70m-ice-class-superyacht-polaris/` is not printing when it is not taken
-- update placeholder value post-sitemap1.xml
-- ability to add multiple sitemaps like post-1, gallery-1
-  - no need to autopopulate this from main sitemap
-- why does processUser not build ads on old webpages
-- processUser -> processWebsite -> only calls ProcessWebpage for newly added webpages
-  - it will not call for existing webpages which dont have ads
-- remove css selector from campaigns
 - pagination size to persist across pages
-- where should ad go. is it after or before - https://asweatlife.com/2022/11/protein-shake-recipe/
-- investiage why no ad here – https://studyfinds.org/california-emergency-room-wait/
 - take title & description instead of content when scoring campaigns
 - paginate scoring of campaigns
 - amazon affaliates api to get campaigns
@@ -159,6 +142,9 @@ drop database bw;
 ## Pending dev ops
 
 - auto set title name when cd into appropriate directory
+- try prisma cloud with a new db and then with json schema format
+- grant users computer super-power so we can show buttons inside other accounts which require super access
+- fix dev worker to auto reload when any jobs or services change
 
 ## Pending backlog
 
@@ -215,7 +201,6 @@ drop database bw;
   - fetch webpages of new websites
 - make edit & create use separate forms rather than sharing one or merge typescript types on functions
 - make index for to manage all middleware exports
-- add validations to campaign form e.g. requiredCssSelector, url etc.
 - setup wild card for categories on a campaign. this enables a campaign to run on all categories
   - need to also support pages which have no categories
 - improve ad spots code to be able to build them for categories page & home page
