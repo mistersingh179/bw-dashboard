@@ -18,9 +18,9 @@ const getCampaignsWithTheirImpressionCount: GetCampaignsWithTheirImpressionCount
     const sql = Prisma.sql`
         select "Campaign".id, count(I.id) as "impressionsCount"
         from "Campaign"
-                 inner join "ScoredCampaign" SC on "Campaign".id = SC."campaignId"
-                 inner join "Advertisement" A on SC.id = A."scoredCampaignId"
-                 inner join "Impression" I on A.id = I."advertisementId"
+                 LEFT join "ScoredCampaign" SC on "Campaign".id = SC."campaignId"
+                 LEFT join "Advertisement" A on SC.id = A."scoredCampaignId"
+                 LEFT join "Impression" I on A.id = I."advertisementId"
         where "userId" = ${userId}
         group by "Campaign".id;
     `;

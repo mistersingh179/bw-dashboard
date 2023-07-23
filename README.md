@@ -130,10 +130,8 @@ drop database bw;
   - if too many campaigns this will currently fail
   - if html input is too large this will currently fail
 - amazon affaliates api to get campaigns
-- an easier way to see how the content selector is doing on a bunch of pages
-  - need to see why it is not getting stuff
-  - need to see where it is getting stuff
-- show a preview of what we see of a page with ad spots highlighted and rejection reasons
+- put preview bar on top with result
+- remove bw.js from preview
 
 ## Pending dev ops
 

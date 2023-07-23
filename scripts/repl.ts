@@ -9,17 +9,11 @@ import getCampaignsWhoHaveNotMetImpCap from "@/services/queries/getCamapignsWhoH
 import redisClient from "@/lib/redisClient";
 import { User, Prisma } from "@prisma/client";
 (async () => {
-  const ans = await prisma.webpage.findFirstOrThrow({
-    include: {
-      content: {
-        select: {
-          title: true,
-          description: true,
-          id: true
-        }
-      }
+  const ans = await prisma.setting.findFirstOrThrow({
+    where: {
+      userId: "clhtwckif000098wp207rs2fg"
     }
-  });
+  })
   console.log(ans);
 
 })();

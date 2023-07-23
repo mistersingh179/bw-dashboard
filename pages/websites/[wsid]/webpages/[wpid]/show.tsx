@@ -172,7 +172,11 @@ export const ImpDeliveryMessage = (props: ImpDeliveryMessagePropsType) => {
   return (
     <>
       <Skeleton
-        isLoaded={campaign && campsWithImpCount[campaign.id] ? true : false}
+        isLoaded={
+          campaign &&
+          campsWithImpCount[campaign.id] != null &&
+          campsWithImpCount[campaign.id] != undefined
+        }
       >
         <Tooltip
           label={
@@ -215,29 +219,29 @@ const AdSpots = ({
           description={"Ad Spots have not been built yet. Try later."}
         />
       )}
-        {adSpots &&
-          adSpots.map((adSpot) => {
-            return (
-              <VStack
-                key={adSpot.id}
-                alignItems={"start"}
-                mt={5}
-                p={5}
-                border={"1px"}
-                borderColor={"gray.200"}
-                borderRadius={"md"}
-              >
-                <HStack alignItems={"start"} key={adSpot.id}>
-                  <Box minW={"4xs"}>Before: </Box>
-                  <Box>{adSpot.beforeText}</Box>
-                </HStack>
-                <HStack alignItems={"start"}>
-                  <Box minW={"4xs"}>After: </Box>
-                  <Box>{adSpot.afterText}</Box>
-                </HStack>
-              </VStack>
-            );
-          })}
+      {adSpots &&
+        adSpots.map((adSpot) => {
+          return (
+            <VStack
+              key={adSpot.id}
+              alignItems={"start"}
+              mt={5}
+              p={5}
+              border={"1px"}
+              borderColor={"gray.200"}
+              borderRadius={"md"}
+            >
+              <HStack alignItems={"start"} key={adSpot.id}>
+                <Box minW={"4xs"}>Before: </Box>
+                <Box>{adSpot.beforeText}</Box>
+              </HStack>
+              <HStack alignItems={"start"}>
+                <Box minW={"4xs"}>After: </Box>
+                <Box>{adSpot.afterText}</Box>
+              </HStack>
+            </VStack>
+          );
+        })}
     </>
   );
 };
@@ -387,11 +391,7 @@ const WebpageBox = ({
   return (
     <VStack alignItems={"start"}>
       <HStack>
-        <Box minW={"3xs"}>Id: </Box>
-        <Box>{webpage.id}</Box>
-      </HStack>
-      <HStack>
-        <Box minW={"3xs"}>Name: </Box>
+        <Box minW={"3xs"}>Url: </Box>
         <Box>
           <Link href={webpage.url} target={"_blank"}>
             {webpage.url} <ExternalLinkIcon mx="2px" mb={"2px"} />
@@ -423,6 +423,18 @@ const WebpageBox = ({
       <HStack>
         <Box minW={"3xs"}># of Ad Spots: </Box>
         <Box>{webpage._count.advertisementSpots}</Box>
+        <Box>
+          {webpage?.content && (
+            <Tag colorScheme={'blue'}>
+              <Link
+                href={`/api/websites/${webpage.websiteId}/webpages/${webpage.id}/adSpotPreview`}
+                target={"_blank"}
+              >
+                Preview <ExternalLinkIcon mx="2px" mb={"2px"} />
+              </Link>
+            </Tag>
+          )}
+        </Box>
       </HStack>
       <HStack>
         <Box minW={"3xs"}># of Scored Campaigns: </Box>
@@ -469,7 +481,13 @@ const Show = () => {
       <Box mt={5} border={"1px"} borderColor={"gray.200"} borderRadius={"md"}>
         <ScoredCampaigns />
       </Box>
-      <Box mt={5} p={5} border={"1px"} borderColor={"gray.200"} borderRadius={"md"}>
+      <Box
+        mt={5}
+        p={5}
+        border={"1px"}
+        borderColor={"gray.200"}
+        borderRadius={"md"}
+      >
         <AdSpots adSpots={webpage?.advertisementSpots} />
       </Box>
       <HStack my={5} spacing={5}>

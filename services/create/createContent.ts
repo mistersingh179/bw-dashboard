@@ -56,11 +56,6 @@ const createContent: CreateContent = async (
     return null;
   }
 
-  myLogger.info(
-    { htmlContent: htmlContent.substring(0, 10000) },
-    "got content"
-  );
-
   if (GATED_CONTENT_PHRASE.some((phrase) => htmlContent.includes(phrase))) {
     myLogger.info({}, "aborting as we got gated content page");
     return null;

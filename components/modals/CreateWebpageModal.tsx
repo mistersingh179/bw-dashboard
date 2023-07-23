@@ -21,7 +21,7 @@ import { WebpageType } from "@/types/my-types";
 
 const dummyUrl =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:8000/TestPage.html"
+    ? "http://localhost:8000/html/TestPage.html"
     : "https://YourWebsite.com/TestPage.html";
 
 const CreateWebpageModal = ({
