@@ -9,7 +9,8 @@ import {
   NumberIncrementStepper,
   NumberInput,
   NumberInputField,
-  NumberInputStepper, Spinner,
+  NumberInputStepper,
+  Spinner,
   Switch,
   Textarea,
   VStack,
@@ -58,23 +59,22 @@ const CampaignForm = (props: CampaignFormProps) => {
   } = useCategoriesOfCampaign(campaign?.id);
 
   const showSpinnerForCategoriesSelect = () => {
-    if(isLoadingAllCategories){
+    if (isLoadingAllCategories) {
       return true;
-    } else if(campaign?.id && isLoadingCampaignCategories){
+    } else if (campaign?.id && isLoadingCampaignCategories) {
       return true;
     } else {
       return false;
     }
-  }
-  console.log("showSpinnerForCategoriesSelect: ", showSpinnerForCategoriesSelect())
+  };
 
   const weHaveCategoriesData = () => {
-    if(campaign?.id){
-      return Boolean(allCategories) && Boolean(campaignCategories)
-    }else {
-      return Boolean(allCategories)
+    if (campaign?.id) {
+      return Boolean(allCategories) && Boolean(campaignCategories);
+    } else {
+      return Boolean(allCategories);
     }
-  }
+  };
 
   const [selectedCategoryOptions, setSelectedCategoryOptions] = useState<
     CategoryOptionType[]
@@ -82,7 +82,10 @@ const CampaignForm = (props: CampaignFormProps) => {
 
   useEffect(() => {
     if (campaignCategories) {
-      console.log("*** got new campaignCategories, will update state: ", campaignCategories)
+      console.log(
+        "*** got new campaignCategories, will update state: ",
+        campaignCategories
+      );
       const campaignCategoryOptions: CategoryOptionType[] =
         campaignCategories.map((c) => ({
           value: c.id ? c.id : "",
@@ -168,12 +171,19 @@ const CampaignForm = (props: CampaignFormProps) => {
     inputName: string,
     evt: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log("in setDate with: ", inputName, evt.target.value);
-    const dateObj = parse(evt.target.value, "yyyy-MM-dd", new Date());
-    setInputs((oldInputs) => ({
-      ...oldInputs,
-      [inputName]: dateObj,
-    }));
+    console.log("***in setDate with: ", inputName, evt.target.value, evt.target.value === "");
+    if (evt.target.value === "") {
+      setInputs((oldInputs) => ({
+        ...oldInputs,
+        [inputName]: undefined,
+      }));
+    }else{
+      const dateObj = parse(evt.target.value, "yyyy-MM-dd", new Date());
+      setInputs((oldInputs) => ({
+        ...oldInputs,
+        [inputName]: dateObj,
+      }));
+    }
   };
 
   const setText = (
@@ -229,7 +239,7 @@ const CampaignForm = (props: CampaignFormProps) => {
         <FormLabel>Start Date</FormLabel>
         <Input
           type="date"
-          value={format(start, "yyyy-MM-dd")}
+          value={start ? format(start, "yyyy-MM-dd") : undefined}
           onChange={setDate.bind(this, "start")}
         />
         <FormHelperText>When to start this campaign</FormHelperText>
@@ -238,7 +248,7 @@ const CampaignForm = (props: CampaignFormProps) => {
         <FormLabel>End Date</FormLabel>
         <Input
           type="date"
-          value={format(end, "yyyy-MM-dd")}
+          value={end ? format(end, "yyyy-MM-dd") : undefined}
           onChange={setDate.bind(this, "end")}
         />
         <FormHelperText>When to stop this campaign</FormHelperText>
@@ -288,7 +298,7 @@ const CampaignForm = (props: CampaignFormProps) => {
           value={productName}
           onChange={setInput.bind(this, "productName")}
           placeholder={"Acme Corp."}
-          disabled={campaign ? true : false }
+          disabled={campaign ? true : false}
         />
         {productNameMissing && (
           <FormErrorMessage>
@@ -308,7 +318,7 @@ const CampaignForm = (props: CampaignFormProps) => {
           value={productDescription}
           onChange={setText.bind(this, "productDescription")}
           placeholder={productDescription}
-          disabled={campaign ? true : false }
+          disabled={campaign ? true : false}
         />
         {productDescriptionMissing && (
           <FormErrorMessage>

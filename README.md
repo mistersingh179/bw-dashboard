@@ -110,15 +110,12 @@ drop database bw;
 
 ## Pending issues
 
+- make category tags wrap and collapsed
 - rebuild all existing ads to help with onboarding
 - make links bold
-- campaign date breaks when typing starts with a 0.
 - add ip address to logs
   - add child logger to request object
   - use middleware to add it
-- adSpot maker is using user provided css selector get beforeText elements but front end is only checking paras.
-  - this means if ad spot was latching on divs, we would not get it.
-  - we should scan all or exactly the same as backend.
 - front end way to re-process a webpage
   - should get content again
   - get ad spots again
@@ -130,8 +127,6 @@ drop database bw;
   - if too many campaigns this will currently fail
   - if html input is too large this will currently fail
 - amazon affaliates api to get campaigns
-- put preview bar on top with result
-- remove bw.js from preview
 
 ## Pending dev ops
 
@@ -159,6 +154,9 @@ drop database bw;
   - this would change if you add/remove campaigns
   - also would change if you change user threshold score
 - the `WILL SHOW` column on advertisements is not taking into account the impression cap of campaign
+- adSpot maker is using user provided css selector get beforeText elements but front end is only checking paras.
+  - this means if ad spot was latching on divs, we would not get it.
+  - we should scan all or exactly the same as backend.
 
 ## Pending callback
 
