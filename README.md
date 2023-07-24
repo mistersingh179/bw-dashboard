@@ -11,7 +11,7 @@
 - run taskforce locally so taskforce UI can see our local redis
 - `TASKFORCE_TOKEN=xxx taskforce -n "Local Docker Redis" -p 63790`
 - at times we need to run scripts locally and dont want logs so we can turn them off via env variables `PINO_LOG_LEVEL=error node --loader tsx scripts/repl.ts`
-- rename iterm2 tab by `command + i` and then typing what we want
+- rename iterm2  terminal tab title by `command + i` and then typing what we want
 
 ## running arbitrary script
 
@@ -110,8 +110,8 @@ drop database bw;
 
 ## Pending issues
 
-- rebuild all existing ads to help with onboarding
 - make links bold
+- rebuild all ads
 - add ip address to logs
   - add child logger to request object
   - use middleware to add it
