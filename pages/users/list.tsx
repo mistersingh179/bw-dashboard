@@ -116,10 +116,10 @@ const Users = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {error && <ErrorRow colSpan={3} />}
-            {isLoading && <LoadingDataRow colSpan={3} />}
+            {error && <ErrorRow colSpan={4} />}
+            {isLoading && <LoadingDataRow colSpan={4} />}
             {!isLoading && users && users.length == 0 && (
-              <NoDataRow colSpan={3} />
+              <NoDataRow colSpan={4} />
             )}
             {users &&
               users.length > 0 &&

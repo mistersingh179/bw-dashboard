@@ -110,8 +110,6 @@ drop database bw;
 
 ## Pending issues
 
-- clean up local content
-- top banner not showing on pizza site
 - add content selection items in settings UI
 - add ip address to logs
   - add child logger to request object
