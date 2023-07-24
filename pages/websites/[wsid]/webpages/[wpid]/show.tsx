@@ -2,25 +2,23 @@ import { useRouter } from "next/router";
 import { QueryParams } from "@/types/QueryParams";
 import {
   Box,
-  Button,
   Heading,
   HStack,
   Skeleton,
   Spacer,
   Spinner,
   Table,
-  TableCaption,
   TableContainer,
   Tag,
   Tbody,
   Td,
-  Text,
   Tfoot,
   Th,
   Thead,
   Tooltip,
   Tr,
   VStack,
+  Wrap,
 } from "@chakra-ui/react";
 import React from "react";
 import useWebpage from "@/hooks/useWepage";
@@ -34,7 +32,7 @@ import {
 import { formatISO, isAfter, isBefore } from "date-fns";
 import StatusBadge from "@/components/StatusBadge";
 import { Link } from "@chakra-ui/next-js";
-import { ArrowForwardIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { preload } from "swr";
 import fetcher from "@/helpers/fetcher";
 import { WebpageWithAdSpotsAndOtherCounts } from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
@@ -48,7 +46,6 @@ import numeral from "numeral";
 import { AdvertisementWithSpotAndCampaign } from "@/pages/api/websites/[wsid]/webpages/[wpid]/adsOfBestCampaign";
 import useCampWithImpCount from "@/hooks/useCampWithImpCount";
 import { AdvertisementSpot, Campaign } from "@prisma/client";
-import campaigns from "@/pages/api/campaigns";
 
 type AdsBoxProps = {
   ads: AdvertisementWithSpotAndCampaign[];
@@ -362,11 +359,11 @@ const Categories = () => {
         <Box>
           {isLoading && <Spinner color={"blue.500"} />}
           {categories && (
-            <HStack>
+            <Wrap spacing={2}>
               {categories.map((c) => (
                 <Tag key={c.id}>{c.name}</Tag>
               ))}
-            </HStack>
+            </Wrap>
           )}
           {!isLoading && categories && categories.length === 0 && (
             <WarningAlert
@@ -425,7 +422,7 @@ const WebpageBox = ({
         <Box>{webpage._count.advertisementSpots}</Box>
         <Box>
           {webpage?.content && (
-            <Tag colorScheme={'blue'}>
+            <Tag colorScheme={"blue"}>
               <Link
                 href={`/api/websites/${webpage.websiteId}/webpages/${webpage.id}/adSpotPreview`}
                 target={"_blank"}

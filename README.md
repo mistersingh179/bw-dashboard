@@ -110,7 +110,6 @@ drop database bw;
 
 ## Pending issues
 
-- make category tags wrap and collapsed
 - rebuild all existing ads to help with onboarding
 - make links bold
 - add ip address to logs
