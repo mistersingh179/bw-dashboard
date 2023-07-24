@@ -96,7 +96,8 @@ const Settings: FCWithAuth = () => {
     sponsoredWording: "",
     mainPostBodySelector: "",
     allTimeMostVisitedUrlCount: 0,
-    recentlyMostVisitedUrlCount: 0
+    recentlyMostVisitedUrlCount: 0,
+    makeLinksBold: false
   };
 
   const [items, setItems] = useState(defaultValues);

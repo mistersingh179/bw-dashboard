@@ -92,7 +92,7 @@ const Campaigns: FCWithAuth = () => {
               campaigns.map((campaign) => (
                 <Tr key={campaign.id ?? JSON.stringify(campaign)}>
                   <Td>
-                    {campaign.name} / {campaign.id}
+                    {campaign.name}
                   </Td>
                   <Td>
                     <InFlightMessage campaign={campaign as Campaign} />{" "}

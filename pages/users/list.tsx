@@ -85,6 +85,21 @@ const Users = () => {
       window.location.href = window.location.origin;
     }
   };
+
+  const rebuildAdsHandler = async (id: string) => {
+    const payload = {
+      userIdToProcess: id,
+    };
+    const res = await fetch("/api/users/rebuildAds", {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("rebuildAds result: ", res.status, res.statusText);
+  };
+
   return (
     <Box>
       <HStack>
@@ -154,6 +169,18 @@ const Users = () => {
                             }}
                           >
                             Process User
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              const ans = confirm(
+                                `This will DELETE ALL ad spots and ads for ${user.email}. Are you sure?`
+                              );
+                              if (ans) {
+                                rebuildAdsHandler(user.id);
+                              }
+                            }}
+                          >
+                            Rebuild All Ads
                           </MenuItem>
                         </MenuList>
                       </Menu>

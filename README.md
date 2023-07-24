@@ -110,8 +110,9 @@ drop database bw;
 
 ## Pending issues
 
-- make links bold
-- rebuild all ads
+- clean up local content
+- top banner not showing on pizza site
+- add content selection items in settings UI
 - add ip address to logs
   - add child logger to request object
   - use middleware to add it
