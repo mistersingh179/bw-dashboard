@@ -110,15 +110,11 @@ drop database bw;
 
 ## Pending issues
 
-- add content selection items in settings UI
+- css backround for the ads
+  - input box with style tag
 - add ip address to logs
   - add child logger to request object
   - use middleware to add it
-- front end way to re-process a webpage
-  - should get content again
-  - get ad spots again
-  - score campaigns again
-  - and the build ads again
 - pagination size to persist across pages
 - take title & description instead of content when scoring campaigns
 - paginate scoring of campaigns

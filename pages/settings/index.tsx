@@ -10,6 +10,11 @@ import {
   Heading,
   HStack,
   Input,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   Progress,
   Spinner,
   Switch,
@@ -18,7 +23,7 @@ import {
 } from "@chakra-ui/react";
 import CampaignForm from "@/components/CampaignForm";
 import { Link } from "@chakra-ui/next-js";
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import SliderThumbWithTooltip from "@/components/SliderThumbWithTooltip";
 import useSettings from "@/hooks/useSettings";
 import { ErrorAlert, ErrorRow, NoDataRow } from "@/components/genericMessages";
@@ -80,6 +85,98 @@ const sponsoredOptions: { value: string; label: string }[] = [
   },
 ];
 
+type BooleanFormControlPropsType = {
+  label: string;
+  fieldName: string;
+  fieldValue: boolean;
+  updateFn: (label: string, value: boolean) => void;
+  children: ReactNode;
+};
+const BooleanFormControl = (props: BooleanFormControlPropsType) => {
+  const { label, fieldName, fieldValue, updateFn, children } = props;
+  return (
+    <FormControl my={5}>
+      <HStack>
+        <FormLabel minW={'3xs'} mb={0}>{label}</FormLabel>
+        <Switch
+          isChecked={fieldValue}
+          onChange={(evt) => updateFn(fieldName, evt.target.checked)}
+        />
+      </HStack>
+      <FormHelperText my={3} lineHeight={1.5}>
+        {children}
+      </FormHelperText>
+    </FormControl>
+  );
+};
+
+type TextFormControlPropsType = {
+  label: string;
+  fieldName: string;
+  fieldValue: string;
+  updateFn: (label: string, value: string) => void;
+  children: ReactNode;
+};
+const TextFormControl = (props: TextFormControlPropsType) => {
+  const { label,fieldName, fieldValue, updateFn, children } = props;
+  return (
+    <FormControl my={5}>
+      <HStack>
+        <FormLabel minW={'3xs'} mb={0}>{label}</FormLabel>
+        <Box w={"lg"}>
+          <Input
+            value={fieldValue}
+            onChange={(evt) => {
+              updateFn(fieldName, evt.target.value);
+            }}
+          />
+        </Box>
+      </HStack>
+      <FormHelperText my={3} lineHeight={1.5}>
+        {children}
+      </FormHelperText>
+    </FormControl>
+  );
+};
+
+type NumberFormControlPropsType = {
+  label: string;
+  fieldName: string;
+  fieldValue: number;
+  updateFn: (label: string, value: number) => void;
+  children: ReactNode;
+};
+const NumberFormControl = (props: NumberFormControlPropsType) => {
+  const { label, fieldName, fieldValue, updateFn, children } = props;
+  return (
+    <FormControl my={5}>
+      <HStack>
+        <FormLabel minW={'3xs'} mb={0}>{label}</FormLabel>
+        <Box w={"lg"}>
+          <NumberInput
+            min={0}
+            max={10_000}
+            step={1}
+            value={fieldValue ? Number(fieldValue) : 0}
+            onChange={(val) => {
+              updateFn(fieldName, parseInt(val));
+            }}
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+        </Box>
+      </HStack>
+      <FormHelperText my={3} lineHeight={1.5}>
+        {children}
+      </FormHelperText>
+    </FormControl>
+  );
+};
+
 const Settings: FCWithAuth = () => {
   const { settings, error, isLoading, onSave } = useSettings();
 
@@ -97,11 +194,12 @@ const Settings: FCWithAuth = () => {
     mainPostBodySelector: "",
     allTimeMostVisitedUrlCount: 0,
     recentlyMostVisitedUrlCount: 0,
-    makeLinksBold: false
+    makeLinksBold: false,
   };
 
   const [items, setItems] = useState(defaultValues);
   const updateItem = (itemName: string, itemValue: any) => {
+    console.log("in updateItem with: ", itemName, itemValue);
     setItems((prevState) => ({
       ...prevState,
       [itemName]: itemValue,
@@ -112,6 +210,13 @@ const Settings: FCWithAuth = () => {
     status,
     sponsoredWording,
     mainPostBodySelector,
+    contentSelector,
+    minCharLimit,
+    sameTypeElemWithTextToFollow,
+    webpageInsertCap,
+    allTimeMostVisitedUrlCount,
+    recentlyMostVisitedUrlCount,
+    makeLinksBold,
   } = items;
 
   useEffect(() => {
@@ -128,7 +233,7 @@ const Settings: FCWithAuth = () => {
         {error && <ErrorAlert />}
         {isLoading && <Spinner color={"blue.500"} />}
         {settings && (
-          <Box>
+          <VStack spacing={5} mb={10}>
             <FormControl>
               <FormLabel>Score Threshold</FormLabel>
               <SliderThumbWithTooltip
@@ -137,41 +242,30 @@ const Settings: FCWithAuth = () => {
               />
               <FormHelperText my={3} mt={5} lineHeight={1.5}>
                 <Text>
-                  Select the minimum score for campaign product relevancy.
-                </Text>
-                <Text my={1}>
-                  This value is used to define the minimum score a
-                  campaign&apos;s product must receive in order to be considered
-                  relevant to a webpage. Only campaigns that meet or exceed this
-                  score will be eligible to run on the webpage.
+                  Select the minimum score for campaign product relevancy. This
+                  value is used to define the minimum score a campaign&apos;s
+                  product must receive in order to be considered relevant to a
+                  webpage. Only campaigns that meet or exceed this score will be
+                  eligible to run on the webpage.
                 </Text>
               </FormHelperText>
               <FormHelperText></FormHelperText>
             </FormControl>
+            <BooleanFormControl
+              label="Status"
+              fieldName={"status"}
+              fieldValue={status}
+              updateFn={updateItem}
+            >
+              <Text>
+                Turn On/Off BrandWeaver Script. If you turn it off, the script
+                will stop working on all websites and all pages for all
+                campaigns. This is a global on/off switch.
+              </Text>
+            </BooleanFormControl>
             <FormControl my={5}>
               <HStack>
-                <FormLabel mb={0}>Status</FormLabel>
-                <Switch
-                  isChecked={status}
-                  onChange={(evt) => updateItem("status", evt.target.checked)}
-                />
-              </HStack>
-              <FormHelperText my={3} lineHeight={1.5}>
-                <Text>Turn On/Off BrandWeaver Script</Text>
-                <Text my={1}>
-                  This toggle switch allows you to turn on or off the
-                  BrandWeaver script. If you turn it off, the script will stop
-                  working on all websites and all pages for all campaigns. This
-                  is a global on/off switch. If you want to control the script
-                  more granularly, you can pause individual campaigns, websites,
-                  or pages.
-                </Text>
-              </FormHelperText>
-              <FormHelperText></FormHelperText>
-            </FormControl>
-            <FormControl my={5}>
-              <HStack>
-                <FormLabel mb={0}>Sponsored Wording:</FormLabel>
+                <FormLabel mb={0} minW={'3xs'} >Sponsored Wording:</FormLabel>
                 <Box w={"lg"}>
                   <Select
                     placeholder={"Currently empty and thus not being used."}
@@ -202,48 +296,106 @@ const Settings: FCWithAuth = () => {
               <FormHelperText my={3} lineHeight={1.5}>
                 <Text>
                   Optionally provide text you want to show after each
-                  advertisement.
-                </Text>
-                <Text my={1}>
-                  This can be used to inform readers that the text generated by
-                  brandweaver.ai was done so by using an AI model and is an
-                  advertisement.
+                  advertisement. This can be used to inform readers that the
+                  text generated by brandweaver.ai was done so by using an AI
+                  model and is an advertisement.
                 </Text>
               </FormHelperText>
               <FormHelperText></FormHelperText>
             </FormControl>
-            <FormControl my={5}>
-              <HStack>
-                <FormLabel mb={0}>Main Post Body Selector</FormLabel>
-                <Box w={"lg"}>
-                  <Input
-                    value={mainPostBodySelector}
-                    onChange={(evt) => {
-                      updateItem("mainPostBodySelector", evt.target.value);
-                    }}
-                  />
-                </Box>
-              </HStack>
-              <FormHelperText my={3} lineHeight={1.5}>
-                <Text>
-                  Provide the CSS selector which identifies where the post is on
-                  your page.
-                </Text>
-                <Text my={1}>
-                  By default the AI model reads the whole body of your post to
-                  understand it. By providing a CSS Selector, you can tell the
-                  model to focus only on the content in this tag.
-                </Text>
-                <Text my={1}>
-                  This can be useful to prevent the model from reading
-                  navigation bars, footers & other content on the page which is
-                  not relevant to the post on the page.
-                </Text>
-              </FormHelperText>
-              <FormHelperText></FormHelperText>
-            </FormControl>
-            <FormControl my={5}>
+            <TextFormControl
+              label={"Main Post Body Selector"}
+              fieldName={'mainPostBodySelector'}
+              fieldValue={mainPostBodySelector}
+              updateFn={updateItem}
+            >
+              <Text>
+                Provide the CSS selector which identifies where the post is on
+                your page. By default the AI model reads the whole body of your
+                post to understand it. By providing a CSS Selector, you can tell
+                the model to focus only on the content in this tag. This can be
+                useful to prevent the model from reading navigation bars,
+                footers & other content on the page.
+              </Text>
+            </TextFormControl>
+            <TextFormControl
+              label={"Content Selector"}
+              fieldName={'contentSelector'}
+              fieldValue={contentSelector}
+              updateFn={updateItem}
+            >
+              <Text>
+                Provide the CSS selector which identifies the paragraph after
+                which to place the ad.
+              </Text>
+            </TextFormControl>
+            <NumberFormControl
+              label={"Min Char Limit"}
+              fieldName={'minCharLimit'}
+              fieldValue={minCharLimit}
+              updateFn={updateItem}
+            >
+              <Text>
+                The minimum number of characters an element must have to be
+                accepted as a place after which an ad can be placed.
+              </Text>
+            </NumberFormControl>
+            <BooleanFormControl
+              label={"Same Type of element to Follow"}
+              fieldName={'sameTypeElemWithTextToFollow'}
+              fieldValue={sameTypeElemWithTextToFollow}
+              updateFn={updateItem}
+            >
+              <Text>
+                When turn on, it required that the element after the ad element
+                is of the same type as the previous element.
+              </Text>
+            </BooleanFormControl>
+            <NumberFormControl
+              label={"Max Webpage Insert Cap"}
+              fieldName={'webpageInsertCap'}
+              fieldValue={webpageInsertCap}
+              updateFn={updateItem}
+            >
+              <Text>
+                The maximum number of webpages which are to be saved at one
+                time.
+              </Text>
+            </NumberFormControl>
+            <NumberFormControl
+              label={"All Time Most Visited Url Count"}
+              fieldName={'allTimeMostVisitedUrlCount'}
+              fieldValue={allTimeMostVisitedUrlCount}
+              updateFn={updateItem}
+            >
+              <Text>
+                The maximum number of webpages to save from the top of all time
+                most visited urls.
+              </Text>
+            </NumberFormControl>
+            <NumberFormControl
+              label={"Recently Most Visited Url Count"}
+              fieldName={'recentlyMostVisitedUrlCount'}
+              fieldValue={recentlyMostVisitedUrlCount}
+              updateFn={updateItem}
+            >
+              <Text>
+                The maximum number of webpages to save from the top of recently
+                most visited urls.
+              </Text>
+            </NumberFormControl>
+            <BooleanFormControl
+              label={"Make Links Bold"}
+              fieldName={'makeLinksBold'}
+              fieldValue={makeLinksBold}
+              updateFn={updateItem}
+            >
+              <Text>Makes product links in the text bold</Text>
+            </BooleanFormControl>
+
+            <FormControl my={5} textAlign={'center'}>
               <Button
+                size={'lg'}
                 colorScheme="blue"
                 onClick={() => {
                   onSave({
@@ -254,7 +406,7 @@ const Settings: FCWithAuth = () => {
                 Save
               </Button>
             </FormControl>
-          </Box>
+          </VStack>
         )}
       </VStack>
     </Box>
