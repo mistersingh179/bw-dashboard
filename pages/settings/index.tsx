@@ -226,6 +226,7 @@ const Settings: FCWithAuth = () => {
     allTimeMostVisitedUrlCount,
     recentlyMostVisitedUrlCount,
     makeLinksBold,
+    customStyles
   } = items;
 
   useEffect(() => {
@@ -419,9 +420,7 @@ const Settings: FCWithAuth = () => {
                     fontSize: 16,
                   }}
                   theme={"vs-dark"}
-                  value={`.brandweaver-ad {
-
-}`}
+                  value={customStyles}
                   onChange={(val) => updateItem("customStyles", val)}
                   height="200px"
                   defaultLanguage="css"
