@@ -109,10 +109,6 @@ drop database bw;
 - UI to see the winning campaign on webpage
 
 ## Pending issues
-
-- css backround for the ads
-  - input box with style tag
-- add ip address to logs
   - add child logger to request object
   - use middleware to add it
 - pagination size to persist across pages
