@@ -3,6 +3,7 @@ import NewCampaign from "@/pages/campaigns/new";
 import {
   Box,
   Button,
+  Code,
   FormControl,
   FormErrorMessage,
   FormHelperText,
@@ -29,6 +30,7 @@ import useSettings from "@/hooks/useSettings";
 import { ErrorAlert, ErrorRow, NoDataRow } from "@/components/genericMessages";
 import { SettingType } from "@/types/my-types";
 import { CreatableSelect as Select } from "chakra-react-select";
+import { Editor } from "@monaco-editor/react";
 
 const sponsoredOptions: { value: string; label: string }[] = [
   {
@@ -97,7 +99,9 @@ const BooleanFormControl = (props: BooleanFormControlPropsType) => {
   return (
     <FormControl my={5}>
       <HStack>
-        <FormLabel minW={'3xs'} mb={0}>{label}</FormLabel>
+        <FormLabel minW={"3xs"} mb={0}>
+          {label}
+        </FormLabel>
         <Switch
           isChecked={fieldValue}
           onChange={(evt) => updateFn(fieldName, evt.target.checked)}
@@ -118,11 +122,13 @@ type TextFormControlPropsType = {
   children: ReactNode;
 };
 const TextFormControl = (props: TextFormControlPropsType) => {
-  const { label,fieldName, fieldValue, updateFn, children } = props;
+  const { label, fieldName, fieldValue, updateFn, children } = props;
   return (
     <FormControl my={5}>
       <HStack>
-        <FormLabel minW={'3xs'} mb={0}>{label}</FormLabel>
+        <FormLabel minW={"3xs"} mb={0}>
+          {label}
+        </FormLabel>
         <Box w={"lg"}>
           <Input
             value={fieldValue}
@@ -151,7 +157,9 @@ const NumberFormControl = (props: NumberFormControlPropsType) => {
   return (
     <FormControl my={5}>
       <HStack>
-        <FormLabel minW={'3xs'} mb={0}>{label}</FormLabel>
+        <FormLabel minW={"3xs"} mb={0}>
+          {label}
+        </FormLabel>
         <Box w={"lg"}>
           <NumberInput
             min={0}
@@ -195,6 +203,7 @@ const Settings: FCWithAuth = () => {
     allTimeMostVisitedUrlCount: 0,
     recentlyMostVisitedUrlCount: 0,
     makeLinksBold: false,
+    customStyles: ".brandweaver-ad {}",
   };
 
   const [items, setItems] = useState(defaultValues);
@@ -265,7 +274,9 @@ const Settings: FCWithAuth = () => {
             </BooleanFormControl>
             <FormControl my={5}>
               <HStack>
-                <FormLabel mb={0} minW={'3xs'} >Sponsored Wording:</FormLabel>
+                <FormLabel mb={0} minW={"3xs"}>
+                  Sponsored Wording:
+                </FormLabel>
                 <Box w={"lg"}>
                   <Select
                     placeholder={"Currently empty and thus not being used."}
@@ -305,7 +316,7 @@ const Settings: FCWithAuth = () => {
             </FormControl>
             <TextFormControl
               label={"Main Post Body Selector"}
-              fieldName={'mainPostBodySelector'}
+              fieldName={"mainPostBodySelector"}
               fieldValue={mainPostBodySelector}
               updateFn={updateItem}
             >
@@ -320,7 +331,7 @@ const Settings: FCWithAuth = () => {
             </TextFormControl>
             <TextFormControl
               label={"Content Selector"}
-              fieldName={'contentSelector'}
+              fieldName={"contentSelector"}
               fieldValue={contentSelector}
               updateFn={updateItem}
             >
@@ -331,7 +342,7 @@ const Settings: FCWithAuth = () => {
             </TextFormControl>
             <NumberFormControl
               label={"Min Char Limit"}
-              fieldName={'minCharLimit'}
+              fieldName={"minCharLimit"}
               fieldValue={minCharLimit}
               updateFn={updateItem}
             >
@@ -342,7 +353,7 @@ const Settings: FCWithAuth = () => {
             </NumberFormControl>
             <BooleanFormControl
               label={"Same Type of element to Follow"}
-              fieldName={'sameTypeElemWithTextToFollow'}
+              fieldName={"sameTypeElemWithTextToFollow"}
               fieldValue={sameTypeElemWithTextToFollow}
               updateFn={updateItem}
             >
@@ -353,7 +364,7 @@ const Settings: FCWithAuth = () => {
             </BooleanFormControl>
             <NumberFormControl
               label={"Max Webpage Insert Cap"}
-              fieldName={'webpageInsertCap'}
+              fieldName={"webpageInsertCap"}
               fieldValue={webpageInsertCap}
               updateFn={updateItem}
             >
@@ -364,7 +375,7 @@ const Settings: FCWithAuth = () => {
             </NumberFormControl>
             <NumberFormControl
               label={"All Time Most Visited Url Count"}
-              fieldName={'allTimeMostVisitedUrlCount'}
+              fieldName={"allTimeMostVisitedUrlCount"}
               fieldValue={allTimeMostVisitedUrlCount}
               updateFn={updateItem}
             >
@@ -375,7 +386,7 @@ const Settings: FCWithAuth = () => {
             </NumberFormControl>
             <NumberFormControl
               label={"Recently Most Visited Url Count"}
-              fieldName={'recentlyMostVisitedUrlCount'}
+              fieldName={"recentlyMostVisitedUrlCount"}
               fieldValue={recentlyMostVisitedUrlCount}
               updateFn={updateItem}
             >
@@ -386,16 +397,47 @@ const Settings: FCWithAuth = () => {
             </NumberFormControl>
             <BooleanFormControl
               label={"Make Links Bold"}
-              fieldName={'makeLinksBold'}
+              fieldName={"makeLinksBold"}
               fieldValue={makeLinksBold}
               updateFn={updateItem}
             >
               <Text>Makes product links in the text bold</Text>
             </BooleanFormControl>
 
-            <FormControl my={5} textAlign={'center'}>
+            <FormControl my={5}>
+              <FormLabel>Custom CSS</FormLabel>
+              <Box w={"4xl"}>
+                <Editor
+                  beforeMount={(monaco) => {
+                    monaco.languages.css.cssDefaults.setOptions({
+                      lint: {
+                        emptyRules: "ignore",
+                      },
+                    });
+                  }}
+                  options={{
+                    fontSize: 16,
+                  }}
+                  theme={"vs-dark"}
+                  value={`.brandweaver-ad {
+
+}`}
+                  onChange={(val) => updateItem("customStyles", val)}
+                  height="200px"
+                  defaultLanguage="css"
+                />
+              </Box>
+              <FormHelperText my={3} lineHeight={1.5}>
+                <Text>
+                  Customize ads by adding yours styles to the css class
+                  named: <Code colorScheme={"yellow"}>brandweaver-ad</Code>.
+                </Text>
+              </FormHelperText>
+            </FormControl>
+
+            <FormControl my={5} textAlign={"center"}>
               <Button
-                size={'lg'}
+                size={"lg"}
                 colorScheme="blue"
                 onClick={() => {
                   onSave({

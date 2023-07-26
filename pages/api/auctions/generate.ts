@@ -172,7 +172,11 @@ const generate: NextApiHandler = async (req, res) => {
   );
   res.setHeader("Set-Cookie", cookieHeaderString);
 
-  const settingsToReturn = pick(settings, ["sponsoredWording", "makeLinksBold"]);
+  const settingsToReturn = pick(settings, [
+    "sponsoredWording",
+    "makeLinksBold",
+    "customStyles",
+  ]);
 
   const abortCategories = await getUserAbortCategories(userId);
   const abortCategoryNames = abortCategories.map((x) => x.name);

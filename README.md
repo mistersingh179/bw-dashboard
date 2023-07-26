@@ -116,6 +116,7 @@ drop database bw;
   - add child logger to request object
   - use middleware to add it
 - pagination size to persist across pages
+- fix dashboard numbers
 - take title & description instead of content when scoring campaigns
 - paginate scoring of campaigns
   - if too many campaigns this will currently fail

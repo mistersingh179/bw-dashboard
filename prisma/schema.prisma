@@ -90,6 +90,7 @@ model Setting {
   minCharLimit                  Int      @default(20)
   sameTypeElemWithTextToFollow  Boolean  @default(true)
   makeLinksBold                 Boolean  @default(false)
+  customStyles                  String   @default(".brandweaver-ad {}")
   createdAt                     DateTime @default(now())
   updatedAt                     DateTime @updatedAt
 
