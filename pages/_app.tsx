@@ -9,6 +9,7 @@ import Layout from "@/components/Layout";
 import AuthLoading from "@/components/AuthLoading";
 import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
+import { PaginationProvider } from "@/contexts/PaginationContext";
 
 type ComponentWithAuth = React.ComponentType<any> & {
   auth?: boolean;
@@ -24,15 +25,17 @@ const App = ({
     <>
       <ChakraProvider>
         <SessionProvider session={session}>
-          <Layout>
-            {Component.auth ? (
-              <Auth>
+          <PaginationProvider>
+            <Layout>
+              {Component.auth ? (
+                <Auth>
+                  <Component {...pageProps} />
+                </Auth>
+              ) : (
                 <Component {...pageProps} />
-              </Auth>
-            ) : (
-              <Component {...pageProps} />
-            )}
-          </Layout>
+              )}
+            </Layout>
+          </PaginationProvider>
           <Head>
             <title>BrandWeaver.ai</title>
             <meta name="description" content="BrandWeaver.ai App" />

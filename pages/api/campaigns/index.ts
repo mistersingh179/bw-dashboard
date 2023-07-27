@@ -5,6 +5,7 @@ import withMiddleware from "@/middlewares/withMiddleware";
 import superjson from "superjson";
 import processCampaignQueue from "@/jobs/queues/processCampaignQueue";
 import logger from "@/lib/logger";
+import { QueryParams } from "@/types/QueryParams";
 
 type AuctionResponseData = {
   message: string;
@@ -45,7 +46,10 @@ const handleCreateCampaign = async (
 
   // todo - we should also call a similar job when campaign's product is updated.
   const job = await processCampaignQueue.add("processCampaign", { campaign });
-  logger.info({ campaign, job, reqId: req.reqId }, "schedule job to process campaign");
+  logger.info(
+    { campaign, job, reqId: req.reqId },
+    "schedule job to process campaign"
+  );
 
   res
     .setHeader("Content-Type", "application/json")
@@ -57,13 +61,21 @@ const handleListCampaigns = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
+  const { page = 1, pageSize = 10 } = req.query as QueryParams;
+  const userId = req.authenticatedUserId || "";
+
+  const skip = (Number(page) - 1) * Number(pageSize);
+  const take = Number(pageSize);
+
   const campaigns = await prisma.campaign.findMany({
     where: {
-      userId: req.authenticatedUserId || "",
+      userId,
     },
     orderBy: {
       id: "asc",
     },
+    take,
+    skip,
   });
   res
     .setHeader("Content-Type", "application/json")

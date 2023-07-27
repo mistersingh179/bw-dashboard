@@ -109,8 +109,7 @@ drop database bw;
 - UI to see the winning campaign on webpage
 
 ## Pending issues
-  - add child logger to request object
-  - use middleware to add it
+
 - pagination size to persist across pages
 - fix dashboard numbers
 - take title & description instead of content when scoring campaigns
@@ -148,6 +147,9 @@ drop database bw;
 - adSpot maker is using user provided css selector get beforeText elements but front end is only checking paras.
   - this means if ad spot was latching on divs, we would not get it.
   - we should scan all or exactly the same as backend.
+- create a child logger via middleware, add it to request object so that all downstream services can use that
+  - this way in auctions generate we create logger
+  - then impression count service called from it can use that logger
 
 ## Pending callback
 

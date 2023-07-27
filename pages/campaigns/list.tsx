@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import {
   Box,
   Button,
@@ -38,6 +38,8 @@ import {
 } from "@/pages/websites/[wsid]/webpages/[wpid]/show";
 import { Campaign } from "@prisma/client";
 import numeral from "numeral";
+import PaginationContext, {PaginationContentType} from "@/contexts/PaginationContext";
+import PaginationRow from "@/components/PaginationRow";
 
 export const disabledProps: StackProps = {
   opacity: 0.4,
@@ -46,7 +48,9 @@ export const disabledProps: StackProps = {
 
 const Campaigns: FCWithAuth = () => {
   const router = useRouter();
-  const { page, setPage, pageSize, setPageSize } = usePagination();
+  const { page, setPage, pageSize, setPageSize } =
+    useContext(PaginationContext) as PaginationContentType;
+
   const { campaigns, error, isLoading, onUpdate, onDelete } = useCampaigns(
     page,
     pageSize
@@ -144,6 +148,21 @@ const Campaigns: FCWithAuth = () => {
           {campaigns && campaigns.length > 0 && (
             <TableCaption>These are your sweet campaigns.</TableCaption>
           )}
+          <PaginationRow
+            page={page}
+            setPage={setPage}
+            pageSize={pageSize}
+            setPageSize={setPageSize}
+            colSpan={5}
+            onMouseOverFn={() =>
+              preload(
+                `/api/campaigns/?page=${
+                  page + 1
+                }&pageSize=${pageSize}`,
+                fetcher
+              )
+            }
+          />
         </Table>
       </TableContainer>
     </Box>
