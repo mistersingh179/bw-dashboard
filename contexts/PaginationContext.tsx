@@ -1,27 +1,24 @@
-import {createContext, Dispatch, ReactNode, SetStateAction, useState} from "react";
+import { createContext, ReactNode } from "react";
+import usePagination, { PaginationType } from "@/hooks/usePagination";
 
-export type PaginationContentType = {
-  page: number,
-  setPage: Dispatch<SetStateAction<number>>,
-  pageSize: number,
-  setPageSize: Dispatch<SetStateAction<number>>
-}
+export type PaginationContextType = {
+  webpagesPagination: PaginationType;
+  campaignsPagination: PaginationType;
+};
 
-const PaginationContext = createContext<PaginationContentType | null>(null);
+const PaginationContext = createContext<PaginationContextType | null>(null);
 
 export default PaginationContext;
 
 export const PaginationProvider = ({ children }: { children: ReactNode }) => {
-  const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const webpagesPagination = usePagination();
+  const campaignsPagination = usePagination();
 
   return (
     <PaginationContext.Provider
       value={{
-        page,
-        setPage,
-        pageSize,
-        setPageSize,
+        webpagesPagination,
+        campaignsPagination,
       }}
     >
       {children}

@@ -33,17 +33,20 @@ import useWebpages from "@/hooks/useWebpages";
 import useWebsites from "@/hooks/useWebsites";
 import Link from "next/link";
 import PaginationRow from "@/components/PaginationRow";
-import usePagination from "@/hooks/usePagination";
 import { AddIcon } from "@chakra-ui/icons";
 import CreateWebpageModal from "@/components/modals/CreateWebpageModal";
-import PaginationContext, { PaginationContentType } from "@/contexts/PaginationContext";
+import PaginationContext, {
+  PaginationContextType,
+} from "@/contexts/PaginationContext";
 
 const Webpages: FCWithAuth = () => {
   const router = useRouter();
   const { wsid } = router.query as QueryParams;
 
-  const { page, setPage, pageSize, setPageSize } =
-    useContext(PaginationContext) as PaginationContentType;
+  const { webpagesPagination } = useContext(
+    PaginationContext
+  ) as PaginationContextType;
+  const { page, setPage, pageSize, setPageSize } = webpagesPagination;
 
   const { webpages, error, isLoading, onSave, onUpdate } = useWebpages(
     wsid,

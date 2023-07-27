@@ -1,10 +1,9 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import {
   Box,
   Button,
   Heading,
   HStack,
-  Skeleton,
   Spacer,
   StackProps,
   Switch,
@@ -14,7 +13,6 @@ import {
   Tbody,
   Td,
   Th,
-  Text,
   Thead,
   Tr,
 } from "@chakra-ui/react";
@@ -30,15 +28,15 @@ import {
   NoDataRow,
 } from "@/components/genericMessages";
 import useCampaigns from "@/hooks/useCampaigns";
-import usePagination from "@/hooks/usePagination";
 import useCampWithImpCount from "@/hooks/useCampWithImpCount";
 import {
   ImpDeliveryMessage,
   InFlightMessage,
 } from "@/pages/websites/[wsid]/webpages/[wpid]/show";
 import { Campaign } from "@prisma/client";
-import numeral from "numeral";
-import PaginationContext, {PaginationContentType} from "@/contexts/PaginationContext";
+import PaginationContext, {
+  PaginationContextType,
+} from "@/contexts/PaginationContext";
 import PaginationRow from "@/components/PaginationRow";
 
 export const disabledProps: StackProps = {
@@ -48,8 +46,10 @@ export const disabledProps: StackProps = {
 
 const Campaigns: FCWithAuth = () => {
   const router = useRouter();
-  const { page, setPage, pageSize, setPageSize } =
-    useContext(PaginationContext) as PaginationContentType;
+  const { campaignsPagination } = useContext(
+    PaginationContext
+  ) as PaginationContextType;
+  const { page, setPage, pageSize, setPageSize } = campaignsPagination;
 
   const { campaigns, error, isLoading, onUpdate, onDelete } = useCampaigns(
     page,
@@ -95,9 +95,7 @@ const Campaigns: FCWithAuth = () => {
               campaigns.length > 0 &&
               campaigns.map((campaign) => (
                 <Tr key={campaign.id ?? JSON.stringify(campaign)}>
-                  <Td>
-                    {campaign.name}
-                  </Td>
+                  <Td>{campaign.name}</Td>
                   <Td>
                     <InFlightMessage campaign={campaign as Campaign} />{" "}
                   </Td>
@@ -156,9 +154,7 @@ const Campaigns: FCWithAuth = () => {
             colSpan={5}
             onMouseOverFn={() =>
               preload(
-                `/api/campaigns/?page=${
-                  page + 1
-                }&pageSize=${pageSize}`,
+                `/api/campaigns/?page=${page + 1}&pageSize=${pageSize}`,
                 fetcher
               )
             }
