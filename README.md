@@ -117,6 +117,9 @@ drop database bw;
   - if too many campaigns this will currently fail
   - if html input is too large this will currently fail
 - amazon affaliates api to get campaigns
+- track if impression was in viewable space
+  - if its below fold, or hidden in a modal etc.
+- generate message should tell us that webpage not found instead of saying status is off
 
 ## Pending dev ops
 
