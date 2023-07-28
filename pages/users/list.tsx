@@ -100,6 +100,20 @@ const Users = () => {
     console.log("rebuildAds result: ", res.status, res.statusText);
   };
 
+  const deleteAllAuctions = async (id: string) => {
+    const payload = {
+      userIdToProcess: id,
+    };
+    const res = await fetch("/api/users/deleteAllAuctions", {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("deleteAllAuctions result: ", res.status, res.statusText);
+  };
+
   return (
     <Box>
       <HStack>
@@ -173,7 +187,9 @@ const Users = () => {
                           <MenuItem
                             onClick={() => {
                               const ans = confirm(
-                                `This will DELETE ALL ad spots and ads for ${user.email}. Are you sure?`
+                                `This will DELETE ALL ad spots and ads for ${user.email}. ` +
+                                `It will also set related impressions to have reference id of null, but wont delete them. ` +
+                                `Are you sure?`
                               );
                               if (ans) {
                                 rebuildAdsHandler(user.id);
@@ -181,6 +197,18 @@ const Users = () => {
                             }}
                           >
                             Rebuild All Ads
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              const ans = confirm(
+                                `This will DELETE ALL auctions & related impressions for ${user.email}. Are you sure?`
+                              );
+                              if (ans) {
+                                deleteAllAuctions(user.id);
+                              }
+                            }}
+                          >
+                            Delete All Auctions
                           </MenuItem>
                         </MenuList>
                       </Menu>

@@ -5,7 +5,7 @@ import logger from "@/lib/logger";
 import processWebpageQueue from "@/jobs/queues/processWebpageQueue";
 
 const rebuildAds: NextApiHandler = async (req, res) => {
-  const { userIdToProcess } = req.body;
+  const userIdToProcess = req.body.userIdToProcess ?? "";
 
   const result = await prisma.advertisementSpot.deleteMany({
     where: {
