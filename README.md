@@ -110,7 +110,6 @@ drop database bw;
 
 ## Pending issues
 
-- pagination size to persist across pages
 - fix dashboard numbers
 - take title & description instead of content when scoring campaigns
 - paginate scoring of campaigns

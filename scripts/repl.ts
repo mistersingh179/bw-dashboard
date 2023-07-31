@@ -9,11 +9,12 @@ import getCampaignsWhoHaveNotMetImpCap from "@/services/queries/getCamapignsWhoH
 import redisClient from "@/lib/redisClient";
 import { User, Prisma } from "@prisma/client";
 (async () => {
-  const ans = await prisma.setting.findFirstOrThrow({
-    where: {
-      userId: "clhtwckif000098wp207rs2fg"
-    }
-  })
+  const sql = Prisma.sql`
+      select count(*) as "impressionsCount"
+      from "Impression" 
+      inner join "Auction" A on A.id = "Impression"."auctionId"`;
+
+  const ans = await prisma.$queryRaw(sql);
   console.log(ans);
 
 })();

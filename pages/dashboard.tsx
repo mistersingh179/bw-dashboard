@@ -4,7 +4,6 @@ import {
   Box,
   Center,
   Heading,
-  HStack,
   Skeleton,
   Stat,
   StatArrow,
@@ -16,14 +15,14 @@ import {
 } from "@chakra-ui/react";
 import FCWithAuth from "@/types/FCWithAuth";
 import {
-  LineChart,
-  Line,
   CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
 } from "recharts";
 import _ from "lodash";
 import fetcher from "@/helpers/fetcher";
@@ -60,14 +59,35 @@ const renderLineChart = (
       <Legend
         verticalAlign="bottom"
         height={36}
-        formatter={(val) => (val === "pageLoads" ? "Page Loads" : _.capitalize(val))}
+        formatter={(val) =>
+          val === "pageLoads" ? "Page Loads" : _.capitalize(val)
+        }
       />
     </LineChart>
   </ResponsiveContainer>
 );
 
+type DashboardType = {
+  impressionsCount: number;
+  auctionsCount: number;
+  clicksCount: number;
+};
+
 const Dashboard: FCWithAuth = () => {
-  const { data, error, isLoading } = useSWR<any>("/api/dashboard", fetcher);
+  const { data, error, isLoading } = useSWR<DashboardType>(
+    "/api/dashboard",
+    fetcher
+  );
+  const ctr = () => {
+    if (isLoading || !data || !data.impressionsCount) {
+      return 0;
+    } else {
+      return (
+        parseFloat(data.clicksCount.toString()) /
+        parseFloat(data.impressionsCount.toString())
+      );
+    }
+  };
   return (
     <Box>
       <Heading mt={5}>Dashboard</Heading>
@@ -87,7 +107,7 @@ const Dashboard: FCWithAuth = () => {
           <Skeleton isLoaded={!isLoading}>
             <StatNumber w={"auto"}>
               {error && <Text color={"tomato"}>Unavailable</Text>}
-              {numeral(data?.auctionsCount).format("0,0")}
+              {data && numeral(data.auctionsCount).format("0,0")}
             </StatNumber>
           </Skeleton>
           <StatHelpText>
@@ -96,18 +116,42 @@ const Dashboard: FCWithAuth = () => {
           </StatHelpText>
         </Stat>
 
-        <Stat>
+        <Stat w={"fit-content"}>
           <StatLabel>Impressions</StatLabel>
-          <StatNumber>0</StatNumber>
+          <Skeleton isLoaded={!isLoading}>
+            <StatNumber w={"auto"}>
+              {error && <Text color={"tomato"}>Unavailable</Text>}
+              {data && numeral(data.impressionsCount).format("0,0")}
+            </StatNumber>
+          </Skeleton>
           <StatHelpText>
             <StatArrow type="increase" />
             0.00%
           </StatHelpText>
         </Stat>
 
-        <Stat>
-          <StatLabel>Revenue</StatLabel>
-          <StatNumber>$0.00</StatNumber>
+        <Stat w={"fit-content"}>
+          <StatLabel>Clicks</StatLabel>
+          <Skeleton isLoaded={!isLoading}>
+            <StatNumber w={"auto"}>
+              {error && <Text color={"tomato"}>Unavailable</Text>}
+              {data && numeral(data.clicksCount).format("0,0")}
+            </StatNumber>
+          </Skeleton>
+          <StatHelpText>
+            <StatArrow type="increase" />
+            0.00%
+          </StatHelpText>
+        </Stat>
+
+        <Stat w={"fit-content"}>
+          <StatLabel>CTR</StatLabel>
+          <Skeleton isLoaded={!isLoading}>
+            <StatNumber w={"auto"}>
+              {error && <Text color={"tomato"}>Unavailable</Text>}
+              {numeral(ctr()).format("0.00%")}
+            </StatNumber>
+          </Skeleton>
           <StatHelpText>
             <StatArrow type="increase" />
             0.00%
