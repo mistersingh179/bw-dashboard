@@ -27,64 +27,89 @@ import {
 import _ from "lodash";
 import fetcher from "@/helpers/fetcher";
 import numeral from "numeral";
+import { TotalNumbersType } from "@/pages/api/dashboard/totalNumbers";
+import { ChartItemType } from "@/pages/api/dashboard/chart";
+import { format, fromUnixTime, getUnixTime } from "date-fns";
 
-const data = [
-  { name: "03/01/23", pageLoads: 400, impressions: 300, revenue: 20 },
-  { name: "03/02/23", pageLoads: 500, impressions: 400, revenue: 22 },
-  { name: "03/03/23", pageLoads: 600, impressions: 500, revenue: 260 },
-  { name: "03/04/23", pageLoads: 300, impressions: 200, revenue: 50 },
-  { name: "03/05/23", pageLoads: 500, impressions: 400, revenue: 92 },
-  { name: "03/06/23", pageLoads: 700, impressions: 400, revenue: 42 },
-  { name: "03/07/23", pageLoads: 660, impressions: 400, revenue: 30 },
-  { name: "03/08/23", pageLoads: 200, impressions: 100, revenue: 5 },
-  { name: "03/09/23", pageLoads: 600, impressions: 550, revenue: 260 },
-  { name: "03/10/23", pageLoads: 700, impressions: 500, revenue: 42 },
-];
+const RenderLineChart = ({ data }: { data: ChartItemType[] }) => {
+  const foo = data.map((x) => {
+    return {
+      ...x,
+      time: getUnixTime(x.date),
+      auctions: Number(x.auctions),
+      impressions: Number(x.impressions),
+      clicks: Number(x.clicks),
+    };
+  });
 
-const renderLineChart = (
-  <ResponsiveContainer width={"100%"} height={400}>
-    <LineChart
-      width={600}
-      height={300}
-      data={data}
-      margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-    >
-      <Line type="monotone" dataKey="pageLoads" stroke="#8884d8" />
-      <Line type="monotone" dataKey="impressions" stroke="#82ca9d" />
-      <Line type="monotone" dataKey="revenue" stroke="#ff7300" />
-      <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip />
-      <Legend
-        verticalAlign="bottom"
-        height={36}
-        formatter={(val) =>
-          val === "pageLoads" ? "Page Loads" : _.capitalize(val)
-        }
-      />
-    </LineChart>
-  </ResponsiveContainer>
-);
+  console.log("***", foo);
 
-type DashboardType = {
-  impressionsCount: number;
-  auctionsCount: number;
-  clicksCount: number;
+  return (
+    <ResponsiveContainer width={"100%"} height={400}>
+      <LineChart
+        width={600}
+        height={300}
+        data={foo}
+        margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+      >
+        <Line
+          type="monotone"
+          dataKey="auctions"
+          stroke="#8884d8"
+          name={"Page Loads"}
+        />
+        <Line
+          type="monotone"
+          dataKey="impressions"
+          stroke="#82ca9d"
+          name={"Impressions"}
+        />
+        <Line
+          type="monotone"
+          dataKey="clicks"
+          stroke="#ff7300"
+          name={"Clicks"}
+        />
+        <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+        <XAxis
+          dataKey="time"
+          type={"number"}
+          domain={["auto", "auto"]}
+          tickFormatter={(value) => format(fromUnixTime(value), "yyyy-MM-dd")}
+        />
+        <YAxis />
+        <Tooltip
+          labelFormatter={(x) => format(fromUnixTime(x), "yyyy-MM-dd")}
+        />
+        <Legend
+          verticalAlign="bottom"
+          height={36}
+          formatter={(val) =>
+            val === "auctions" ? "Page Loads" : _.capitalize(val)
+          }
+        />
+      </LineChart>
+    </ResponsiveContainer>
+  );
 };
 
 const Dashboard: FCWithAuth = () => {
-  const { data, error, isLoading } = useSWR<DashboardType>(
-    "/api/dashboard",
+  const {
+    data: totalNumbers,
+    error,
+    isLoading,
+  } = useSWR<TotalNumbersType>("/api/dashboard/totalNumbers", fetcher);
+  const { data: chart } = useSWR<ChartItemType[]>(
+    "/api/dashboard/chart",
     fetcher
   );
   const ctr = () => {
-    if (isLoading || !data || !data.impressionsCount) {
+    if (isLoading || !totalNumbers || !totalNumbers?.impressions) {
       return 0;
     } else {
       return (
-        parseFloat(data.clicksCount.toString()) /
-        parseFloat(data.impressionsCount.toString())
+        parseFloat(totalNumbers.clicks.toString()) /
+        parseFloat(totalNumbers.impressions.toString())
       );
     }
   };
@@ -107,7 +132,7 @@ const Dashboard: FCWithAuth = () => {
           <Skeleton isLoaded={!isLoading}>
             <StatNumber w={"auto"}>
               {error && <Text color={"tomato"}>Unavailable</Text>}
-              {data && numeral(data.auctionsCount).format("0,0")}
+              {totalNumbers && numeral(totalNumbers.auctions).format("0,0")}
             </StatNumber>
           </Skeleton>
           <StatHelpText>
@@ -121,7 +146,7 @@ const Dashboard: FCWithAuth = () => {
           <Skeleton isLoaded={!isLoading}>
             <StatNumber w={"auto"}>
               {error && <Text color={"tomato"}>Unavailable</Text>}
-              {data && numeral(data.impressionsCount).format("0,0")}
+              {totalNumbers && numeral(totalNumbers.impressions).format("0,0")}
             </StatNumber>
           </Skeleton>
           <StatHelpText>
@@ -135,7 +160,7 @@ const Dashboard: FCWithAuth = () => {
           <Skeleton isLoaded={!isLoading}>
             <StatNumber w={"auto"}>
               {error && <Text color={"tomato"}>Unavailable</Text>}
-              {data && numeral(data.clicksCount).format("0,0")}
+              {totalNumbers && numeral(totalNumbers.clicks).format("0,0")}
             </StatNumber>
           </Skeleton>
           <StatHelpText>
@@ -167,7 +192,7 @@ const Dashboard: FCWithAuth = () => {
         borderRadius={"lg"}
         p={5}
       >
-        {renderLineChart}
+        {chart && <RenderLineChart data={chart} />}
       </Center>
     </Box>
   );

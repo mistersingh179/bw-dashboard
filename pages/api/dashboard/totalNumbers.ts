@@ -4,7 +4,11 @@ import withMiddleware from "@/middlewares/withMiddleware";
 import superjson from "superjson";
 import { Prisma } from "@prisma/client";
 
-type CountType = {count: number};
+export type TotalNumbersType = {
+  auctions: number;
+  impressions: number;
+  clicks: number;
+};
 
 const dashboard: NextApiHandler = async (req, res) => {
   const userId = req.authenticatedUserId || "";
@@ -14,7 +18,9 @@ const dashboard: NextApiHandler = async (req, res) => {
       from "Auction" 
       where "userId"= ${userId}`;
 
-  const auctions = await prisma.$queryRaw<CountType[]>(auctionsCountSql);
+  const auctions = await prisma.$queryRaw<{ count: number }[]>(
+    auctionsCountSql
+  );
 
   const impressionsCountSql = Prisma.sql`
       select count(*) as "count"
@@ -22,7 +28,9 @@ const dashboard: NextApiHandler = async (req, res) => {
       inner join "Auction" A on A.id = "Impression"."auctionId"
       where "userId"= ${userId}`;
 
-  const impressions = await prisma.$queryRaw<CountType[]>(impressionsCountSql);
+  const impressions = await prisma.$queryRaw<{ count: number }[]>(
+    impressionsCountSql
+  );
 
   const clicksCountSql = Prisma.sql`
       select count(*) as "count"
@@ -30,18 +38,18 @@ const dashboard: NextApiHandler = async (req, res) => {
       inner join "Auction" A on A.id = "Impression"."auctionId" and "Impression".clicked=true
       where "userId"= ${userId}`;
 
-  const clicks = await prisma.$queryRaw<CountType[]>(clicksCountSql);
+  const clicks = await prisma.$queryRaw<{ count: number }[]>(clicksCountSql);
+
+  const result: TotalNumbersType = {
+    auctions: auctions[0].count,
+    impressions: impressions[0].count,
+    clicks: clicks[0].count,
+  };
 
   res
     .setHeader("Content-Type", "application/json")
     .status(200)
-    .send(
-      superjson.stringify({
-        auctionsCount: auctions[0].count,
-        impressionsCount: impressions[0].count,
-        clicksCount: clicks[0].count,
-      })
-    );
+    .send(superjson.stringify(result));
 };
 
 export default withMiddleware("getOnly", "auth")(dashboard);

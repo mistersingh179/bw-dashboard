@@ -60,7 +60,13 @@ const App = ({
             />
             <link
               rel="preload"
-              href="/api/dashboard"
+              href="/api/dashboard/totalNumbers"
+              as="fetch"
+              crossOrigin="anonymous"
+            />
+            <link
+              rel="preload"
+              href="/api/dashboard/chart"
               as="fetch"
               crossOrigin="anonymous"
             />
