@@ -45,10 +45,6 @@ const CampaignBox = ({
   return (
     <VStack alignItems={"start"}>
       <HStack>
-        <Box minW={"3xs"}>Id: </Box>
-        <Box>{campaign.id}</Box>
-      </HStack>
-      <HStack>
         <Box minW={"3xs"}>Name: </Box>
         <Box>{campaign.name}</Box>
       </HStack>
@@ -96,6 +92,15 @@ const CampaignBox = ({
             {campaign.clickUrl} <ExternalLinkIcon mx="2px" />
           </Link>
         </Box>
+      </HStack>
+      <HStack>
+        <Box minW={"3xs"}>Creative Url: </Box>
+        {campaign.creativeUrl && <Box>
+          <Link href={campaign.creativeUrl ?? ""} target={"_blank"}>
+            {campaign.creativeUrl} <ExternalLinkIcon mx="2px" />
+          </Link>
+        </Box>}
+        {!campaign.creativeUrl && <Box> - </Box>}
       </HStack>
       <HStack>
         <Box minW={"3xs"}>Pacing: </Box>

@@ -90,6 +90,7 @@ model Setting {
   minCharLimit                  Int      @default(20)
   sameTypeElemWithTextToFollow  Boolean  @default(true)
   makeLinksBold                 Boolean  @default(false)
+  bestCampaignCount             Int      @default(1)
   customStyles                  String   @default(".brandweaver-ad {}")
   createdAt                     DateTime @default(now())
   updatedAt                     DateTime @updatedAt
@@ -258,6 +259,7 @@ model Campaign {
   productName        String           @default("")
   productDescription String           @default("")
   clickUrl           String           @default("")
+  creativeUrl        String?
   pacing             Boolean          @default(false)
   status             Boolean          @default(false)
   createdAt          DateTime         @default(now())

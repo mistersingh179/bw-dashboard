@@ -3,18 +3,20 @@ import prisma from "@/lib/prisma";
 import getCampaignsWhoHaveNotMetImpCap from "@/services/queries/getCamapignsWhoHaveNotMetImpCap";
 import {Campaign, ScoredCampaign} from "@prisma/client";
 
-type GetBestCampaignForWebpage = (
+type GetBestCampaignsForWebpage = (
   webpageId: string,
   userScoreThreshold: number,
   campaignsWhoHaveNotMetImpCap: string[],
-  webpageCategoryNames: string[]
-) => Promise< ScoredCampaign | null>;
+  webpageCategoryNames: string[],
+  howMany: number
+) => Promise< ScoredCampaign[]>;
 
-const getBestCampaignForWebpage: GetBestCampaignForWebpage = async (
+const getBestCampaignsForWebpage: GetBestCampaignsForWebpage = async (
   webpageId,
   userScoreThreshold,
   campaignsWhoHaveNotMetImpCap,
-  webpageCategoryNames
+  webpageCategoryNames,
+  howMany
 ) => {
   const myLogger = logger.child({
     name: "getBestCampaignForWebpage",
@@ -27,7 +29,7 @@ const getBestCampaignForWebpage: GetBestCampaignForWebpage = async (
   myLogger.info({}, "inside service");
 
   const now = new Date();
-  const bestScoredCampaign = await prisma.scoredCampaign.findFirst({
+  const bestScoredCampaigns = await prisma.scoredCampaign.findMany({
     where: {
       webpageId,
       score: {
@@ -77,19 +79,19 @@ const getBestCampaignForWebpage: GetBestCampaignForWebpage = async (
         },
       },
     ],
-    take: 1,
+    take: howMany,
   });
-  myLogger.info({ bestScoredCampaign }, "finishing service");
-  return bestScoredCampaign;
+  myLogger.info({ bestScoredCampaigns }, "finishing service");
+  return bestScoredCampaigns;
 };
 
-export default getBestCampaignForWebpage;
+export default getBestCampaignsForWebpage;
 
 if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clk8fuyh1000298f90v8nbkks",
+        id: "clkrey0jx000m985gb765ieg0",
       },
       include: {
         website: {
@@ -111,11 +113,12 @@ if (require.main === module) {
 
     const webpageCategoryNames = webpage?.categories.map((c) => c.name) ?? [];
 
-    const bestCampaign = await getBestCampaignForWebpage(
+    const bestCampaign = await getBestCampaignsForWebpage(
       webpage.id,
       webpage.website.user.setting!.scoreThreshold,
       campaignsWhoHaveNotMetImpCap,
-      webpageCategoryNames
+      webpageCategoryNames,
+      webpage.website.user.setting!.bestCampaignCount,
     );
 
     logger.info({ bestCampaign }, "***ans: ");

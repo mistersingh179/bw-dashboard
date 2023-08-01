@@ -94,23 +94,8 @@ drop database bw;
 - daily job downloads latest pages & only processes them
 - so if something failed downstrea yesterday, but was added yesterday, then it won't be processed today
 
-## limiting ads being built
-
-- score all campaigns with pagination
-- nightly job should not build ads for every scored campaign on webpage
-- new nightly job to build ads for webpage without ads for their winning campaign
-- pagesWithZeroAds should check its winning campaign to figure if ads are missing
-- upon auction consistently the best campaign should win
-- build ads only for the winning campaign
-- upon auction, if no ads for winning campaign, then run job to build it
-- build ad only if not already being built, do via temporary redis lock
-- UI to delete webpage
-- UI to see ads on webpage
-- UI to see the winning campaign on webpage
-
 ## Pending issues
 
-- fix dashboard numbers
 - take title & description instead of content when scoring campaigns
 - paginate scoring of campaigns
   - if too many campaigns this will currently fail
@@ -119,6 +104,9 @@ drop database bw;
 - track if impression was in viewable space
   - if its below fold, or hidden in a modal etc.
 - generate message should tell us that webpage not found instead of saying status is off
+- show reporting per campaign
+- show reporting per webpage
+- add webpage url search
 
 ## Pending dev ops
 

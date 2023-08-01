@@ -4,14 +4,17 @@ import { Prisma, ScoredCampaign } from "@prisma/client";
 import BatchPayload = Prisma.BatchPayload;
 
 type SetScoredCampaignBest = (
-  scoredCampaignId: string,
-  webpageId: string,
+  scoredCampaignIds: string[],
+  webpageId: string
 ) => Promise<BatchPayload[]>;
 
-const setScoredCampaignBest: SetScoredCampaignBest = async (scoredCampaignId, webpageId) => {
+const setScoredCampaignBest: SetScoredCampaignBest = async (
+  scoredCampaignIds,
+  webpageId
+) => {
   const myLogger = logger.child({
     name: "setScoredCampaignBest",
-    scoredCampaignId,
+    scoredCampaignIds,
     webpageId,
   });
 
@@ -19,7 +22,9 @@ const setScoredCampaignBest: SetScoredCampaignBest = async (scoredCampaignId, we
 
   const setItAsBest = prisma.scoredCampaign.updateMany({
     where: {
-      id: scoredCampaignId,
+      id: {
+        in: scoredCampaignIds,
+      },
       isBest: false,
     },
     data: {
@@ -32,7 +37,9 @@ const setScoredCampaignBest: SetScoredCampaignBest = async (scoredCampaignId, we
       webpageId: webpageId,
       isBest: true,
       id: {
-        not: scoredCampaignId
+        not: {
+          in: scoredCampaignIds,
+        },
       },
     },
     data: {
@@ -50,11 +57,17 @@ export default setScoredCampaignBest;
 
 if (require.main === module) {
   (async () => {
-    const scoredCampaign = await prisma.scoredCampaign.findFirstOrThrow({
+    const scoredCampaigns = await prisma.scoredCampaign.findMany({
       where: {
-        id: "clk9r8fr1000398iifsb29wae",
+        id: {
+          in: ["clksdathc007n98c3bzss25nm", "clksdc4xt008498c31bzy96n6"],
+          // in: ["clkrey0rg006l98c3lwdctvd2"],
+        },
       },
     });
-    await setScoredCampaignBest(scoredCampaign.id, scoredCampaign.webpageId);
+    await setScoredCampaignBest(
+      scoredCampaigns.map((x) => x.id),
+      scoredCampaigns[0].webpageId
+    );
   })();
 }

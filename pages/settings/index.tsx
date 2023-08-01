@@ -1,11 +1,9 @@
 import FCWithAuth from "@/types/FCWithAuth";
-import NewCampaign from "@/pages/campaigns/new";
 import {
   Box,
   Button,
   Code,
   FormControl,
-  FormErrorMessage,
   FormHelperText,
   FormLabel,
   Heading,
@@ -16,18 +14,15 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  Progress,
   Spinner,
   Switch,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import CampaignForm from "@/components/CampaignForm";
-import { Link } from "@chakra-ui/next-js";
 import React, { ReactNode, useEffect, useState } from "react";
 import SliderThumbWithTooltip from "@/components/SliderThumbWithTooltip";
 import useSettings from "@/hooks/useSettings";
-import { ErrorAlert, ErrorRow, NoDataRow } from "@/components/genericMessages";
+import { ErrorAlert } from "@/components/genericMessages";
 import { SettingType } from "@/types/my-types";
 import { CreatableSelect as Select } from "chakra-react-select";
 import { Editor } from "@monaco-editor/react";
@@ -204,6 +199,7 @@ const Settings: FCWithAuth = () => {
     recentlyMostVisitedUrlCount: 0,
     makeLinksBold: false,
     customStyles: ".brandweaver-ad {}",
+    bestCampaignCount: 1,
   };
 
   const [items, setItems] = useState(defaultValues);
@@ -226,7 +222,8 @@ const Settings: FCWithAuth = () => {
     allTimeMostVisitedUrlCount,
     recentlyMostVisitedUrlCount,
     makeLinksBold,
-    customStyles
+    customStyles,
+    bestCampaignCount,
   } = items;
 
   useEffect(() => {
@@ -428,11 +425,22 @@ const Settings: FCWithAuth = () => {
               </Box>
               <FormHelperText my={3} lineHeight={1.5}>
                 <Text>
-                  Customize ads by adding yours styles to the css class
-                  named: <Code colorScheme={"yellow"}>brandweaver-ad</Code>.
+                  Customize ads by adding yours styles to the css class named:{" "}
+                  <Code colorScheme={"yellow"}>brandweaver-ad</Code>.
                 </Text>
               </FormHelperText>
             </FormControl>
+
+            <NumberFormControl
+              label={"Best Campaign Count"}
+              fieldName={"bestCampaignCount"}
+              fieldValue={bestCampaignCount}
+              updateFn={updateItem}
+            >
+              <Text>
+                The maximum number of campaigns to qualify as best per webpage.
+              </Text>
+            </NumberFormControl>
 
             <FormControl my={5} textAlign={"center"}>
               <Button

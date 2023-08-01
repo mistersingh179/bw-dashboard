@@ -6,27 +6,27 @@ import setNoCampaignAsBest from "@/services/queries/setNoCampaignAsBest";
 
 type UpdateBestCampaign = (
   webpage: Webpage,
-  scoredCampaign: ScoredCampaign | null | undefined
+  scoredCampaigns: ScoredCampaign[]
 ) => Promise<void>;
 
 const updateBestCampaign: UpdateBestCampaign = async (
   webpage,
-  scoredCampaign
+  scoredCampaigns
 ) => {
   const myLogger = logger.child({
     name: "updateBestCampaign",
     webpage,
-    scoredCampaign,
+    scoredCampaigns,
   });
-  myLogger.info({ webpage, scoredCampaign }, "started service");
+  myLogger.info({ webpage, scoredCampaigns }, "started service");
 
   let result;
-  if (scoredCampaign) {
+  if (scoredCampaigns.length > 0) {
     result = await setScoredCampaignBest(
-      scoredCampaign.id,
-      scoredCampaign.webpageId
+      scoredCampaigns.map(sc => sc.id),
+      webpage.id
     );
-  } else if (!scoredCampaign) {
+  } else if (scoredCampaigns.length == 0) {
     result = await setNoCampaignAsBest(webpage.id);
   }
 
@@ -42,11 +42,11 @@ if (require.main === module) {
         id: "clk9r8fj800049889eu3qpvxt",
       },
     });
-    const scoredCampaign = await prisma.scoredCampaign.findFirstOrThrow({
+    const scoredCampaigns = await prisma.scoredCampaign.findMany({
       where: {
         id: "clk9r8fr1000298ii0m1ifqkb",
       },
     });
-    await updateBestCampaign(webpage, scoredCampaign);
+    await updateBestCampaign(webpage, scoredCampaigns);
   })();
 }

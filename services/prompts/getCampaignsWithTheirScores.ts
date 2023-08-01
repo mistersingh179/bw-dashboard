@@ -57,7 +57,7 @@ const getCampaignsWithTheirScores: GetCampaignsWithTheirScores = async (
         return {
           ...c,
           scoreAsNum: randomScore,
-          score: "0",
+          score: randomScore.toString(),
           reason: "reason is this",
         };
       }
@@ -155,17 +155,17 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clk2rrzwq0e1zlu21eu245qet",
+        id: "clkrey0jx000m985gb765ieg0",
       },
     });
     const campaigns = await prisma.campaign.findMany({
       where: {
-        userId: "climifncr00wgme08z6uyo3bg",
+        userId: "clhtwckif000098wp207rs2fg",
       },
     });
     const settings = await prisma.setting.findFirstOrThrow({
       where: {
-        userId: "climifncr00wgme08z6uyo3bg",
+        userId: "clhtwckif000098wp207rs2fg",
       },
     });
     const content = await prisma.content.findFirst({

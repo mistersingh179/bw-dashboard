@@ -295,7 +295,7 @@ const ScoredCampaigns = () => {
                         <Tooltip
                           label={
                             scoredCampaign.isBest
-                              ? "Currently matched Campaign"
+                              ? "Currently matched"
                               : ""
                           }
                         >

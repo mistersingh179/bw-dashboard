@@ -110,6 +110,7 @@ const CampaignForm = (props: CampaignFormProps) => {
         productDescription:
           "Acme Corporation is a fictional corporation that features prominently in the Road Runner/Wile E. Coyote animated shorts as a running gag. The company manufactures outlandish products.",
         clickUrl: `https://en.wikipedia.org/wiki/Acme_Corporation?utm_campaign=${tempName}&utm_source=brandweaver.ai`,
+        creativeUrl: '',
         pacing: false,
         status: true,
       };
@@ -125,6 +126,7 @@ const CampaignForm = (props: CampaignFormProps) => {
     productName,
     productDescription,
     clickUrl,
+    creativeUrl,
     status,
     pacing,
   } = inputs;
@@ -171,13 +173,18 @@ const CampaignForm = (props: CampaignFormProps) => {
     inputName: string,
     evt: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log("***in setDate with: ", inputName, evt.target.value, evt.target.value === "");
+    console.log(
+      "***in setDate with: ",
+      inputName,
+      evt.target.value,
+      evt.target.value === ""
+    );
     if (evt.target.value === "") {
       setInputs((oldInputs) => ({
         ...oldInputs,
         [inputName]: undefined,
       }));
-    }else{
+    } else {
       const dateObj = parse(evt.target.value, "yyyy-MM-dd", new Date());
       setInputs((oldInputs) => ({
         ...oldInputs,
@@ -350,6 +357,20 @@ const CampaignForm = (props: CampaignFormProps) => {
           </FormHelperText>
         )}
       </FormControl>
+      <FormControl>
+        <FormLabel>Creative Url</FormLabel>
+        <Input
+          type={"text"}
+          value={creativeUrl ?? ""}
+          onChange={setInput.bind(this, "creativeUrl")}
+          placeholder={creativeUrl ?? ""}
+        />
+        <FormHelperText>
+          An Experimental Field to store the image url which is used instead of
+          text generated ad.
+        </FormHelperText>
+      </FormControl>
+
       <FormControl>
         <FormLabel>Categories</FormLabel>
         {showSpinnerForCategoriesSelect() && <Spinner color={"blue.500"} />}

@@ -2,9 +2,7 @@ import logger from "@/lib/logger";
 import { ScoredCampaign, Setting, Webpage } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import createAdvertisementQueue from "@/jobs/queues/createAdvertisementQueue";
-import getBestCampaignForWebpage from "@/services/queries/getBestCampaignForWebpage";
 import redisClient from "@/lib/redisClient";
-import { Website } from ".prisma/client";
 import { createId } from "@paralleldrive/cuid2";
 import { AD_BUILD_FAIL_COUNT_LIMIT, AD_BUILD_LOCK_TIME } from "@/constants";
 
@@ -45,7 +43,7 @@ const processWebpageForAdCreation: ProcessWebpageForAdCreation = async (
     },
   });
 
-  if(advertisementSpots.length === 0){
+  if (advertisementSpots.length === 0) {
     myLogger.info({}, "aborting as advertisementSpots count is 0");
     return [];
   } else {

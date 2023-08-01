@@ -10,8 +10,8 @@ import getCampaignsWhoHaveNotMetImpCap from "@/services/queries/getCamapignsWhoH
 import cookie from "cookie";
 import { createId } from "@paralleldrive/cuid2";
 import logger from "@/lib/logger";
-import { pick } from "lodash";
-import getBestCampaignForWebpage from "@/services/queries/getBestCampaignForWebpage";
+import { pick, sample } from "lodash";
+import getBestCampaignsForWebpage from "@/services/queries/getBestCampaignsForWebpage";
 import processWebpageForAdCreation from "@/services/process/processWebpageForAdCreation";
 import getActiveAdsWithDetailForScoredCampaign from "@/services/queries/getActiveAdsWithDetailForScoredCampaign";
 import updateBestCampaign from "@/services/updateBestCampaign";
@@ -124,13 +124,20 @@ const generate: NextApiHandler = async (req, res) => {
     website?.status == true &&
     webpage?.status == true
   ) {
-    const bestCampaign = await getBestCampaignForWebpage(
+    const bestCampaigns = await getBestCampaignsForWebpage(
       webpage.id,
       settings.scoreThreshold,
       campIdsWhoHaveNotMetImpCap,
-      webpageCategoryNames
+      webpageCategoryNames,
+      settings.bestCampaignCount
     );
-    await updateBestCampaign(webpage, bestCampaign);
+    messages.push(
+      "best campaigns: " + bestCampaigns.map((sc) => sc.id).join(", ")
+    );
+    await updateBestCampaign(webpage, bestCampaigns);
+
+    const bestCampaign = sample(bestCampaigns);
+    messages.push("the sampled best campaign: " + bestCampaign?.id);
 
     if (bestCampaign) {
       messages.push("found best campaign");
