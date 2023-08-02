@@ -113,6 +113,7 @@ model Auction {
   ip          String       @default("0.0.0.0") @db.Inet
   endUserCuid String       @default("")
   endUserFp   String       @default("")
+  timeSpent   Int          @default(0)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
