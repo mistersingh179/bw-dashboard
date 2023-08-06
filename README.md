@@ -109,6 +109,8 @@ drop database bw;
 - turm them on
 - measure time spent on site
 
+- manage readme button when only 1 item
+
 ## Pending issues
 
 - keyword ignore list for pages to be run on
