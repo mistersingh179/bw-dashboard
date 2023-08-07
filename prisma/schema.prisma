@@ -114,6 +114,7 @@ model Auction {
   endUserCuid String       @default("")
   endUserFp   String       @default("")
   timeSpent   Int          @default(0)
+  extra       String?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
@@ -121,6 +122,7 @@ model Auction {
   @@index([webpageId])
   @@index([websiteId])
   @@index([url])
+  @@index([extra])
   @@index([createdAt(sort: Asc)])
   @@index([websiteId, createdAt(sort: Asc)])
 }

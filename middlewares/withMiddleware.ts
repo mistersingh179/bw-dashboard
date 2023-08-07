@@ -9,7 +9,7 @@ import foundersOnly from "@/middlewares/foundersOnly";
 import {
   getOnlyMethodMiddleware,
   getPostOnlyMethodMiddleware,
-  getPutDeleteOnlyMethodMiddleware, postOnlyMethodMiddleware
+  getPutDeleteOnlyMethodMiddleware, postOnlyMethodMiddleware, putOnlyMethodMiddleware
 } from "@/middlewares/allowedMethodMiddlewareFactory";
 import delayMiddleware from "@/middlewares/delayMiddleware";
 import botRejectingMiddleware from "@/middlewares/botRejectingMiddleware";
@@ -29,6 +29,7 @@ const middleware: LabeledMiddleware = {
   getPostOnly: getPostOnlyMethodMiddleware,
   getOnly: getOnlyMethodMiddleware,
   getPutDeleteOnly: getPutDeleteOnlyMethodMiddleware,
+  putOnly: putOnlyMethodMiddleware,
   postOnly: postOnlyMethodMiddleware,
   delay: delayMiddleware,
   rejectBots: botRejectingMiddleware,

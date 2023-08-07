@@ -30,4 +30,8 @@ export const postOnlyMethodMiddleware = allowedMethodMiddlewareFactory([
   "POST",
 ]);
 
+export const putOnlyMethodMiddleware = allowedMethodMiddlewareFactory([
+  "PUT",
+]);
+
 export default allowedMethodMiddlewareFactory;
