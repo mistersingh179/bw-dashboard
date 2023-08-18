@@ -94,25 +94,12 @@ drop database bw;
 - daily job downloads latest pages & only processes them
 - so if something failed downstrea yesterday, but was added yesterday, then it won't be processed today
 
-## testing tooltip tech
-- turn off all other campaigns
-- content selector gets all paragraphs in the main body
-- now we have lots of ad spots
-- for each ad spot build ads use a different prompt. this prompt gets did you now facts over an ad
-- then show that ad in the tooltip rather than inline
-- turn off automatically getting new pages
-- turn off all existing webpages
-- identify select few webpages
-- measure time spent on site
-- build ads for these webpages
-- then turn ON only these select few webpages
-- turm them on
-- measure time spent on site
-
-- manage readme button when only 1 item
-
 ## Pending issues
 
+- record time on site for only when on site
+- delete all old time on site
+- query of time on site random between people, should be balanced
+- 
 - keyword ignore list for pages to be run on
 - keyword must be present list for pages to be run on
 - check ctr on more stories

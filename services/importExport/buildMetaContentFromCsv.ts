@@ -1,9 +1,5 @@
-import logger from "@/lib/logger";
 import * as fs from "fs";
 import Papa from "papaparse";
-import { Prisma } from ".prisma/client";
-
-const myLogger = logger.child({ name: "buildMetaContentFromCsv" });
 
 type BuildMetaContentFromCsv = (csvString: string) => Promise<void>;
 
@@ -12,15 +8,21 @@ const buildMetaContentFromCsv: BuildMetaContentFromCsv = async (csvString) => {
     url: string;
     input: string;
     output: string;
+    content_type: string;
   }>(csvString, { header: true });
   const result = parseResult.data.map((item) => {
+    item.output = item.output.replace("<<", "<strong>")
+    item.output = item.output.replace(">>", "</strong>")
     return {
-      ...item,
+      // @ts-ignore
+      url: item.URL,
+      input: item.input,
       output: item.output.split("\n\n"),
+      content_type: item.content_type
     };
   });
   fs.writeFileSync(
-    "services/importExport/metaContent.json",
+    "services/importExport/metaContent4.json",
     JSON.stringify(result),
     {}
   );
@@ -31,7 +33,7 @@ export default buildMetaContentFromCsv;
 if (require.main === module) {
   (async () => {
     const content = await fs.readFileSync(
-      "services/importExport/ChatGPT creates metacontent for FightBookMMA - 3. output for csv.csv",
+      "services/importExport/Grabbing content - done-URLs-20230814-123649.csv",
       "utf-8"
     );
     await buildMetaContentFromCsv(content);

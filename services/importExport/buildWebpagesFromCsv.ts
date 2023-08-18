@@ -5,8 +5,8 @@ import prisma from "@/lib/prisma";
 import { Prisma, Website } from ".prisma/client";
 import getWebpagesWithZeroAds from "@/services/queries/getWebpagesWithZeroAds";
 import processWebpageQueue from "@/jobs/queues/processWebpageQueue";
-import { getCleanUrl } from "@/services/downloadWebpages";
 import WebpageCreateManyInput = Prisma.WebpageCreateManyInput;
+import { getCleanUrl } from "@/helpers/getCleanUrl";
 
 const myLogger = logger.child({ name: "buildWebpagesFromCsv" });
 

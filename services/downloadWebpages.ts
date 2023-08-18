@@ -17,6 +17,7 @@ import {
   setWebsiteInsertCount,
 } from "@/lib/websiteInsertCount";
 import WebpageCreateManyInput = Prisma.WebpageCreateManyInput;
+import { getCleanUrl } from "@/helpers/getCleanUrl";
 
 export type UrlsetUrl = {
   loc: string;
@@ -30,16 +31,6 @@ export type SitemapIndexSitemap = {
   loc: string;
   lastmod: string;
   [key: string]: any;
-};
-
-export const getCleanUrl = (url: string): string => {
-  try {
-    const { originWithPathName } = getUrlProperties(url);
-    return originWithPathName;
-  } catch (err) {
-    console.log("got error while cleaning url: ", url);
-  }
-  return "";
 };
 
 const oneHour = hoursToMilliseconds(1);

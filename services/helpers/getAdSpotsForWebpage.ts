@@ -85,23 +85,24 @@ export const nextWithText = (
   }
 };
 
-const minCharFilter = (minCharLimit: number, elem: HTMLElement | Element) => {
-  if (!elem.textContent) {
-    elem.textContent = "";
+export const minCharFilter = (minCharLimit: number, elem: HTMLElement | Element) => {
+  let textContent = "";
+  if (elem.textContent) {
+    textContent = elem.textContent.trim();
   }
-  const ans = elem.textContent.length >= minCharLimit;
+  const ans = textContent.length >= minCharLimit;
   if (ans) {
-    myLogger.info({ length: elem.textContent.length, minCharLimit }, "keeping");
+    myLogger.info({ length: textContent.length, minCharLimit }, "keeping");
   } else {
     myLogger.info(
-      { length: elem.textContent.length, minCharLimit },
+      { length: textContent.length, minCharLimit },
       "rejecting"
     );
   }
   return ans;
 };
 
-const nextElementWithTextOfSameTypeFilter: ElementFilter = (elem) => {
+export const nextElementWithTextOfSameTypeFilter: ElementFilter = (elem) => {
   const fElem = nextWithText(elem);
   const ans = fElem?.tagName === elem.tagName;
   if (ans) {
@@ -187,7 +188,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clj75tm7a000098koa8bhduex",
+        id: "clksio5o0005w98izsugvm5u3",
         content: {
           isNot: null,
         },
