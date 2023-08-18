@@ -183,6 +183,7 @@ const generate: NextApiHandler = async (req, res) => {
     "sponsoredWording",
     "makeLinksBold",
     "customStyles",
+    "mainPostBodySelector",
   ]);
 
   const abortCategories = await getUserAbortCategories(userId);
