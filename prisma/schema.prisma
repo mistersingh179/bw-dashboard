@@ -87,6 +87,7 @@ model Setting {
   recentlyMostVisitedUrlCount   Int      @default(0)
   mainPostBodySelector          String   @default("body")
   contentSelector               String   @default("body p:nth-child(3n)")
+  metaContentSelector           String   @default("p")
   minCharLimit                  Int      @default(20)
   sameTypeElemWithTextToFollow  Boolean  @default(true)
   makeLinksBold                 Boolean  @default(false)

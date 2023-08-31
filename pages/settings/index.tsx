@@ -185,6 +185,7 @@ const Settings: FCWithAuth = () => {
 
   const defaultValues: SettingType = {
     contentSelector: "",
+    metaContentSelector: "",
     desiredAdvertisementCount: 0,
     desiredAdvertisementSpotCount: 0,
     minCharLimit: 0,
@@ -216,6 +217,7 @@ const Settings: FCWithAuth = () => {
     sponsoredWording,
     mainPostBodySelector,
     contentSelector,
+    metaContentSelector,
     minCharLimit,
     sameTypeElemWithTextToFollow,
     webpageInsertCap,
@@ -336,6 +338,17 @@ const Settings: FCWithAuth = () => {
               <Text>
                 Provide the CSS selector which identifies the paragraph after
                 which to place the ad.
+              </Text>
+            </TextFormControl>
+            <TextFormControl
+              label={"Meta Content Selector"}
+              fieldName={"metaContentSelector"}
+              fieldValue={metaContentSelector}
+              updateFn={updateItem}
+            >
+              <Text>
+                Provide the CSS selector which identifies the paragraph for
+                which to display meta content.
               </Text>
             </TextFormControl>
             <NumberFormControl
