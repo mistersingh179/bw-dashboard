@@ -45,7 +45,7 @@ import useAdsOfBestCampaign from "@/hooks/useAdsOfBestCampaign";
 import numeral from "numeral";
 import { AdvertisementWithSpotAndCampaign } from "@/pages/api/websites/[wsid]/webpages/[wpid]/adsOfBestCampaign";
 import useCampWithImpCount from "@/hooks/useCampWithImpCount";
-import { AdvertisementSpot, Campaign } from "@prisma/client";
+import {AdvertisementSpot, Campaign, MetaContentSpot} from "@prisma/client";
 
 type AdsBoxProps = {
   ads: AdvertisementWithSpotAndCampaign[];
@@ -235,6 +235,44 @@ const AdSpots = ({
               <HStack alignItems={"start"}>
                 <Box minW={"4xs"}>After: </Box>
                 <Box>{adSpot.afterText}</Box>
+              </HStack>
+            </VStack>
+          );
+        })}
+    </>
+  );
+};
+
+const MetaContentSpots = ({
+                   metaContentSpots,
+                 }: {
+  metaContentSpots: MetaContentSpot[] | null | undefined;
+}) => {
+  return (
+    <>
+      <Heading size={"md"} my={4} pl={3}>
+        Meta Content Spots
+      </Heading>
+      {(!metaContentSpots || metaContentSpots.length == 0) && (
+        <WarningAlert
+          description={"Meta Content Spots have not been built yet. Try later."}
+        />
+      )}
+      {metaContentSpots &&
+        metaContentSpots.map((metaContentSpot) => {
+          return (
+            <VStack
+              key={metaContentSpot.id}
+              alignItems={"start"}
+              mt={5}
+              p={5}
+              border={"1px"}
+              borderColor={"gray.200"}
+              borderRadius={"md"}
+            >
+              <HStack alignItems={"start"} key={metaContentSpot.id}>
+                <Box minW={"3xs"}>Content Text: </Box>
+                <Box>{metaContentSpot.contentText}</Box>
               </HStack>
             </VStack>
           );
@@ -486,6 +524,15 @@ const Show = () => {
         borderRadius={"md"}
       >
         <AdSpots adSpots={webpage?.advertisementSpots} />
+      </Box>
+      <Box
+        mt={5}
+        p={5}
+        border={"1px"}
+        borderColor={"gray.200"}
+        borderRadius={"md"}
+      >
+        <MetaContentSpots metaContentSpots={webpage?.metaContentSpots} />
       </Box>
       <HStack my={5} spacing={5}>
         <Link href={`/websites/${wsid}/webpages/list`} colorScheme={"green"}>

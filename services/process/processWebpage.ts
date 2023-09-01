@@ -7,6 +7,7 @@ import createScoredCampaigns from "@/services/create/createScoredCampaigns";
 import createAdvertisementQueue from "@/jobs/queues/createAdvertisementQueue";
 import logger from "@/lib/logger";
 import setTitleAndDescription from "@/services/setTitleAndDescription";
+import createMetaContentSpots from "@/services/create/createMetaContentSpots";
 
 export type WebpageWithContent = Webpage & { content: Content | null };
 
@@ -72,21 +73,23 @@ const processWebpage: ProcessWebpage = async (webpage) => {
 
   await createAdvertisementSpots(webpage, content, settings);
 
+  await createMetaContentSpots(webpage, content, settings);
+
   await createCategories(webpage, content, user);
 
   await setTitleAndDescription(webpage, content, user);
 
-  const adSpots = await prisma.advertisementSpot.findMany({
-    where: {
-      webpageId: webpage.id,
-    },
-  });
-
-  const scoredCamps = await prisma.scoredCampaign.findMany({
-    where: {
-      webpageId: webpage.id,
-    },
-  });
+  // const adSpots = await prisma.advertisementSpot.findMany({
+  //   where: {
+  //     webpageId: webpage.id,
+  //   },
+  // });
+  //
+  // const scoredCamps = await prisma.scoredCampaign.findMany({
+  //   where: {
+  //     webpageId: webpage.id,
+  //   },
+  // });
 
   // myLogger.info({ webpage, adSpots, scoredCamps }, "going to build ads");
 
@@ -103,6 +106,7 @@ const processWebpage: ProcessWebpage = async (webpage) => {
   //     );
   //   }
   // }
+
   myLogger.info({ webpage }, "finished service");
 };
 
@@ -112,7 +116,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clkem2fec000098umicr0m28n",
+        id: "clksdn1gc001498izegn3mm3f",
       },
     });
     await processWebpage(webpage);

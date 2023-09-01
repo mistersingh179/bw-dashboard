@@ -12,20 +12,13 @@ import { User, Prisma } from "@prisma/client";
 import {subMonths} from "date-fns";
 import processWebpageQueue from "@/jobs/queues/processWebpageQueue";
 (async () => {
-  const myLogger = logger.child({ name: "foo" });
-  const webpages = await prisma.webpage.findMany({
+  console.log("hello");
+  const result = await prisma.metaContentSpot.findMany({
     where: {
-      website: {
-        userId: 'clijanfjj000cmn08e2vlk52j'
-      },
-    },
+      webpageId: "clkrey0jx000m985gb765ieg0"
+    }
   });
-  for (const wp of webpages) {
-    const job = await processWebpageQueue.add("processWebpage", {
-      webpage: wp,
-    });
-    myLogger.info({id: job.id, url: wp.url}, "scheduled job to process webpage")
-  }
+  console.log(result);
 })();
 
 export {};

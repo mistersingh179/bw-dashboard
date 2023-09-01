@@ -80,6 +80,7 @@ model Setting {
   status                        Boolean
   sponsoredWording              String   @default("")
   desiredAdvertisementSpotCount Int      @default(1)
+  desiredMetaContentSpotCount   Int      @default(5)
   desiredAdvertisementCount     Int      @default(1)
   webpageLookbackDays           Int      @default(0)
   webpageInsertCap              Int      @default(1000)
@@ -87,8 +88,9 @@ model Setting {
   recentlyMostVisitedUrlCount   Int      @default(0)
   mainPostBodySelector          String   @default("body")
   contentSelector               String   @default("body p:nth-child(3n)")
-  metaContentSelector           String   @default("p")
+  metaContentSelector           String   @default("body p")
   minCharLimit                  Int      @default(20)
+  minMetaContentSpotWordLimit   Int      @default(30)
   sameTypeElemWithTextToFollow  Boolean  @default(true)
   makeLinksBold                 Boolean  @default(false)
   bestCampaignCount             Int      @default(1)
@@ -153,6 +155,7 @@ model Webpage {
   website            Website             @relation(fields: [websiteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   scoredCampaigns    ScoredCampaign[]
   advertisementSpots AdvertisementSpot[]
+  metaContentSpots   MetaContentSpot[]
   categories         Category[]
   auctions           Auction[]
   content            Content?
@@ -208,6 +211,17 @@ model AdvertisementSpot {
   afterText      String
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+
+  @@index([webpageId])
+}
+
+model MetaContentSpot {
+  id          String   @id @default(cuid())
+  webpageId   String
+  webpage     Webpage  @relation(fields: [webpageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  contentText String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([webpageId])
 }

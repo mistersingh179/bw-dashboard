@@ -19,13 +19,13 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import React, { ReactNode, useEffect, useState } from "react";
+import React, {ReactNode, useEffect, useState} from "react";
 import SliderThumbWithTooltip from "@/components/SliderThumbWithTooltip";
 import useSettings from "@/hooks/useSettings";
-import { ErrorAlert } from "@/components/genericMessages";
-import { SettingType } from "@/types/my-types";
-import { CreatableSelect as Select } from "chakra-react-select";
-import { Editor } from "@monaco-editor/react";
+import {ErrorAlert} from "@/components/genericMessages";
+import {SettingType} from "@/types/my-types";
+import {CreatableSelect as Select} from "chakra-react-select";
+import {Editor} from "@monaco-editor/react";
 
 const sponsoredOptions: { value: string; label: string }[] = [
   {
@@ -90,7 +90,7 @@ type BooleanFormControlPropsType = {
   children: ReactNode;
 };
 const BooleanFormControl = (props: BooleanFormControlPropsType) => {
-  const { label, fieldName, fieldValue, updateFn, children } = props;
+  const {label, fieldName, fieldValue, updateFn, children} = props;
   return (
     <FormControl my={5}>
       <HStack>
@@ -117,7 +117,7 @@ type TextFormControlPropsType = {
   children: ReactNode;
 };
 const TextFormControl = (props: TextFormControlPropsType) => {
-  const { label, fieldName, fieldValue, updateFn, children } = props;
+  const {label, fieldName, fieldValue, updateFn, children} = props;
   return (
     <FormControl my={5}>
       <HStack>
@@ -148,7 +148,7 @@ type NumberFormControlPropsType = {
   children: ReactNode;
 };
 const NumberFormControl = (props: NumberFormControlPropsType) => {
-  const { label, fieldName, fieldValue, updateFn, children } = props;
+  const {label, fieldName, fieldValue, updateFn, children} = props;
   return (
     <FormControl my={5}>
       <HStack>
@@ -165,10 +165,10 @@ const NumberFormControl = (props: NumberFormControlPropsType) => {
               updateFn(fieldName, parseInt(val));
             }}
           >
-            <NumberInputField />
+            <NumberInputField/>
             <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
+              <NumberIncrementStepper/>
+              <NumberDecrementStepper/>
             </NumberInputStepper>
           </NumberInput>
         </Box>
@@ -181,14 +181,16 @@ const NumberFormControl = (props: NumberFormControlPropsType) => {
 };
 
 const Settings: FCWithAuth = () => {
-  const { settings, error, isLoading, onSave } = useSettings();
+  const {settings, error, isLoading, onSave} = useSettings();
 
   const defaultValues: SettingType = {
     contentSelector: "",
     metaContentSelector: "",
     desiredAdvertisementCount: 0,
     desiredAdvertisementSpotCount: 0,
+    desiredMetaContentSpotCount: 0,
     minCharLimit: 0,
+    minMetaContentSpotWordLimit: 0,
     sameTypeElemWithTextToFollow: false,
     webpageLookbackDays: 0,
     webpageInsertCap: 1000,
@@ -218,7 +220,9 @@ const Settings: FCWithAuth = () => {
     mainPostBodySelector,
     contentSelector,
     metaContentSelector,
+    desiredMetaContentSpotCount,
     minCharLimit,
+    minMetaContentSpotWordLimit,
     sameTypeElemWithTextToFollow,
     webpageInsertCap,
     allTimeMostVisitedUrlCount,
@@ -239,8 +243,8 @@ const Settings: FCWithAuth = () => {
     <Box>
       <Heading my={5}>Settings Campaign</Heading>
       <VStack spacing={5}>
-        {error && <ErrorAlert />}
-        {isLoading && <Spinner color={"blue.500"} />}
+        {error && <ErrorAlert/>}
+        {isLoading && <Spinner color={"blue.500"}/>}
         {settings && (
           <VStack spacing={5} mb={10}>
             <FormControl>
@@ -293,7 +297,7 @@ const Settings: FCWithAuth = () => {
                     value={
                       sponsoredWording == ""
                         ? null
-                        : { label: sponsoredWording, value: sponsoredWording }
+                        : {label: sponsoredWording, value: sponsoredWording}
                     }
                     isClearable={true}
                     isSearchable={true}
@@ -351,6 +355,28 @@ const Settings: FCWithAuth = () => {
                 which to display meta content.
               </Text>
             </TextFormControl>
+            <NumberFormControl
+              label={"Desired Meta Content Spot Count"}
+              fieldName={"desiredMetaContentSpotCount"}
+              fieldValue={desiredMetaContentSpotCount}
+              updateFn={updateItem}
+            >
+              <Text>
+                The desired number of paragraphs for which meta content should
+                be generated.
+              </Text>
+            </NumberFormControl>
+            <NumberFormControl
+              label={"Min Meta Content Spot Word Limit"}
+              fieldName={"minMetaContentSpotWordLimit"}
+              fieldValue={minMetaContentSpotWordLimit}
+              updateFn={updateItem}
+            >
+              <Text>
+                The minimum number of words an element must to qualify for
+                meta content generation.
+              </Text>
+            </NumberFormControl>
             <NumberFormControl
               label={"Min Char Limit"}
               fieldName={"minCharLimit"}

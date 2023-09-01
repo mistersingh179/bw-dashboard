@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import { Webpage } from ".prisma/client";
-import { AdvertisementSpot } from "@prisma/client";
+import { AdvertisementSpot, MetaContentSpot } from "@prisma/client";
 import logger from "@/lib/logger";
 
 type AdSpotWithAdsCount = AdvertisementSpot & {
@@ -9,8 +9,9 @@ type AdSpotWithAdsCount = AdvertisementSpot & {
 
 export type WebpageWithAdSpotsAndOtherCounts = Webpage & {
   advertisementSpots: AdSpotWithAdsCount[];
+  metaContentSpots: MetaContentSpot[];
   content: { title: string | null; description: string | null } | null;
-  _count: { scoredCampaigns: number; advertisementSpots: number };
+  _count: { scoredCampaigns: number; advertisementSpots: number, metaContentSpots: number };
 };
 
 const myLogger = logger.child({ name: "getWebpageWithAdSpotsAndOtherCounts" });
@@ -38,6 +39,7 @@ const getWebpageWithAdSpotsAndOtherCounts: GetWebpageWithAdSpotsAndOtherCounts =
         _count: {
           select: {
             advertisementSpots: true,
+            metaContentSpots: true,
             scoredCampaigns: true,
           },
         },
@@ -50,6 +52,7 @@ const getWebpageWithAdSpotsAndOtherCounts: GetWebpageWithAdSpotsAndOtherCounts =
             },
           },
         },
+        metaContentSpots: true,
         content: {
           select: {
             title: true,
@@ -67,7 +70,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clh9d58tw000b98c04am7f6ik",
+        id: "clkrey0jx000m985gb765ieg0",
       },
       include: {
         advertisementSpots: true,
