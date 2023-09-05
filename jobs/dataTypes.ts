@@ -1,4 +1,4 @@
-import {AdvertisementSpot, Campaign, ScoredCampaign, Setting} from "@prisma/client";
+import {AdvertisementSpot, Campaign, MetaContent, MetaContentSpot, ScoredCampaign, Setting} from "@prisma/client";
 import {Content, User, Webpage, Website} from ".prisma/client";
 import {MostVisitedUrlsResultType} from "@/services/downloadMostVisitedUrls";
 
@@ -27,10 +27,10 @@ export type DownloadMostVisitedUrlsDataType = {
   settings: Setting;
 }
 
-export type MediumInputDataType = DownloadMostVisitedUrlsDataType;
-export type MediumOutputDataType = MostVisitedUrlsResultType | undefined;
+export type MediumInputDataType = DownloadMostVisitedUrlsDataType | MetaContentSpot;
+export type MediumOutputDataType = MostVisitedUrlsResultType | MetaContent[] | null | undefined;
 
-export type MediumJobNames = "downloadMostVisitedUrls";
+export type MediumJobNames = "downloadMostVisitedUrls" | "createMetaContents";
 
 export type ProcessCampaignDataType = {
   campaign: Campaign

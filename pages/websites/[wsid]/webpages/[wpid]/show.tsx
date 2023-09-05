@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { QueryParams } from "@/types/QueryParams";
 import {
-  Box,
+  Box, Divider,
   Heading,
   HStack,
   Skeleton,
@@ -35,7 +35,10 @@ import { Link } from "@chakra-ui/next-js";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { preload } from "swr";
 import fetcher from "@/helpers/fetcher";
-import { WebpageWithAdSpotsAndOtherCounts } from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
+import {
+  MetaContentSpotsWithMetaContentAndType,
+  WebpageWithAdSpotsAndOtherCounts,
+} from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
 import useCategoriesOfWebpage from "@/hooks/useCategoriesOfWebpage";
 import useScoredCampaignsOfWebpage from "@/hooks/useScoredCampaignsOfWebpage";
 import usePagination from "@/hooks/usePagination";
@@ -45,7 +48,7 @@ import useAdsOfBestCampaign from "@/hooks/useAdsOfBestCampaign";
 import numeral from "numeral";
 import { AdvertisementWithSpotAndCampaign } from "@/pages/api/websites/[wsid]/webpages/[wpid]/adsOfBestCampaign";
 import useCampWithImpCount from "@/hooks/useCampWithImpCount";
-import {AdvertisementSpot, Campaign, MetaContentSpot} from "@prisma/client";
+import { AdvertisementSpot, Campaign, MetaContentSpot } from "@prisma/client";
 
 type AdsBoxProps = {
   ads: AdvertisementWithSpotAndCampaign[];
@@ -244,9 +247,9 @@ const AdSpots = ({
 };
 
 const MetaContentSpots = ({
-                   metaContentSpots,
-                 }: {
-  metaContentSpots: MetaContentSpot[] | null | undefined;
+  metaContentSpots,
+}: {
+  metaContentSpots: MetaContentSpotsWithMetaContentAndType[] | null | undefined;
 }) => {
   return (
     <>
@@ -259,10 +262,11 @@ const MetaContentSpots = ({
         />
       )}
       {metaContentSpots &&
-        metaContentSpots.map((metaContentSpot) => {
+        metaContentSpots.length > 0 &&
+        metaContentSpots.map((mcs) => {
           return (
             <VStack
-              key={metaContentSpot.id}
+              key={mcs.id}
               alignItems={"start"}
               mt={5}
               p={5}
@@ -270,10 +274,55 @@ const MetaContentSpots = ({
               borderColor={"gray.200"}
               borderRadius={"md"}
             >
-              <HStack alignItems={"start"} key={metaContentSpot.id}>
-                <Box minW={"3xs"}>Content Text: </Box>
-                <Box>{metaContentSpot.contentText}</Box>
+              <HStack alignItems={"start"}>
+                <Box minW={"3xs"}>Spot Text: </Box>
+                <Box>{mcs.contentText}</Box>
               </HStack>
+              <HStack alignItems={"start"}>
+                <Box minW={"3xs"}>Build Fail Count : </Box>
+                <Box>{mcs.buildFailCount}</Box>
+              </HStack>
+              <Divider />
+              <TableContainer whiteSpace={"normal"} w={'full'}>
+                <Table variant={"simple"} size={"sm"}>
+                  <Thead>
+                    <Tr>
+                      <Th>Meta Text</Th>
+                      <Th>Meta Heading</Th>
+                      <Th>Content Type</Th>
+                      <Th>Diversity Classification</Th>
+                      <Th>Status</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {(!mcs || !mcs.metaContents || mcs.metaContents.length == 0) && (
+                      <NoDataRow colSpan={6} />
+                    )}
+                    {mcs &&
+                      mcs.metaContents &&
+                      mcs.metaContents.length > 0 &&
+                      mcs.metaContents.map((mc) => {
+                        return (
+                          <Tr key={mc.id}>
+                            <Td>{mc.generatedText}</Td>
+                            <Td>{mc.generatedHeading}</Td>
+                            <Td>{mc.metaContentType.name}</Td>
+                            <Td>
+                              <Tooltip label={mc.diveristyClassifierReason}>
+                                {mc.diveristyClassifierResult || ""}
+                              </Tooltip>
+                            </Td>
+                            <Td>
+                              <StatusBadge
+                                status={mc.status}
+                              />
+                            </Td>
+                          </Tr>
+                        );
+                      })}
+                  </Tbody>
+                </Table>
+              </TableContainer>
             </VStack>
           );
         })}
@@ -332,9 +381,7 @@ const ScoredCampaigns = () => {
                       <Td>
                         <Tooltip
                           label={
-                            scoredCampaign.isBest
-                              ? "Currently matched"
-                              : ""
+                            scoredCampaign.isBest ? "Currently matched" : ""
                           }
                         >
                           {scoredCampaign.campaign.name}
@@ -511,6 +558,15 @@ const Show = () => {
         borderColor={"gray.200"}
         borderRadius={"md"}
       >
+        <MetaContentSpots metaContentSpots={webpage?.metaContentSpots} />
+      </Box>
+      <Box
+        mt={5}
+        p={5}
+        border={"1px"}
+        borderColor={"gray.200"}
+        borderRadius={"md"}
+      >
         <AdsOfBestCampaign />
       </Box>
       <Box mt={5} border={"1px"} borderColor={"gray.200"} borderRadius={"md"}>
@@ -524,15 +580,6 @@ const Show = () => {
         borderRadius={"md"}
       >
         <AdSpots adSpots={webpage?.advertisementSpots} />
-      </Box>
-      <Box
-        mt={5}
-        p={5}
-        border={"1px"}
-        borderColor={"gray.200"}
-        borderRadius={"md"}
-      >
-        <MetaContentSpots metaContentSpots={webpage?.metaContentSpots} />
       </Box>
       <HStack my={5} spacing={5}>
         <Link href={`/websites/${wsid}/webpages/list`} colorScheme={"green"}>

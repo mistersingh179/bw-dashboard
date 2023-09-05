@@ -215,17 +215,6 @@ model AdvertisementSpot {
   @@index([webpageId])
 }
 
-model MetaContentSpot {
-  id          String   @id @default(cuid())
-  webpageId   String
-  webpage     Webpage  @relation(fields: [webpageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  contentText String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([webpageId])
-}
-
 model ScoredCampaign {
   id               String          @id @default(cuid())
   webpageId        String
@@ -261,6 +250,49 @@ model Advertisement {
   @@index([scoredCampaignId])
   @@index([advertisementSpotId, scoredCampaignId, status])
   @@index([advertisementSpotId])
+}
+
+model MetaContentSpot {
+  id             String        @id @default(cuid())
+  webpageId      String
+  webpage        Webpage       @relation(fields: [webpageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  metaContents   MetaContent[]
+  contentText    String
+  buildFailCount Int           @default(0)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([webpageId])
+}
+
+model MetaContent {
+  id                        String          @id @default(cuid())
+  metaContentSpotId         String
+  metaContentSpot           MetaContentSpot @relation(fields: [metaContentSpotId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  metaContentTypeId         String
+  metaContentType           MetaContentType @relation(fields: [metaContentTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  generatedText             String
+  generatedHeading          String
+  diveristyClassifierResult String
+  diveristyClassifierReason String
+  status                    Boolean
+  createdAt                 DateTime        @default(now())
+  updatedAt                 DateTime        @updatedAt
+
+  @@index([status])
+  @@index([metaContentSpotId])
+  @@index([metaContentTypeId])
+  @@index([diveristyClassifierResult])
+}
+
+model MetaContentType {
+  id           String        @id @default(cuid())
+  name         String
+  metaContents MetaContent[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@unique([name])
 }
 
 model Campaign {

@@ -1,17 +1,32 @@
 import prisma from "@/lib/prisma";
 import { Webpage } from ".prisma/client";
-import { AdvertisementSpot, MetaContentSpot } from "@prisma/client";
+import {
+  AdvertisementSpot,
+  MetaContent,
+  MetaContentSpot,
+  MetaContentType,
+} from "@prisma/client";
 import logger from "@/lib/logger";
 
 type AdSpotWithAdsCount = AdvertisementSpot & {
   _count: { advertisements: number };
 };
 
+export type MetaContentSpotsWithMetaContentAndType = MetaContentSpot & {
+  metaContents: (MetaContent & {
+    metaContentType: MetaContentType;
+  })[];
+};
+
 export type WebpageWithAdSpotsAndOtherCounts = Webpage & {
   advertisementSpots: AdSpotWithAdsCount[];
-  metaContentSpots: MetaContentSpot[];
+  metaContentSpots: MetaContentSpotsWithMetaContentAndType[];
   content: { title: string | null; description: string | null } | null;
-  _count: { scoredCampaigns: number; advertisementSpots: number, metaContentSpots: number };
+  _count: {
+    scoredCampaigns: number;
+    advertisementSpots: number;
+    metaContentSpots: number;
+  };
 };
 
 const myLogger = logger.child({ name: "getWebpageWithAdSpotsAndOtherCounts" });
@@ -52,7 +67,15 @@ const getWebpageWithAdSpotsAndOtherCounts: GetWebpageWithAdSpotsAndOtherCounts =
             },
           },
         },
-        metaContentSpots: true,
+        metaContentSpots: {
+          include: {
+            metaContents: {
+              include: {
+                metaContentType: true,
+              },
+            },
+          },
+        },
         content: {
           select: {
             title: true,
@@ -61,7 +84,7 @@ const getWebpageWithAdSpotsAndOtherCounts: GetWebpageWithAdSpotsAndOtherCounts =
         },
       },
     });
-    return webpage;
+    return webpage as unknown as WebpageWithAdSpotsAndOtherCounts;
   };
 
 export default getWebpageWithAdSpotsAndOtherCounts;

@@ -8,6 +8,11 @@ export const CREATE_ADVERTISEMENT_WORKER_CONCURRENCY = 10;
 export const WEBPAGE_INSERT_CHUNK_COUNT = 100;
 export const AD_BUILD_FAIL_COUNT_LIMIT = 3;
 
+export const DIVERSITY_CLASSIFIER = {
+  SIMILAR: "SIMILAR",
+  DIVERSE: "DIVERSE"
+}
+
 let ad_build_lock_time;
 if (process.env.NODE_ENV === "development") {
   ad_build_lock_time = 5;

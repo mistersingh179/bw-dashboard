@@ -4,7 +4,6 @@ import createContent from "@/services/create/createContent";
 import createAdvertisementSpots from "@/services/create/createAdvertisementSpots";
 import createCategories from "@/services/create/createCategories";
 import createScoredCampaigns from "@/services/create/createScoredCampaigns";
-import createAdvertisementQueue from "@/jobs/queues/createAdvertisementQueue";
 import logger from "@/lib/logger";
 import setTitleAndDescription from "@/services/setTitleAndDescription";
 import createMetaContentSpots from "@/services/create/createMetaContentSpots";

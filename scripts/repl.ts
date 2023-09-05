@@ -9,16 +9,25 @@ import getCampaignsWhoHaveNotMetImpCap from "@/services/queries/getCamapignsWhoH
 import redisClient from "@/lib/redisClient";
 
 import { User, Prisma } from "@prisma/client";
-import {subMonths} from "date-fns";
+import { subMonths } from "date-fns";
 import processWebpageQueue from "@/jobs/queues/processWebpageQueue";
+import MediumQueue from "@/jobs/queues/mediumQueue";
+import mediumQueue, {
+  queueEvents as MediumQueueEvent,
+} from "@/jobs/queues/mediumQueue";
+
 (async () => {
-  console.log("hello");
-  const result = await prisma.metaContentSpot.findMany({
+  console.log("***");
+  const metaContentSpot = await prisma.metaContentSpot.findFirstOrThrow({
     where: {
-      webpageId: "clkrey0jx000m985gb765ieg0"
+      id: "clm6otiri000198t4ikvnaj0c"
     }
-  });
-  console.log(result);
+  })
+  const jobResult = await mediumQueue.add("createMetaContents", metaContentSpot);
+  const ans = await jobResult.waitUntilFinished(MediumQueueEvent)
+  console.log("ans: ", ans)
+
+
 })();
 
 export {};

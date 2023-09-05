@@ -11,6 +11,8 @@ import {
   MediumOutputDataType
 } from "@/jobs/dataTypes";
 import downloadMostVisitedUrls from "@/services/downloadMostVisitedUrls";
+import createMetaContents from "@/services/create/createMetaContents";
+import {MetaContentSpot} from "@prisma/client";
 
 const queueName = "medium";
 
@@ -26,6 +28,10 @@ const worker: Worker<MediumInputDataType, MediumOutputDataType, MediumJobNames> 
         logger.info({name, data, opts}, "in downloadMostVisitedUrls case");
         const {website, settings} = data as DownloadMostVisitedUrlsDataType;
         return await downloadMostVisitedUrls(website, settings);
+      case "createMetaContents":
+        logger.info({name, data, opts}, "in createMetaContents case");
+        const metaContentSpot = data as MetaContentSpot;
+        return await createMetaContents(metaContentSpot)
       default:
         logger.error({}, "got unknown job");
     }
