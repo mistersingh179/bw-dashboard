@@ -100,6 +100,20 @@ const Users = () => {
     console.log("rebuildAds result: ", res.status, res.statusText);
   };
 
+  const rebuildMetaContentsHandler = async (id: string) => {
+    const payload = {
+      userIdToProcess: id,
+    };
+    const res = await fetch("/api/users/rebuildMetaContents", {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("rebuildAds result: ", res.status, res.statusText);
+  };
+
   const deleteAllAuctions = async (id: string) => {
     const payload = {
       userIdToProcess: id,
@@ -197,6 +211,20 @@ const Users = () => {
                             }}
                           >
                             Rebuild All Ads
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              const ans = confirm(
+                                `This will DELETE ALL meta content spots and meta content for ${user.email}. ` +
+                                `It will also set related analytics to have reference id of null, but wont delete them. ` +
+                                `Are you sure?`
+                              );
+                              if (ans) {
+                                rebuildMetaContentsHandler(user.id);
+                              }
+                            }}
+                          >
+                            Rebuild All Meta Contents
                           </MenuItem>
                           <MenuItem
                             onClick={() => {
