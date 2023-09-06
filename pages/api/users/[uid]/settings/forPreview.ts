@@ -25,6 +25,9 @@ const forPreview: NextApiHandler = async (req, res) => {
       minCharLimit: true,
       sameTypeElemWithTextToFollow: true,
       desiredAdvertisementSpotCount: true,
+      metaContentSpotSelector: true,
+      minMetaContentSpotWordLimit: true,
+      desiredMetaContentSpotCount: true
     },
   });
 

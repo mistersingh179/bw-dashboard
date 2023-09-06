@@ -520,6 +520,18 @@ const WebpageBox = ({
       <HStack>
         <Box minW={"3xs"}># of Meta Content Spots: </Box>
         <Box>{webpage._count.metaContentSpots}</Box>
+        <Box>
+          {webpage?.content && (
+            <Tag colorScheme={"blue"}>
+              <Link
+                href={`/api/websites/${webpage.websiteId}/webpages/${webpage.id}/metaContentSpotPreview`}
+                target={"_blank"}
+              >
+                Preview <ExternalLinkIcon mx="2px" mb={"2px"} />
+              </Link>
+            </Tag>
+          )}
+        </Box>
       </HStack>
       <HStack>
         <Box minW={"3xs"}># of Ad Spots: </Box>

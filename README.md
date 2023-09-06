@@ -90,9 +90,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 # Pending Meta Content
-- prompt result for heading without <<>> is not considered as an error
-- create meta content from generate call
-- show preview of metaContentSpots
 - update FE to show metaContent returned by `generate` call
 - super functions for meta content spots
 - limit text length on webpage show page

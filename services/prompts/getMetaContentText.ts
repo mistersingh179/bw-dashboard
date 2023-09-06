@@ -24,7 +24,7 @@ const getMetaContentText: GetMetaContentText = async (
   myLogger.info("starting service");
 
   if (process.env.NODE_ENV === "development") {
-    return `Meta Content Text for ${contentType.slice(0, 10)} – ${metaContentSpotText.slice(0, 100)}`
+    return `Meta Content Text for – ${contentType.slice(0, 50)} – ${metaContentSpotText.slice(0, 100)}`
   }
 
   const messages: AnyObject[] = [
