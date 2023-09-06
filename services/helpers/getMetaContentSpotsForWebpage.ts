@@ -43,7 +43,7 @@ const getMetaContentSpotsForWebpage: GetMetaContentSpotsTextForWebpage = async (
     window: { document },
   } = dom;
 
-  let elements = document.querySelectorAll(settings.metaContentSelector);
+  let elements = document.querySelectorAll(settings.metaContentSpotSelector);
   let elementsArr = [...elements];
   myLogger.info({ length: elementsArr.length }, "possible meta content spots at start");
 

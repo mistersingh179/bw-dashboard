@@ -185,7 +185,7 @@ const Settings: FCWithAuth = () => {
 
   const defaultValues: SettingType = {
     contentSelector: "",
-    metaContentSelector: "",
+    metaContentSpotSelector: "",
     desiredAdvertisementCount: 0,
     desiredAdvertisementSpotCount: 0,
     desiredMetaContentSpotCount: 0,
@@ -219,7 +219,7 @@ const Settings: FCWithAuth = () => {
     sponsoredWording,
     mainPostBodySelector,
     contentSelector,
-    metaContentSelector,
+    metaContentSpotSelector,
     desiredMetaContentSpotCount,
     minCharLimit,
     minMetaContentSpotWordLimit,
@@ -345,9 +345,9 @@ const Settings: FCWithAuth = () => {
               </Text>
             </TextFormControl>
             <TextFormControl
-              label={"Meta Content Selector"}
-              fieldName={"metaContentSelector"}
-              fieldValue={metaContentSelector}
+              label={"Meta Content Spot Selector"}
+              fieldName={"metaContentSpotSelector"}
+              fieldValue={metaContentSpotSelector}
               updateFn={updateItem}
             >
               <Text>
