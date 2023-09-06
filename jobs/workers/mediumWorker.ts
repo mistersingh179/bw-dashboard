@@ -3,35 +3,42 @@ import redisClient from "@/lib/redisClient";
 import { DEFAULT_WORKER_CONCURRENCY } from "@/constants";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
-import AnyObject from "@/types/AnyObject";
 import {
   DownloadMostVisitedUrlsDataType,
   MediumInputDataType,
   MediumJobNames,
-  MediumOutputDataType
+  MediumOutputDataType,
 } from "@/jobs/dataTypes";
 import downloadMostVisitedUrls from "@/services/downloadMostVisitedUrls";
 import createMetaContents from "@/services/create/createMetaContents";
-import {MetaContentSpot} from "@prisma/client";
+import { MetaContentSpot } from "@prisma/client";
+import processWebpagesWithZeroMetaContentSpots from "@/services/process/processWebpagesWithZeroMetaContentSpots";
 
 const queueName = "medium";
 
 const myLogger = logger.child({ name: "mediumWorker" });
 
-const worker: Worker<MediumInputDataType, MediumOutputDataType, MediumJobNames> = new Worker(
+const worker: Worker<
+  MediumInputDataType,
+  MediumOutputDataType,
+  MediumJobNames
+> = new Worker(
   queueName,
   async (job) => {
     const { name, data, opts } = job;
     myLogger.info({ name, data, opts }, "in processing function");
     switch (job.name) {
       case "downloadMostVisitedUrls":
-        logger.info({name, data, opts}, "in downloadMostVisitedUrls case");
-        const {website, settings} = data as DownloadMostVisitedUrlsDataType;
+        logger.info({ name, data, opts }, `in ${job.name} case`);
+        const { website, settings } = data as DownloadMostVisitedUrlsDataType;
         return await downloadMostVisitedUrls(website, settings);
       case "createMetaContents":
-        logger.info({name, data, opts}, "in createMetaContents case");
+        logger.info({ name, data, opts }, `in ${job.name} case`);
         const metaContentSpot = data as MetaContentSpot;
-        return await createMetaContents(metaContentSpot)
+        return await createMetaContents(metaContentSpot);
+      case "processWebpagesWithZeroMetaContentSpots":
+        logger.info({ name, data, opts }, `in ${job.name} case`);
+        return await processWebpagesWithZeroMetaContentSpots();
       default:
         logger.error({}, "got unknown job");
     }

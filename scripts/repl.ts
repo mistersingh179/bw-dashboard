@@ -15,18 +15,22 @@ import MediumQueue from "@/jobs/queues/mediumQueue";
 import mediumQueue, {
   queueEvents as MediumQueueEvent,
 } from "@/jobs/queues/mediumQueue";
+import {META_CONTENT_BUILD_FAIL_COUNT_LIMIT} from "@/constants";
+
+prisma.$on("query", (e) => {
+  const { timestamp, query, params, duration, target } = e;
+  console.log(query);
+  console.log({ timestamp, params, duration, target });
+});
 
 (async () => {
   console.log("***");
-  const metaContentSpot = await prisma.metaContentSpot.findFirstOrThrow({
-    where: {
-      id: "clm6otiri000198t4ikvnaj0c"
-    }
-  })
-  const jobResult = await mediumQueue.add("createMetaContents", metaContentSpot);
-  const ans = await jobResult.waitUntilFinished(MediumQueueEvent)
-  console.log("ans: ", ans)
-
+  let output = `"Pizza: Symbol of "Unity"\n"&" Abundance"`
+  if(-1){
+    console.log("in")
+  }else{
+    console.log("out")
+  }
 
 })();
 

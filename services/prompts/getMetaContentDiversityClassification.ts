@@ -29,7 +29,7 @@ const getMeatContentDiversityClassification: GetMetaContentDiversityClassificati
 
     if (process.env.NODE_ENV === "development") {
       return {
-        answer: "SIMILAR",
+        answer: DIVERSITY_CLASSIFIER.DIVERSE,
         reasoning: "because i said so"
       }
     }
@@ -87,7 +87,7 @@ in JSON, like this: {"type": "answer", "content": ____}`,
 
     let reasoning, answer;
 
-    if (output.indexOf(expectedJsonStr)) {
+    if (output.indexOf(expectedJsonStr) >= 0) {
       reasoning = output.split(expectedJsonStr)[0].trim();
       answer = output.split(expectedJsonStr)[1].replace(`"}`, "");
       return { answer, reasoning };

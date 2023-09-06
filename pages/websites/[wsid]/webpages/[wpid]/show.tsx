@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
 import { QueryParams } from "@/types/QueryParams";
 import {
-  Box, Divider,
+  Box,
+  Divider,
   Heading,
   HStack,
   Skeleton,
@@ -48,7 +49,8 @@ import useAdsOfBestCampaign from "@/hooks/useAdsOfBestCampaign";
 import numeral from "numeral";
 import { AdvertisementWithSpotAndCampaign } from "@/pages/api/websites/[wsid]/webpages/[wpid]/adsOfBestCampaign";
 import useCampWithImpCount from "@/hooks/useCampWithImpCount";
-import { AdvertisementSpot, Campaign, MetaContentSpot } from "@prisma/client";
+import { AdvertisementSpot, Campaign } from "@prisma/client";
+import { META_CONTENT_BUILD_FAIL_COUNT_LIMIT } from "@/constants";
 
 type AdsBoxProps = {
   ads: AdvertisementWithSpotAndCampaign[];
@@ -280,49 +282,62 @@ const MetaContentSpots = ({
               </HStack>
               <HStack alignItems={"start"}>
                 <Box minW={"3xs"}>Build Fail Count : </Box>
-                <Box>{mcs.buildFailCount}</Box>
+                <Box>
+                  {mcs.buildFailCount}
+                  {mcs.buildFailCount ===
+                  META_CONTENT_BUILD_FAIL_COUNT_LIMIT - 1
+                    ? " –> given up!"
+                    : ""}
+                </Box>
+              </HStack>
+              <HStack alignItems={"start"}>
+                <Box minW={"3xs"}>Meta Content Count : </Box>
+                <Box>{mcs.metaContents.length}</Box>
               </HStack>
               <Divider />
-              <TableContainer whiteSpace={"normal"} w={'full'}>
-                <Table variant={"simple"} size={"sm"}>
-                  <Thead>
-                    <Tr>
-                      <Th>Meta Text</Th>
-                      <Th>Meta Heading</Th>
-                      <Th>Content Type</Th>
-                      <Th>Diversity Classification</Th>
-                      <Th>Status</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {(!mcs || !mcs.metaContents || mcs.metaContents.length == 0) && (
-                      <NoDataRow colSpan={6} />
-                    )}
-                    {mcs &&
-                      mcs.metaContents &&
-                      mcs.metaContents.length > 0 &&
-                      mcs.metaContents.map((mc) => {
-                        return (
-                          <Tr key={mc.id}>
-                            <Td>{mc.generatedText}</Td>
-                            <Td>{mc.generatedHeading}</Td>
-                            <Td>{mc.metaContentType.name}</Td>
-                            <Td>
-                              <Tooltip label={mc.diveristyClassifierReason}>
-                                {mc.diveristyClassifierResult || ""}
-                              </Tooltip>
-                            </Td>
-                            <Td>
-                              <StatusBadge
-                                status={mc.status}
-                              />
-                            </Td>
-                          </Tr>
-                        );
-                      })}
-                  </Tbody>
-                </Table>
-              </TableContainer>
+              {mcs && mcs.metaContents && mcs.metaContents.length > 0 && (
+                <TableContainer whiteSpace={"normal"} w={"full"}>
+                  <Table variant={"simple"} size={"sm"}>
+                    <Thead>
+                      <Tr>
+                        <Th>Meta Text</Th>
+                        <Th>Content Type</Th>
+                        <Th>Diversity Classification</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {(!mcs ||
+                        !mcs.metaContents ||
+                        mcs.metaContents.length == 0) && (
+                        <NoDataRow colSpan={3} />
+                      )}
+                      {mcs &&
+                        mcs.metaContents &&
+                        mcs.metaContents.length > 0 &&
+                        mcs.metaContents.map((mc) => {
+                          return (
+                            <Tr key={mc.id}>
+                              <Td>
+                                <Box>
+                                  <Heading size={"xs"}>
+                                    {mc.generatedHeading}
+                                  </Heading>
+                                  {mc.generatedText}
+                                </Box>
+                              </Td>
+                              <Td>{mc.metaContentType.name}</Td>
+                              <Td>
+                                <Tooltip label={mc.diveristyClassifierReason}>
+                                  {mc.diveristyClassifierResult || ""}
+                                </Tooltip>
+                              </Td>
+                            </Tr>
+                          );
+                        })}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              )}
             </VStack>
           );
         })}
@@ -501,6 +516,10 @@ const WebpageBox = ({
       <HStack>
         <Box minW={"3xs"}>Description: </Box>
         <Box noOfLines={2}>{webpage.content?.description ?? "-"}</Box>
+      </HStack>
+      <HStack>
+        <Box minW={"3xs"}># of Meta Content Spots: </Box>
+        <Box>{webpage._count.metaContentSpots}</Box>
       </HStack>
       <HStack>
         <Box minW={"3xs"}># of Ad Spots: </Box>

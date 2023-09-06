@@ -7,6 +7,7 @@ export const PROCESS_WEBPAGE_WORKER_CONCURRENCY = 10;
 export const CREATE_ADVERTISEMENT_WORKER_CONCURRENCY = 10;
 export const WEBPAGE_INSERT_CHUNK_COUNT = 100;
 export const AD_BUILD_FAIL_COUNT_LIMIT = 3;
+export const META_CONTENT_BUILD_FAIL_COUNT_LIMIT = 3;
 
 export const DIVERSITY_CLASSIFIER = {
   SIMILAR: "SIMILAR",
@@ -20,3 +21,4 @@ if (process.env.NODE_ENV === "development") {
   ad_build_lock_time = 1 * 60 * 60;
 }
 export const AD_BUILD_LOCK_TIME = ad_build_lock_time;
+export const META_CONTENT_BUILD_LOCK_TIME = ad_build_lock_time;

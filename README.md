@@ -93,6 +93,11 @@ drop database bw;
 - prompt result for heading without <<>> is not considered as an error
 - create meta content from generate call
 - show preview of metaContentSpots
+- update FE to show metaContent returned by `generate` call
+- super functions for meta content spots
+- limit text length on webpage show page
+- message should tell when website or webpage is not found
+- confirm we download most visited webpages by time & not relying on sitemap
 
 ## Notes
 

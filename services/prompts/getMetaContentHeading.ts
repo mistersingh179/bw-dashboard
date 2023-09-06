@@ -18,7 +18,7 @@ const getMetaContentHeading: GetMetaContentHeading = async (
   myLogger.info("starting service");
 
   if (process.env.NODE_ENV === "development") {
-    return `Meta Content Heading for ${metaContentText}`;
+    return `I am the Heading`;
   }
 
   const messages: AnyObject[] = [
@@ -61,16 +61,19 @@ Brevity is strongly preferred, so limit your answer to 40 characters. \n\n\\
   myLogger.info({ data }, "api returned");
   const outputs = data.choices.map((c) => c.message?.content || "");
   let output = outputs[0];
-  let heading = '';
-  if(output.indexOf(">>") >= 0 && output.indexOf("<<") >= 0){
+  let heading = "";
+  if (output.indexOf(">>") >= 0 && output.indexOf("<<") >= 0) {
     const regexAns = output.match(/<<(.*)>>/);
-    if(regexAns && regexAns[1]){
+    if (regexAns && regexAns[1]) {
       heading = regexAns[1];
     }
-  }else{
+  } else {
     heading = output;
   }
   heading = heading.trim();
+  if (heading.startsWith(`"`) && heading.endsWith(`"`)) {
+    heading = heading.replace(/^"|$"/g, "");
+  }
   myLogger.info({ heading }, "outputs after cleanup is");
 
   return heading;
@@ -85,9 +88,7 @@ if (require.main === module) {
         webpageId: "clkrey0jx000m985gb765ieg0",
       },
     });
-    const ans = await getMetaContentHeading(
-      metaContentSpot.contentText,
-    );
+    const ans = await getMetaContentHeading(metaContentSpot.contentText);
     myLogger.info({ ans }, "output");
   })();
 }

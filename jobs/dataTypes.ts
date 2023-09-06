@@ -1,6 +1,14 @@
-import {AdvertisementSpot, Campaign, MetaContent, MetaContentSpot, ScoredCampaign, Setting} from "@prisma/client";
-import {Content, User, Webpage, Website} from ".prisma/client";
-import {MostVisitedUrlsResultType} from "@/services/downloadMostVisitedUrls";
+import {
+  AdvertisementSpot,
+  Campaign,
+  MetaContent,
+  MetaContentSpot,
+  ScoredCampaign,
+  Setting,
+} from "@prisma/client";
+import { Content, User, Webpage, Website } from ".prisma/client";
+import { MostVisitedUrlsResultType } from "@/services/downloadMostVisitedUrls";
+import { WebsiteUrlToCount } from "@/services/process/processWebpagesWithZeroMetaContentSpots";
 
 export type CreateAdvertisementDataType = {
   advertisementSpot: AdvertisementSpot;
@@ -25,19 +33,31 @@ export type DownloadWebpagesDataType = {
 export type DownloadMostVisitedUrlsDataType = {
   website: Website;
   settings: Setting;
-}
+};
 
-export type MediumInputDataType = DownloadMostVisitedUrlsDataType | MetaContentSpot;
-export type MediumOutputDataType = MostVisitedUrlsResultType | MetaContent[] | null | undefined;
+export type MediumInputDataType =
+  | DownloadMostVisitedUrlsDataType
+  | MetaContentSpot
+  | undefined;
 
-export type MediumJobNames = "downloadMostVisitedUrls" | "createMetaContents";
+export type MediumOutputDataType =
+  | MostVisitedUrlsResultType
+  | MetaContent[]
+  | WebsiteUrlToCount
+  | null
+  | undefined;
+
+export type MediumJobNames =
+  | "downloadMostVisitedUrls"
+  | "createMetaContents"
+  | "processWebpagesWithZeroMetaContentSpots";
 
 export type ProcessCampaignDataType = {
-  campaign: Campaign
-}
+  campaign: Campaign;
+};
 
 export type ProcessUserDataType = { user: User; settings: Setting };
 
-export type ProcessWebpageDataType = {webpage: Webpage};
+export type ProcessWebpageDataType = { webpage: Webpage };
 
 export type ProcessWebsiteDataType = { website: Website; settings: Setting };

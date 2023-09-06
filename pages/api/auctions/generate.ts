@@ -15,6 +15,9 @@ import getBestCampaignsForWebpage from "@/services/queries/getBestCampaignsForWe
 import processWebpageForAdCreation from "@/services/process/processWebpageForAdCreation";
 import getActiveAdsWithDetailForScoredCampaign from "@/services/queries/getActiveAdsWithDetailForScoredCampaign";
 import updateBestCampaign from "@/services/updateBestCampaign";
+import { MetaContentSpotsWithMetaContentAndType } from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
+import processWebpageForMetaContentCreation from "@/services/process/processWebpageForMetaContentCreation";
+import { META_CONTENT_BUILD_FAIL_COUNT_LIMIT } from "@/constants";
 
 const cors = Cors({
   credentials: true,
@@ -119,11 +122,38 @@ const generate: NextApiHandler = async (req, res) => {
   );
 
   let adsWithDetail: AdWithDetail[] = [];
+  let metaContentSpotsWithDetail: MetaContentSpotsWithMetaContentAndType[] = [];
+
   if (
     settings.status == true &&
     website?.status == true &&
     webpage?.status == true
   ) {
+    metaContentSpotsWithDetail = await prisma.metaContentSpot.findMany({
+      where: {
+        webpageId: webpage.id,
+      },
+      include: {
+        metaContents: {
+          include: {
+            metaContentType: true,
+          },
+        },
+      },
+    });
+
+    const hasMissingMetaContent = metaContentSpotsWithDetail.some(
+      (mcs) =>
+        mcs.metaContents.length === 0 &&
+        mcs.buildFailCount < META_CONTENT_BUILD_FAIL_COUNT_LIMIT
+    );
+    if (hasMissingMetaContent) {
+      messages.push("some metaContent still needs building");
+      await processWebpageForMetaContentCreation(webpage);
+    } else {
+      messages.push("all metaContent building is complete");
+    }
+
     const bestCampaigns = await getBestCampaignsForWebpage(
       webpage.id,
       settings.scoreThreshold,
@@ -196,6 +226,7 @@ const generate: NextApiHandler = async (req, res) => {
       superjson.stringify({
         auction,
         adsWithDetail,
+        metaContentSpotsWithDetail,
         settings: settingsToReturn,
         abortCategoryNames,
         messages,

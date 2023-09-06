@@ -12,9 +12,23 @@ const processAllUsers: ProcessAllUsers = async () => {
   const users = await prisma.user.findMany({
     where: {
       setting: {
-        webpageLookbackDays: {
-          gt: 0,
-        },
+        OR: [
+          {
+            webpageLookbackDays: {
+              gt: 0,
+            },
+          },
+          {
+            allTimeMostVisitedUrlCount: {
+              gt: 0,
+            },
+          },
+          {
+            recentlyMostVisitedUrlCount: {
+              gt: 0,
+            },
+          },
+        ],
       },
     },
     include: {
