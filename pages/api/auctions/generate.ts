@@ -90,6 +90,8 @@ const generate: NextApiHandler = async (req, res) => {
   const { userId, url, fp } = req.body;
   const settings = req.settings!;
 
+  let messages: string[] = [];
+
   const { origin, originWithPathName } = getUrlProperties(url);
   const website = await getWebsite(userId, origin);
   let webpage;
@@ -99,7 +101,12 @@ const generate: NextApiHandler = async (req, res) => {
   const webpageCategories = webpage?.categories ?? [];
   const webpageCategoryNames = webpageCategories.map((c) => c.name);
 
-  let messages: string[] = [];
+  if(website === null){
+    messages.push("website not found – " + origin + " – " + userId);
+  }
+  if(webpage === null){
+    messages.push("webpage not found – " + originWithPathName + " – " + website?.id);
+  }
 
   const auction = await prisma.auction.create({
     data: {
@@ -190,9 +197,6 @@ const generate: NextApiHandler = async (req, res) => {
       logger.info({}, "best campaign not found");
       messages.push("best campaign not found");
     }
-  } else {
-    logger.info({}, "status found to be OFF");
-    messages.push("status found to be OFF");
   }
 
   const cookieHeaderString = cookie.serialize(

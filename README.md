@@ -91,7 +91,6 @@ drop database bw;
 
 # Pending Meta Content
 - update FE to show metaContent returned by `generate` call
-- message should tell when website or webpage is not found
 
 ## Notes
 
