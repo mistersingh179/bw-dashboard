@@ -23,6 +23,16 @@ const createMetaContentSpots: CreateMetaContentSpots = async (
 
   myLogger.info({}, "starting service");
 
+  const { desiredMetaContentSpotCount, metaContentStatus } = settings;
+
+  if (metaContentStatus === false) {
+    myLogger.info(
+      { metaContentStatus },
+      "Aborting as meta content status is turned off."
+    );
+    return;
+  }
+
   const existingMetaContentSpotCount = await prisma.metaContentSpot.count({
     where: {
       webpageId: webpage.id,
@@ -32,8 +42,6 @@ const createMetaContentSpots: CreateMetaContentSpots = async (
   // todo - need to also not process webpages for which we have processed in past and were unable to create the spots
   // todo - this will not stop & thus we will re-process a webpage which just doesnt have enough spots
   // todo - will not remove meta content spots if we have too many
-
-  const { desiredMetaContentSpotCount } = settings;
 
   if (existingMetaContentSpotCount >= desiredMetaContentSpotCount) {
     myLogger.info(

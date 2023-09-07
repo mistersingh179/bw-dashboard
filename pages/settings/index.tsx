@@ -196,6 +196,7 @@ const Settings: FCWithAuth = () => {
     webpageInsertCap: 1000,
     scoreThreshold: 0,
     status: false,
+    metaContentStatus: false,
     sponsoredWording: "",
     mainPostBodySelector: "",
     allTimeMostVisitedUrlCount: 0,
@@ -216,6 +217,7 @@ const Settings: FCWithAuth = () => {
   const {
     scoreThreshold,
     status,
+    metaContentStatus,
     sponsoredWording,
     mainPostBodySelector,
     contentSelector,
@@ -275,6 +277,16 @@ const Settings: FCWithAuth = () => {
                 Turn On/Off BrandWeaver Script. If you turn it off, the script
                 will stop working on all websites and all pages for all
                 campaigns. This is a global on/off switch.
+              </Text>
+            </BooleanFormControl>
+            <BooleanFormControl
+              label="Meta Content Status"
+              fieldName={"metaContentStatus"}
+              fieldValue={metaContentStatus}
+              updateFn={updateItem}
+            >
+              <Text>
+                Turn On/Off displaying of Meta Content
               </Text>
             </BooleanFormControl>
             <FormControl my={5}>

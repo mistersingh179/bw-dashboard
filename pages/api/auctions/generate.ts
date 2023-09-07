@@ -200,10 +200,10 @@ const generate: NextApiHandler = async (req, res) => {
 
     const hasMissingMetaContent = await needsToBuildMetaContent(webpage.id);
     if (hasMissingMetaContent) {
-      messages.push("some spots still need meta content building");
+      messages.push("some meta content spots still need building");
       await processWebpageForMetaContentCreation(webpage);
     } else {
-      messages.push("all metaContent building is complete");
+      messages.push("all meta content spots have completed building");
     }
 
     const bestCampaigns = await getBestCampaignsForWebpage(

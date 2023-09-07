@@ -78,6 +78,7 @@ model Setting {
   user                          User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   scoreThreshold                Int
   status                        Boolean
+  metaContentStatus             Boolean  @default(false)
   sponsoredWording              String   @default("")
   desiredAdvertisementSpotCount Int      @default(1)
   desiredMetaContentSpotCount   Int      @default(5)
