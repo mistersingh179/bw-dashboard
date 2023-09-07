@@ -91,7 +91,6 @@ drop database bw;
 
 # Pending Meta Content
 - store screen size on pageLoad aka auction
-- return only diverse, status on, valid metaContent for a spot
 - settings to control AB test percentage
 - record displays of meta content with count
 

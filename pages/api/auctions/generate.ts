@@ -17,7 +17,7 @@ import getActiveAdsWithDetailForScoredCampaign from "@/services/queries/getActiv
 import updateBestCampaign from "@/services/updateBestCampaign";
 import { MetaContentSpotsWithMetaContentAndType } from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
 import processWebpageForMetaContentCreation from "@/services/process/processWebpageForMetaContentCreation";
-import { META_CONTENT_BUILD_FAIL_COUNT_LIMIT } from "@/constants";
+import {DIVERSITY_CLASSIFIER, META_CONTENT_BUILD_FAIL_COUNT_LIMIT} from "@/constants";
 
 const cors = Cors({
   credentials: true,
@@ -145,9 +145,19 @@ const generate: NextApiHandler = async (req, res) => {
     metaContentSpotsWithDetail = await prisma.metaContentSpot.findMany({
       where: {
         webpageId: webpage.id,
+        metaContents: {
+          some: {
+            status: true,
+            diveristyClassifierResult: DIVERSITY_CLASSIFIER.DIVERSE
+          }
+        }
       },
       include: {
         metaContents: {
+          where: {
+            status: true,
+            diveristyClassifierResult: DIVERSITY_CLASSIFIER.DIVERSE
+          },
           include: {
             metaContentType: true,
           },
