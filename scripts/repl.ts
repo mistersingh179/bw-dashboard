@@ -15,7 +15,7 @@ import MediumQueue from "@/jobs/queues/mediumQueue";
 import mediumQueue, {
   queueEvents as MediumQueueEvent,
 } from "@/jobs/queues/mediumQueue";
-import {META_CONTENT_BUILD_FAIL_COUNT_LIMIT} from "@/constants";
+import { META_CONTENT_BUILD_FAIL_COUNT_LIMIT } from "@/constants";
 
 prisma.$on("query", (e) => {
   const { timestamp, query, params, duration, target } = e;
@@ -25,13 +25,13 @@ prisma.$on("query", (e) => {
 
 (async () => {
   console.log("***");
-  let output = `"Pizza: Symbol of "Unity"\n"&" Abundance"`
-  if(-1){
-    console.log("in")
-  }else{
-    console.log("out")
-  }
-
+  const output = await prisma.metaContent.findFirstOrThrow({
+    where: {
+      id: "clm9bgygh00gf980puba7l2pk"
+    }
+  })
+  console.log(output)
+  console.log("***");
 })();
 
 export {};

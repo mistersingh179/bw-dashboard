@@ -101,11 +101,17 @@ const generate: NextApiHandler = async (req, res) => {
   const webpageCategories = webpage?.categories ?? [];
   const webpageCategoryNames = webpageCategories.map((c) => c.name);
 
-  if(website === null){
+  if(!website){
     messages.push("website not found – " + origin + " – " + userId);
   }
-  if(webpage === null){
+  if(website?.status === false){
+    messages.push("website is turned OFF – " + origin);
+  }
+  if(!webpage){
     messages.push("webpage not found – " + originWithPathName + " – " + website?.id);
+  }
+  if(webpage?.status === false){
+    messages.push("webpage is turned OFF – " + originWithPathName);
   }
 
   const auction = await prisma.auction.create({
@@ -218,6 +224,7 @@ const generate: NextApiHandler = async (req, res) => {
     "makeLinksBold",
     "customStyles",
     "mainPostBodySelector",
+    "metaContentSpotSelector"
   ]);
 
   const abortCategories = await getUserAbortCategories(userId);
