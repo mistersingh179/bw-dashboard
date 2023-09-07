@@ -66,7 +66,7 @@ const EditWebsiteModal = ({
                 onChange={(evt) => setTopLevelDomainUrl(evt.target.value)}
               />
               {!topLevelDomainUrlMissing && (
-                <FormHelperText>This is the url of the webpage</FormHelperText>
+                <FormHelperText>This is the url AKA domain name of the website.</FormHelperText>
               )}
               <FormErrorMessage>
                 This is a require field and thus you must provide a url

@@ -17,7 +17,10 @@ import getActiveAdsWithDetailForScoredCampaign from "@/services/queries/getActiv
 import updateBestCampaign from "@/services/updateBestCampaign";
 import { MetaContentSpotsWithMetaContentAndType } from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
 import processWebpageForMetaContentCreation from "@/services/process/processWebpageForMetaContentCreation";
-import {DIVERSITY_CLASSIFIER, META_CONTENT_BUILD_FAIL_COUNT_LIMIT} from "@/constants";
+import {
+  DIVERSITY_CLASSIFIER,
+  META_CONTENT_BUILD_FAIL_COUNT_LIMIT,
+} from "@/constants";
 
 const cors = Cors({
   credentials: true,
@@ -76,6 +79,55 @@ const getWebpageWithCategories = async (websiteId: string, url: string) => {
   return webpage;
 };
 
+const needsToBuildMetaContent = async (webpageId: string) => {
+  const ans = await prisma.metaContentSpot.findMany({
+    where: {
+      webpageId: webpageId,
+      buildFailCount: {
+        lt: META_CONTENT_BUILD_FAIL_COUNT_LIMIT,
+      },
+      metaContents: {
+        none: {
+          diveristyClassifierResult: DIVERSITY_CLASSIFIER.DIVERSE,
+        },
+      },
+    },
+    select: {
+      id: true,
+    },
+    take: 1,
+  });
+  return ans.length === 1;
+};
+
+const getMetaContentSpotsToDisplay = async (
+  webpageId: string
+): Promise<MetaContentSpotsWithMetaContentAndType[]> => {
+  const mcs = await prisma.metaContentSpot.findMany({
+    where: {
+      webpageId: webpageId,
+      metaContents: {
+        some: {
+          status: true,
+          diveristyClassifierResult: DIVERSITY_CLASSIFIER.DIVERSE,
+        },
+      },
+    },
+    include: {
+      metaContents: {
+        where: {
+          status: true,
+          diveristyClassifierResult: DIVERSITY_CLASSIFIER.DIVERSE,
+        },
+        include: {
+          metaContentType: true,
+        },
+      },
+    },
+  });
+  return mcs;
+};
+
 export const END_USER_COOKIE_NAME: string = "bw-endUserCuid";
 
 const getEndUserCuid = (req: NextApiRequest): string | null => {
@@ -101,16 +153,18 @@ const generate: NextApiHandler = async (req, res) => {
   const webpageCategories = webpage?.categories ?? [];
   const webpageCategoryNames = webpageCategories.map((c) => c.name);
 
-  if(!website){
+  if (!website) {
     messages.push("website not found – " + origin + " – " + userId);
   }
-  if(website?.status === false){
+  if (website?.status === false) {
     messages.push("website is turned OFF – " + origin);
   }
-  if(!webpage){
-    messages.push("webpage not found – " + originWithPathName + " – " + website?.id);
+  if (!webpage) {
+    messages.push(
+      "webpage not found – " + originWithPathName + " – " + website?.id
+    );
   }
-  if(webpage?.status === false){
+  if (webpage?.status === false) {
     messages.push("webpage is turned OFF – " + originWithPathName);
   }
 
@@ -142,36 +196,11 @@ const generate: NextApiHandler = async (req, res) => {
     website?.status == true &&
     webpage?.status == true
   ) {
-    metaContentSpotsWithDetail = await prisma.metaContentSpot.findMany({
-      where: {
-        webpageId: webpage.id,
-        metaContents: {
-          some: {
-            status: true,
-            diveristyClassifierResult: DIVERSITY_CLASSIFIER.DIVERSE
-          }
-        }
-      },
-      include: {
-        metaContents: {
-          where: {
-            status: true,
-            diveristyClassifierResult: DIVERSITY_CLASSIFIER.DIVERSE
-          },
-          include: {
-            metaContentType: true,
-          },
-        },
-      },
-    });
+    metaContentSpotsWithDetail = await getMetaContentSpotsToDisplay(webpage.id);
 
-    const hasMissingMetaContent = metaContentSpotsWithDetail.some(
-      (mcs) =>
-        mcs.metaContents.length === 0 &&
-        mcs.buildFailCount < META_CONTENT_BUILD_FAIL_COUNT_LIMIT
-    );
+    const hasMissingMetaContent = await needsToBuildMetaContent(webpage.id);
     if (hasMissingMetaContent) {
-      messages.push("some metaContent still needs building");
+      messages.push("some spots still need meta content building");
       await processWebpageForMetaContentCreation(webpage);
     } else {
       messages.push("all metaContent building is complete");
@@ -234,7 +263,7 @@ const generate: NextApiHandler = async (req, res) => {
     "makeLinksBold",
     "customStyles",
     "mainPostBodySelector",
-    "metaContentSpotSelector"
+    "metaContentSpotSelector",
   ]);
 
   const abortCategories = await getUserAbortCategories(userId);

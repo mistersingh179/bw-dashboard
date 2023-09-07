@@ -19,13 +19,13 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import React, {ReactNode, useEffect, useState} from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import SliderThumbWithTooltip from "@/components/SliderThumbWithTooltip";
 import useSettings from "@/hooks/useSettings";
-import {ErrorAlert} from "@/components/genericMessages";
-import {SettingType} from "@/types/my-types";
-import {CreatableSelect as Select} from "chakra-react-select";
-import {Editor} from "@monaco-editor/react";
+import { ErrorAlert } from "@/components/genericMessages";
+import { SettingType } from "@/types/my-types";
+import { CreatableSelect as Select } from "chakra-react-select";
+import { Editor } from "@monaco-editor/react";
 
 const sponsoredOptions: { value: string; label: string }[] = [
   {
@@ -90,7 +90,7 @@ type BooleanFormControlPropsType = {
   children: ReactNode;
 };
 const BooleanFormControl = (props: BooleanFormControlPropsType) => {
-  const {label, fieldName, fieldValue, updateFn, children} = props;
+  const { label, fieldName, fieldValue, updateFn, children } = props;
   return (
     <FormControl my={5}>
       <HStack>
@@ -117,7 +117,7 @@ type TextFormControlPropsType = {
   children: ReactNode;
 };
 const TextFormControl = (props: TextFormControlPropsType) => {
-  const {label, fieldName, fieldValue, updateFn, children} = props;
+  const { label, fieldName, fieldValue, updateFn, children } = props;
   return (
     <FormControl my={5}>
       <HStack>
@@ -148,7 +148,7 @@ type NumberFormControlPropsType = {
   children: ReactNode;
 };
 const NumberFormControl = (props: NumberFormControlPropsType) => {
-  const {label, fieldName, fieldValue, updateFn, children} = props;
+  const { label, fieldName, fieldValue, updateFn, children } = props;
   return (
     <FormControl my={5}>
       <HStack>
@@ -165,10 +165,10 @@ const NumberFormControl = (props: NumberFormControlPropsType) => {
               updateFn(fieldName, parseInt(val));
             }}
           >
-            <NumberInputField/>
+            <NumberInputField />
             <NumberInputStepper>
-              <NumberIncrementStepper/>
-              <NumberDecrementStepper/>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
             </NumberInputStepper>
           </NumberInput>
         </Box>
@@ -181,7 +181,7 @@ const NumberFormControl = (props: NumberFormControlPropsType) => {
 };
 
 const Settings: FCWithAuth = () => {
-  const {settings, error, isLoading, onSave} = useSettings();
+  const { settings, error, isLoading, onSave } = useSettings();
 
   const defaultValues: SettingType = {
     contentSelector: "",
@@ -224,6 +224,7 @@ const Settings: FCWithAuth = () => {
     minCharLimit,
     minMetaContentSpotWordLimit,
     sameTypeElemWithTextToFollow,
+    webpageLookbackDays,
     webpageInsertCap,
     allTimeMostVisitedUrlCount,
     recentlyMostVisitedUrlCount,
@@ -243,8 +244,8 @@ const Settings: FCWithAuth = () => {
     <Box>
       <Heading my={5}>Settings Campaign</Heading>
       <VStack spacing={5}>
-        {error && <ErrorAlert/>}
-        {isLoading && <Spinner color={"blue.500"}/>}
+        {error && <ErrorAlert />}
+        {isLoading && <Spinner color={"blue.500"} />}
         {settings && (
           <VStack spacing={5} mb={10}>
             <FormControl>
@@ -297,7 +298,7 @@ const Settings: FCWithAuth = () => {
                     value={
                       sponsoredWording == ""
                         ? null
-                        : {label: sponsoredWording, value: sponsoredWording}
+                        : { label: sponsoredWording, value: sponsoredWording }
                     }
                     isClearable={true}
                     isSearchable={true}
@@ -373,8 +374,8 @@ const Settings: FCWithAuth = () => {
               updateFn={updateItem}
             >
               <Text>
-                The minimum number of words an element must to qualify for
-                meta content generation.
+                The minimum number of words an element must to qualify for meta
+                content generation.
               </Text>
             </NumberFormControl>
             <NumberFormControl
@@ -430,6 +431,17 @@ const Settings: FCWithAuth = () => {
               <Text>
                 The maximum number of webpages to save from the top of recently
                 most visited urls.
+              </Text>
+            </NumberFormControl>
+            <NumberFormControl
+              label={"Webpage Lookback Days"}
+              fieldName={"webpageLookbackDays"}
+              fieldValue={webpageLookbackDays}
+              updateFn={updateItem}
+            >
+              <Text>
+                The maximum number of days to look back when parsing the sitemap
+                to download webpages.
               </Text>
             </NumberFormControl>
             <BooleanFormControl

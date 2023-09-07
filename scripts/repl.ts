@@ -15,7 +15,7 @@ import MediumQueue from "@/jobs/queues/mediumQueue";
 import mediumQueue, {
   queueEvents as MediumQueueEvent,
 } from "@/jobs/queues/mediumQueue";
-import { META_CONTENT_BUILD_FAIL_COUNT_LIMIT } from "@/constants";
+import {DIVERSITY_CLASSIFIER, META_CONTENT_BUILD_FAIL_COUNT_LIMIT} from "@/constants";
 
 prisma.$on("query", (e) => {
   const { timestamp, query, params, duration, target } = e;
@@ -25,12 +25,21 @@ prisma.$on("query", (e) => {
 
 (async () => {
   console.log("***");
-  const output = await prisma.metaContent.findFirstOrThrow({
+  const ans = await prisma.metaContentSpot.findMany({
     where: {
-      id: "clm9bgygh00gf980puba7l2pk"
-    }
+      webpageId: "clm9jvmq200jo980pksya3xcj",
+      metaContents: {
+        none: {
+          diveristyClassifierResult: DIVERSITY_CLASSIFIER.DIVERSE
+        }
+      }
+    },
+    select: {
+      id: true,
+    },
+    take: 1
   })
-  console.log(output)
+  console.log(ans)
   console.log("***");
 })();
 
