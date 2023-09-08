@@ -35,6 +35,7 @@ const processWebpagesWithZeroMetaContentSpots: ProcessWebpagesWithZeroMetaConten
         myLogger.info({ user, website }, "processing website");
         const webpages = await prisma.webpage.findMany({
           where: {
+            websiteId: website.id,
             metaContentSpots: {
               none: {},
             },
