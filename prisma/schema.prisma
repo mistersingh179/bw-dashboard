@@ -79,6 +79,7 @@ model Setting {
   scoreThreshold                Int
   status                        Boolean
   metaContentStatus             Boolean  @default(false)
+  metaContentDisplayPercentage  Int      @default(50)
   sponsoredWording              String   @default("")
   desiredAdvertisementSpotCount Int      @default(1)
   desiredMetaContentSpotCount   Int      @default(5)

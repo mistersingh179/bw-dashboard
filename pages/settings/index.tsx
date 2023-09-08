@@ -146,9 +146,18 @@ type NumberFormControlPropsType = {
   fieldValue: number;
   updateFn: (label: string, value: number) => void;
   children: ReactNode;
+  min?: number;
+  max?: number;
 };
 const NumberFormControl = (props: NumberFormControlPropsType) => {
   const { label, fieldName, fieldValue, updateFn, children } = props;
+  let { min, max } = props;
+  if (min === undefined) {
+    min = 0;
+  }
+  if (max === undefined) {
+    max = 10_000;
+  }
   return (
     <FormControl my={5}>
       <HStack>
@@ -157,8 +166,8 @@ const NumberFormControl = (props: NumberFormControlPropsType) => {
         </FormLabel>
         <Box w={"lg"}>
           <NumberInput
-            min={0}
-            max={10_000}
+            min={min}
+            max={max}
             step={1}
             value={fieldValue ? Number(fieldValue) : 0}
             onChange={(val) => {
@@ -197,6 +206,7 @@ const Settings: FCWithAuth = () => {
     scoreThreshold: 0,
     status: false,
     metaContentStatus: false,
+    metaContentDisplayPercentage: 0,
     sponsoredWording: "",
     mainPostBodySelector: "",
     allTimeMostVisitedUrlCount: 0,
@@ -218,6 +228,7 @@ const Settings: FCWithAuth = () => {
     scoreThreshold,
     status,
     metaContentStatus,
+    metaContentDisplayPercentage,
     sponsoredWording,
     mainPostBodySelector,
     contentSelector,
@@ -285,10 +296,21 @@ const Settings: FCWithAuth = () => {
               fieldValue={metaContentStatus}
               updateFn={updateItem}
             >
-              <Text>
-                Turn On/Off displaying of Meta Content
-              </Text>
+              <Text>Turn On/Off displaying of Meta Content</Text>
             </BooleanFormControl>
+            <NumberFormControl
+              label={"Meta Content Display Percentage"}
+              fieldName={"metaContentDisplayPercentage"}
+              fieldValue={metaContentDisplayPercentage}
+              min={0}
+              max={100}
+              updateFn={updateItem}
+            >
+              <Text>
+                A number between 0 and 100 which defines what percentage of
+                times Meta Content is to be displayed.
+              </Text>
+            </NumberFormControl>
             <FormControl my={5}>
               <HStack>
                 <FormLabel mb={0} minW={"3xs"}>

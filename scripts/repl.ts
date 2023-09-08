@@ -25,15 +25,17 @@ prisma.$on("query", (e) => {
 
 (async () => {
   console.log("***");
-  const userId = "clhw27z37000098xy1ylsnlu3";
-  const ans = await prisma.webpage.findMany({
-    where: {
-      website: {
-        userId
-      },
-    },
-  });
-  console.log(ans)
+  const options = ["a", "b"];
+  const random = Math.random();
+  console.log(random);
+  const ratePercentage = 80;
+  console.log(ratePercentage / 100)
+  ratePercentage
+  if(random < ratePercentage / 100){
+    console.log('b')
+  }else{
+    console.log('a')
+  }
   console.log("***");
 })();
 
