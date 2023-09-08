@@ -25,20 +25,14 @@ prisma.$on("query", (e) => {
 
 (async () => {
   console.log("***");
-  const ans = await prisma.metaContentSpot.findMany({
+  const userId = "clhw27z37000098xy1ylsnlu3";
+  const ans = await prisma.webpage.findMany({
     where: {
-      webpageId: "clm9jvmq200jo980pksya3xcj",
-      metaContents: {
-        none: {
-          diveristyClassifierResult: DIVERSITY_CLASSIFIER.DIVERSE
-        }
-      }
+      website: {
+        userId
+      },
     },
-    select: {
-      id: true,
-    },
-    take: 1
-  })
+  });
   console.log(ans)
   console.log("***");
 })();

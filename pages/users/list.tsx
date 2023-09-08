@@ -100,6 +100,20 @@ const Users = () => {
     console.log("rebuildAds result: ", res.status, res.statusText);
   };
 
+  const processWebpages = async (id: string) => {
+    const payload = {
+      userIdToProcess: id,
+    };
+    const res = await fetch("/api/users/processWebpages", {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("processWebpages result: ", res.status, res.statusText);
+  };
+
   const rebuildMetaContentsHandler = async (id: string) => {
     const payload = {
       userIdToProcess: id,
@@ -189,21 +203,41 @@ const Users = () => {
                           <MenuItem
                             onClick={() => {
                               const ans = confirm(
-                                `Are you sure you want to PROCESS this user: ${user.email}`
+                                `Are you sure you want to PROCESS this user: ${user.email}?\n\n` +
+                                  `This will download NEW webpages from the sitemap etc. and ` +
+                                  `then process those webpages. ` +
+                                  `Processing a webpage means that it will setup its ` +
+                                  `content, title, description, ad spots, meta content spots & categories.\n\n` +
+                                  `It does NOT process existing webpages.`
                               );
                               if (ans) {
                                 processUserHandler(user.id);
                               }
                             }}
                           >
-                            Process User
+                            Process User (Fetches NEW webpages)
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              const ans = confirm(
+                                `This will process all EXISTING webpages for ${user.email}.\n\n` +
+                                `Processing a webpage means that it will setup their ` +
+                                `content, title, description, ad spots, meta content spots & categories.\n\n` +
+                                `It does NOT download new webpages from sitemap etc.`
+                              );
+                              if (ans) {
+                                processWebpages(user.id);
+                              }
+                            }}
+                          >
+                            Process Webpages (Works on EXISTING webpages)
                           </MenuItem>
                           <MenuItem
                             onClick={() => {
                               const ans = confirm(
                                 `This will DELETE ALL ad spots and ads for ${user.email}. ` +
-                                `It will also set related impressions to have reference id of null, but wont delete them. ` +
-                                `Are you sure?`
+                                  `It will also set related impressions to have reference id of null, ` +
+                                `but wont delete them. Are you sure?`
                               );
                               if (ans) {
                                 rebuildAdsHandler(user.id);
@@ -216,8 +250,8 @@ const Users = () => {
                             onClick={() => {
                               const ans = confirm(
                                 `This will DELETE ALL meta content spots and meta content for ${user.email}. ` +
-                                `It will also set related analytics to have reference id of null, but wont delete them. ` +
-                                `Are you sure?`
+                                  `It will also set related analytics to have reference id of null, but wont delete them. ` +
+                                  `Are you sure?`
                               );
                               if (ans) {
                                 rebuildMetaContentsHandler(user.id);

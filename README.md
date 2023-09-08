@@ -93,6 +93,7 @@ drop database bw;
 - store screen size on pageLoad aka auction
 - settings to control AB test percentage
 - record displays of meta content with count
+- if I increase spots, will old content get more spots
 
 ## Notes
 
