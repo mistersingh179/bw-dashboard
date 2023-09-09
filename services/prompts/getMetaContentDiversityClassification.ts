@@ -1,8 +1,7 @@
-import {CHAT_GPT_FETCH_TIMEOUT, DIVERSITY_CLASSIFIER} from "@/constants";
+import { CHAT_GPT_FETCH_TIMEOUT, DIVERSITY_CLASSIFIER } from "@/constants";
 import AnyObject from "@/types/AnyObject";
 import fetch from "node-fetch";
 import prisma from "@/lib/prisma";
-import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageText";
 import { CreateChatCompletionResponse } from "openai/api";
 import logger from "@/lib/logger";
 import { differenceInSeconds } from "date-fns";
@@ -23,6 +22,23 @@ type GetMetaContentDiversityClassification = (
   metaContentText: string
 ) => Promise<ClassificationResultType>;
 
+const parseOutForAns = (output: string): string | null => {
+  let answer = null;
+  if (
+    output.indexOf(DIVERSITY_CLASSIFIER.SIMILAR) >= 0 &&
+    output.indexOf(DIVERSITY_CLASSIFIER.DIVERSE) == -1
+  ) {
+    answer = DIVERSITY_CLASSIFIER.SIMILAR;
+  } else if (
+    output.indexOf(DIVERSITY_CLASSIFIER.SIMILAR) == -1 &&
+    output.indexOf(DIVERSITY_CLASSIFIER.DIVERSE) >= 0
+  ) {
+    answer = DIVERSITY_CLASSIFIER.DIVERSE;
+  }
+
+  return answer;
+};
+
 const getMeatContentDiversityClassification: GetMetaContentDiversityClassification =
   async (metaContentSpotText, metaContentText) => {
     myLogger.info("starting service");
@@ -30,8 +46,8 @@ const getMeatContentDiversityClassification: GetMetaContentDiversityClassificati
     if (process.env.NODE_ENV === "development") {
       return {
         answer: DIVERSITY_CLASSIFIER.DIVERSE,
-        reasoning: "because i said so"
-      }
+        reasoning: "because i said so",
+      };
     }
 
     const messages: AnyObject[] = [
@@ -67,7 +83,7 @@ in JSON, like this: {"type": "answer", "content": ____}`,
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo-0301",
+        model: "gpt-3.5-turbo",
         temperature: 0.8,
         n: 1,
         messages: messages,
@@ -85,29 +101,19 @@ in JSON, like this: {"type": "answer", "content": ____}`,
     const outputs = data.choices.map((c) => c.message?.content || "");
     let output = outputs[0];
 
-    let reasoning, answer;
-
+    let answer;
     if (output.indexOf(expectedJsonStr) >= 0) {
-      reasoning = output.split(expectedJsonStr)[0].trim();
-      answer = output.split(expectedJsonStr)[1].replace(`"}`, "");
-      return { answer, reasoning };
-    } else if (
-      output.indexOf("SIMILAR") >= 0 &&
-      output.indexOf("DIVERSE") == -1
-    ) {
-      reasoning = output.trim();
-      answer = DIVERSITY_CLASSIFIER.SIMILAR
-    } else if (
-      output.indexOf("SIMILAR") == -1 &&
-      output.indexOf("DIVERSE") >= 0
-    ) {
-      reasoning = output.trim();
-      answer = DIVERSITY_CLASSIFIER.DIVERSE;
+      answer = parseOutForAns(
+        output.split(expectedJsonStr)[1].replace(`"}`, "")
+      );
     } else {
-      throw new Error("unable to parse diversity classification api response");
+      answer = parseOutForAns(output);
+    }
+    if(answer === null){
+      throw new Error("unable to parse chat gpt api response for diversity classification");
     }
 
-    const result = { reasoning, answer };
+    const result = { reasoning: output, answer };
     myLogger.info(result, "outputs after cleanup is");
     return result;
   };
@@ -118,7 +124,7 @@ if (require.main === module) {
   (async () => {
     const metaContentSpot = await prisma.metaContentSpot.findFirstOrThrow({
       where: {
-        webpageId: "clkrey0jx000m985gb765ieg0",
+        webpageId: "clm9jvmpd00jm980ps1j6c6x1",
       },
     });
     const ans = await getMeatContentDiversityClassification(

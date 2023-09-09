@@ -48,7 +48,7 @@ Brevity is strongly preferred, so limit your answer to 40 characters. \n\n\\
       Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
-      model: "gpt-3.5-turbo-0301",
+      model: "gpt-3.5-turbo",
       temperature: 0.8,
       messages: messages,
     }),
@@ -72,7 +72,7 @@ Brevity is strongly preferred, so limit your answer to 40 characters. \n\n\\
   }
   heading = heading.trim();
   if (heading.startsWith(`"`) && heading.endsWith(`"`)) {
-    heading = heading.replace(/^"|$"/g, "");
+    heading = heading.replace(/^"|"$/g, "");
   }
   myLogger.info({ heading }, "outputs after cleanup is");
 

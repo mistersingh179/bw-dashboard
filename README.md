@@ -92,6 +92,8 @@ drop database bw;
 # Pending Meta Content
 - store screen size on pageLoad aka auction
 - record displays of meta content with count
+- Heading as ending quote https://app.brandweaver.ai/websites/cliniahv901jjle08mjc0vbd4/webpages/cljqauyd009qbpv21t9aratld/show
+- update logs to include spot id for better logging
 
 ## Notes
 

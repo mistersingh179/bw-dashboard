@@ -70,7 +70,7 @@ Brevity is strongly preferred.\n\
       Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
-      model: "gpt-3.5-turbo-0301",
+      model: "gpt-3.5-turbo",
       temperature: 0.8,
       messages: messages,
     }),
@@ -96,7 +96,7 @@ if (require.main === module) {
   (async () => {
     const metaContentSpot = await prisma.metaContentSpot.findFirstOrThrow({
       where: {
-        webpageId: "clkrey0jx000m985gb765ieg0",
+        webpageId: "clm9jvmpd00jm980ps1j6c6x1",
       },
     });
     const ans = await getMetaContentText(

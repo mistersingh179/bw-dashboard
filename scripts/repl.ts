@@ -25,17 +25,11 @@ prisma.$on("query", (e) => {
 
 (async () => {
   console.log("***");
-  const options = ["a", "b"];
-  const random = Math.random();
-  console.log(random);
-  const ratePercentage = 80;
-  console.log(ratePercentage / 100)
-  ratePercentage
-  if(random < ratePercentage / 100){
-    console.log('b')
-  }else{
-    console.log('a')
+  let heading = "\"Beyond Fun: Playful Behavior Defined\"";
+  if (heading.startsWith(`"`) && heading.endsWith(`"`)) {
+    heading = heading.replace(/^"|"$/g, "");
   }
+  console.log(heading);
   console.log("***");
 })();
 
