@@ -8,8 +8,6 @@ import logger from "@/lib/logger";
 import { differenceInSeconds } from "date-fns";
 import ansiStyles from "ansi-styles";
 
-const myLogger = logger.child({ name: "getMetaContentHeading" });
-
 type GetMetaContentHeading = (metaContentText: string) => Promise<string>;
 
 export const failedPhrases = [
@@ -20,6 +18,11 @@ export const failedPhrases = [
 const getMetaContentHeading: GetMetaContentHeading = async (
   metaContentText
 ) => {
+  const myLogger = logger.child({
+    name: "getMetaContentHeading",
+    metaContentText,
+  });
+
   myLogger.info("starting service");
 
   if (process.env.NODE_ENV === "development") {
@@ -63,7 +66,7 @@ Brevity is strongly preferred, so limit your answer to 40 characters. \n\n\\
   const reqDuration = differenceInSeconds(performance.now(), reqStartedAt);
   myLogger.info({ reqDuration }, "chatgpt meta content heading req finished");
   let data = (await response.json()) as CreateChatCompletionResponse;
-  myLogger.info({ data }, "api returned");
+  myLogger.info({ messages, data }, "api returned");
   const outputs = data.choices.map((c) => c.message?.content || "");
   let output = outputs[0];
 
@@ -101,6 +104,6 @@ if (require.main === module) {
       },
     });
     const ans = await getMetaContentHeading(metaContentSpot.contentText);
-    myLogger.info({ ans }, "output");
+    console.log("output: ", ans);
   })();
 }

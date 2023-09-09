@@ -5,9 +5,7 @@ import prisma from "@/lib/prisma";
 import { CreateChatCompletionResponse } from "openai/api";
 import logger from "@/lib/logger";
 import { differenceInSeconds } from "date-fns";
-import {failedPhrases} from "@/services/prompts/getMetaContentHeading";
-
-const myLogger = logger.child({ name: "getMetaContentText" });
+import { failedPhrases } from "@/services/prompts/getMetaContentHeading";
 
 const cleanupWordRegex =
   /^(Supplementary Content|Cultural References|Future Trends|Historical Exploration|Scientific Connection|Literature Review|Economic Impact|Cultural Evolution|Geographical Insights|Symbolism and Iconography|Pattern Recognition|Semantic Analysis|Historical Parallels|Moral and Ethical Considerations|Language Evolution|Innovative Applications|Unexplored Dimensions|Cognitive Psychology|Environmental Impact|Cultural Symbolism|Biographical Lens):/im;
@@ -21,10 +19,15 @@ const getMetaContentText: GetMetaContentText = async (
   metaContentSpotText,
   contentType
 ) => {
+  const myLogger = logger.child({
+    name: "getMetaContentText",
+    metaContentSpotText,
+    contentType,
+  });
   myLogger.info("starting service");
 
   if (process.env.NODE_ENV === "development") {
-    return `Meta Content Text for – ${contentType.slice(0, 50)} – ${metaContentSpotText.slice(0, 100)}`
+    return `Meta Content Text for – ${contentType} – ${metaContentSpotText}`;
   }
 
   const messages: AnyObject[] = [
@@ -80,7 +83,7 @@ Brevity is strongly preferred.\n\
   const reqDuration = differenceInSeconds(performance.now(), reqStartedAt);
   myLogger.info({ reqDuration }, "chatgpt get meta content request finished");
   let data = (await response.json()) as CreateChatCompletionResponse;
-  myLogger.info({ data }, "api returned");
+  myLogger.info({ messages, data }, "api returned");
   const outputs = data.choices.map((c) => c.message?.content || "");
   let output = outputs[0];
 
@@ -110,6 +113,6 @@ if (require.main === module) {
       "In partnership with Best Friends Animal Society in Los Angeles, we are pleased to bring you these amazing animals looking for their forever homes. These animals in particular, have been waiting two months or longer to be adopted. Check them out below, then visit the Best Friends Lifesaving Center where you can fall in love with them or one of more than 400 dogs, cats, kittens and puppies from Los Angeles Animal Services shelters. Why the hashtag? Join the no-kill movement and help spread the word by sharing these animals on your socials with the tag #bestfriends.",
       "Explore how cognitive biases or psychological phenomena influence perceptions related to the topic."
     );
-    myLogger.info({ ans }, "output");
+    console.log("output: ", ans);
   })();
 }

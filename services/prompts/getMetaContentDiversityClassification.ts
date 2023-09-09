@@ -7,10 +7,6 @@ import logger from "@/lib/logger";
 import { differenceInSeconds } from "date-fns";
 import { failedPhrases } from "@/services/prompts/getMetaContentHeading";
 
-const myLogger = logger.child({
-  name: "getMeatContentDiversityClassification",
-});
-
 const expectedJsonStr = `{"type": "answer", "content": "`;
 
 export type ClassificationResultType = {
@@ -42,6 +38,11 @@ const parseOutForAns = (output: string): string | null => {
 
 const getMeatContentDiversityClassification: GetMetaContentDiversityClassification =
   async (metaContentSpotText, metaContentText) => {
+    const myLogger = logger.child({
+      name: "getMeatContentDiversityClassification",
+      metaContentSpotText,
+      metaContentText,
+    });
     myLogger.info("starting service");
 
     if (process.env.NODE_ENV === "development") {
@@ -98,7 +99,7 @@ in JSON, like this: {"type": "answer", "content": ____}`,
       "chatgpt get diversity similarity classification request finished"
     );
     let data = (await response.json()) as CreateChatCompletionResponse;
-    myLogger.info({ data }, "api returned");
+    myLogger.info({messages, data }, "api returned");
     const outputs = data.choices.map((c) => c.message?.content || "");
     let output = outputs[0];
 
@@ -140,6 +141,6 @@ if (require.main === module) {
       "\\nThe following method I patched together from recipes in both Joy of Cooking and Cook's Illustrated's The Best Recipe. The pizza dough recipe makes enough dough for two 10 to 12 inch pizzas.\\n",
       "\"In the classic novel, Little Women, the characters Meg, Jo, Beth, and Amy make homemade dough for their family's pizza night. While the recipe they used may have been simple, making dough from scratch can be a daunting task. But fear not, with this recipe, you'll be able to whip up enough dough for two delicious pizzas just like the March sisters."
     );
-    myLogger.info({ ans }, "output");
+    console.log("output: ", ans);
   })();
 }
