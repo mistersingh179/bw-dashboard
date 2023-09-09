@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { CreateChatCompletionResponse } from "openai/api";
 import logger from "@/lib/logger";
 import { differenceInSeconds } from "date-fns";
+import { failedPhrases } from "@/services/prompts/getMetaContentHeading";
 
 const myLogger = logger.child({
   name: "getMeatContentDiversityClassification",
@@ -101,6 +102,12 @@ in JSON, like this: {"type": "answer", "content": ____}`,
     const outputs = data.choices.map((c) => c.message?.content || "");
     let output = outputs[0];
 
+    const failFound = failedPhrases.some((phrase) => output.includes(phrase));
+    if (failFound) {
+      myLogger.info({ failFound }, "fail phrase found in the output");
+      throw new Error("unable to get generate diversity from api response");
+    }
+
     let answer;
     if (output.indexOf(expectedJsonStr) >= 0) {
       answer = parseOutForAns(
@@ -109,8 +116,10 @@ in JSON, like this: {"type": "answer", "content": ____}`,
     } else {
       answer = parseOutForAns(output);
     }
-    if(answer === null){
-      throw new Error("unable to parse chat gpt api response for diversity classification");
+    if (answer === null) {
+      throw new Error(
+        "unable to parse chat gpt api response for diversity classification"
+      );
     }
 
     const result = { reasoning: output, answer };

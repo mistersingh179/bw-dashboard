@@ -2,10 +2,10 @@ import { CHAT_GPT_FETCH_TIMEOUT } from "@/constants";
 import AnyObject from "@/types/AnyObject";
 import fetch from "node-fetch";
 import prisma from "@/lib/prisma";
-import extractCleanedWebpageText from "@/services/helpers/extractCleanedWebpageText";
 import { CreateChatCompletionResponse } from "openai/api";
 import logger from "@/lib/logger";
 import { differenceInSeconds } from "date-fns";
+import {failedPhrases} from "@/services/prompts/getMetaContentHeading";
 
 const myLogger = logger.child({ name: "getMetaContentText" });
 
@@ -83,7 +83,14 @@ Brevity is strongly preferred.\n\
   myLogger.info({ data }, "api returned");
   const outputs = data.choices.map((c) => c.message?.content || "");
   let output = outputs[0];
-  output = output.replace(cleanupWordRegex, '');
+
+  const failFound = failedPhrases.some((phrase) => output.includes(phrase));
+  if (failFound) {
+    myLogger.info({ failFound }, "fail phrase found in the output");
+    throw new Error("unable to get generate text from api response");
+  }
+
+  output = output.replace(cleanupWordRegex, "");
   output = output.trim();
   myLogger.info({ output }, "outputs after cleanup is");
 
@@ -100,8 +107,8 @@ if (require.main === module) {
       },
     });
     const ans = await getMetaContentText(
-      metaContentSpot.contentText,
-      "hollwood movie"
+      "In partnership with Best Friends Animal Society in Los Angeles, we are pleased to bring you these amazing animals looking for their forever homes. These animals in particular, have been waiting two months or longer to be adopted. Check them out below, then visit the Best Friends Lifesaving Center where you can fall in love with them or one of more than 400 dogs, cats, kittens and puppies from Los Angeles Animal Services shelters. Why the hashtag? Join the no-kill movement and help spread the word by sharing these animals on your socials with the tag #bestfriends.",
+      "Explore how cognitive biases or psychological phenomena influence perceptions related to the topic."
     );
     myLogger.info({ ans }, "output");
   })();

@@ -12,6 +12,11 @@ const myLogger = logger.child({ name: "getMetaContentHeading" });
 
 type GetMetaContentHeading = (metaContentText: string) => Promise<string>;
 
+export const failedPhrases = [
+  `AI can't generate content.`,
+  `Sorry, as an AI language model, I cannot provide`,
+];
+
 const getMetaContentHeading: GetMetaContentHeading = async (
   metaContentText
 ) => {
@@ -61,6 +66,13 @@ Brevity is strongly preferred, so limit your answer to 40 characters. \n\n\\
   myLogger.info({ data }, "api returned");
   const outputs = data.choices.map((c) => c.message?.content || "");
   let output = outputs[0];
+
+  const failFound = failedPhrases.some((phrase) => output.includes(phrase));
+  if (failFound) {
+    myLogger.info({ failFound }, "fail phrase found in the output");
+    throw new Error("unable to get generate heading from api response");
+  }
+
   let heading = "";
   if (output.indexOf(">>") >= 0 && output.indexOf("<<") >= 0) {
     const regexAns = output.match(/<<(.*)>>/);
