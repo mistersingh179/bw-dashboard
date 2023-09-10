@@ -71,7 +71,15 @@ const createMetaContents: CreateMetaContents = async (metaContentSpot) => {
     return null;
   }
 
+  const content = await prisma.content.findFirstOrThrow({
+    where: {
+      webpageId: metaContentSpot.webpageId,
+    },
+  });
+  const title = content.title || ""
+
   const { contentText: metaContentSpotText } = metaContentSpot;
+
   const existingMetaContent = await prisma.metaContent.findMany({
     where: {
       metaContentSpotId: metaContentSpot.id,
@@ -108,7 +116,8 @@ const createMetaContents: CreateMetaContents = async (metaContentSpot) => {
   try {
     metaContentText = await getMetaContentText(
       metaContentSpotText,
-      pickedContentType.name
+      pickedContentType.name,
+      title,
     );
     metaContentHeading = await getMetaContentHeading(metaContentText);
     metaContentDiversityClassification =
@@ -166,7 +175,7 @@ if (require.main === module) {
   (async () => {
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clkrey0jx000m985gb765ieg0",
+        id: "clm9jvmpd00jm980ps1j6c6x1",
       },
       include: {
         metaContentSpots: true,

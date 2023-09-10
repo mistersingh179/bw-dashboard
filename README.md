@@ -92,7 +92,6 @@ drop database bw;
 # Pending Meta Content
 - store screen size on pageLoad aka auction
 - record displays of meta content with count
-- update logs to include spot id for better logging
 
 ## Notes
 

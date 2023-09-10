@@ -322,7 +322,9 @@ const MetaContentSpots = ({
                                   <Heading size={"xs"}>
                                     {mc.generatedHeading}
                                   </Heading>
-                                  {mc.generatedText}
+                                  {mc.generatedText.split("\n").map((para) => {
+                                    return (<Box key={para} mt={3}>{para}</Box>);
+                                  })}
                                 </Box>
                               </Td>
                               <Td>{mc.metaContentType.name}</Td>

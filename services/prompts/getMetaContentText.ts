@@ -8,21 +8,24 @@ import { differenceInSeconds } from "date-fns";
 import { failedPhrases } from "@/services/prompts/getMetaContentHeading";
 
 const cleanupWordRegex =
-  /^(Supplementary Content|Cultural References|Future Trends|Historical Exploration|Scientific Connection|Literature Review|Economic Impact|Cultural Evolution|Geographical Insights|Symbolism and Iconography|Pattern Recognition|Semantic Analysis|Historical Parallels|Moral and Ethical Considerations|Language Evolution|Innovative Applications|Unexplored Dimensions|Cognitive Psychology|Environmental Impact|Cultural Symbolism|Biographical Lens):/im;
+  /^(Original text|Box|Technological Fact|Musical Fact|Scientific Fact|Cultural Fact|Economic Fact|Boxed Content|Cognitive Bias|Supplementary Content|Cultural References|Future Trends|Historical Exploration|Scientific Connection|Literature Review|Economic Impact|Cultural Evolution|Geographical Insights|Symbolism and Iconography|Pattern Recognition|Semantic Analysis|Historical Parallels|Moral and Ethical Considerations|Language Evolution|Innovative Applications|Unexplored Dimensions|Cognitive Psychology|Environmental Impact|Cultural Symbolism|Biographical Lens):/im;
 
 type GetMetaContentText = (
   metaContentSpotText: string,
-  contentType: string
+  contentType: string,
+  title: string
 ) => Promise<string>;
 
 const getMetaContentText: GetMetaContentText = async (
   metaContentSpotText,
-  contentType
+  contentType,
+  title
 ) => {
   const myLogger = logger.child({
     name: "getMetaContentText",
     metaContentSpotText,
     contentType,
+    title,
   });
   myLogger.info("starting service");
 
@@ -37,7 +40,7 @@ const getMetaContentText: GetMetaContentText = async (
     },
     {
       role: "user",
-      content: `I will give you original text from a blog post and a content type. \
+      content: `I will give you the title and original text from a blog post and a content type. \
 Create supplementary content that is distinct from the original text \
 for the given content type. \
 For context, your supplementary content will be placed in a separate \
@@ -45,19 +48,19 @@ box alongside the original text. \
 Important: restatements or summaries of the original content \
 are extremely frowned upon.\n\n\
 ***\n\
+Title:\n\
+${title}\n\
+***\n\
 Original text:\n\
 ${metaContentSpotText}\n\
 ***\n\
 Content type:\n\
 ${contentType}\n\
 ***\n\n\
-Only output your supplementary content without a heading. \
-Never say 'Supplementary Content'. \
-Never say 'Tangential tidbit:'. Never say 'Trivia:'. \
-Never say 'History:'. Never say 'Contrarian viewpoint:'. \
-Limit your entire response to 1000 characters or less. \
-Brevity is strongly preferred.\n\
-###`,
+Output only your supplementary content without a heading.\n\
+Limit your entire response to 1200 characters or less.\n\
+Brevity is strongly preferred.\n\n\
+###\n`,
     },
   ];
   myLogger.info(messages, "messages being sent to chatGpt");
@@ -93,7 +96,19 @@ Brevity is strongly preferred.\n\
     throw new Error("unable to get generate text from api response");
   }
 
-  output = output.replace(cleanupWordRegex, "");
+  const length = output.length;
+  if (length <= 400) {
+    myLogger.info({ output, length }, "output length is too small.");
+    throw new Error("unable to generate long enough text from api response");
+  }
+
+  let pars = output.split("\\n");
+  pars = pars.filter(para => para != '')
+  pars = pars.map(para => para.replace(cleanupWordRegex, ""));
+  pars = pars.map(para => para.trim());
+  pars = pars.filter(para => para != contentType);
+  pars = pars.filter(para => para != metaContentSpotText);
+  output = pars.join("\\n");
   output = output.trim();
   myLogger.info({ output }, "outputs after cleanup is");
 
@@ -111,7 +126,8 @@ if (require.main === module) {
     });
     const ans = await getMetaContentText(
       "In partnership with Best Friends Animal Society in Los Angeles, we are pleased to bring you these amazing animals looking for their forever homes. These animals in particular, have been waiting two months or longer to be adopted. Check them out below, then visit the Best Friends Lifesaving Center where you can fall in love with them or one of more than 400 dogs, cats, kittens and puppies from Los Angeles Animal Services shelters. Why the hashtag? Join the no-kill movement and help spread the word by sharing these animals on your socials with the tag #bestfriends.",
-      "Explore how cognitive biases or psychological phenomena influence perceptions related to the topic."
+      "Explore how cognitive biases or psychological phenomena influence perceptions related to the topic.",
+      "Document"
     );
     console.log("output: ", ans);
   })();

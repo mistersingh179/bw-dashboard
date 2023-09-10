@@ -8,6 +8,10 @@ import logger from "@/lib/logger";
 import { differenceInSeconds } from "date-fns";
 import ansiStyles from "ansi-styles";
 
+const cleanupWordRegex =
+  /^(Headline):/i;
+
+
 type GetMetaContentHeading = (metaContentText: string) => Promise<string>;
 
 export const failedPhrases = [
@@ -86,11 +90,13 @@ Brevity is strongly preferred, so limit your answer to 40 characters. \n\n\\
     heading = output;
   }
   heading = heading.trim();
+  heading = heading.replace(cleanupWordRegex, '');
+  heading = heading.trim();
   if (heading.startsWith(`"`) && heading.endsWith(`"`)) {
     heading = heading.replace(/^"|"$/g, "");
   }
+  heading = heading.trim();
   myLogger.info({ heading }, "outputs after cleanup is");
-
   return heading;
 };
 
@@ -100,7 +106,7 @@ if (require.main === module) {
   (async () => {
     const metaContentSpot = await prisma.metaContentSpot.findFirstOrThrow({
       where: {
-        webpageId: "clkrey0jx000m985gb765ieg0",
+        webpageId: "clm9jvmpd00jm980ps1j6c6x1",
       },
     });
     const ans = await getMetaContentHeading(metaContentSpot.contentText);
