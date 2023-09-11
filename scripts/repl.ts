@@ -35,18 +35,23 @@ const cleanupWordRegex =
 
 (async () => {
   console.log("***");
-  let output = `Cognitive Bias: The Halo Effect\\n\\nCognitive Bias:The Halo Effect is a cognitive bias that can influence our perceptions when it comes to adopting animals. This bias occurs when we attribute positive qualities to a person or, in this case, an animal, based on one outstanding trait or characteristic. \\n\\nfoo\\n\\nbar\\n\\nFor example, when we see a photo of an adorable puppy with big, soulful eyes, we may automatically assume that the puppy is friendly, well-behaved, and easy to train. This positive perception can cloud our judgment and make us more inclined to adopt the puppy without considering other factors, such as its energy level or compatibility with our lifestyle.\\n\\nIn the context of the animals showcased by Best Friends Animal Society, it's important to be aware of the Halo Effect and not let it solely guide our decision to adopt. While these animals have been waiting for their forever homes for an extended period, it's crucial to take a holistic approach and consider their individual needs, temperaments, and any potential challenges they may present.\\n\\nBy acknowledging the Halo Effect and consciously evaluating a pet's suitability based on a range of factors, we can ensure that our adoption decision is well-informed and ultimately beneficial for both the animal and ourselves.`;
+  let t: any = ["a", "b"];
+  t = t.join("\n");
+  console.log(t)
+  await prisma.metaContent.update({
+    where: {
+      id: "clmf214xj000z98wtpgl90q6s"
+    },
+    data: {
+      generatedText: t
+    }
+  })
 
-  let pars = output.split("\\n");
-  pars = pars.filter(para => para != '')
-  pars = pars.map(para => para.replace(cleanupWordRegex, ""));
-  pars = pars.map(para => para.trim());
-  pars = pars.filter(para => para != contentType);
-  pars = pars.filter(para => para != metaContentSpotText);
-  output = pars.join("\\n");
-  output = output.trim();
+  // const corpus = "foo bar \n\n baaz \\n foobar \n\n hi";
+  // let paras = corpus.split(/\n|\\n/);
+  // console.log(paras);
 
-  console.log(output);
+  console.log("***");
 })();
 
 export {};

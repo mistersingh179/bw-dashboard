@@ -105,23 +105,24 @@ model Setting {
 }
 
 model Auction {
-  id          String       @id @default(cuid())
-  userId      String?
-  user        User?        @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  websiteId   String?
-  website     Website?     @relation(fields: [websiteId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  webpageId   String?
-  webpage     Webpage?     @relation(fields: [webpageId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  impressions Impression[]
-  url         String?
-  userAgent   String       @default("")
-  ip          String       @default("0.0.0.0") @db.Inet
-  endUserCuid String       @default("")
-  endUserFp   String       @default("")
-  timeSpent   Int          @default(0)
-  extra       String?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id                     String                  @id @default(cuid())
+  userId                 String?
+  user                   User?                   @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  websiteId              String?
+  website                Website?                @relation(fields: [websiteId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  webpageId              String?
+  webpage                Webpage?                @relation(fields: [webpageId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  impressions            Impression[]
+  metaContentImpressions MetaContentImpression[]
+  url                    String?
+  userAgent              String                  @default("")
+  ip                     String                  @default("0.0.0.0") @db.Inet
+  endUserCuid            String                  @default("")
+  endUserFp              String                  @default("")
+  timeSpent              Int                     @default(0)
+  extra                  String?
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
 
   @@index([userId])
   @@index([webpageId])
@@ -268,18 +269,19 @@ model MetaContentSpot {
 }
 
 model MetaContent {
-  id                        String          @id @default(cuid())
+  id                        String                  @id @default(cuid())
   metaContentSpotId         String
-  metaContentSpot           MetaContentSpot @relation(fields: [metaContentSpotId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  metaContentSpot           MetaContentSpot         @relation(fields: [metaContentSpotId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   metaContentTypeId         String
-  metaContentType           MetaContentType @relation(fields: [metaContentTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  metaContentType           MetaContentType         @relation(fields: [metaContentTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  metaContentImpressions    MetaContentImpression[]
   generatedText             String
   generatedHeading          String
   diveristyClassifierResult String
   diveristyClassifierReason String
   status                    Boolean
-  createdAt                 DateTime        @default(now())
-  updatedAt                 DateTime        @updatedAt
+  createdAt                 DateTime                @default(now())
+  updatedAt                 DateTime                @updatedAt
 
   @@index([status])
   @@index([metaContentSpotId])
@@ -295,6 +297,20 @@ model MetaContentType {
   updatedAt    DateTime      @updatedAt
 
   @@unique([name])
+}
+
+model MetaContentImpression {
+  id            String      @id @default(cuid())
+  metaContentId String
+  metaContent   MetaContent @relation(fields: [metaContentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  auctionId     String
+  auction       Auction     @relation(fields: [auctionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  feedbackEmoji String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([metaContentId, createdAt(sort: Asc)])
+  @@index([auctionId, createdAt(sort: Asc)])
 }
 
 model Campaign {

@@ -102,13 +102,13 @@ Brevity is strongly preferred.\n\n\
     throw new Error("unable to generate long enough text from api response");
   }
 
-  let pars = output.split("\\n");
+  let pars = output.split(/\n|\\n/);
   pars = pars.filter(para => para != '')
   pars = pars.map(para => para.replace(cleanupWordRegex, ""));
   pars = pars.map(para => para.trim());
   pars = pars.filter(para => para != contentType);
   pars = pars.filter(para => para != metaContentSpotText);
-  output = pars.join("\\n");
+  output = pars.join("\n");
   output = output.trim();
   myLogger.info({ output }, "outputs after cleanup is");
 
