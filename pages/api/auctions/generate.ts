@@ -139,7 +139,7 @@ const getEndUserCuid = (req: NextApiRequest): string | null => {
 };
 
 const generate: NextApiHandler = async (req, res) => {
-  const { userId, url, fp } = req.body;
+  const { userId, url, fp, screenWidth, screenHeight } = req.body;
   const settings = req.settings!;
 
   let messages: string[] = [];
@@ -174,6 +174,8 @@ const generate: NextApiHandler = async (req, res) => {
       url: originWithPathName,
       endUserCuid: getEndUserCuid(req) ?? createId(),
       endUserFp: fp,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
       userAgent: req.headers["user-agent"],
       ip: requestIp.getClientIp(req) ?? "0.0.0.0",
       webpageId: webpage?.id,

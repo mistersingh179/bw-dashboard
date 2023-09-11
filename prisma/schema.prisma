@@ -116,6 +116,8 @@ model Auction {
   metaContentImpressions MetaContentImpression[]
   url                    String?
   userAgent              String                  @default("")
+  screenWidth            Int?
+  screenHeight           Int?
   ip                     String                  @default("0.0.0.0") @db.Inet
   endUserCuid            String                  @default("")
   endUserFp              String                  @default("")

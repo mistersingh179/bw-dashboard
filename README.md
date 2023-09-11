@@ -90,7 +90,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 # Pending Meta Content
-- store screen size on pageLoad aka auction
 - record displays of meta content with count
 
 ## Notes
