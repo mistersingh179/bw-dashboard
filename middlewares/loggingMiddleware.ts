@@ -5,14 +5,21 @@ import logger from "@/lib/logger";
 import { pick } from "lodash";
 
 const loggingMiddleware: Middleware = async (req, res, next) => {
-  const reqItems = pick(req, ["method", "url", "query", "body"]);
+  const beforeTime = Date.now();
 
-  const trueClientIp = req.headers['true-client-ip'];
+  const reqItems = pick(req, ["method", "url", "query", "body"]);
+  const trueClientIp = req.headers["true-client-ip"];
 
   logger.info({ ...reqItems, trueClientIp, reqId: req.reqId }, "API Request");
+
   await next();
+
+  const responseTime = Date.now() - beforeTime;
   const resItems = pick(res, ["statusCode", "statusMessage"]);
-  logger.info({...reqItems, ...resItems, reqId: req.reqId}, "API Response");
+  logger.info(
+    { ...reqItems, ...resItems, reqId: req.reqId, responseTime },
+    "API Response"
+  );
 };
 
 export default loggingMiddleware;

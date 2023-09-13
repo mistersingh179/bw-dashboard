@@ -90,7 +90,18 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 # Pending Meta Content
-- record displays of meta content with count
+- three hash `###` before text starts
+  - https://files.slack.com/files-pri/T05BDQZCLL9-F05RVV9R8AX/screen_shot_2023-09-11_at_3.42.33_pm.png
+- api response is very long over 30 seconds
+  - https://files.slack.com/files-pri/T05BDQZCLL9-F05RK937ENT/screen_shot_2023-09-12_at_8.06.42_am.png
+- read more button dissapears
+  - https://files.slack.com/files-pri/T05BDQZCLL9-F05SNS7THS4/screen_shot_2023-09-12_at_8.13.34_am.png
+- text is too long and it doesn't scroll
+  - https://files.slack.com/files-pri/T05BDQZCLL9-F05RPQSDBSA/image.png
+- setup GA
+- record AB test data
+- build new queries
+- add datadog
 
 ## Notes
 
