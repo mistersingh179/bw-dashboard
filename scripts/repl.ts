@@ -35,22 +35,20 @@ const cleanupWordRegex =
 
 (async () => {
   console.log("***");
-  let t: any = ["a", "b"];
-  t = t.join("\n");
-  console.log(t)
-  await prisma.metaContent.update({
-    where: {
-      id: "clmf214xj000z98wtpgl90q6s"
-    },
-    data: {
-      generatedText: t
+  const result = await prisma.user.findMany({
+    include: {
+      setting: true,
+      _count: {
+        select: {
+          websites: true,
+          categories: true,
+          campaigns: true,
+        }
+      }
     }
-  })
+  });
 
-  // const corpus = "foo bar \n\n baaz \\n foobar \n\n hi";
-  // let paras = corpus.split(/\n|\\n/);
-  // console.log(paras);
-
+  console.log(result);
   console.log("***");
 })();
 

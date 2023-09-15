@@ -96,12 +96,18 @@ drop database bw;
   - https://files.slack.com/files-pri/T05BDQZCLL9-F05RK937ENT/screen_shot_2023-09-12_at_8.06.42_am.png
 - read more button dissapears
   - https://files.slack.com/files-pri/T05BDQZCLL9-F05SNS7THS4/screen_shot_2023-09-12_at_8.13.34_am.png
+  - https://files.slack.com/files-pri/T05BDQZCLL9-F05S664S62H/image.png
 - text is too long and it doesn't scroll
   - https://files.slack.com/files-pri/T05BDQZCLL9-F05RPQSDBSA/image.png
 - setup GA
 - record AB test data
 - build new queries
 - add datadog
+- datadog query for slowness
+- enable pg_stat_statements
+- allow storing of manually rejected meta content
+- add ability to abort on pages which match a path like we do for categories
+- send logger throughout so we track entire generate auction
 
 ## Notes
 
@@ -281,3 +287,6 @@ drop database bw;
 - we save impression & return back id
 - Script makes 3rd call POST for each click on that impression
 - it gives us just impressionId
+
+## gotchas
+- don't put a semi-colon at the end of a redis command
