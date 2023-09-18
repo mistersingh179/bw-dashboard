@@ -16,7 +16,7 @@
     "prisma:console": "prisma-repl --verbose",
     "lint": "next lint",
     "worker-build": "npm ci && prisma generate",
-    "worker": "NODE_OPTIONS='-r ./newrelicLoader.js' tsx jobs/runAllWorkers.ts",
+    "worker": "NODE_OPTIONS='-r newrelic' tsx jobs/runAllWorkers.ts",
     "dev-worker": "tsx jobs/runAllWorkers.ts"
   },
   "dependencies": {
