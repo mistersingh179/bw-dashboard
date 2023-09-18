@@ -3,6 +3,7 @@ import { Middleware } from "next-api-middleware";
 import { nanoid } from "nanoid";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
+import newrelic from 'newrelic';
 
 const loggingMiddleware: Middleware = async (req, res, next) => {
   const beforeTime = Date.now();
@@ -11,6 +12,10 @@ const loggingMiddleware: Middleware = async (req, res, next) => {
   const trueClientIp = req.headers["true-client-ip"];
 
   logger.info({ ...reqItems, trueClientIp, reqId: req.reqId }, "API Request");
+
+  if(req.url){
+    newrelic.setTransactionName(req.url);
+  }
 
   await next();
 
