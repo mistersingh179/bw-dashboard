@@ -35,20 +35,7 @@ const cleanupWordRegex =
 
 (async () => {
   console.log("***");
-  const result = await prisma.user.findMany({
-    include: {
-      setting: true,
-      _count: {
-        select: {
-          websites: true,
-          categories: true,
-          campaigns: true,
-        }
-      }
-    }
-  });
-
-  console.log(result);
+  console.log(process.env.NEW_RELIC_APP_NAME)
   console.log("***");
 })();
 

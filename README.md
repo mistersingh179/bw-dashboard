@@ -104,7 +104,6 @@ drop database bw;
 - build new queries
 - add datadog
 - datadog query for slowness
-- enable pg_stat_statements
 - allow storing of manually rejected meta content
 - add ability to abort on pages which match a path like we do for categories
 - send logger throughout so we track entire generate auction
@@ -139,6 +138,7 @@ drop database bw;
 
 - auto set title name when cd into appropriate directory
 - try prisma cloud with a new db and then with json schema format
+- 
 - grant users computer super-power so we can show buttons inside other accounts which require super access
 - fix dev worker to auto reload when any jobs or services change
 - make database show time in est
