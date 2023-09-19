@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Middleware } from "next-api-middleware";
 import { nanoid } from "nanoid";
 import logger from "@/lib/logger";
-import { pick } from "lodash";
+import {isArray, pick} from "lodash";
 import newrelic from 'newrelic';
 
 const loggingMiddleware: Middleware = async (req, res, next) => {
@@ -13,8 +13,17 @@ const loggingMiddleware: Middleware = async (req, res, next) => {
 
   logger.info({ ...reqItems, trueClientIp, reqId: req.reqId }, "API Request");
 
-  if(req.url){
-    newrelic.setTransactionName(req.url);
+  if(req.url && req.query){
+    let txName = req.url;
+    for(let [key, value] of Object.entries(req.query)){
+      if(isArray(value)){
+        value = value[0];
+      }
+      if(value){
+        txName = txName.replace(value, key);
+      }
+    }
+    newrelic.setTransactionName(txName);
   }
 
   await next();

@@ -35,7 +35,18 @@ const cleanupWordRegex =
 
 (async () => {
   console.log("***");
-  console.log(process.env.NEW_RELIC_APP_NAME)
+  let url = "/api/auctions/clmqfg3ah000598izjm169uhu/updateTimeSpent?a=b";
+  const query = {
+    "aid": "clmqfg3ah000598izjm169uhu"
+  };
+  const a = Object.entries(query)
+  console.log(a);
+  console.log(url);
+  for(const [key, value] of a){
+    console.log(key, value)
+    url = url.replace(value, key);
+  }
+  console.log(url);
   console.log("***");
 })();
 
