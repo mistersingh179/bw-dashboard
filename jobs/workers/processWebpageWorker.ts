@@ -5,16 +5,19 @@ import { ProcessWebpageDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
 import processWebpage from "@/services/process/processWebpage";
+import nr from "newrelic";
 
 const queueName = "processWebpage";
 
 logger.info({ queueName }, "setting up worker");
 
-const worker: Worker<ProcessWebpageDataType, void> = new Worker(
+const worker: Worker<ProcessWebpageDataType, void | number> = new Worker(
   queueName,
   async (job) => {
     const { webpage } = job.data;
-    await processWebpage(webpage);
+    return await nr.startBackgroundTransaction("processWebpage", async () => {
+      return processWebpage(webpage);
+    });
   },
   {
     connection: redisClient,

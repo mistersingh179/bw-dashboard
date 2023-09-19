@@ -6,6 +6,7 @@ import { DownloadWebpagesDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
 import downloadWebpages from "@/services/downloadWebpages";
+import nr from "newrelic";
 
 const queueName = "downloadWebpages";
 
@@ -15,7 +16,9 @@ const worker: Worker<DownloadWebpagesDataType, object> = new Worker(
   queueName,
   async (job) => {
     const { website, settings, sitemapUrl } = job.data;
-    return await downloadWebpages(website, settings, sitemapUrl);
+    return await nr.startBackgroundTransaction("downloadWebpages", async () => {
+      return downloadWebpages(website, settings, sitemapUrl);
+    });
   },
   {
     connection: redisClient,

@@ -6,6 +6,7 @@ import { ProcessCampaignDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
 import processCampaign from "@/services/process/processCampaign";
+import nr from "newrelic";
 
 const queueName = "processCampaign";
 
@@ -15,7 +16,9 @@ const worker: Worker<ProcessCampaignDataType, void> = new Worker(
   queueName,
   async (job) => {
     const { campaign } = job.data;
-    await processCampaign(campaign);
+    return await nr.startBackgroundTransaction("processCampaign", async () => {
+      return processCampaign(campaign);
+    });
   },
   {
     connection: redisClient,

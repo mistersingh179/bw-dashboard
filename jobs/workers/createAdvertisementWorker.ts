@@ -5,6 +5,7 @@ import { CreateAdvertisementDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
 import createAdvertisement from "@/services/create/createAdvertisement";
+import nr from "newrelic";
 
 const queueName = "createAdvertisement";
 
@@ -14,11 +15,9 @@ const worker: Worker<CreateAdvertisementDataType, string[] | null> = new Worker(
   queueName,
   async (job) => {
     const { advertisementSpot, scoredCampaign, settings } = job.data;
-    return await createAdvertisement(
-      advertisementSpot,
-      scoredCampaign,
-      settings
-    );
+    return await nr.startBackgroundTransaction("createAdvertisement", async () => {
+      return createAdvertisement(advertisementSpot, scoredCampaign, settings);
+    });
   },
   {
     connection: redisClient,

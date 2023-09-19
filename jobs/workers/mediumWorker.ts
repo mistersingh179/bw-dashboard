@@ -13,6 +13,7 @@ import downloadMostVisitedUrls from "@/services/downloadMostVisitedUrls";
 import createMetaContents from "@/services/create/createMetaContents";
 import { MetaContentSpot } from "@prisma/client";
 import processWebpagesWithZeroMetaContentSpots from "@/services/process/processWebpagesWithZeroMetaContentSpots";
+import nr from "newrelic";
 
 const queueName = "medium";
 
@@ -31,14 +32,29 @@ const worker: Worker<
       case "downloadMostVisitedUrls":
         logger.info({ name, data, opts }, `in ${job.name} case`);
         const { website, settings } = data as DownloadMostVisitedUrlsDataType;
-        return await downloadMostVisitedUrls(website, settings);
+        return await nr.startBackgroundTransaction(
+          "downloadMostVisitedUrls",
+          async () => {
+            return downloadMostVisitedUrls(website, settings);
+          }
+        );
       case "createMetaContents":
         logger.info({ name, data, opts }, `in ${job.name} case`);
         const metaContentSpot = data as MetaContentSpot;
-        return await createMetaContents(metaContentSpot);
+        return await nr.startBackgroundTransaction(
+          "createMetaContents",
+          async () => {
+            return createMetaContents(metaContentSpot);
+          }
+        );
       case "processWebpagesWithZeroMetaContentSpots":
         logger.info({ name, data, opts }, `in ${job.name} case`);
-        return await processWebpagesWithZeroMetaContentSpots();
+        return await nr.startBackgroundTransaction(
+          "processWebpagesWithZeroMetaContentSpots",
+          async () => {
+            return processWebpagesWithZeroMetaContentSpots();
+          }
+        );
       default:
         logger.error({}, "got unknown job");
     }

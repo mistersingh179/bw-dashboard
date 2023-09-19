@@ -6,6 +6,7 @@ import { ProcessUserDataType } from "@/jobs/dataTypes";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
 import processUser from "@/services/process/processUser";
+import nr from "newrelic";
 
 const queueName = "processUser";
 
@@ -15,7 +16,9 @@ const worker: Worker<ProcessUserDataType, void> = new Worker(
   queueName,
   async (job) => {
     const { user, settings } = job.data;
-    await processUser(user, settings);
+    return await nr.startBackgroundTransaction("processUser", async () => {
+      return processUser(user, settings);
+    });
   },
   {
     connection: redisClient,
@@ -28,7 +31,6 @@ const worker: Worker<ProcessUserDataType, void> = new Worker(
     metrics: {
       maxDataPoints: MetricsTime.TWO_WEEKS,
     },
-    
   }
 );
 

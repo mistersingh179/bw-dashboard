@@ -5,6 +5,7 @@ import path from "path";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
 import processAllUsers from "@/services/process/processAllUsers";
+import nr from "newrelic";
 
 const queueName = "processAllUsers";
 
@@ -13,7 +14,9 @@ logger.info({ queueName }, "setting up worker");
 const worker: Worker<void, void> = new Worker(
   queueName,
   async (job) => {
-    await processAllUsers();
+    return await nr.startBackgroundTransaction("processAllUsers", async () => {
+      return processAllUsers();
+    });
   },
   {
     connection: redisClient,

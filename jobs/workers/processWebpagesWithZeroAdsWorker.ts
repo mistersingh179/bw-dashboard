@@ -5,6 +5,7 @@ import path from "path";
 import logger from "@/lib/logger";
 import { pick } from "lodash";
 import processWebpagesWithZeroAds, {WebsiteUrlToCount} from "@/services/process/processWebpagesWithZeroAds";
+import nr from "newrelic";
 
 const queueName = "processWebpagesWithZeroAdsQueue";
 
@@ -13,7 +14,9 @@ logger.info({ queueName }, "setting up worker");
 const worker: Worker<void, WebsiteUrlToCount> = new Worker(
   queueName,
   async (job) => {
-    return await processWebpagesWithZeroAds();
+    return await nr.startBackgroundTransaction("processWebpagesWithZeroAds", () => {
+      return processWebpagesWithZeroAds();
+    })
   },
   {
     connection: redisClient,
