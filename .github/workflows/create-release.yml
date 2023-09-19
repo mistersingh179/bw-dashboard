@@ -1,0 +1,26 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ./**/*
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Release URL
+        run: |
+          echo "Release URL: ${{ steps.create_release.outputs.upload_url }}"
