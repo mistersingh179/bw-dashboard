@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v*'
 
 jobs:
   build:
@@ -11,41 +13,20 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Get Latest Tag
-        id: get_latest_tag
-        run: echo "::set-output name=tag::$(git describe --abbrev=0 --tags || echo 'v0.0.0')"
-
-      - name: Increment Version
-        id: increment_version
-        run: |
-          # Parse the latest tag to get the major, minor, and patch versions
-          IFS='.' read -ra VERSION_PARTS <<< "${{ steps.get_latest_tag.outputs.tag }}"
-          MAJOR="${VERSION_PARTS[0]}"
-          MINOR="${VERSION_PARTS[1]}"
-          PATCH="${VERSION_PARTS[2]}"
-  
-          # Increment the patch version
-          ((PATCH++))
-  
-          # Create a new version string
-          NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
-  
-          echo "::set-output name=new_tag::$NEW_TAG"
-
-      - name: Create Git Tag
-        run: |
-          git tag ${{ steps.increment_version.outputs.new_tag }}
-          git push origin ${{ steps.increment_version.outputs.new_tag }}
+        uses: actions/checkout@v3
 
       - name: Create Release
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: |
-            ./**/*
-          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            This is an auto release
+          draft: false
+          prerelease: false
 
       - name: Get Release URL
         run: |
