@@ -75,4 +75,8 @@ exports.config = {
       "response.headers.x*",
     ],
   },
+
+  error_collector: {
+    expected_status_codes: [405, 401, 403]
+  }
 };
