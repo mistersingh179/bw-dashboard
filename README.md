@@ -1,5 +1,7 @@
 # BW Dashboard
 
+Tag Test
+
 ## Commands
 
 - turn on the database `docker compose up`
