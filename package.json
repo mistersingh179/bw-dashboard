@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "db": "docker compose up",
+    "dev_nr": "NODE_OPTIONS='-r newrelic' next dev",
+    "dev_dd": "NODE_OPTIONS='-r dd-trace/init' next dev",
     "dev": "NODE_OPTIONS='-r newrelic' next dev",
     "foo": "NODE_OPTIONS='-r newrelic' tsx ./scripts/foo.ts",
     "debug": "NODE_OPTIONS='--inspect' next dev",
@@ -16,6 +18,8 @@
     "prisma:console": "prisma-repl --verbose",
     "lint": "next lint",
     "worker-build": "npm ci && prisma generate",
+    "worker_nr": "NODE_OPTIONS='-r newrelic' tsx jobs/runAllWorkers.ts",
+    "worker_dd": "NODE_OPTIONS='-r dd-trace/init' tsx jobs/runAllWorkers.ts",
     "worker": "NODE_OPTIONS='-r newrelic' tsx jobs/runAllWorkers.ts",
     "dev-worker": "tsx jobs/runAllWorkers.ts"
   },
@@ -39,6 +43,7 @@
     "cookie": "^0.5.0",
     "cors": "^2.8.5",
     "date-fns": "^2.29.3",
+    "dd-trace": "^4.15.0",
     "dotenv": "^16.1.4",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
