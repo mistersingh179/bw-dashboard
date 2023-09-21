@@ -92,10 +92,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 # Pending Meta Content
-- three hash `###` before text starts
-  - https://files.slack.com/files-pri/T05BDQZCLL9-F05RVV9R8AX/screen_shot_2023-09-11_at_3.42.33_pm.png
-- api response is very long over 30 seconds
-  - https://files.slack.com/files-pri/T05BDQZCLL9-F05RK937ENT/screen_shot_2023-09-12_at_8.06.42_am.png
 - read more button dissapears
   - https://files.slack.com/files-pri/T05BDQZCLL9-F05SNS7THS4/screen_shot_2023-09-12_at_8.13.34_am.png
   - https://files.slack.com/files-pri/T05BDQZCLL9-F05S664S62H/image.png
@@ -108,6 +104,7 @@ drop database bw;
 - add ability to abort on pages which match a path like we do for categories
 - send logger throughout so we track entire generate auction
 - does cache delay ad building, why no ads?
+- exlucde IP's from AB split
 
 ## Notes
 

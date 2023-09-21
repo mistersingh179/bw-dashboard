@@ -35,18 +35,14 @@ const cleanupWordRegex =
 
 (async () => {
   console.log("***");
-  let url = "/api/auctions/clmqfg3ah000598izjm169uhu/updateTimeSpent?a=b";
-  const query = {
-    "aid": "clmqfg3ah000598izjm169uhu"
-  };
-  const a = Object.entries(query)
-  console.log(a);
-  console.log(url);
-  for(const [key, value] of a){
-    console.log(key, value)
-    url = url.replace(value, key);
-  }
-  console.log(url);
+  const cleanupWordRegex =
+    /^(Original text|Box|Technological Fact|Musical Fact|Scientific Fact|Cultural Fact|Economic Fact|Boxed Content|Cognitive Bias|Supplementary Content|Cultural References|Future Trends|Historical Exploration|Scientific Connection|Literature Review|Economic Impact|Cultural Evolution|Geographical Insights|Symbolism and Iconography|Pattern Recognition|Semantic Analysis|Historical Parallels|Moral and Ethical Considerations|Language Evolution|Innovative Applications|Unexplored Dimensions|Cognitive Psychology|Environmental Impact|Cultural Symbolism|Biographical Lens):/im;
+  const cleanupWordRegex2 = /^(###)/im;
+
+  const output = "### Hello world"
+  let ans = output.replace(cleanupWordRegex, "")
+  // ans = output.replace(cleanupWordRegex2, "")
+  console.log('ans: ', ans);
   console.log("***");
 })();
 

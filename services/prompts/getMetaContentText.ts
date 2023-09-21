@@ -8,7 +8,8 @@ import { differenceInSeconds } from "date-fns";
 import { failedPhrases } from "@/services/prompts/getMetaContentHeading";
 
 const cleanupWordRegex =
-  /^(Original text|Box|Technological Fact|Musical Fact|Scientific Fact|Cultural Fact|Economic Fact|Boxed Content|Cognitive Bias|Supplementary Content|Cultural References|Future Trends|Historical Exploration|Scientific Connection|Literature Review|Economic Impact|Cultural Evolution|Geographical Insights|Symbolism and Iconography|Pattern Recognition|Semantic Analysis|Historical Parallels|Moral and Ethical Considerations|Language Evolution|Innovative Applications|Unexplored Dimensions|Cognitive Psychology|Environmental Impact|Cultural Symbolism|Biographical Lens):/im;
+  /^(Original text|Box|Technological Fact|Musical Fact|Scientific Fact|Cultural Fact|Economic Fact|Boxed Content|Cognitive Bias|Supplementary Content|Cultural References|Future Trends|Historical Exploration|Scientific Connection|Literature Review|Economic Impact|Cultural Evolution|Geographical Insights|Symbolism and Iconography|Pattern Recognition|Semantic Analysis|Historical Parallels|Moral and Ethical Considerations|Language Evolution|Innovative Applications|Unexplored Dimensions|Cognitive Psychology|Environmental Impact|Cultural Symbolism|Biographical Lens|###):/im;
+const cleanupWordRegex2 = /^(###)/im;
 
 type GetMetaContentText = (
   metaContentSpotText: string,
@@ -106,6 +107,8 @@ Brevity is strongly preferred.\n\n\
   pars = pars.filter(para => para != '')
   pars = pars.map(para => para.replace(cleanupWordRegex, ""));
   pars = pars.map(para => para.trim());
+  pars = pars.map(para => para.replace(cleanupWordRegex2, ""));
+  pars = pars.map(para => para.trim());
   pars = pars.filter(para => para != contentType);
   pars = pars.filter(para => para != metaContentSpotText);
   output = pars.join("\n");
@@ -119,16 +122,13 @@ export default getMetaContentText;
 
 if (require.main === module) {
   (async () => {
-    const metaContentSpot = await prisma.metaContentSpot.findFirstOrThrow({
-      where: {
-        webpageId: "clm9jvmpd00jm980ps1j6c6x1",
-      },
-    });
     const ans = await getMetaContentText(
       "In partnership with Best Friends Animal Society in Los Angeles, we are pleased to bring you these amazing animals looking for their forever homes. These animals in particular, have been waiting two months or longer to be adopted. Check them out below, then visit the Best Friends Lifesaving Center where you can fall in love with them or one of more than 400 dogs, cats, kittens and puppies from Los Angeles Animal Services shelters. Why the hashtag? Join the no-kill movement and help spread the word by sharing these animals on your socials with the tag #bestfriends.",
       "Explore how cognitive biases or psychological phenomena influence perceptions related to the topic.",
       "Document"
     );
-    console.log("output: ", ans);
+    console.log("***");
+    console.log(ans);
+    console.log("***");
   })();
 }
