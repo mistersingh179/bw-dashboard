@@ -357,7 +357,7 @@ const Settings: FCWithAuth = () => {
               </Text>
             </NumberFormControl>
             <ChakraSelectFormControl
-              label={"Meta Content Tooltip Text Color"}
+              label={"Meta Content Tooltip Theme"}
               fieldName={"metaContentToolTipTheme"}
               fieldValue={metaContentToolTipTheme}
               updateFn={updateItem}
