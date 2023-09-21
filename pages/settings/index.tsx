@@ -18,13 +18,14 @@ import {
   Switch,
   Text,
   VStack,
+  Select as ChakraSelect,
 } from "@chakra-ui/react";
 import React, { ReactNode, useEffect, useState } from "react";
 import SliderThumbWithTooltip from "@/components/SliderThumbWithTooltip";
 import useSettings from "@/hooks/useSettings";
 import { ErrorAlert } from "@/components/genericMessages";
 import { SettingType } from "@/types/my-types";
-import { CreatableSelect as Select } from "chakra-react-select";
+import { CreatableSelect } from "chakra-react-select";
 import { Editor } from "@monaco-editor/react";
 
 const sponsoredOptions: { value: string; label: string }[] = [
@@ -116,6 +117,46 @@ type TextFormControlPropsType = {
   updateFn: (label: string, value: string) => void;
   children: ReactNode;
 };
+
+type ChakraSelectFormControlPropsType = {
+  label: string;
+  fieldName: string;
+  fieldValue: string;
+  updateFn: (label: string, value: string) => void;
+  children: ReactNode;
+  options: string[];
+};
+
+const ChakraSelectFormControl = (props: ChakraSelectFormControlPropsType) => {
+  const { label, fieldName, fieldValue, updateFn, options, children } = props;
+  return (
+    <FormControl my={5}>
+      <HStack>
+        <FormLabel minW={"3xs"} mb={0}>
+          {label}
+        </FormLabel>
+        <Box w={"lg"}>
+          <ChakraSelect
+            width={"lg"}
+            size={"sm"}
+            value={fieldValue}
+            onChange={(evt) => updateFn(fieldName, evt.target.value)}
+          >
+            {options.map((val) => (
+              <option key={val} value={val}>
+                {val}
+              </option>
+            ))}
+          </ChakraSelect>
+        </Box>
+      </HStack>
+      <FormHelperText my={3} lineHeight={1.5}>
+        {children}
+      </FormHelperText>
+    </FormControl>
+  );
+};
+
 const TextFormControl = (props: TextFormControlPropsType) => {
   const { label, fieldName, fieldValue, updateFn, children } = props;
   return (
@@ -207,6 +248,8 @@ const Settings: FCWithAuth = () => {
     status: false,
     metaContentStatus: false,
     metaContentDisplayPercentage: 0,
+    metaContentToolTipTheme: "",
+    metaContentToolTipTextColor: "",
     sponsoredWording: "",
     mainPostBodySelector: "",
     allTimeMostVisitedUrlCount: 0,
@@ -229,6 +272,8 @@ const Settings: FCWithAuth = () => {
     status,
     metaContentStatus,
     metaContentDisplayPercentage,
+    metaContentToolTipTheme,
+    metaContentToolTipTextColor,
     sponsoredWording,
     mainPostBodySelector,
     contentSelector,
@@ -311,13 +356,34 @@ const Settings: FCWithAuth = () => {
                 times Meta Content is to be displayed.
               </Text>
             </NumberFormControl>
+            <ChakraSelectFormControl
+              label={"Meta Content Tooltip Text Color"}
+              fieldName={"metaContentToolTipTheme"}
+              fieldValue={metaContentToolTipTheme}
+              updateFn={updateItem}
+              options={["", "light", "light-border", "material", "translucent"]}
+            >
+              Optionally specify which theme to use for the meta content
+              tooltip.
+            </ChakraSelectFormControl>
+            <TextFormControl
+              label={"Meta Content Tooltip Text Color"}
+              fieldName={"metaContentToolTipTextColor"}
+              fieldValue={metaContentToolTipTextColor}
+              updateFn={updateItem}
+            >
+              <Text>
+                An optional setting to override the color of generate text
+                inside meta content tooltips.
+              </Text>
+            </TextFormControl>
             <FormControl my={5}>
               <HStack>
                 <FormLabel mb={0} minW={"3xs"}>
                   Sponsored Wording:
                 </FormLabel>
                 <Box w={"lg"}>
-                  <Select
+                  <CreatableSelect
                     placeholder={"Currently empty and thus not being used."}
                     size={"md"}
                     formatCreateLabel={(inputValue) =>

@@ -101,14 +101,13 @@ drop database bw;
   - https://files.slack.com/files-pri/T05BDQZCLL9-F05S664S62H/image.png
 - text is too long and it doesn't scroll
   - https://files.slack.com/files-pri/T05BDQZCLL9-F05RPQSDBSA/image.png
-- setup GA
 - record AB test data
 - build new queries
-- add datadog
 - datadog query for slowness
 - allow storing of manually rejected meta content
 - add ability to abort on pages which match a path like we do for categories
 - send logger throughout so we track entire generate auction
+- does cache delay ad building, why no ads?
 
 ## Notes
 

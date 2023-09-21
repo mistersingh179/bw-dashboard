@@ -267,7 +267,9 @@ const generate: NextApiHandler = async (req, res) => {
     "mainPostBodySelector",
     "metaContentSpotSelector",
     "metaContentStatus",
-    "metaContentDisplayPercentage"
+    "metaContentDisplayPercentage",
+    "metaContentToolTipTheme",
+    "metaContentToolTipTextColor",
   ]);
 
   const abortCategories = await getUserAbortCategories(userId);
