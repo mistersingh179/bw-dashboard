@@ -11,10 +11,10 @@
 .answer-box {
     position: relative;
     background-color: #222;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px #222;
+    border-radius: 5px;
+    box-shadow: 0px 2px 10px #22222260;
     color: #fff;
-    margin: 5px 10px;
+    margin: 10px 10px;
 }
 .bw-hidden {
     transition: max-height ease-in 0.5s, opacity ease-in 0.5s;
@@ -28,23 +28,53 @@
     opacity: 1;
 }
 .scrollable-content {
-    max-height: 210px;
+    max-height: 205px;
     overflow: auto;
-    padding: 10px 5px;
+    padding: 0px 10px;
+    border-bottom: 10px solid transparent;
+    border-top: 10px solid transparent;
+    line-height: 1.5;
+}
+/* .scrollable-content::after {
+    content: "";
+    position: absolute;
+    bottom: 34px;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: linear-gradient(to bottom, #22222200, #222222ff);
+    pointer-events: none;
+}  */
+/* ROD: TBD WITH SANDEEP re: slight fade at bottom. Add blank &NBSP to accomodate anti-fade on last line of text? */
+.answer-box-mast{
+    display: flex; /* Use flexbox to create a horizontal layout */
+    align-items: center; /* Vertically center the content */
+    justify-content: space-between; /* Create space between div-1 and div-2 */  
 }
 .heading {
-    margin-bottom: 5px;
+    flex: 1;
+}
+.mast-icon{
+  flex-shrink: 0; /* Prevent div-2 from shrinking */
+  width: 40px; /* Set the maximum width of div-2 */
+  text-align: right; /* Align text in div-2 to the right */
 }
 .bottom-content-row {
-    height: 20px;
+    height: 24px;
     padding: 0px 5px;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    background-color: #fff;
-    color: #222;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: #22222260;
+    color: #ddd;
     overflow: hidden;
-    font-size: 14px;
+    font-size: 12px;
     font-family: "PT Sans";
+    display: flex;
+    align-items: center;
+    border-top: dotted #ffffff60 1px;
+}
+.bw_svg {
+    margin: 0px 5px;
 }
 .closeButton {
     background-color: transparent;
@@ -55,4 +85,6 @@
     background-color: transparent;
     border: none;
     float: right;
+    padding: 0px;
+    margin: 8px 5px 5px 15px;
 }
