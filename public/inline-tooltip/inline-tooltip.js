@@ -1,14 +1,14 @@
 const showAnswer = (elem) => {
   elem.style.display = "block";
   window.setTimeout(() => {
-    elem.classList.remove("hidden");
-    elem.classList.add("visible");
+    elem.classList.remove("bw-hidden");
+    elem.classList.add("bw-visible");
   }, 100);
 };
 
 const hideAnswer = (elem) => {
-  elem.classList.remove("visible");
-  elem.classList.add("hidden");
+  elem.classList.remove("bw-visible");
+  elem.classList.add("bw-hidden");
   window.setTimeout(() => {
     elem.style.display = "none";
   }, 100);

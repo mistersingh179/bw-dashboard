@@ -16,13 +16,13 @@
     color: #fff;
     margin: 5px 10px;
 }
-.hidden {
+.bw-hidden {
     transition: max-height ease-in 0.5s, opacity ease-in 0.5s;
     max-height: 0px;
     opacity: 0;
     display: none;
 }
-.visible {
+.bw-visible {
     transition: max-height ease-in 0.5s, opacity ease-in 0.5s;
     max-height: 250px;
     opacity: 1;
