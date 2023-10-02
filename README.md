@@ -92,11 +92,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 # Pending Meta Content
-- read more button dissapears
-  - https://files.slack.com/files-pri/T05BDQZCLL9-F05SNS7THS4/screen_shot_2023-09-12_at_8.13.34_am.png
-  - https://files.slack.com/files-pri/T05BDQZCLL9-F05S664S62H/image.png
-- text is too long and it doesn't scroll
-  - https://files.slack.com/files-pri/T05BDQZCLL9-F05RPQSDBSA/image.png
 - record AB test data
 - build new queries
 - datadog query for slowness
@@ -105,6 +100,10 @@ drop database bw;
 - send logger throughout so we track entire generate auction
 - does cache delay ad building, why no ads?
 - exlucde IP's from AB split
+- post comit to clear cache
+- add GTAG to dashboard
+- allow rod to bypass AB test
+- fix height issue on restoration media
 
 ## Notes
 
