@@ -76,6 +76,15 @@
 .bw_svg {
     margin: 0px 5px;
 }
+.feedback-content{
+    padding: 0px 10px;
+}
+.feedback-star-1{
+    margin: 0px 2px 0px 8px
+}
+.feedback-star{
+    margin: 0px 2px;
+}
 .closeButton {
     background-color: transparent;
     border: none;
