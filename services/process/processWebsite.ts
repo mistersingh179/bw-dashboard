@@ -88,7 +88,7 @@ if (require.main === module) {
   (async () => {
     const website = await prisma.website.findFirstOrThrow({
       where: {
-        id: "cljztbiak0041981caa3hgdaa",
+        id: "cljytjlyx20xvqm1r12nmm6zs",
       },
     });
     const settings = await prisma.setting.findFirstOrThrow({

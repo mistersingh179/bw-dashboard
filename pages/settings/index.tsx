@@ -248,6 +248,7 @@ const Settings: FCWithAuth = () => {
     status: false,
     metaContentStatus: false,
     metaContentDisplayPercentage: 0,
+    metaContentMobileDisplayPercentage: 0,
     metaContentToolTipTheme: "",
     metaContentToolTipTextColor: "",
     sponsoredWording: "",
@@ -272,6 +273,7 @@ const Settings: FCWithAuth = () => {
     status,
     metaContentStatus,
     metaContentDisplayPercentage,
+    metaContentMobileDisplayPercentage,
     metaContentToolTipTheme,
     metaContentToolTipTextColor,
     sponsoredWording,
@@ -354,6 +356,19 @@ const Settings: FCWithAuth = () => {
               <Text>
                 A number between 0 and 100 which defines what percentage of
                 times Meta Content is to be displayed.
+              </Text>
+            </NumberFormControl>
+            <NumberFormControl
+              label={"Meta Content Mobile Display Percentage"}
+              fieldName={"metaContentMobileDisplayPercentage"}
+              fieldValue={metaContentMobileDisplayPercentage}
+              min={0}
+              max={100}
+              updateFn={updateItem}
+            >
+              <Text>
+                A number between 0 and 100 which defines what percentage of
+                times Meta Content is to be displayed on Mobile.
               </Text>
             </NumberFormControl>
             <ChakraSelectFormControl

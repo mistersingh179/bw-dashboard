@@ -268,6 +268,7 @@ const generate: NextApiHandler = async (req, res) => {
     "metaContentSpotSelector",
     "metaContentStatus",
     "metaContentDisplayPercentage",
+    "metaContentMobileDisplayPercentage",
     "metaContentToolTipTheme",
     "metaContentToolTipTextColor",
   ]);

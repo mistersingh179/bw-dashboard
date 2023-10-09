@@ -73,34 +73,35 @@ model User {
 }
 
 model Setting {
-  id                            String   @id @default(cuid())
-  userId                        String   @unique
-  user                          User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  scoreThreshold                Int
-  status                        Boolean
-  metaContentStatus             Boolean  @default(false)
-  metaContentDisplayPercentage  Int      @default(50)
-  metaContentToolTipTheme       String   @default("")
-  metaContentToolTipTextColor   String   @default("")
-  sponsoredWording              String   @default("")
-  desiredAdvertisementSpotCount Int      @default(1)
-  desiredMetaContentSpotCount   Int      @default(5)
-  desiredAdvertisementCount     Int      @default(1)
-  webpageLookbackDays           Int      @default(0)
-  webpageInsertCap              Int      @default(1000)
-  allTimeMostVisitedUrlCount    Int      @default(0)
-  recentlyMostVisitedUrlCount   Int      @default(0)
-  mainPostBodySelector          String   @default("body")
-  contentSelector               String   @default("body p:nth-child(3n)")
-  metaContentSpotSelector       String   @default("body p")
-  minCharLimit                  Int      @default(20)
-  minMetaContentSpotWordLimit   Int      @default(30)
-  sameTypeElemWithTextToFollow  Boolean  @default(true)
-  makeLinksBold                 Boolean  @default(false)
-  bestCampaignCount             Int      @default(1)
-  customStyles                  String   @default(".brandweaver-ad {}")
-  createdAt                     DateTime @default(now())
-  updatedAt                     DateTime @updatedAt
+  id                                 String   @id @default(cuid())
+  userId                             String   @unique
+  user                               User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  scoreThreshold                     Int
+  status                             Boolean
+  metaContentStatus                  Boolean  @default(false)
+  metaContentDisplayPercentage       Int      @default(50)
+  metaContentMobileDisplayPercentage Int      @default(0)
+  metaContentToolTipTheme            String   @default("")
+  metaContentToolTipTextColor        String   @default("")
+  sponsoredWording                   String   @default("")
+  desiredAdvertisementSpotCount      Int      @default(1)
+  desiredMetaContentSpotCount        Int      @default(5)
+  desiredAdvertisementCount          Int      @default(1)
+  webpageLookbackDays                Int      @default(0)
+  webpageInsertCap                   Int      @default(1000)
+  allTimeMostVisitedUrlCount         Int      @default(0)
+  recentlyMostVisitedUrlCount        Int      @default(0)
+  mainPostBodySelector               String   @default("body")
+  contentSelector                    String   @default("body p:nth-child(3n)")
+  metaContentSpotSelector            String   @default("body p")
+  minCharLimit                       Int      @default(20)
+  minMetaContentSpotWordLimit        Int      @default(30)
+  sameTypeElemWithTextToFollow       Boolean  @default(true)
+  makeLinksBold                      Boolean  @default(false)
+  bestCampaignCount                  Int      @default(1)
+  customStyles                       String   @default(".brandweaver-ad {}")
+  createdAt                          DateTime @default(now())
+  updatedAt                          DateTime @updatedAt
 
   @@index([userId, status])
   @@index([userId, webpageLookbackDays])

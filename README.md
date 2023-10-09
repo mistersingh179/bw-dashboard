@@ -104,6 +104,7 @@ drop database bw;
 - add GTAG to dashboard
 - allow rod to bypass AB test
 - fix height issue on restoration media
+- check website name without checking for http and https
 
 ## Notes
 
