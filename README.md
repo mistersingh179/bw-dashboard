@@ -105,6 +105,10 @@ drop database bw;
 - allow rod to bypass AB test
 - fix height issue on restoration media
 - check website name without checking for http and https
+- get rid of `[Total characters: 714]` from the generated text of the model
+- do not show hover tooltip's when there is not enough space e.g. tablet 
+- fire event that meta-content was completely ready, similar to how we have clicked for impressions
+- bail on building inline tooltip if it is inside column flex box as this would put us in a column
 
 ## Notes
 

@@ -23,14 +23,20 @@ const getMostVisitedUrls: GetMostVisitedUrls = async (
       createdAt: {
         gte: since,
       },
+      timeSpent: {
+        gte: 5
+      }
+    },
+    _sum: {
+      timeSpent: true
     },
     _count: {
       id: true,
     },
     orderBy: {
-      _count: {
-        id: "desc",
-      },
+      _sum: {
+        timeSpent: "desc"
+      }
     },
     take: howMany,
   });
@@ -43,7 +49,7 @@ export default getMostVisitedUrls;
 
 if (require.main === module) {
   (async () => {
-    const allTime = await getMostVisitedUrls("cljztbiak0041981caa3hgdaa", 5);
+    const allTime = await getMostVisitedUrls("clm9jme8o004p98lzkoq8nb46", 15);
     myLogger.info({ allTime }, "all time");
 
     // const yesterday = startOfYesterday();
