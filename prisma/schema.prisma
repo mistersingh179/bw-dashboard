@@ -305,14 +305,16 @@ model MetaContentType {
 }
 
 model MetaContentImpression {
-  id            String       @id @default(cuid())
-  metaContentId String?
-  metaContent   MetaContent? @relation(fields: [metaContentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  auctionId     String
-  auction       Auction      @relation(fields: [auctionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  feedbackEmoji String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  id                 String       @id @default(cuid())
+  metaContentId      String?
+  metaContent        MetaContent? @relation(fields: [metaContentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  auctionId          String
+  auction            Auction      @relation(fields: [auctionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  feedbackEmoji      String?
+  contentHasScroll   Boolean      @default(false)
+  percentageScrolled Int          @default(0)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
 
   @@index([metaContentId, createdAt(sort: Asc)])
   @@index([auctionId, createdAt(sort: Asc)])

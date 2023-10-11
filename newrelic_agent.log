@@ -4,3 +4,153 @@
 {"v":0,"level":50,"name":"newrelic","hostname":"Rods-MacBook-Pro.local","pid":4066,"time":"2023-10-04T21:06:46.578Z","msg":"A valid account license key cannot be found. Has a license key been specified in the agent configuration file or via the NEW_RELIC_LICENSE_KEY environment variable?"}
 {"v":0,"level":30,"name":"newrelic","hostname":"Rods-MacBook-Pro.local","pid":4066,"time":"2023-10-04T21:06:46.578Z","msg":"Agent state changed from starting to errored."}
 {"v":0,"level":50,"name":"newrelic","hostname":"Rods-MacBook-Pro.local","pid":4066,"time":"2023-10-04T21:06:46.705Z","msg":"New Relic for Node.js halted startup due to an error:","stack":"Error: Not starting without license key!\n    at onNextTick (/Users/rodfather/code/bw-dashboard/node_modules/newrelic/lib/agent.js:245:16)\n    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)","message":"Not starting without license key!"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":44514,"time":"2023-10-10T20:51:49.937Z","msg":"Using New Relic for Node.js. Agent version: 11.1.0; Node version: v16.16.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":44514,"time":"2023-10-10T20:51:50.203Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":44514,"time":"2023-10-10T20:51:50.272Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":44514,"time":"2023-10-10T20:51:50.295Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":44514,"time":"2023-10-10T20:51:50.295Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45144,"time":"2023-10-10T20:57:16.092Z","msg":"Using New Relic for Node.js. Agent version: 11.1.0; Node version: v16.16.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45144,"time":"2023-10-10T20:57:16.222Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45144,"time":"2023-10-10T20:57:16.262Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45144,"time":"2023-10-10T20:57:16.271Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45144,"time":"2023-10-10T20:57:16.272Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T20:57:16.830Z","msg":"Using New Relic for Node.js. Agent version: 11.1.0; Node version: v16.16.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T20:57:16.930Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T20:57:16.958Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T20:57:16.967Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T20:57:16.967Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45144,"time":"2023-10-10T20:57:18.402Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45144,"time":"2023-10-10T20:57:18.402Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BeXzOuuDAuOLAD9JekG7-_tlJbsUAAgBAAAnIQEAALBYAgRBu9s6AwAGMTEuMS4wABBzYW5kZWVwcy1tYnAubGFuAA1kYXNoYm9hcmRfREVW.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45144,"time":"2023-10-10T20:57:18.402Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/4147578/applications/1102830394","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45144,"time":"2023-10-10T20:57:18.403Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45144,"time":"2023-10-10T20:57:18.406Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45155,"time":"2023-10-10T20:57:18.423Z","msg":"Using New Relic for Node.js. Agent version: 11.1.0; Node version: v16.16.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45155,"time":"2023-10-10T20:57:18.524Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45155,"time":"2023-10-10T20:57:18.556Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45155,"time":"2023-10-10T20:57:18.567Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45155,"time":"2023-10-10T20:57:18.567Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45144,"time":"2023-10-10T20:57:19.407Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T20:57:20.300Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T20:57:20.300Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BdfO4FmdoQRHAD9JekG73gtlJbsUAAgBAAAnIQEAALBaAgRBu9s6AwAGMTEuMS4wABBzYW5kZWVwcy1tYnAubGFuAA1kYXNoYm9hcmRfREVW.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T20:57:20.300Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/4147578/applications/1102830394","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T20:57:20.301Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T20:57:20.304Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T20:57:21.350Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T21:00:51.852Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T21:00:54.476Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T21:00:58.720Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T21:01:03.165Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-10T21:01:21.622Z","msg":"Transaction WebTransaction/Custom//api/auctions/generate (bb119a2687d6d281) contained 1548 segments, only collecting the first 900","component":"Transaction Trace Aggregator"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-11T14:48:13.964Z","msg":"No transaction found when setting name to '/api/auctions/aid/updateExtra'.","component":"api"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-11T14:48:13.970Z","msg":"No transaction found when setting name to '/api/auctions/aid/updateExtra'.","component":"api"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-11T14:48:13.971Z","msg":"No transaction found when setting name to '/api/metaContentImpressions/generate'.","component":"api"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-11T14:48:13.973Z","msg":"No transaction found when setting name to '/api/metaContentImpressions/generate'.","component":"api"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-11T14:59:55.817Z","msg":"No transaction found when setting name to '/api/auctions/generate'.","component":"api"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-11T15:07:25.322Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-11T15:11:28.592Z","msg":"No transaction found when setting name to '/api/auctions/aid/updateExtra'.","component":"api"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-11T15:11:28.603Z","msg":"No transaction found when setting name to '/api/metaContentImpressions/generate'.","component":"api"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-11T15:11:28.616Z","msg":"No transaction found when setting name to '/api/auctions/aid/updateExtra'.","component":"api"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-11T15:11:28.638Z","msg":"No transaction found when setting name to '/api/metaContentImpressions/generate'.","component":"api"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-11T15:19:50.017Z","msg":"No transaction found when setting name to '/api/auctions/generate'.","component":"api"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":45146,"time":"2023-10-11T15:41:32.646Z","msg":"No transaction found when setting name to '/api/auctions/aid/updateExtra'.","component":"api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66030,"time":"2023-10-11T15:50:26.533Z","msg":"Using New Relic for Node.js. Agent version: 11.1.0; Node version: v16.16.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66030,"time":"2023-10-11T15:50:26.971Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66030,"time":"2023-10-11T15:50:27.067Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66030,"time":"2023-10-11T15:50:27.093Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66030,"time":"2023-10-11T15:50:27.094Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66956,"time":"2023-10-11T15:59:05.714Z","msg":"Using New Relic for Node.js. Agent version: 11.1.0; Node version: v16.16.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66956,"time":"2023-10-11T15:59:05.802Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66956,"time":"2023-10-11T15:59:05.836Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66956,"time":"2023-10-11T15:59:05.849Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66956,"time":"2023-10-11T15:59:05.849Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T15:59:06.451Z","msg":"Using New Relic for Node.js. Agent version: 11.1.0; Node version: v16.16.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T15:59:06.551Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T15:59:06.582Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T15:59:06.592Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T15:59:06.592Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66956,"time":"2023-10-11T15:59:08.093Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66956,"time":"2023-10-11T15:59:08.093Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BSEWAlz45Ev8AD9JekG7-_tlJsa8AAgBAAAnIQEAAQWMAgRBu9s6AwAGMTEuMS4wABBzYW5kZWVwcy1tYnAubGFuAA1kYXNoYm9hcmRfREVW.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66956,"time":"2023-10-11T15:59:08.093Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/4147578/applications/1102830394","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66956,"time":"2023-10-11T15:59:08.094Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66956,"time":"2023-10-11T15:59:08.097Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66966,"time":"2023-10-11T15:59:08.090Z","msg":"Using New Relic for Node.js. Agent version: 11.1.0; Node version: v16.16.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66966,"time":"2023-10-11T15:59:08.176Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66966,"time":"2023-10-11T15:59:08.202Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66966,"time":"2023-10-11T15:59:08.210Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66966,"time":"2023-10-11T15:59:08.210Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66956,"time":"2023-10-11T15:59:09.097Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T15:59:10.094Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T15:59:10.095Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BaPj2r2VbNrsAD9JekG73gtlJsa8AAgBAAAnIQEAAQWPAgRBu9s6AwAGMTEuMS4wABBzYW5kZWVwcy1tYnAubGFuAA1kYXNoYm9hcmRfREVW.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T15:59:10.095Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/4147578/applications/1102830394","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T15:59:10.095Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T15:59:10.099Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T15:59:11.237Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T15:59:12.455Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T15:59:15.110Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T15:59:16.398Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T15:59:56.841Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T16:00:08.083Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T16:00:11.492Z","msg":"Transaction WebTransaction/Custom//api/auctions/generate (b95f53b4a1fca80c) contained 1449 segments, only collecting the first 900","component":"Transaction Trace Aggregator"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T16:00:16.564Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T16:00:17.083Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T16:00:50.656Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T16:00:50.749Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T16:00:51.944Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T16:00:53.164Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T16:00:53.191Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T16:00:53.671Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":66959,"time":"2023-10-11T16:02:08.057Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":67083,"time":"2023-10-11T16:03:10.701Z","msg":"Using New Relic for Node.js. Agent version: 11.1.0; Node version: v16.16.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":67083,"time":"2023-10-11T16:03:10.792Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":67083,"time":"2023-10-11T16:03:10.826Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":67083,"time":"2023-10-11T16:03:10.835Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":67083,"time":"2023-10-11T16:03:10.835Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68151,"time":"2023-10-11T16:09:55.586Z","msg":"Using New Relic for Node.js. Agent version: 11.1.0; Node version: v16.16.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68151,"time":"2023-10-11T16:09:55.691Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68151,"time":"2023-10-11T16:09:55.720Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68151,"time":"2023-10-11T16:09:55.730Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68151,"time":"2023-10-11T16:09:55.730Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:09:56.058Z","msg":"Using New Relic for Node.js. Agent version: 11.1.0; Node version: v16.16.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:09:56.157Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:09:56.184Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:09:56.194Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:09:56.194Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68151,"time":"2023-10-11T16:09:57.524Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68151,"time":"2023-10-11T16:09:57.524Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BcCQibftrKAbAD9JekG7-_tlJskUAAgBAAAnIQEAAQo3AgRBu9s6AwAGMTEuMS4wABBzYW5kZWVwcy1tYnAubGFuAA1kYXNoYm9hcmRfREVW.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68151,"time":"2023-10-11T16:09:57.524Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/4147578/applications/1102830394","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68151,"time":"2023-10-11T16:09:57.525Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68151,"time":"2023-10-11T16:09:57.528Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68162,"time":"2023-10-11T16:09:57.119Z","msg":"Using New Relic for Node.js. Agent version: 11.1.0; Node version: v16.16.0."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68162,"time":"2023-10-11T16:09:57.207Z","msg":"Using AsyncLocalContextManager"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68162,"time":"2023-10-11T16:09:57.232Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68162,"time":"2023-10-11T16:09:57.241Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68162,"time":"2023-10-11T16:09:57.241Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68151,"time":"2023-10-11T16:09:58.528Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:09:58.948Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:09:58.949Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BeKaU4Ln45EiAD9JekG73gtlJskUAAgBAAAnIQEAAQo7AgRBu9s6AwAGMTEuMS4wABBzYW5kZWVwcy1tYnAubGFuAA1kYXNoYm9hcmRfREVW.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:09:58.949Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/4147578/applications/1102830394","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:09:58.950Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:09:58.953Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:09:59.987Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:10:01.504Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:10:03.388Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:10:04.655Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:11:07.791Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:11:07.824Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:11:08.926Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:11:10.138Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:11:10.164Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:11:10.651Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:13:21.829Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:13:30.813Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:13:31.338Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:14:56.535Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:14:56.593Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:14:57.728Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:14:58.845Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:14:58.869Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T16:14:59.347Z","msg":"Using New Relic for Node.js in worker_threads is not supported. Not starting!"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T17:20:03.254Z","msg":"No transaction found when setting name to '/api/auctions/generate'.","component":"api"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T17:23:15.533Z","msg":"No transaction found when setting name to '/api/auctions/generate'.","component":"api"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T17:26:07.749Z","msg":"No transaction found when setting name to '/api/auctions/aid/updateExtra'.","component":"api"}
+{"v":0,"level":40,"name":"newrelic","hostname":"sandeeps-mbp.lan","pid":68155,"time":"2023-10-11T17:26:07.751Z","msg":"No transaction found when setting name to '/api/metaContentImpressions/generate'.","component":"api"}

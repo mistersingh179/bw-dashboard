@@ -12,22 +12,22 @@ const cors = Cors({
   },
 });
 
-const markClicked: NextApiHandler = async (req, res) => {
-  const { impressionId } = req.body;
+const setPercentageScrolled: NextApiHandler = async (req, res) => {
+  const { metaContentImpressionId, percentageScrolled } = req.body;
 
-  const impression = await prisma.impression.update({
+  const metaContentImpression = await prisma.metaContentImpression.update({
     where: {
-      id: impressionId,
+      id: metaContentImpressionId,
     },
     data: {
-      clicked: true,
+      percentageScrolled
     },
   });
 
   res
     .setHeader("Content-Type", "application/json")
     .status(200)
-    .send(superjson.stringify(impression));
+    .send(superjson.stringify(metaContentImpression));
 };
 
 export default withMiddleware(
@@ -36,4 +36,4 @@ export default withMiddleware(
   "postOnly",
   "rejectBots",
   "statusOn"
-)(markClicked);
+)(setPercentageScrolled);

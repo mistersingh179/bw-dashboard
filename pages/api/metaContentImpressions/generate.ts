@@ -12,12 +12,13 @@ const cors = Cors({
 });
 
 const generate: NextApiHandler = async (req, res) => {
-  const { auctionId, metaContentId } = req.body;
+  const { auctionId, metaContentId, contentHasScroll } = req.body;
 
   const metaContentImpression = await prisma.metaContentImpression.create({
     data: {
       metaContentId,
       auctionId,
+      contentHasScroll
     },
   });
 
