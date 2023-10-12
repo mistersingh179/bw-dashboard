@@ -319,6 +319,9 @@ model MetaContentImpression {
 
   @@index([metaContentId, createdAt(sort: Asc)])
   @@index([auctionId, createdAt(sort: Asc)])
+  @@index([percentageScrolled])
+  @@index([contentHasScroll])
+  @@index([feedbackEmoji])
 }
 
 model Campaign {
