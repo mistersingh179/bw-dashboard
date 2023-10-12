@@ -109,6 +109,15 @@ drop database bw;
 - do not show hover tooltip's when there is not enough space e.g. tablet 
 - fire event that meta-content was completely read, similar to how we have clicked for impressions
 - bail on building inline tooltip if it is inside column flex box as this would put us in a column
+- make 100 as default for recent visited
+- make 50, 50 default for mobile & desktop meta content
+- make our buttons override clients. e.g. citydogmagazine
+- create theme for lividmagazine
+  - bg fff and color 222
+  - bottom row bg ddd, color 222
+  - skip button, feedback & icon should have currentcolor with 222 for color on the button
+- re-enable check on how many pages we are doing meta content for
+
 
 ## Notes
 
