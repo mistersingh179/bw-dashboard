@@ -25,6 +25,9 @@ const handleCreateWebsiteFeedback = async (
   res: NextApiResponse
 ) => {
   req.body.optOut = req.body.optOut === "true" ? true : false;
+  if(req.body.metaContentImpressionId === ""){
+    req.body.metaContentImpressionId = undefined;
+  }
   const notAllowedAttributes = ["updatedAt", "createdAt"];
   const allowedAttributes = getScalarFieldsOfModel("WebsiteFeedback");
   let data = pick<WebsiteFeedbackUncheckedCreateInput>(
