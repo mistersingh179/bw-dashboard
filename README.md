@@ -117,7 +117,9 @@ drop database bw;
   - bottom row bg ddd, color 222
   - skip button, feedback & icon should have currentcolor with 222 for color on the button
 - re-enable check on how many pages we are doing meta content for
-
+- make tooltip also show above and below
+  - this makes it work on tables where there is not enough gutter
+  - and in theory makes it also work on mobile and thus not be device dependent
 
 ## Notes
 

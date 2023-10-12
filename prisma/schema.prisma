@@ -305,16 +305,17 @@ model MetaContentType {
 }
 
 model MetaContentImpression {
-  id                 String       @id @default(cuid())
+  id                 String            @id @default(cuid())
   metaContentId      String?
-  metaContent        MetaContent? @relation(fields: [metaContentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  metaContent        MetaContent?      @relation(fields: [metaContentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   auctionId          String
-  auction            Auction      @relation(fields: [auctionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  auction            Auction           @relation(fields: [auctionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  WebsiteFeedbacks   WebsiteFeedback[]
   feedbackEmoji      String?
-  contentHasScroll   Boolean      @default(false)
-  percentageScrolled Int          @default(0)
-  createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @updatedAt
+  contentHasScroll   Boolean           @default(false)
+  percentageScrolled Int               @default(0)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
 
   @@index([metaContentId, createdAt(sort: Asc)])
   @@index([auctionId, createdAt(sort: Asc)])
@@ -358,4 +359,20 @@ model Impression {
 
   @@index([advertisementId, createdAt(sort: Asc)])
   @@index([auctionId, createdAt(sort: Asc)])
+}
+
+model WebsiteFeedback {
+  id                      String                 @id @default(cuid())
+  metaContentImpressionId String?
+  metaContentImpression   MetaContentImpression? @relation(fields: [metaContentImpressionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  experienceEnhanced      String?
+  contentRelevant         String?
+  optOut                  Boolean                @default(false)
+  specificExamplesText    String?
+  suggesstionsText        String?
+  createdAt               DateTime               @default(now())
+  updatedAt               DateTime               @updatedAt
+
+  @@index([metaContentImpressionId, createdAt(sort: Asc)])
+  @@index(optOut)
 }
