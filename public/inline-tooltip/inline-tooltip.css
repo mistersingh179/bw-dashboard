@@ -74,7 +74,17 @@
     border-top: dotted #ffffff60 1px;
 }
 .bw_svg {
+    margin: 0px 2px;
+    height: 1em;
+    fill: currentColor;
+    vertical-align: middle; 
+}
+.contentDisclaimer{
     margin: 0px 5px;
+}
+a.feedbackLink{
+    color: inherit;
+    text-decoration: none;
 }
 .closeButton {
     background-color: transparent;
