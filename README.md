@@ -120,6 +120,8 @@ drop database bw;
 - make tooltip also show above and below
   - this makes it work on tables where there is not enough gutter
   - and in theory makes it also work on mobile and thus not be device dependent
+- if third party cookies are disabled then we should not drop cookies as it will create new one everytime
+- still 20K auctions, 3.7k unique urls in study find got no null for extra
 
 ## Notes
 

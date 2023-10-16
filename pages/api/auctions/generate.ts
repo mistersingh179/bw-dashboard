@@ -18,6 +18,7 @@ import updateBestCampaign from "@/services/updateBestCampaign";
 import { MetaContentSpotsWithMetaContentAndType } from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
 import processWebpageForMetaContentCreation from "@/services/process/processWebpageForMetaContentCreation";
 import {
+  OPT_OUT_COOKIE_NAME,
   DIVERSITY_CLASSIFIER,
   META_CONTENT_BUILD_FAIL_COUNT_LIMIT,
 } from "@/constants";
@@ -275,6 +276,7 @@ const generate: NextApiHandler = async (req, res) => {
 
   const abortCategories = await getUserAbortCategories(userId);
   const abortCategoryNames = abortCategories.map((x) => x.name);
+  const optOutCookieValue = req.cookies[OPT_OUT_COOKIE_NAME] === "true"
 
   res
     .setHeader("Content-Type", "application/json")
@@ -287,6 +289,7 @@ const generate: NextApiHandler = async (req, res) => {
         settings: settingsToReturn,
         abortCategoryNames,
         messages,
+        optOutCookieValue
       })
     );
 };
