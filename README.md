@@ -13,7 +13,23 @@ Tag Test
 - run taskforce locally so taskforce UI can see our local redis
 - `TASKFORCE_TOKEN=xxx taskforce -n "Local Docker Redis" -p 63790`
 - at times we need to run scripts locally and dont want logs so we can turn them off via env variables `PINO_LOG_LEVEL=error node --loader tsx scripts/repl.ts`
-- rename iterm2  terminal tab title by `command + i` and then typing what we want
+- rename iterm2 terminal tab title by `command + i` and then typing what we want
+
+### Local Servers
+
+```
+lt --subdomain brandweaver-app-server --port 3000
+lt --subdomain brandweaver-web-server --port 8000
+lt --subdomain brandweaver-client-server --port 8000
+```
+
+and then env variables
+
+```
+BW_DASHBOARD_BASE_URL: '"https://brandweaver-app-server.loca.lt"',
+BW_CDN_BASE_URL: '"https://brandweaver-web-server.loca.lt"',
+BW_FEEDBACK_URL: '"https://brandweaver.ai/what-is-brandweaver-content-dev"'
+```
 
 ## running arbitrary script
 
@@ -120,8 +136,7 @@ drop database bw;
 - make tooltip also show above and below
   - this makes it work on tables where there is not enough gutter
   - and in theory makes it also work on mobile and thus not be device dependent
-- if third party cookies are disabled then we should not drop cookies as it will create new one everytime
-- still 20K auctions, 3.7k unique urls in study find got no null for extra
+- dont use page view
 
 ## Notes
 

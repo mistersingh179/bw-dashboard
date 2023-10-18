@@ -129,15 +129,15 @@ const getMetaContentSpotsToDisplay = async (
   return mcs;
 };
 
-export const END_USER_COOKIE_NAME: string = "bw-endUserCuid";
+// export const END_USER_COOKIE_NAME: string = "bw-endUserCuid";
 
-const getEndUserCuid = (req: NextApiRequest): string | null => {
-  if (req.cookies[END_USER_COOKIE_NAME]) {
-    return req.cookies[END_USER_COOKIE_NAME];
-  } else {
-    return null;
-  }
-};
+// const getEndUserCuid = (req: NextApiRequest): string | null => {
+//   if (req.cookies[END_USER_COOKIE_NAME]) {
+//     return req.cookies[END_USER_COOKIE_NAME];
+//   } else {
+//     return null;
+//   }
+// };
 
 const generate: NextApiHandler = async (req, res) => {
   const { userId, url, fp, screenWidth, screenHeight } = req.body;
@@ -173,7 +173,7 @@ const generate: NextApiHandler = async (req, res) => {
     data: {
       userId: userId,
       url: originWithPathName,
-      endUserCuid: getEndUserCuid(req) ?? createId(),
+      // endUserCuid: getEndUserCuid(req) ?? createId(),
       endUserFp: fp,
       screenWidth: screenWidth,
       screenHeight: screenHeight,
@@ -247,19 +247,19 @@ const generate: NextApiHandler = async (req, res) => {
     }
   }
 
-  const cookieHeaderString = cookie.serialize(
-    END_USER_COOKIE_NAME,
-    auction.endUserCuid,
-    {
-      httpOnly: true,
-      maxAge: 2147483647,
-      path: "/",
-      // secure: process.env.NODE_ENV === "development" ? false : true,
-      sameSite: "none",
-      secure: true,
-    }
-  );
-  res.setHeader("Set-Cookie", cookieHeaderString);
+  // const cookieHeaderString = cookie.serialize(
+  //   END_USER_COOKIE_NAME,
+  //   auction.endUserCuid,
+  //   {
+  //     httpOnly: true,
+  //     maxAge: 2147483647,
+  //     path: "/",
+  //     // secure: process.env.NODE_ENV === "development" ? false : true,
+  //     sameSite: "none",
+  //     secure: true,
+  //   }
+  // );
+  // res.setHeader("Set-Cookie", cookieHeaderString);
 
   const settingsToReturn = pick(settings, [
     "sponsoredWording",

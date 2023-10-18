@@ -3,7 +3,6 @@ import { QueryParams } from "@/types/QueryParams";
 import withMiddleware from "@/middlewares/withMiddleware";
 import prisma from "@/lib/prisma";
 import logger from "@/lib/logger";
-import { END_USER_COOKIE_NAME } from "@/pages/api/auctions/generate";
 import superjson from "superjson";
 
 const handler: NextApiHandler = async (req, res) => {
