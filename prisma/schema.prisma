@@ -134,6 +134,8 @@ model Auction {
   @@index([websiteId])
   @@index([url])
   @@index([extra])
+  @@index([timeSpent])
+  @@index([userAgent])
   @@index([createdAt(sort: Asc)])
   @@index([websiteId, createdAt(sort: Asc)])
 }
