@@ -151,7 +151,7 @@ const Users = () => {
         <Table variant="simple" colorScheme="gray" size={"md"}>
           <Thead>
             <Tr>
-              <Th>Name</Th>
+              <Th>Name & Id</Th>
               <Th>Email</Th>
               <Th>Counts</Th>
               <Th>Actions</Th>
@@ -167,7 +167,7 @@ const Users = () => {
               users.length > 0 &&
               users.map((user: UserWithCounts) => (
                 <Tr key={user.id}>
-                  <Td>{user.name}</Td>
+                  <Td><Box>{user.name}</Box><Box mt={2}> {user.id}</Box></Td>
                   <Td>{user.email}</Td>
                   <Td>
                     <UnorderedList>
