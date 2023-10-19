@@ -18,6 +18,7 @@ const handleListUsers: NextApiHandler = async (req, res) => {
   const users = await prisma.user.findMany({
     include: {
       setting: true,
+      websites: true,
       _count: {
         select: {
           websites: true,

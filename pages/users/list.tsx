@@ -151,8 +151,7 @@ const Users = () => {
         <Table variant="simple" colorScheme="gray" size={"md"}>
           <Thead>
             <Tr>
-              <Th>Name & Id</Th>
-              <Th>Email</Th>
+              <Th>User</Th>
               <Th>Counts</Th>
               <Th>Actions</Th>
             </Tr>
@@ -167,8 +166,19 @@ const Users = () => {
               users.length > 0 &&
               users.map((user: UserWithCounts) => (
                 <Tr key={user.id}>
-                  <Td><Box>{user.name}</Box><Box mt={2}> {user.id}</Box></Td>
-                  <Td>{user.email}</Td>
+                  <Td>
+                    <UnorderedList>
+                      <ListItem>Name: {user.name}</ListItem>
+                      <ListItem>Id: {user.id}</ListItem>
+                      <ListItem>Email: {user.email}</ListItem>
+                      <ListItem>
+                        Websites:{" "}
+                        {user.websites
+                          .map((w) => w.topLevelDomainUrl)
+                          .join(", ") || "none"}
+                      </ListItem>
+                    </UnorderedList>
+                  </Td>
                   <Td>
                     <UnorderedList>
                       <ListItem>Campaigns: {user._count.campaigns}</ListItem>
@@ -221,9 +231,9 @@ const Users = () => {
                             onClick={() => {
                               const ans = confirm(
                                 `This will process all EXISTING webpages for ${user.email}.\n\n` +
-                                `Processing a webpage means that it will setup their ` +
-                                `content, title, description, ad spots, meta content spots & categories.\n\n` +
-                                `It does NOT download new webpages from sitemap etc.`
+                                  `Processing a webpage means that it will setup their ` +
+                                  `content, title, description, ad spots, meta content spots & categories.\n\n` +
+                                  `It does NOT download new webpages from sitemap etc.`
                               );
                               if (ans) {
                                 processWebpages(user.id);
@@ -237,7 +247,7 @@ const Users = () => {
                               const ans = confirm(
                                 `This will DELETE ALL ad spots and ads for ${user.email}. ` +
                                   `It will also set related impressions to have reference id of null, ` +
-                                `but wont delete them. Are you sure?`
+                                  `but wont delete them. Are you sure?`
                               );
                               if (ans) {
                                 rebuildAdsHandler(user.id);

@@ -3,9 +3,10 @@ import useSWR from "swr";
 import { MyErrorType, WebsiteType } from "@/types/my-types";
 import fetcher from "@/helpers/fetcher";
 import superjson from "superjson";
-import { User } from ".prisma/client";
+import {User, Website} from ".prisma/client";
 
 export type UserWithCounts = User & {
+      websites: Website[]
   _count: { campaigns: number; websites: number; categories: number };
 };
 const useUsers = () => {
