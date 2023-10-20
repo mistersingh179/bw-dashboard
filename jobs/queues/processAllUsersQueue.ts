@@ -10,8 +10,8 @@ logger.info({ queueName }, "setting up queue");
 const queue: Queue<void, void> = new Queue(queueName, {
   connection: redisClient,
   defaultJobOptions: {
-    removeOnComplete: 1000,
-    removeOnFail: 5000,
+    removeOnComplete: 50,
+    removeOnFail: 50,
   },
 });
 

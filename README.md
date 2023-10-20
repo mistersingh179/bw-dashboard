@@ -128,6 +128,7 @@ drop database bw;
 - make 100 as default for recent visited
 - make 50, 50 default for mobile & desktop meta content
 - make our buttons override clients. e.g. citydogmagazine
+- 
 - create theme for lividmagazine
   - bg fff and color 222
   - bottom row bg ddd, color 222
