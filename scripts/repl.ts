@@ -26,24 +26,22 @@ prisma.$on("query", (e) => {
   console.log({ timestamp, params, duration, target });
 });
 
-const contentType = 'foo';
-
-const metaContentSpotText = 'bar'
-
-const cleanupWordRegex =
-  /^(Original text|Box|Technological Fact|Musical Fact|Scientific Fact|Cultural Fact|Economic Fact|Boxed Content|Cognitive Bias|Supplementary Content|Cultural References|Future Trends|Historical Exploration|Scientific Connection|Literature Review|Economic Impact|Cultural Evolution|Geographical Insights|Symbolism and Iconography|Pattern Recognition|Semantic Analysis|Historical Parallels|Moral and Ethical Considerations|Language Evolution|Innovative Applications|Unexplored Dimensions|Cognitive Psychology|Environmental Impact|Cultural Symbolism|Biographical Lens):/im;
-
 (async () => {
-  console.log("***");
-  const cleanupWordRegex =
-    /^(Original text|Box|Technological Fact|Musical Fact|Scientific Fact|Cultural Fact|Economic Fact|Boxed Content|Cognitive Bias|Supplementary Content|Cultural References|Future Trends|Historical Exploration|Scientific Connection|Literature Review|Economic Impact|Cultural Evolution|Geographical Insights|Symbolism and Iconography|Pattern Recognition|Semantic Analysis|Historical Parallels|Moral and Ethical Considerations|Language Evolution|Innovative Applications|Unexplored Dimensions|Cognitive Psychology|Environmental Impact|Cultural Symbolism|Biographical Lens):/im;
-  const cleanupWordRegex2 = /^(###)/im;
-
-  const output = "### Hello world"
-  let ans = output.replace(cleanupWordRegex, "")
-  // ans = output.replace(cleanupWordRegex2, "")
-  console.log('ans: ', ans);
-  console.log("***");
+  const webpages = await prisma.webpage.findMany({
+    where: {
+      website: {
+        userId: "climifncr00wgme08z6uyo3bg"
+      },
+      metaContentSpots: {
+        none: {
+          webpage: {
+            websiteId: "clit44gjw002rmn08y9evlk59"
+          }
+        },
+      },
+    },
+  });
+  console.log("webpages without meta content spot: ", webpages.length);
 })();
 
 export {};

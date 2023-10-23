@@ -121,18 +121,7 @@ drop database bw;
 - allow rod to bypass AB test
 - fix height issue on restoration media
 - check website name without checking for http and https
-- get rid of `[Total characters: 714]` from the generated text of the model
-- do not show hover tooltip's when there is not enough space e.g. tablet 
-- fire event that meta-content was completely read, similar to how we have clicked for impressions
-- bail on building inline tooltip if it is inside column flex box as this would put us in a column
-- make 100 as default for recent visited
-- make 50, 50 default for mobile & desktop meta content
-- make our buttons override clients. e.g. citydogmagazine
-- 
-- create theme for lividmagazine
-  - bg fff and color 222
-  - bottom row bg ddd, color 222
-  - skip button, feedback & icon should have currentcolor with 222 for color on the button
+- updgrade prisma & see if it fixes the `none: {}` issue 
 
 ## Notes
 
@@ -164,7 +153,7 @@ drop database bw;
 
 - auto set title name when cd into appropriate directory
 - try prisma cloud with a new db and then with json schema format
-- 
+- bail on building inline tooltip if it is inside column flex box as this would put us in a column 
 - grant users computer super-power so we can show buttons inside other accounts which require super access
 - fix dev worker to auto reload when any jobs or services change
 - make database show time in est

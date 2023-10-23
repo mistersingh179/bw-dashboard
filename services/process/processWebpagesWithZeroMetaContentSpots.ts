@@ -37,7 +37,11 @@ const processWebpagesWithZeroMetaContentSpots: ProcessWebpagesWithZeroMetaConten
           where: {
             websiteId: website.id,
             metaContentSpots: {
-              none: {},
+              none: {
+                webpage: {
+                  websiteId: website.id
+                },
+              },
             },
           },
         });
