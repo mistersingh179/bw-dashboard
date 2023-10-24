@@ -7,6 +7,7 @@ import { pickBy } from "lodash";
 
 const GATED_CONTENT_PHRASE = [
   "Sorry! An active online subscription is required to access this content.",
+  "The web server reported a bad gateway error."
 ];
 
 type CreateContent = (

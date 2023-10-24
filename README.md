@@ -121,7 +121,11 @@ drop database bw;
 - allow rod to bypass AB test
 - fix height issue on restoration media
 - check website name without checking for http and https
-- updgrade prisma & see if it fixes the `none: {}` issue 
+- updgrade prisma & see if it fixes the `none: {}` issue
+  - fix process wp with zero ads  
+- process webpages in real-time
+- why is processWebpageWithZeroMetaContentSpot so slow
+  - setup clinic.js
 
 ## Notes
 
