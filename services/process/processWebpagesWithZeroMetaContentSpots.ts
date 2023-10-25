@@ -39,7 +39,7 @@ const processWebpagesWithZeroMetaContentSpots: ProcessWebpagesWithZeroMetaConten
             metaContentSpots: {
               none: {
                 webpage: {
-                  websiteId: website.id
+                  websiteId: website.id,
                 },
               },
             },
@@ -58,17 +58,20 @@ const processWebpagesWithZeroMetaContentSpots: ProcessWebpagesWithZeroMetaConten
           result[website.topLevelDomainUrl] = webpages.length;
         }
         for (const webpage of webpages) {
+          myLogger.info(
+            { webpage },
+            "going to scheduled job to process Webpage"
+          );
           const job = await processWebpageQueue.add("processWebpage", {
             webpage: webpage,
           });
           myLogger.info(
             { id: job.id, webpage },
-            "scheduled job to process Webpage"
+            "have scheduled job to process Webpage"
           );
         }
       }
     }
-    await postOnSlack("Webpages With Zero Meta Content Spots", result);
     return result;
   };
 

@@ -108,6 +108,7 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 # Pending Meta Content
+- setup clinic.js
 - record AB test data
 - build new queries
 - datadog query for slowness
@@ -124,8 +125,6 @@ drop database bw;
 - updgrade prisma & see if it fixes the `none: {}` issue
   - fix process wp with zero ads  
 - process webpages in real-time
-- why is processWebpageWithZeroMetaContentSpot so slow
-  - setup clinic.js
 
 ## Notes
 
