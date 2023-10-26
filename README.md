@@ -125,6 +125,8 @@ drop database bw;
 - updgrade prisma & see if it fixes the `none: {}` issue
   - fix process wp with zero ads  
 - process webpages in real-time
+- google chrome issue
+  - https://app.brandweaver.ai/inline-tooltip/crosswalk-parenting.html
 
 ## Notes
 
