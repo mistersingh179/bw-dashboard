@@ -11,7 +11,7 @@ Tag Test
 - `npx ts-node --transpile-only` the `--transpile-only` makes it so that it doesn't complain on TS issues
 - for production / non dev usage we do `npm run build` & then use `npm start` to serve it
 - run taskforce locally so taskforce UI can see our local redis
-- `TASKFORCE_TOKEN=xxx taskforce -n "Local Docker Redis" -p 63790`
+- `taskforce -n "Local Docker Redis" -p 63790 -t xxxxxxxxxxx`
 - at times we need to run scripts locally and dont want logs so we can turn them off via env variables `PINO_LOG_LEVEL=error node --loader tsx scripts/repl.ts`
 - rename iterm2 terminal tab title by `command + i` and then typing what we want
 
@@ -106,6 +106,59 @@ drop database bw;
 - to call authenticated API add cookie `next-auth.session-token` to the request
 - value can be taken from the browser
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
+
+# Solving CLS
+- some tips on working with CLS – https://bitspeicher.blog/core-web-vitals-guide-cls/
+- showing tippies on load will cause CLS as our content suddenly appears after the page has loaded.
+- showing tippies on scroll will cause CLS for the same reason.
+- adding tippies to existing content also does not solve CLS as their height is not fixed and this causes layout to shift
+- using an ease transition helps but not a lot. 0.069 vs 0.087
+- **button** solution – we add a button which the user clicks to see our tippies.
+- **placeholder** solution – the publisher is to have boxes where they want tippies with fixed height pre-defined
+  - and then we just add our content to these boxes
+  - here we can also use transform to fill up that space
+  - this won't cause any layout shift as the box was already there with the space.
+- **on-load** solution – have our content build on-load at the bottom out of the viewable space
+  - this relies on the user not navigating to the bottom and making our content visible before we showed it
+  - we can also write code to only show tippies when not in view
+    - so we check before showing are we in view. if no, only then show it
+- **hover-bottom/top** solution – put our content over existing content
+  - content starts by showing at the bottom
+  - we show tippy for next para as the original para moves out of view 
+  - at any time only 1 tippy is being shown
+- **bottom-rail** solution - take fixed space at bottom on top of existing content
+  - this causes 0 cls
+  - we put margin-bottom on exisitng content equal to the size of bottom rail
+  - this allows it to scroll out of view
+  - also 0 CLS even though we are added after page has loaded
+- **hover-fixed-bottom/top-position** solution – we show the tippy at a fixed position on the bottom for content they are reading
+  - it is like the desktop hover solution but rather than taking space on the right, we take it at the bottom
+  - it is also like the bottom rail solution, but this shows / hides whereas bottom-rail stays.
+  - same as bottom rail 0 CLS even though we show and hide later as user is scrolling the page
+## narrowed down list
+- fixed position top
+  - transition opacity in as user scrolls in
+    - take first 300 pixels of scroll to bring its opacity from 0 to 1
+  - it has all the tooltips loaded in it
+  - we scroll it to show the tooltip of the paragraph closest to it
+  - when the closest paragraph has no tippy, we scroll to bottom where it says reached end of tippies
+  - it has built in fixed ad 350x50
+  - it has ad inside content, between each tippy.
+  - auto expand our box when the user scrolls
+  - 
+## cls experiments
+  - how long does it take for a scroll after we have loaded & can manipulate the dom
+## cls question
+  - they may scroll accidenly inside the tippies early
+    - should we disable scroll
+  - place holder text which shows up when we have no para being read
+    - this explains who we are and what this space is about
+  - query what phone height do people have, where will we be
+  - what is scroll position when our script loads
+## cls recorded
+  - script **with defer**, adding in viewport after image – 0.774
+  - script **without defer** adding in viewport after image – 0.132
+
 
 # Pending Meta Content
 - setup clinic.js
