@@ -107,6 +107,20 @@ drop database bw;
 - value can be taken from the browser
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
+# AB test code notes
+- only do AB test we have tippy data
+- send event after dice roll A (ON) or B (OFF)
+- people never scroll, should be in both cohorts
+- people bounce soon, will be in both cohorts
+- immediate bouncers will be in neither
+
+# fixing CLS for current inline tippies
+- build them with height when webpage is built
+- don't build if target is in or above viewport
+  - target's bottom should be bellow scroll
+- put content inside of para rather than after it. this will prevent ads pushing us away
+- fade in content when tippy enters viewport
+
 # Solving CLS
 - some tips on working with CLS – https://bitspeicher.blog/core-web-vitals-guide-cls/
 - showing tippies on load will cause CLS as our content suddenly appears after the page has loaded.
@@ -158,6 +172,29 @@ drop database bw;
 ## cls recorded
   - script **with defer**, adding in viewport after image – 0.774
   - script **without defer** adding in viewport after image – 0.132
+
+# explore
+- how to use facts of the website when generating tippy
+- email summary
+- content recommendation 
+  - inline
+  - worded by us
+- finding related article?
+
+# raptive numbers
+- for each day i want page-views, impressions, impressions PER page-views, avg engagement time, cpm
+- and then we see correlation between avg engagement time & impressions per page-views
+
+earnings 
+  -> https://api.raptive.com/sites/61d346d9037bcc001bcb7ada/earnings/earnings/2023-09-08/2023-09-08
+earnings, rps, sessions
+  –> https://api.raptive.com/sites/61d346d9037bcc001bcb7ada/earnings/rps/2023-09-08/2023-09-08?
+pageviews, earnings, sessions, avgTimeOnPage, rpm, rps
+  –> https://api.raptive.com/sites/61d346d9037bcc001bcb7ada/earnings/overview/2023-09-08/2023-09-08?
+per ad unit we get ecpm, earnings, impressions
+  –> https://api.raptive.com/sites/61d346d9037bcc001bcb7ada/earnings/byAdUnit/2023-09-08/2023-09-08?
+avg engagement time
+  -> https://api.raptive.com/api/v2/sites/61d346d9037bcc001bcb7ada/traffic/aggregateStats/2023-09-08?
 
 
 # Pending Meta Content
