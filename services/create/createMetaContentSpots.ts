@@ -25,13 +25,13 @@ const createMetaContentSpots: CreateMetaContentSpots = async (
 
   const { desiredMetaContentSpotCount, metaContentStatus } = settings;
 
-  if (metaContentStatus === false) {
-    myLogger.info(
-      { metaContentStatus },
-      "Aborting as meta content status is turned off."
-    );
-    return;
-  }
+  // if (metaContentStatus === false) {
+  //   myLogger.info(
+  //     { metaContentStatus },
+  //     "Aborting as meta content status is turned off."
+  //   );
+  //   return;
+  // }
 
   const existingMetaContentSpotCount = await prisma.metaContentSpot.count({
     where: {

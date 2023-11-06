@@ -147,8 +147,8 @@ drop database bw;
   - should only build what is missing  ✅
   - should have debounce ✅
 - check new design of append over after works for all clients ✅
-- build tippies on first hit 
-  
+- build tippies on first hit ✅
+- 
 # Options to Solve CLS
 - some tips on working with CLS – https://bitspeicher.blog/core-web-vitals-guide-cls/
 - showing tippies on load will cause CLS as our content suddenly appears after the page has loaded.
