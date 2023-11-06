@@ -30,6 +30,11 @@ export type DownloadWebpagesDataType = {
   sitemapUrl?: string;
 };
 
+export type ProcessIncomingUrlDataType = {
+  userId: string,
+  url: string
+}
+
 export type DownloadMostVisitedUrlsDataType = {
   website: Website;
   settings: Setting;
@@ -38,19 +43,22 @@ export type DownloadMostVisitedUrlsDataType = {
 export type MediumInputDataType =
   | DownloadMostVisitedUrlsDataType
   | MetaContentSpot
+  | ProcessIncomingUrlDataType
   | undefined;
 
 export type MediumOutputDataType =
   | MostVisitedUrlsResultType
   | MetaContent[]
   | WebsiteUrlToCount
+  | Webpage
   | null
   | undefined;
 
 export type MediumJobNames =
   | "downloadMostVisitedUrls"
   | "createMetaContents"
-  | "processWebpagesWithZeroMetaContentSpots";
+  | "processWebpagesWithZeroMetaContentSpots"
+  | "processIncomingUrl";
 
 export type ProcessCampaignDataType = {
   campaign: Campaign;

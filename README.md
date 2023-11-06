@@ -115,13 +115,41 @@ drop database bw;
 - immediate bouncers will be in neither
 
 # fixing CLS for current inline tippies
-- build them with height when webpage is built
-- don't build if target is in or above viewport
-  - target's bottom should be bellow scroll
-- put content inside of para rather than after it. this will prevent ads pushing us away
-- fade in content when tippy enters viewport
-
-# Solving CLS
+- build them with max-height when the webpage is built ✅
+  - don't build if target is in or above viewport ✅
+- content spot's bottom should be bellow scroll ✅
+- allow user to remove them ✅
+- remove skip, show & hide ✅
+  - hide all or just this one ⁉️
+  - hide for this session or persist ⁉️
+- put content inside of para rather than after it. this will prevent ads pushing us away ✅
+  - should we need to compenate for padding which is inside the para now? ⁉️
+- fade in content when tippy enters viewport ✅
+  - when to start, and how much to fade ✅ ⁉️
+  - showing item even at the bottom portion, not just top ✅ 
+  - should it be when box is 100% visible or 50% or to the top of page etc. ✅
+- if google bring them in, then they are not on the top of the page, are they? ⁉️
+  - need to check. ⁉️
+- be compatible to run with async or blocking ✅
+  - should run when loaded before dom exists ✅
+  - should run when loaded after dom exists ✅
+- build tooltips sooner ✅
+- fix GA events ✅
+  - remove not needed events ✅
+  - add our events ✅
+- confirm that loading content above is not causing CLS ✅
+  - append when above viewport ✅
+  - confirm that it can fade in when scrolling up and it comes in to view ✅
+- fix all logs
+- undo auction fetch request ✅
+- try and rebuild on scroll for things out of viewport  ✅
+  - should cause no CLS  ✅
+  - should only build what is missing  ✅
+  - should have debounce ✅
+- check new design of append over after works for all clients ✅
+- build tippies on first hit 
+  
+# Options to Solve CLS
 - some tips on working with CLS – https://bitspeicher.blog/core-web-vitals-guide-cls/
 - showing tippies on load will cause CLS as our content suddenly appears after the page has loaded.
 - showing tippies on scroll will cause CLS for the same reason.

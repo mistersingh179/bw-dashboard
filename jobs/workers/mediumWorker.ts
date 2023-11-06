@@ -8,12 +8,14 @@ import {
   MediumInputDataType,
   MediumJobNames,
   MediumOutputDataType,
+  ProcessIncomingUrlDataType,
 } from "@/jobs/dataTypes";
 import downloadMostVisitedUrls from "@/services/downloadMostVisitedUrls";
 import createMetaContents from "@/services/create/createMetaContents";
 import { MetaContentSpot } from "@prisma/client";
 import processWebpagesWithZeroMetaContentSpots from "@/services/process/processWebpagesWithZeroMetaContentSpots";
 import nr from "newrelic";
+import processIncomingUrl from "@/services/process/processIncomingUrl";
 
 const queueName = "medium";
 
@@ -53,6 +55,15 @@ const worker: Worker<
           "processWebpagesWithZeroMetaContentSpots",
           async () => {
             return processWebpagesWithZeroMetaContentSpots();
+          }
+        );
+      case "processIncomingUrl":
+        logger.info({ name, data, opts }, `in ${job.name} case`);
+        const { userId, url } = data as ProcessIncomingUrlDataType;
+        return await nr.startBackgroundTransaction(
+          "processIncomingUrl",
+          async () => {
+            return processIncomingUrl(userId, url);
           }
         );
       default:

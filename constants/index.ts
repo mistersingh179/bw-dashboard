@@ -22,4 +22,5 @@ if (process.env.NODE_ENV === "development") {
 }
 export const AD_BUILD_LOCK_TIME = ad_build_lock_time;
 export const META_CONTENT_BUILD_LOCK_TIME = ad_build_lock_time;
+export const PROCESS_INCOMING_URL_LOCK_TIME = 10 * 60;
 export const OPT_OUT_COOKIE_NAME = 'opt_out'

@@ -54,7 +54,11 @@ const processWebpageForMetaContentCreation: ProcessWebpageForMetaContentCreation
       where: {
         webpageId: webpage.id,
         metaContents: {
-          none: {},
+          none: {
+            metaContentSpot: {
+              webpageId: webpage.id
+            }
+          },
         },
         buildFailCount: {
           lt: META_CONTENT_BUILD_FAIL_COUNT_LIMIT,

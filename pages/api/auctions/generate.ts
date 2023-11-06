@@ -16,12 +16,17 @@ import processWebpageForAdCreation from "@/services/process/processWebpageForAdC
 import getActiveAdsWithDetailForScoredCampaign from "@/services/queries/getActiveAdsWithDetailForScoredCampaign";
 import updateBestCampaign from "@/services/updateBestCampaign";
 import { MetaContentSpotsWithMetaContentAndType } from "@/services/queries/getWebpageWithAdSpotsAndOtherCounts";
-import processWebpageForMetaContentCreation from "@/services/process/processWebpageForMetaContentCreation";
+import processWebpageForMetaContentCreation, {
+  accquireLock,
+} from "@/services/process/processWebpageForMetaContentCreation";
 import {
   OPT_OUT_COOKIE_NAME,
   DIVERSITY_CLASSIFIER,
   META_CONTENT_BUILD_FAIL_COUNT_LIMIT,
+  PROCESS_INCOMING_URL_LOCK_TIME,
 } from "@/constants";
+import { getUrlProperties } from "@/lib/getUrlProperites";
+import MediumQueue from "@/jobs/queues/mediumQueue";
 
 const cors = Cors({
   credentials: true,
@@ -30,22 +35,11 @@ const cors = Cors({
   },
 });
 
-type UrlProperties = {
-  origin: string;
-  originWithPathName: string;
-};
-
-export const getUrlProperties = (url: string): UrlProperties => {
-  const urlObj = new URL(url);
-  const origin = urlObj.origin;
-  let originWithPathName = urlObj.origin + urlObj.pathname;
-  if (originWithPathName.endsWith("/")) {
-    originWithPathName = originWithPathName.slice(0, -1);
-  }
-  return { origin, originWithPathName };
-};
-
 type WebpageWithCategories = Webpage & { categories: Category[] };
+
+const keyBuilder = (userId: string, url: string) => {
+  return `ProcessIncomingUrl:${userId}:${url}`;
+};
 
 const getUserAbortCategories = async (userId: string) => {
   const abortCategories = await prisma.category.findMany({
@@ -164,6 +158,22 @@ const generate: NextApiHandler = async (req, res) => {
     messages.push(
       "webpage not found – " + originWithPathName + " – " + website?.id
     );
+    const key = keyBuilder(userId, originWithPathName);
+    const lockResult = await accquireLock(key, PROCESS_INCOMING_URL_LOCK_TIME);
+    if (lockResult === true) {
+      const job = await MediumQueue.add("processIncomingUrl", {
+        userId,
+        url: originWithPathName,
+      });
+      logger.info(
+        { jobId: job.id, userId, originWithPathName },
+        "job added to process incoming url"
+      );
+      messages.push("schedule job to process incoming url: " + job.id);
+    } else {
+      logger.info("wont add job to process incoming url as lock NOT available");
+      messages.push("wont add job to process incoming url as lock unavailable");
+    }
   }
   if (webpage?.status === false) {
     messages.push("webpage is turned OFF – " + originWithPathName);
@@ -276,7 +286,7 @@ const generate: NextApiHandler = async (req, res) => {
 
   const abortCategories = await getUserAbortCategories(userId);
   const abortCategoryNames = abortCategories.map((x) => x.name);
-  const optOutCookieValue = req.cookies[OPT_OUT_COOKIE_NAME] === "true"
+  const optOutCookieValue = req.cookies[OPT_OUT_COOKIE_NAME] === "true";
 
   res
     .setHeader("Content-Type", "application/json")
@@ -289,7 +299,7 @@ const generate: NextApiHandler = async (req, res) => {
         settings: settingsToReturn,
         abortCategoryNames,
         messages,
-        optOutCookieValue
+        optOutCookieValue,
       })
     );
 };
