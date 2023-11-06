@@ -3,7 +3,6 @@ import prisma from "@/lib/prisma";
 import { XMLParser } from "fast-xml-parser";
 import fetchContentOfWebpage from "@/services/helpers/fetchContentOfWebpage";
 import { hoursToMilliseconds, isAfter, parseISO, subDays } from "date-fns";
-import { getUrlProperties } from "@/pages/api/auctions/generate";
 import { Setting } from "@prisma/client";
 import downloadWebpagesQueue, {
   queueEvents as downloadWebpagesQueueEvents,

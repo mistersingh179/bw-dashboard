@@ -1,4 +1,4 @@
-import {getUrlProperties} from "@/pages/api/auctions/generate";
+import { getUrlProperties } from "@/lib/getUrlProperites";
 
 export const getCleanUrl = (url: string): string => {
   try {
