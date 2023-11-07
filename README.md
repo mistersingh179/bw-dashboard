@@ -107,6 +107,13 @@ drop database bw;
 - value can be taken from the browser
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
+# Prep for AB Test
+- report job errors to NewRelic
+- don't record 404 and 403 to NewRelic
+- get db health pg_stat_health
+- have query to tell how many pages without meta content & why
+- are we getting all pages in real-time?
+
 # AB test code notes
 - only do AB test we have tippy data
 - send event after dice roll A (ON) or B (OFF)

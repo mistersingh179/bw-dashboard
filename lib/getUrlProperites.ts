@@ -1,3 +1,5 @@
+import prisma from "@/lib/prisma";
+
 export type UrlProperties = {
   origin: string;
   originWithPathName: string;
@@ -12,3 +14,13 @@ export const getUrlProperties = (url: string): UrlProperties => {
   }
   return { origin, originWithPathName };
 };
+
+if (require.main === module) {
+  (async () => {
+    console.log("in getUrlProperties");
+    const ans = getUrlProperties(
+      "https://outinjersey.net/wicked-lessons-for-us-all-at-the-academy-of-music-in-philly"
+    );
+    console.log(ans);
+  })();
+}

@@ -44,9 +44,9 @@ const addProcessWebpagesWithZeroMetaContentSpots = async () => {
 
 const setupCronJobs = async () => {
   logger.info({}, "starting scheduling cron jobs");
-  await addProcessAllUsers();
-  await addProcessWebpagesWithZeroAds();
-  await addProcessWebpagesWithZeroMetaContentSpots();
+  // await addProcessAllUsers();
+  // await addProcessWebpagesWithZeroAds();
+  // await addProcessWebpagesWithZeroMetaContentSpots();
   logger.info("finished scheduling cron jobs");
 };
 

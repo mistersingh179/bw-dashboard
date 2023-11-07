@@ -14,6 +14,7 @@ type ProcessIncomingUrl = (userId: string, url: string) => Promise<Webpage>;
 const processIncomingUrl: ProcessIncomingUrl = async (userId, url) => {
   myLogger.info({ userId, url }, "inside service");
   const { origin, originWithPathName } = getUrlProperties(url);
+  myLogger.info({ origin, originWithPathName}, "website url");
 
   const webpage = await prisma.webpage.create({
     data: {
@@ -53,8 +54,8 @@ export default processIncomingUrl;
 if (require.main === module) {
   (async () => {
     await processIncomingUrl(
-      "clhtwckif000098wp207rs2fg",
-      "http://localhost:8000/bar/foobaz.html/"
+      "cljcsweqt68k4k81qozbo4uky",
+      "https://outinjersey.net/new-jersey-congressman-tom-kean-jr-enables-anti-lgbtq-extremism"
     );
   })();
 }
