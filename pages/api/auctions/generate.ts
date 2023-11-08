@@ -77,13 +77,16 @@ const getWebpageWithCategories = async (websiteId: string, url: string) => {
 const needsToBuildMetaContent = async (webpageId: string) => {
   const ans = await prisma.metaContentSpot.findMany({
     where: {
-      webpageId: webpageId,
+      webpageId,
       buildFailCount: {
         lt: META_CONTENT_BUILD_FAIL_COUNT_LIMIT,
       },
       metaContents: {
         none: {
           diveristyClassifierResult: DIVERSITY_CLASSIFIER.DIVERSE,
+          metaContentSpot: {
+            webpageId,
+          },
         },
       },
     },
@@ -100,11 +103,14 @@ const getMetaContentSpotsToDisplay = async (
 ): Promise<MetaContentSpotsWithMetaContentAndType[]> => {
   const mcs = await prisma.metaContentSpot.findMany({
     where: {
-      webpageId: webpageId,
+      webpageId,
       metaContents: {
         some: {
           status: true,
           diveristyClassifierResult: DIVERSITY_CLASSIFIER.DIVERSE,
+          metaContentSpot: {
+            webpageId,
+          },
         },
       },
     },

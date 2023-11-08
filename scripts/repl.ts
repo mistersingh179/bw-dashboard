@@ -27,21 +27,32 @@ prisma.$on("query", (e) => {
 });
 
 (async () => {
-  const webpages = await prisma.webpage.findMany({
+  const ans = await prisma.metaContentSpot.findMany({
     where: {
-      website: {
-        userId: "climifncr00wgme08z6uyo3bg"
-      },
-      metaContentSpots: {
-        none: {
-          webpage: {
-            websiteId: "clit44gjw002rmn08y9evlk59"
+      webpageId: 'clj78h8go000v98kqecljqbxx',
+      metaContents: {
+        some: {
+          status: true,
+          diveristyClassifierResult: DIVERSITY_CLASSIFIER.DIVERSE,
+          metaContentSpot: {
+            webpageId: 'clj78h8go000v98kqecljqbxx',
           }
         },
       },
     },
+    include: {
+      metaContents: {
+        where: {
+          status: true,
+          diveristyClassifierResult: DIVERSITY_CLASSIFIER.DIVERSE,
+        },
+        include: {
+          metaContentType: true,
+        },
+      },
+    },
   });
-  console.log("webpages without meta content spot: ", webpages.length);
+  console.log("ans: ", ans);
 })();
 
 export {};

@@ -113,6 +113,14 @@ drop database bw;
 - get db health pg_stat_health
 - have query to tell how many pages without meta content & why
 - are we getting all pages in real-time?
+- do not process urls for certain domains:
+  - translate.goog e.g.   "url": "https://www-stylecraze-com.translate.goog/articles/latest-net-blouse-designs-catalog"
+  - staging.valuewalk.com
+  - "url": "https://gtm-msr.appspot.com/render2"
+  - "url": "http://www.fightbookmma.com/category/bare-knuckle-news"
+- https://valuewalk.com/dont-miss-out-explosive-cybersecurity-stock
+- are we storing webpages with utc time as est time?
+
 
 # AB test code notes
 - only do AB test we have tippy data
