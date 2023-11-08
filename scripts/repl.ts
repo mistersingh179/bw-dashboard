@@ -27,32 +27,14 @@ prisma.$on("query", (e) => {
 });
 
 (async () => {
-  const ans = await prisma.metaContentSpot.findMany({
-    where: {
-      webpageId: 'clj78h8go000v98kqecljqbxx',
-      metaContents: {
-        some: {
-          status: true,
-          diveristyClassifierResult: DIVERSITY_CLASSIFIER.DIVERSE,
-          metaContentSpot: {
-            webpageId: 'clj78h8go000v98kqecljqbxx',
-          }
-        },
-      },
+  const ans = await prisma.webpage.findFirst({
+    orderBy: {
+      createdAt: "desc"
     },
-    include: {
-      metaContents: {
-        where: {
-          status: true,
-          diveristyClassifierResult: DIVERSITY_CLASSIFIER.DIVERSE,
-        },
-        include: {
-          metaContentType: true,
-        },
-      },
-    },
-  });
+    take: 1
+  })
   console.log("ans: ", ans);
+  console.log(new Date(ans!.createdAt).toLocaleTimeString());
 })();
 
 export {};

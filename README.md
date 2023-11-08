@@ -119,7 +119,6 @@ drop database bw;
   - "url": "https://gtm-msr.appspot.com/render2"
   - "url": "http://www.fightbookmma.com/category/bare-knuckle-news"
 - https://valuewalk.com/dont-miss-out-explosive-cybersecurity-stock
-- are we storing webpages with utc time as est time?
 
 
 # AB test code notes
@@ -443,3 +442,22 @@ avg engagement time
 
 ## gotchas
 - don't put a semi-colon at the end of a redis command
+
+# Understanding Timezone
+- database columns are `timestamp` and not `timestamptz`
+  - this means they dont have means to store what time zone the value is in
+  - it is loosing that resolution
+- code is sending values in UTC.
+  - it looks like `2023-11-08 16:35:15.504 UTC`
+- when we fetch the data from db it comes back as-is without timezone data
+  - it looks like `2023-11-08 16:35:15.504`
+- first set the db connection session to UTC
+  - this way data it gets back defaults to UTC when it is missing timezone
+  - `show time zone;`
+  - `set time zone 'UTC';`
+- to do the conversion we first add default timezone to it and then do conversion
+  - `select "createdAt"::timestamptz at time zone 'US/Eastern' from "Webpage"`
+  - `select "createdAt" at time zone 'UTC' at time zone 'US/Eastern' from "Webpage"`
+  - both do same thing.
+  - we just need to put time zone on it and then convert
+- having the session timezone to EST wont help because data is in UTC from code
