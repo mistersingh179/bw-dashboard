@@ -108,7 +108,6 @@ template.innerHTML = `<div id="bw-container" class="hide">
         <option value="Smartphone">Smartphone</option>
         <option value="Smart Speaker">Smart Speaker</option>
         <option value="Both">Both</option>
-        <option value="Both">Both</option>
         <option value="None">None</option>
       </select>
       What is your primary concern regarding alcohol consumption?
@@ -118,8 +117,8 @@ template.innerHTML = `<div id="bw-container" class="hide">
         <option value="Social Interactions">Social Interactions</option>
       </select>
       <div class="btn-row">
-        <input type="button" value="Personalize" class="personalize"></input>
         <input type="button" value="Close" class="closePersonalize"></input>
+        <input type="button" value="Personalize" class="personalize"></input>
       </div>
     </div>`.trim();
 const item = template.content.firstChild;
