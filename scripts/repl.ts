@@ -19,6 +19,7 @@ import {
   DIVERSITY_CLASSIFIER,
   META_CONTENT_BUILD_FAIL_COUNT_LIMIT,
 } from "@/constants";
+import {once} from "lodash";
 
 prisma.$on("query", (e) => {
   const { timestamp, query, params, duration, target } = e;
@@ -27,14 +28,14 @@ prisma.$on("query", (e) => {
 });
 
 (async () => {
-  const ans = await prisma.webpage.findFirst({
-    orderBy: {
-      createdAt: "desc"
-    },
-    take: 1
-  })
-  console.log("ans: ", ans);
-  console.log(new Date(ans!.createdAt).toLocaleTimeString());
+  const sendOnToRaptiveOnce = once(() => {
+    console.log("hi");
+  });
+  sendOnToRaptiveOnce();
+  sendOnToRaptiveOnce();
+  sendOnToRaptiveOnce();
+  sendOnToRaptiveOnce();
+  sendOnToRaptiveOnce();
 })();
 
 export {};

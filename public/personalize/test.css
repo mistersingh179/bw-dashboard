@@ -1,0 +1,64 @@
+#bw-container {
+  position: fixed;
+  top: 46px;
+  background-color: #000;
+  color: #fff;
+  width: 100%;
+  max-height: 500px;
+  overflow: scroll;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+  padding: 10px;
+  z-index: 1000;
+}
+
+#bw-container::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+#bw-container.show {
+  opacity: 1;
+  transition: all ease 1s;
+  visibility: visible;
+}
+
+#bw-container.hide {
+  opacity: 0;
+  transition: all ease 1s;
+  visibility: hidden;
+}
+
+#bw-container input.personalize,
+input.closePersonalize {
+}
+
+#bw-container div.btn-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  /*margin: 10px 0px;*/
+  margin-top: 10px;
+}
+
+#bw-widget {
+  padding: 10px;
+  height: 100vh;
+  /*background-color: lightcyan;*/
+  color: #0f3647;
+  overflow-y: scroll;
+}
+
+#bw-widget > div.widgedHeading {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#bw-widget > div.personalizedContent {
+  margin-top: 10px;
+}
+
+#bw-container select {
+  margin: 5px 0px;
+}

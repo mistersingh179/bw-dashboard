@@ -119,7 +119,8 @@ drop database bw;
   - "url": "https://gtm-msr.appspot.com/render2"
   - "url": "http://www.fightbookmma.com/category/bare-knuckle-news"
 - https://valuewalk.com/dont-miss-out-explosive-cybersecurity-stock
-
+- dont say yes on Ipad
+- dont say yes on screens we wont fit
 
 # AB test code notes
 - only do AB test we have tippy data

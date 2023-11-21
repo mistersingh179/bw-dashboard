@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+      .hidden-element {
+          top: 100px;
+          position: absolute;
+          opacity: 0;
+          max-height: 0px;
+          visibility: hidden;
+          transition: max-height 1s ease;
+          background-color: lightgreen;
+      }
+
+      .visible-element {
+          opacity: 1;
+          visibility: visible;
+          max-height: 300px;
+          overflow: scroll;
+          transition: opacity 1s ease;
+
+      }
+  </style>
+  <title>Hidden Element Example</title>
+</head>
+<body>
+
+<button id="myElement" class="hidden-element" onclick="console.log('foo')">
+  <!-- Your content goes here -->
+  This is a hidden element.
+</button>
+
+<button onclick="toggleVisibility()">Toggle Visibility</button>
+
+The admiral is more captain now than species. biological and pedantically unrelated.
+The particle is more klingon now than cosmonaut. spheroid and rudely extraterrestrial.
+The c-beam is more parasite now than starship. futile and technically evil.
+The moon is more transformator now than starship. unrelated and accelerative strange.
+The ship is more teleporter now than girl. quirky and surprisingly strange!
+
+<script>
+  function toggleVisibility() {
+    var element = document.getElementById('myElement');
+    element.classList.toggle('visible-element');
+  }
+</script>
+
+</body>
+</html>
