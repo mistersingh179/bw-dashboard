@@ -19,13 +19,14 @@ const statusCheckMiddleware: Middleware = async (req, res, next) => {
   const { userId } = req.body;
   try {
     const settings = await getSettings(userId);
-    if(req.body?.url?.indexOf("gargling-salt-water-covid-19") >= 0){
-      logger.info("overriding status check as this is special url");
-      req.settings = settings;
-      req.settings.status = true;
-      await next();
-    }
-    else if (settings.status === false) {
+    // if(req.body?.url?.indexOf("gargling-salt-water-covid-19") >= 0){
+    //   logger.info("overriding status check as this is special url");
+    //   req.settings = settings;
+    //   req.settings.status = true;
+    //   await next();
+    // }
+    // else
+    if (settings.status === false) {
       const statusCode = 200;
       const message = "Aborting request as user setting is off";
       logger.info({ userId, statusCode, reqId: req.reqId }, message);
