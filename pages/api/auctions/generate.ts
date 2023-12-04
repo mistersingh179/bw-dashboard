@@ -306,6 +306,7 @@ const generate: NextApiHandler = async (req, res) => {
         abortCategoryNames,
         messages,
         optOutCookieValue,
+        adTag: website?.adTag
       })
     );
 };

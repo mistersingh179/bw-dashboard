@@ -150,6 +150,7 @@ model Website {
   auctions          Auction[]
   topLevelDomainUrl String
   sitemapUrl        String
+  adTag             String?
   status            Boolean
   processedOn       DateTime?
   createdAt         DateTime  @default(now())

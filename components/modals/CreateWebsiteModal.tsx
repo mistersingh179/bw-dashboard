@@ -37,7 +37,8 @@ const CreateWebsiteModal = ({
     useState(dummyUrl);
   const [sitemapUrl, setSitemapUrl] = useState(`${dummyUrl}/sitemap.xml`);
   const [status, setStatus] = useState(false);
-
+  const [adTag, setAdTag] = useState('');
+  
   const topLevelDomainUrlMissing =
     topLevelDomainUrl.length === 0 ? true : false;
 
@@ -79,6 +80,15 @@ const CreateWebsiteModal = ({
               </FormErrorMessage>
             </FormControl>
             <FormControl>
+              <FormLabel>Ad Tag</FormLabel>
+              <Input
+                type="text"
+                value={adTag}
+                onChange={(evt) => setAdTag(evt.target.value)}
+              />
+              <FormHelperText>This is the the adTAg which will be loaded on this site.</FormHelperText>
+            </FormControl>
+            <FormControl>
               <HStack>
                 <FormLabel mb="0">Status</FormLabel>
                 <Switch
@@ -99,12 +109,14 @@ const CreateWebsiteModal = ({
                 topLevelDomainUrl,
                 sitemapUrl,
                 status,
+                adTag,
                 processedOn: null,
               };
               onClose();
               setTopLevelDomainUrl(dummyUrl);
               setSitemapUrl(`${dummyUrl}/sitemap.xml`);
               setStatus(false);
+              setAdTag('');
               await onSave(newWebsite);
             }}
           >

@@ -36,6 +36,7 @@ const EditWebsiteModal = ({
   const [topLevelDomainUrl, setTopLevelDomainUrl] = useState("");
   const [sitemapUrl, setSitemapUrl] = useState("");
   const [status, setStatus] = useState(false);
+  const [adTag, setAdTag] = useState("");
 
   const topLevelDomainUrlMissing =
     topLevelDomainUrl.length === 0 ? true : false;
@@ -46,6 +47,7 @@ const EditWebsiteModal = ({
     setTopLevelDomainUrl(website.topLevelDomainUrl);
     setSitemapUrl(website.sitemapUrl);
     setStatus(website.status);
+    setAdTag(website.adTag || "");
   }, [website])
 
   return (
@@ -86,6 +88,15 @@ const EditWebsiteModal = ({
               </FormErrorMessage>
             </FormControl>
             <FormControl>
+              <FormLabel>Ad Tag</FormLabel>
+              <Input
+                type="text"
+                value={adTag}
+                onChange={(evt) => setAdTag(evt.target.value)}
+              />
+              <FormHelperText>This is the ad tag which will be loaded on this website.</FormHelperText>
+            </FormControl>
+            <FormControl>
               <HStack>
                 <FormLabel mb="0">Status</FormLabel>
                 <Switch
@@ -107,6 +118,7 @@ const EditWebsiteModal = ({
                 topLevelDomainUrl,
                 sitemapUrl,
                 status,
+                adTag,
               };
               onClose();
               await onUpdate(updatedWebsite);

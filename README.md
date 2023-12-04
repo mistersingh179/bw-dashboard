@@ -107,7 +107,27 @@ drop database bw;
 - value can be taken from the browser
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
-# Prep for AB Test
+## Plan for DiDna Launch
+
+Separate ad tag for each website
+Include their script
+Include the ad tags different size for different size screen
+Ignore tablet and mid size screens to continue running desktop tech
+Instead of 4 spots, let’s go for 8 spots
+And then on mobile skip every other spot
+All tech to process etc stays as-is
+Also continue to save current metrics
+CLS test
+Launch!
+Build top rail for tooltips mobile only 1-2 days
+maxScrollDepth (percentage & raw number)
+scrollDepthEvents with amount & time
+pageHeight
+scrollGestureCount
+
+
+
+## Prep for AB Test
 - report job errors to NewRelic
 - don't record 404 and 403 to NewRelic
 - get db health pg_stat_health
