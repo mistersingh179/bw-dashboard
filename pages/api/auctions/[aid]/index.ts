@@ -33,7 +33,15 @@ const handleUpdateAuction = async (
   res: NextApiResponse
 ) => {
   const { aid } = req.query as QueryParams;
-  const allowedAttributes = ["scrollPosition", "firstScrollAt"];
+  const allowedAttributes = [
+    "scrollPosition",
+    "firstScrollAt",
+    "personalized",
+    "closedPersonalized",
+    "personalizedOptionSelected",
+    "personalizeCtaShown",
+    "scrollDepth"
+  ];
   let data = pick<AuctionUncheckedUpdateInput>(req.body, allowedAttributes);
   const auction = await prisma.auction.update({
     where: {

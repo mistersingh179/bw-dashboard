@@ -140,7 +140,7 @@ const getMetaContentSpotsToDisplay = async (
 // };
 
 const generate: NextApiHandler = async (req, res) => {
-  const { userId, url, fp, screenWidth, screenHeight } = req.body;
+  const { userId, url, fp, screenWidth, screenHeight, scrollHeight } = req.body;
   const settings = req.settings!;
 
   let messages: string[] = [];
@@ -193,6 +193,7 @@ const generate: NextApiHandler = async (req, res) => {
       endUserFp: fp,
       screenWidth: screenWidth,
       screenHeight: screenHeight,
+      scrollHeight: scrollHeight,
       userAgent: req.headers["user-agent"],
       ip: requestIp.getClientIp(req) ?? "0.0.0.0",
       webpageId: webpage?.id,

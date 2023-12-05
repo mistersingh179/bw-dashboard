@@ -108,28 +108,34 @@ model Setting {
 }
 
 model Auction {
-  id                     String                  @id @default(cuid())
-  userId                 String?
-  user                   User?                   @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  websiteId              String?
-  website                Website?                @relation(fields: [websiteId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  webpageId              String?
-  webpage                Webpage?                @relation(fields: [webpageId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  impressions            Impression[]
-  metaContentImpressions MetaContentImpression[]
-  url                    String?
-  userAgent              String                  @default("")
-  screenWidth            Int?
-  screenHeight           Int?
-  ip                     String                  @default("0.0.0.0") @db.Inet
-  endUserCuid            String                  @default("")
-  endUserFp              String                  @default("")
-  scrollPosition         Int?
-  firstScrollAt          Int?
-  timeSpent              Int                     @default(0)
-  extra                  String?
-  createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @updatedAt
+  id                         String                  @id @default(cuid())
+  userId                     String?
+  user                       User?                   @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  websiteId                  String?
+  website                    Website?                @relation(fields: [websiteId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  webpageId                  String?
+  webpage                    Webpage?                @relation(fields: [webpageId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  impressions                Impression[]
+  metaContentImpressions     MetaContentImpression[]
+  url                        String?
+  userAgent                  String                  @default("")
+  screenWidth                Int?
+  screenHeight               Int?
+  ip                         String                  @default("0.0.0.0") @db.Inet
+  endUserCuid                String                  @default("")
+  endUserFp                  String                  @default("")
+  scrollPosition             Int?
+  firstScrollAt              Int?
+  timeSpent                  Int                     @default(0)
+  extra                      String?
+  personalized               Int?                    @default(0)
+  closedPersonalized         Int?                    @default(0)
+  personalizedOptionSelected Int?                    @default(0)
+  personalizeCtaShown        Int?                    @default(0)
+  maxScrollDepth             Int?
+  scrollHeight               Int?
+  createdAt                  DateTime                @default(now())
+  updatedAt                  DateTime                @updatedAt
 
   @@index([userId])
   @@index([webpageId])
