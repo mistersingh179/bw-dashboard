@@ -19,7 +19,7 @@ const statusCheckMiddleware: Middleware = async (req, res, next) => {
   const { userId } = req.body;
   try {
     const settings = await getSettings(userId);
-    if(req.body?.url?.indexOf("gargling-salt-water-covid-19") >= 0){
+    if(req.body?.url?.indexOf("feeding-birds-is-good-for-soul") >= 0){
       logger.info("overriding status check as this is special url");
       req.settings = settings;
       req.settings.status = true;
