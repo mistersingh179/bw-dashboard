@@ -247,6 +247,7 @@ const Settings: FCWithAuth = () => {
     scoreThreshold: 0,
     status: false,
     metaContentStatus: false,
+    personalizationStatus: false,
     metaContentDisplayPercentage: 0,
     metaContentMobileDisplayPercentage: 0,
     metaContentToolTipTheme: "",
@@ -272,6 +273,7 @@ const Settings: FCWithAuth = () => {
     scoreThreshold,
     status,
     metaContentStatus,
+    personalizationStatus,
     metaContentDisplayPercentage,
     metaContentMobileDisplayPercentage,
     metaContentToolTipTheme,
@@ -344,6 +346,14 @@ const Settings: FCWithAuth = () => {
               updateFn={updateItem}
             >
               <Text>Turn On/Off displaying of Meta Content</Text>
+            </BooleanFormControl>
+            <BooleanFormControl
+              label="Personalization Status"
+              fieldName={"personalizationStatus"}
+              fieldValue={personalizationStatus}
+              updateFn={updateItem}
+            >
+              <Text>Turn On/Off displaying of Personalization</Text>
             </BooleanFormControl>
             <NumberFormControl
               label={"Meta Content Display Percentage"}

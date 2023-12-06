@@ -285,6 +285,7 @@ const generate: NextApiHandler = async (req, res) => {
     "mainPostBodySelector",
     "metaContentSpotSelector",
     "metaContentStatus",
+    "personalizationStatus",
     "metaContentDisplayPercentage",
     "metaContentMobileDisplayPercentage",
     "metaContentToolTipTheme",

@@ -19,7 +19,9 @@ const statusCheckMiddleware: Middleware = async (req, res, next) => {
   const { userId } = req.body;
   try {
     const settings = await getSettings(userId);
-    if(req.body?.url?.indexOf("feeding-birds-is-good-for-soul") >= 0){
+    const bypassedUrls = ["feeding-birds-is-good-for-soul", "lorem-lipsum.html", "study.html"];
+    const thisIsBypassedUrl = bypassedUrls.find(url => req.body?.url?.indexOf(url) >= 0);
+    if(thisIsBypassedUrl){
       logger.info("overriding status check as this is special url");
       req.settings = settings;
       req.settings.status = true;

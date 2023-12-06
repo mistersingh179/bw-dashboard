@@ -78,6 +78,7 @@ model Setting {
   user                               User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   scoreThreshold                     Int
   status                             Boolean
+  personalizationStatus              Boolean  @default(false)
   metaContentStatus                  Boolean  @default(false)
   metaContentDisplayPercentage       Int      @default(50)
   metaContentMobileDisplayPercentage Int      @default(0)
