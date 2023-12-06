@@ -36,5 +36,5 @@ export default withMiddleware(
   cors,
   "putOnly",
   "rejectBots",
-  "statusOn"
+  // "statusOn"
 )(updateExtra);

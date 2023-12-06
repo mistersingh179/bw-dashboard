@@ -36,5 +36,5 @@ export default withMiddleware(
   cors,
   "postOnly",
   "rejectBots",
-  "statusOn"
+  // "statusOn"
 )(updateTimeSpent);
