@@ -25,7 +25,7 @@ export default withMiddleware(
   cors,
   "putOnly",
   "rejectBots",
-  "statusOn"
+  // "statusOn"
 )(auction);
 
 const handleUpdateAuction = async (
@@ -40,7 +40,7 @@ const handleUpdateAuction = async (
     "closedPersonalized",
     "personalizedOptionSelected",
     "personalizeCtaShown",
-    "scrollDepth"
+    "maxScrollDepth",
   ];
   let data = pick<AuctionUncheckedUpdateInput>(req.body, allowedAttributes);
   const auction = await prisma.auction.update({
