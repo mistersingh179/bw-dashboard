@@ -77,34 +77,24 @@ export default extractCleanedWebpageText;
 
 if (require.main === module) {
   (async () => {
-    // const ans = await extractCleanedWebpageText(
-    //   "<body></body><div>foo<br/>\n\nbar\n\n   <br/>\n\nfoobar</div></body>"
-    // );
-    // console.log("*** ans: ", ans);
-
     const webpage = await prisma.webpage.findFirstOrThrow({
       where: {
-        id: "clk2rrzwq0e1zlu21eu245qet",
-        // id: "clint6o2n001ymd08q6wl7xlh",
-        // id: "clj4l8mbc0tx0ny1qthfjl55y",
-        // id: "clim0ldkj029wmq08t01qppn4",
+        id: "clopzdvo9000098glmcmt1g9d",
       },
     });
-    console.log(webpage);
 
     const content = await prisma.content.findFirstOrThrow({
       where: {
         webpageId: webpage.id,
       },
     });
-    console.log("got content: ", content.id);
 
-    const ans = await extractCleanedWebpageText(
+    const ans = extractCleanedWebpageText(
       content.desktopHtml,
-      200,
-      "main"
+      500,
+      ".entry-content"
     );
-    console.log("*** ans: ", ans);
-    // console.log("***length: ", ans2.length);
+    console.log("*** ans*** : ");
+    console.log(ans);
   })();
 }
