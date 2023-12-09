@@ -108,8 +108,6 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Plan for personalization text
-- record extra
-- give rod service to get webpage text (.entry-content)
 - how fast was close clicked (from shown)
 
 ## Plan for DiDna Launch
