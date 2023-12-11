@@ -19,16 +19,22 @@ const statusCheckMiddleware: Middleware = async (req, res, next) => {
   const { userId } = req.body;
   try {
     const settings = await getSettings(userId);
-    const bypassedUrls = ["best-floral-perfumes", "feeding-birds-is-good-for-soul", "lorem-lipsum.html", "study.html"];
-    const thisIsBypassedUrl = bypassedUrls.find(url => req.body?.url?.indexOf(url) >= 0);
-    if(thisIsBypassedUrl){
+    const bypassedUrls = [
+      "best-floral-perfumes",
+      "feeding-birds-is-good-for-soul",
+      "lorem-lipsum.html",
+      "study.html",
+      "best-tea-for-energy",
+    ];
+    const thisIsBypassedUrl = bypassedUrls.find(
+      (url) => req.body?.url?.indexOf(url) >= 0
+    );
+    if (thisIsBypassedUrl) {
       logger.info("overriding status check as this is special url");
       req.settings = settings;
       req.settings.status = true;
       await next();
-    }
-    else
-    if (settings.status === false) {
+    } else if (settings.status === false) {
       const statusCode = 200;
       const message = "Aborting request as user setting is off";
       logger.info({ userId, statusCode, reqId: req.reqId }, message);
