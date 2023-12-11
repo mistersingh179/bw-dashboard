@@ -30,11 +30,18 @@ const statusCheckMiddleware: Middleware = async (req, res, next) => {
       (url) => req.body?.url?.indexOf(url) >= 0
     );
     if (thisIsBypassedUrl) {
-      logger.info("overriding status check as this is special url");
+      logger.info(
+        { url: req.body.url },
+        "overriding status check as this is special url"
+      );
       req.settings = settings;
       req.settings.status = true;
       await next();
     } else if (settings.status === false) {
+      logger.info(
+        { url: req.body.url },
+        "no override on status check as this is NOT special url"
+      );
       const statusCode = 200;
       const message = "Aborting request as user setting is off";
       logger.info({ userId, statusCode, reqId: req.reqId }, message);
