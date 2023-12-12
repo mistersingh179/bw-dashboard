@@ -109,7 +109,8 @@ drop database bw;
 
 ## Plan for personalization text
 - how fast was close clicked (from shown)
-
+- says thanks and dont scroll to bottom
+- 
 ## Plan for DiDna Launch
 
 Separate ad tag for each website

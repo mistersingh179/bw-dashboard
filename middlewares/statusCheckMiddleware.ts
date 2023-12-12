@@ -20,11 +20,10 @@ const statusCheckMiddleware: Middleware = async (req, res, next) => {
   try {
     const settings = await getSettings(userId);
     const bypassedUrls = [
-      "best-floral-perfumes",
-      "feeding-birds-is-good-for-soul",
+      "best-nutrient-lower-cholesterol",
+      "best-luxury-perfume",
       "lorem-lipsum.html",
       "study.html",
-      "best-tea-for-energy",
     ];
     const thisIsBypassedUrl = bypassedUrls.find(
       (url) => req.body?.url?.indexOf(url) >= 0
