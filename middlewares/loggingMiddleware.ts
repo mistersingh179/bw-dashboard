@@ -8,6 +8,7 @@ const loggingMiddleware: Middleware = async (req, res, next) => {
 
   const reqItems = pick(req, ["method", "url", "query", "body"]);
   const trueClientIp = req.headers["true-client-ip"];
+  const renderId = req.headers["Rndr-Id"];
 
   let txName = req.url;
   if (txName && req.query) {
@@ -23,16 +24,28 @@ const loggingMiddleware: Middleware = async (req, res, next) => {
   }
 
   logger.info(
-    { ...reqItems, trueClientIp, reqId: req.reqId, txName },
+    { ...reqItems, trueClientIp, renderId, reqId: req.reqId, txName },
     "API Request"
   );
+
+  if(req.reqId){
+    res.setHeader("X-reqId", req.reqId);
+  }
 
   await next();
 
   const responseTime = Date.now() - beforeTime;
   const resItems = pick(res, ["statusCode", "statusMessage"]);
   logger.info(
-    { ...reqItems, ...resItems, reqId: req.reqId, responseTime, txName },
+    {
+      ...reqItems,
+      trueClientIp,
+      ...resItems,
+      renderId,
+      reqId: req.reqId,
+      responseTime,
+      txName,
+    },
     "API Response"
   );
 };

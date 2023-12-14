@@ -140,7 +140,18 @@ const getMetaContentSpotsToDisplay = async (
 // };
 
 const generate: NextApiHandler = async (req, res) => {
+  const renderId = req.headers["Rndr-Id"];
+  const reqId = req.headers["reqId"];
   const { userId, url, fp, screenWidth, screenHeight, scrollHeight } = req.body;
+
+  let myLogger = logger.child({
+    name: "auctions/generate",
+    renderId,
+    reqId,
+    userId,
+    url,
+  });
+
   const settings = req.settings!;
 
   let messages: string[] = [];
@@ -171,13 +182,15 @@ const generate: NextApiHandler = async (req, res) => {
         userId,
         url: originWithPathName,
       });
-      logger.info(
+      myLogger.info(
         { jobId: job.id, userId, originWithPathName },
         "job added to process incoming url"
       );
       messages.push("schedule job to process incoming url: " + job.id);
     } else {
-      logger.info("wont add job to process incoming url as lock NOT available");
+      myLogger.info(
+        "wont add job to process incoming url as lock NOT available"
+      );
       messages.push("wont add job to process incoming url as lock unavailable");
     }
   }
@@ -249,7 +262,7 @@ const generate: NextApiHandler = async (req, res) => {
       if (adsWithDetail.length > 0) {
         messages.push("founds ads on best campaign");
       } else {
-        logger.info({}, "no ads found, will try to build it");
+        myLogger.info({}, "no ads found, will try to build it");
         messages.push("no ads found, will try to build it");
         const jobIds = await processWebpageForAdCreation(
           webpage,
@@ -259,7 +272,7 @@ const generate: NextApiHandler = async (req, res) => {
         messages.push("scheduled job to create ads: " + jobIds.join(" | "));
       }
     } else {
-      logger.info({}, "best campaign not found");
+      myLogger.info({}, "best campaign not found");
       messages.push("best campaign not found");
     }
   }
@@ -308,7 +321,7 @@ const generate: NextApiHandler = async (req, res) => {
         abortCategoryNames,
         messages,
         optOutCookieValue,
-        adTag: website?.adTag
+        adTag: website?.adTag,
       })
     );
 };

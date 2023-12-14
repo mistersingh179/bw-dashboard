@@ -14,7 +14,7 @@ Tag Test
 - `taskforce -n "Local Docker Redis" -p 63790 -t xxxxxxxxxxx`
 - at times we need to run scripts locally and dont want logs so we can turn them off via env variables `PINO_LOG_LEVEL=error node --loader tsx scripts/repl.ts`
 - rename iterm2 terminal tab title by `command + i` and then typing what we want
-
+- analyze how postgres is doing `docker run -ti -e DATABASE_URL=$NEON_DB -p 8080:8080 ankane/pghero`
 ### Local Servers
 
 ```
@@ -106,6 +106,12 @@ drop database bw;
 - to call authenticated API add cookie `next-auth.session-token` to the request
 - value can be taken from the browser
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
+
+## Plan to make db faster
+- drop old records in auction table
+- build a queue to update timeSpent
+- deploy pg_hero & enable historic query every 5 minutes w/ cleanup old query stats & space stats every 1 day
+- setup view for pgbouncerhero
 
 ## Plan for personalization text
 - record when was close clicked
