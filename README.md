@@ -108,9 +108,18 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## Plan for personalization text
-- how fast was close clicked (from shown)
-- says thanks and dont scroll to bottom
-- 
+- record when was close clicked
+- at the 90th percentile time start the counter
+- redirect after 10 seconds to new page 
+- new page has typewritter text
+- new page has options to customize
+- track personalize before or after collapse
+- please rate the personalization feature?
+- api for alwaysPz page to get content to show 
+
+## for redirect
+- redirect them at X seconds to next article
+
 ## Plan for DiDna Launch
 
 Separate ad tag for each website
