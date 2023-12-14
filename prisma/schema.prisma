@@ -144,9 +144,7 @@ model Auction {
   @@index([url])
   @@index([extra])
   @@index([timeSpent])
-  @@index([userAgent])
   @@index([createdAt(sort: Asc)])
-  @@index([websiteId, createdAt(sort: Asc)])
 }
 
 model Website {
@@ -166,7 +164,6 @@ model Website {
   @@unique([userId, topLevelDomainUrl])
   @@index([userId, topLevelDomainUrl, status])
   @@index([userId, status, processedOn])
-  @@index([userId])
 }
 
 model Webpage {
@@ -186,7 +183,6 @@ model Webpage {
   updatedAt          DateTime            @updatedAt
 
   @@unique([websiteId, url])
-  @@index([websiteId])
   @@index([websiteId, status])
   @@index([websiteId, url, status])
   @@index([websiteId, createdAt(sort: Asc)])
@@ -203,8 +199,6 @@ model Content {
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  @@index([webpageId])
 }
 
 model Category {
@@ -269,7 +263,6 @@ model Advertisement {
 
   @@index([scoredCampaignId])
   @@index([advertisementSpotId, scoredCampaignId, status])
-  @@index([advertisementSpotId])
 }
 
 model MetaContentSpot {
@@ -358,7 +351,6 @@ model Campaign {
 
   @@unique([userId, name])
   @@index([createdAt(sort: Asc)])
-  @@index([userId])
   @@index([id, start, end, status, fixedCpm(sort: Desc)])
 }
 
