@@ -13,12 +13,11 @@ const cors = Cors({
 
 const updateTimeSpent: NextApiHandler = async (req, res) => {
   const { aid } = req.query as QueryParams;
-  const { userId, timeSpent } = req.body;
+  const { timeSpent } = req.body;
 
   const auction = await prisma.auction.update({
     where: {
       id: aid,
-      userId,
     },
     data: {
       timeSpent,
@@ -28,7 +27,7 @@ const updateTimeSpent: NextApiHandler = async (req, res) => {
   res
     .setHeader("Content-Type", "application/json")
     .status(200)
-    .send(JSON.stringify(auction));
+    .end();
 };
 
 export default withMiddleware(
