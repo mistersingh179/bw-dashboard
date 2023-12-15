@@ -37,9 +37,12 @@ const handleUpdateAuction = async (
     "scrollPosition",
     "firstScrollAt",
     "personalized",
+    "personalizedAt",
     "closedPersonalized",
+    "closedPersonalizedAt",
     "personalizedOptionSelected",
     "personalizeCtaShown",
+    "personalizeCtaShownAt",
     "maxScrollDepth",
   ];
   let data = pick<AuctionUncheckedUpdateInput>(req.body, allowedAttributes);

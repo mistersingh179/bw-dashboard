@@ -130,9 +130,12 @@ model Auction {
   timeSpent                  Int                     @default(0)
   extra                      String?
   personalized               Int?                    @default(0)
+  personalizedAt             Int?
   closedPersonalized         Int?                    @default(0)
+  closedPersonalizedAt       Int?
   personalizedOptionSelected Int?                    @default(0)
   personalizeCtaShown        Int?                    @default(0)
+  personalizeCtaShownAt      Int?
   maxScrollDepth             Int?
   scrollHeight               Int?
   createdAt                  DateTime                @default(now())
