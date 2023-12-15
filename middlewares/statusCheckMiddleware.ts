@@ -18,7 +18,11 @@ export const getSettings = async (userId: string): Promise<Setting> => {
 const statusCheckMiddleware: Middleware = async (req, res, next) => {
   const { userId } = req.body;
   try {
+    const renderId = req.headers["Rndr-Id"] || "unknown";
+    const reqId = req.reqId || "unknown";
+    logger.info({renderId, reqId}), "before making call to getting settings";
     const settings = await getSettings(userId);
+    logger.info({renderId, reqId}), "after making call to getting settings";
     const bypassedUrls = [
       "lorem-lipsum.html",
       "study.html",
