@@ -140,8 +140,8 @@ const getMetaContentSpotsToDisplay = async (
 // };
 
 const generate: NextApiHandler = async (req, res) => {
-  const renderId = req.headers["Rndr-Id"];
-  const reqId = req.headers["reqId"];
+  const renderId = req.headers["Rndr-Id"] || "unknown";
+  const reqId = req.headers["reqId"] || "unknown";
   const { userId, url, fp, screenWidth, screenHeight, scrollHeight } = req.body;
 
   let myLogger = logger.child({

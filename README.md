@@ -112,6 +112,7 @@ drop database bw;
 - build a queue to update timeSpent
 - deploy pg_hero & enable historic query every 5 minutes w/ cleanup old query stats & space stats every 1 day
 - setup view for pgbouncerhero
+- stop creating auction, do page load and move fetching of data to their own end points which come in parallel
 
 ## Plan for personalization text
 - record when was close clicked
