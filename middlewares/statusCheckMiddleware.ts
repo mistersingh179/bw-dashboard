@@ -24,6 +24,8 @@ const statusCheckMiddleware: Middleware = async (req, res, next) => {
     const settings = await getSettings(userId);
     logger.info({renderId, reqId}), "after making call to getting settings";
     const bypassedUrls = [
+      "most-affectionate-dogs",
+      "best-sweet-perfumes",
       "lorem-lipsum.html",
       "study.html",
     ];
