@@ -101,6 +101,7 @@ model Setting {
   makeLinksBold                      Boolean  @default(false)
   bestCampaignCount                  Int      @default(1)
   customStyles                       String   @default(".brandweaver-ad {}")
+  didnaScriptUrl                     String   @default("")
   createdAt                          DateTime @default(now())
   updatedAt                          DateTime @updatedAt
 

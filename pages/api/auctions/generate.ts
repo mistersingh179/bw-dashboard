@@ -303,6 +303,7 @@ const generate: NextApiHandler = async (req, res) => {
     "metaContentMobileDisplayPercentage",
     "metaContentToolTipTheme",
     "metaContentToolTipTextColor",
+    "didnaScriptUrl",
   ]);
 
   const abortCategories = await getUserAbortCategories(userId);

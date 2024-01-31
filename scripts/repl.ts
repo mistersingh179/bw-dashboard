@@ -27,6 +27,8 @@ prisma.$on("query", (e) => {
   console.log({ timestamp, params, duration, target });
 });
 
+const user = await prisma.user.findMany();
+
 (async () => {
   const sendOnToRaptiveOnce = once(() => {
     console.log("hi");
