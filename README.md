@@ -108,11 +108,9 @@ drop database bw;
 - add it as a header with key `cookie` & value of `next-auth.session-token=81f3db43-b3fb-4a85-8507-bee316db9ae2`
 
 ## plan for launching didna
-- need to load correct didna script from db
-- is there a typescript definition for didna which i can install?
-- i am loading didna script dynamically, does it have a ready function i can attach to know when it is ready as `didna` object is undefined when i check it immediately after loading the script.
-- at many times there is no ad and we have empty space
-- it sets the width of the ad unit to be 430px which is the width of the mobile screen, i expect it to be 320px as that is the ad unit size.
+- need ad unit path
+
+
 
 ## Plan to make db faster
 - drop old records in auction table

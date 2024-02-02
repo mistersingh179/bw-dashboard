@@ -304,6 +304,8 @@ const generate: NextApiHandler = async (req, res) => {
     "metaContentToolTipTheme",
     "metaContentToolTipTextColor",
     "didnaScriptUrl",
+    "didnaAdUnitPath",
+    "topPosTopFixedTooltip"
   ]);
 
   const abortCategories = await getUserAbortCategories(userId);
