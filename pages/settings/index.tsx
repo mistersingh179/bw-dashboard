@@ -259,6 +259,9 @@ const Settings: FCWithAuth = () => {
     makeLinksBold: false,
     customStyles: ".brandweaver-ad {}",
     bestCampaignCount: 1,
+    didnaScriptUrl: "",
+    didnaAdUnitPath: "",
+    topPosTopFixedTooltip: 0
   };
 
   const [items, setItems] = useState(defaultValues);
@@ -293,6 +296,9 @@ const Settings: FCWithAuth = () => {
     makeLinksBold,
     customStyles,
     bestCampaignCount,
+    didnaScriptUrl,
+    didnaAdUnitPath,
+    topPosTopFixedTooltip
   } = items;
 
   useEffect(() => {
@@ -617,6 +623,39 @@ const Settings: FCWithAuth = () => {
                 The maximum number of campaigns to qualify as best per webpage.
               </Text>
             </NumberFormControl>
+
+            <NumberFormControl
+              label={"Top position for Top Fixed Toolip"}
+              fieldName={"topPosTopFixedTooltip"}
+              fieldValue={topPosTopFixedTooltip}
+              updateFn={updateItem}
+            >
+              <Text>
+                This defaults to 0, but can be moved down to not cover the top logo menu bar.
+              </Text>
+            </NumberFormControl>
+
+            <TextFormControl
+              label={"Didna Script Url"}
+              fieldName={"didnaScriptUrl"}
+              fieldValue={didnaScriptUrl}
+              updateFn={updateItem}
+            >
+              <Text>
+                Don{"'"}t edit this, unless you know what you are doing!
+              </Text>
+            </TextFormControl>
+
+            <TextFormControl
+              label={"Didna Ad Unit Path"}
+              fieldName={"didnaAdUnitPath"}
+              fieldValue={didnaAdUnitPath}
+              updateFn={updateItem}
+            >
+              <Text>
+                Don{"'"}t edit this, unless you know what you are doing!
+              </Text>
+            </TextFormControl>
 
             <FormControl my={5} textAlign={"center"}>
               <Button
