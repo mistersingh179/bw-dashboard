@@ -1,7 +1,14 @@
 {
   "name": "bw-dashboard",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "description": "BrandWeaver dashboard for managing web content",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mistersingh179/bw-dashboard"
+  },
+  "author": "MASALSA Inc.",
+  "license": "MIT",
   "scripts": {
     "db": "docker compose up",
     "dev_nr": "NODE_OPTIONS='-r newrelic' next dev",

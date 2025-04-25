@@ -1,0 +1,33 @@
+version: '3'
+services:
+  db:
+    image: postgres:15.1-alpine3.17
+    ports:
+      - 54320:5432
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data:rw
+    environment:
+      - POSTGRES_PASSWORD=<your-password-here>
+      - POSTGRES_USER=<your-username-here>
+      - POSTGRES_DB=bw
+  db-shadow:
+    image: postgres:15.1-alpine3.17
+    ports:
+      - 54321:5432
+    environment:
+      - POSTGRES_PASSWORD=<your-password-here>
+      - POSTGRES_USER=<your-username-here>
+      - POSTGRES_DB=bw_shadow
+  redis:
+    image: redis:7.0-alpine3.17
+    ports:
+      - 63790:6379
+    volumes:
+      - ./redisdata:/data:rw
+#  taskforce-connector:
+#    build: https://github.com/taskforcesh/taskforce-connector.git#master
+#    environment:
+#      TASKFORCE_CONNECTION: "local taskforce provisioner"
+#      TASKFORCE_TEAM: "Taskforce"
+#      TASKFORCE_TOKEN: "<your-token-here>"
+#      REDIS_HOST: redis

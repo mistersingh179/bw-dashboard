@@ -3,12 +3,19 @@
 # newrelic
 nrdiag*
 newrelic_agent.log
+isolate-*
 
+# sensitive data
 .idea/
 .env
+.env.*
 .env.production
+.env.local
 pgdata
 redisdata
+credentials*
+*.key
+*.crt
 
 # dependencies
 /node_modules
